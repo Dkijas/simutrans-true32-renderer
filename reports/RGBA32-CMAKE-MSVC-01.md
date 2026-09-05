@@ -214,7 +214,7 @@ also:          CHANGELOG-TRUE32 (build files section), MAINTAINER-REVIEW
 
 ## Public hygiene
 result:  PASS - recursive scan of the changed files for the user name and
-         C:\Users, /c/Users, /home/, token, password, secret, vscode-webview,
+         home-directory paths in their Windows and Unix spellings, token, password, secret, vscode-webview,
          claude.ai: 0 hits; no build directories, paksets or binaries added;
          the three new screenshots are window captures with label bands
 
