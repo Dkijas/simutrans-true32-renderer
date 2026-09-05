@@ -1,0 +1,110 @@
+# LAB-ONLY: the raw framebuffer capture at the SDL3 present boundary (and the RECERT present counter / quit provenance hooks), all under STLAB_CERT_HARNESS. Not part of the candidate.
+--- tree/src/simutrans/sys/simsys_s3.cc	2026-09-05 09:47:58.720666700 +0200
++++ hook-src/src/simutrans/sys/simsys_s3.cc	2026-09-05 10:50:21.286530900 +0200
+@@ -402,6 +402,13 @@
+  *
+  * On Windows, Linux and macOS these events do not occur. The handlers exist so that
+  * the contract of simsys_s2.cc is preserved rather than silently dropped. */
++#ifdef STLAB_CERT_HARNESS
++extern unsigned long stlab_present_count;
++extern void stlab_quit_event(const char *source, unsigned a, unsigned b, const char *extra);
++extern char stlab_fbdump_request[512];
++#include <cstdio>
++#endif
++
+ static bool SDLCALL app_lifecycle_watch(void * /*userdata*/, SDL_Event *event)
+ {
+ 	switch(  event->type  ) {
+@@ -433,6 +440,9 @@
+ 			break;
+ 
+ 		case SDL_EVENT_TERMINATING:
++#ifdef STLAB_CERT_HARNESS
++			stlab_quit_event("simsys_s3 SDL_EVENT_TERMINATING (app lifecycle watch)", (unsigned)event->type, 0, "-> world()->stop(true)");
++#endif
+ 			// Quitting immediately: save the game and the settings with no
+ 			// visual feedback, then leave the rest of the cleanup to the OS.
+ 			intr_disable();
+@@ -852,6 +862,21 @@
+ 
+ /* ----------------------------------------------------------- presentation */
+ 
++#ifdef STLAB_CERT_HARNESS
++/* the last 8 SDL event types, oldest first, formatted on demand */
++static unsigned stlab_ev_ring[8];
++static unsigned stlab_ev_n = 0;
++static const char *stlab_ev_text()
++{
++	static char buf[8 * 12];
++	buf[0] = 0;
++	for (unsigned i = (stlab_ev_n > 8 ? stlab_ev_n - 8 : 0); i < stlab_ev_n; i++) {
++		sprintf(buf + strlen(buf), " 0x%X", stlab_ev_ring[i % 8]);
++	}
++	return buf;
++}
++#endif
++
+ void dr_prepare_flush()
+ {
+ 	return;
+@@ -860,7 +885,36 @@
+ 
+ void dr_flush()
+ {
++#ifdef STLAB_CERT_HARNESS
++	stlab_present_count++;
++#endif
+ 	gfx->flush_framebuffer();
++#ifdef STLAB_CERT_HARNESS
++	/* LAB: raw capture of exactly what is presented below, before any SDL work */
++	if (stlab_fbdump_request[0] && framebuffer) {
++		FILE *f = fopen(stlab_fbdump_request, "wb");
++		if (f) {
++			const scr_size screen = gfx->get_screen_size();
++			unsigned hdr[8] = { 0x42414c53u /* "SLAB" */, (unsigned)COLOUR_DEPTH, (unsigned)screen.w, (unsigned)screen.h, (unsigned)fb_pitch, (unsigned)fb_height, (unsigned)sizeof(PIXVAL), (unsigned)stlab_present_count };
++			fwrite(hdr, sizeof(hdr), 1, f);
++			const size_t n = (size_t)fb_pitch * (size_t)fb_height;
++#if defined(STLAB_NC_QUANTISE) && COLOUR_DEPTH == 32
++			/* NEGATIVE CONTROL: force every word through RGB565 (the game's own expansion) */
++			for (size_t i = 0; i < n; i++) {
++				const unsigned c = (unsigned)framebuffer[i];
++				const unsigned r5 = (c >> 19) & 0x1F, g6 = (c >> 10) & 0x3F, b5 = (c >> 3) & 0x1F;
++				const unsigned q = 0xFF000000u | ((r5 * 0xFF / 0x1F) << 16) | ((g6 * 0xFF / 0x3F) << 8) | (b5 * 0xFF / 0x1F);
++				fwrite(&q, sizeof(q), 1, f);
++			}
++#else
++			fwrite(framebuffer, sizeof(PIXVAL), n, f);
++#endif
++			fclose(f);
++		}
++		stlab_quit_event("fbdump written", (unsigned)fb_pitch, (unsigned)fb_height, stlab_fbdump_request);
++		stlab_fbdump_request[0] = 0;
++	}
++#endif
+ 
+ 	if(  !screen_tx  ||  !framebuffer  ) {
+ 		return;
+@@ -1167,6 +1221,13 @@
+ 		return;
+ 	}
+ 
++#ifdef STLAB_CERT_HARNESS
++	stlab_ev_ring[stlab_ev_n % 8] = (unsigned)event.type;
++	stlab_ev_n++;
++	if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
++		stlab_quit_event("simsys_s3 SDL_EVENT_WINDOW_CLOSE_REQUESTED", (unsigned)event.type, (unsigned)event.window.windowID, stlab_ev_text());
++	}
++#endif
+ 	DBG_DEBUG("SDL_EVENT", "0x%X", event.type);
+ 
+ 	switch(  event.type  ) {
+@@ -1176,6 +1237,9 @@
+ 		 * the quit itself, exactly as SDL2 does - so handling both turns one
+ 		 * close into two SYSTEM_QUIT events where simsys_s2 produces one. */
+ 		case SDL_EVENT_QUIT:
++#ifdef STLAB_CERT_HARNESS
++			stlab_quit_event("simsys_s3 SDL_EVENT_QUIT", (unsigned)event.type, (unsigned)(event.quit.timestamp / 1000000), stlab_ev_text());
++#endif
+ 			sys_event.type = SIM_SYSTEM;
+ 			sys_event.code = SYSTEM_QUIT;
+ 			break;

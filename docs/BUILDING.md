@@ -119,8 +119,10 @@ Validated (x86_64, NDK 27.0.12077973, SDK platforms 35, Gradle 8.13, JDK
 library), packages as an APK, installs on an android-35 x86_64 emulator,
 shows the pakset chooser, loads pak128, renders the welcome world and a
 newly generated 256x256 game; the default build compiles only
-`simgraph16.cc.o`. See docs/LIMITATIONS.md for what is not yet proven on
-Android.
+`simgraph16.cc.o`. The internal framebuffer of that 32-bit build was
+certified afterwards on the emulator (ANDROID-FRAMEBUFFER-CERT-01,
+docs/CERTIFICATION.md); physical devices and ARM ABIs are not run
+(docs/LIMITATIONS.md).
 
 ## Not covered
 

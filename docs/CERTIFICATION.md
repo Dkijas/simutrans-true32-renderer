@@ -140,7 +140,7 @@ the unmodified tree and the candidate alike.
     Android compile 32 (x86_64)                  PASS      (ANDROID-BUILD-DEPTH-01)
     Android package 32 (APK)                     PASS
     Android emulator run 32                      PASS
-    Android internal framebuffer precision       UNVERIFIED
+    Android internal framebuffer precision       CERTIFIED (emulator, x86_64)  (ANDROID-FRAMEBUFFER-CERT-01)
     Android physical device / ARM                NOT RUN
 
 ## Android (ANDROID-BUILD-DEPTH-01)
@@ -153,8 +153,32 @@ that chain. TRUE32 x86_64 build: compile PASS, link PASS, APK PASS,
 build: `simgraph16.cc.o` only. Emulator (android-35 x86_64, swiftshader):
 startup, pak128 selection, welcome world and a new 256x256 game rendered;
 SDL3 presentation surface RGBA8888. Width contracts (STORED 2, SCREEN32 4,
-SAVED 4, NETWORK 2) hold under the NDK. Not proven: pixel precision of the
-internal framebuffer (see LIMITATIONS.md).
+SAVED 4, NETWORK 2) hold under the NDK. Pixel precision of the internal
+framebuffer: certified by the next cut, below.
+
+## Android framebuffer (ANDROID-FRAMEBUFFER-CERT-01)
+
+Raw capture of the framebuffer at the SDL3 present boundary (after
+`flush_framebuffer()`, before `SDL_UpdateTexture`), written verbatim by a
+lab-only hook compiled under `STLAB_CERT_HARNESS`; the same hooked source
+built at 16 and at 32 bits, x86_64, run on an android-35 emulator with
+the same 18-command scene (new 64x64 map, view at the origin, background
+colour RGB(18,52,86) through the system-colour path, paused). Oracle: the
+canonical RGB565 round trip with the game's own expansion.
+
+    build    pixels    outside RGB565 grid    RGB(18,52,86) = 0xFF123456    result
+    32-bit   540,821   540,263 (99.90 %)      336,294 pixels                TRUE32-PROVEN
+    16-bit   540,821   0 (0.00 %)             0 (background is 0x11AA)      CONTROL-OK
+    nc32     540,821   0 (0.00 %)             0 pixels                      FAIL (as required)
+
+nc32 is the negative control: the 32-bit build whose capture is forced
+through RGB565, which the oracle must and does reject. In both real builds
+the derived frame equals the game's own screenshot of the same paused
+frame pixel for pixel; across the map area the 16-bit and 32-bit frames
+differ by at most the RGB565 quantisation step (8 per channel); the
+application kept presenting after the capture. Physical devices and ARM
+ABIs: NOT RUN. Report: `reports/RGBA32-ANDROID-FRAMEBUFFER-CERT-01.md`;
+evidence: `evidence/android-framebuffer/`.
 
 ## Earlier certification and remediation
 

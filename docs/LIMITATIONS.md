@@ -67,23 +67,24 @@ both LF and CRLF checkouts (verified with `patch -p1` and
 `svn:eol-style native` would normalise the files - a maintainer step, not
 done here so that the certified identity stays verifiable.
 
-## Android: builds and runs at 32, pixel precision UNVERIFIED
+## Android: certified on the x86_64 emulator; physical devices not run
 
 The Gradle/CMake Android build selects the renderer by `COLOUR_DEPTH`
 (default 16, `-DCOLOUR_DEPTH=32` opt-in; BUILDING.md section 5). The
-TRUE32 x86_64 APK was built, installed and run on an android-35 emulator:
-startup, pakset selection, welcome world and a new game render, the
-SDL3 window/presentation surface is RGBA8888, and the installed library
-contains the 32-bit renderer only. What is NOT yet proven on Android is
-pixel precision inside the app's own framebuffer: emulator screen
-captures pass through SDL's GLES renderer, which scales and filters the
-texture of the 16-bit and 32-bit builds alike, so they cannot tell the
-two apart (both show many intermediate colours). Until an internal,
-pre-presentation framebuffer capture is analysed, the status is
+TRUE32 x86_64 APK builds, installs and runs on an android-35 emulator,
+and its internal framebuffer - captured raw at the SDL3 present boundary,
+before any GLES work - is genuine ARGB8888: 99.90 % of the pixels of the
+certification frame lie outside the RGB565 grid, against 0.00 % for the
+16-bit build captured the same way (CERTIFICATION.md, "Android
+framebuffer"). Emulator screen captures remain unusable as an oracle:
+SDL's GLES renderer scales and filters the texture of both builds alike.
+What remains untested:
 
-    Android compile 32 / package / emulator run:  PASS
-    Android TRUE32 framebuffer precision:         UNVERIFIED
-    physical devices, ARM ABIs, performance:      not tested
+    Android TRUE32 framebuffer precision (emulator, x86_64):  CERTIFIED
+    physical devices:                                         NOT RUN
+    ARM ABIs (armeabi-v7a, arm64-v8a):                        NOT RUN
+    what the display finally shows after GLES / compositor:   not measurable here
+    performance and battery at 32 bits:                       not measured
 
 The Android default stays 16-bit; nothing in the Android release
 configuration was changed.

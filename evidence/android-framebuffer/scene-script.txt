@@ -1,0 +1,19 @@
+# Android internal framebuffer certification scene (both builds run this file)
+wait 60
+closeall
+waitms 2000
+newmap 64 64
+waitms 4000
+center 0 0
+waitms 1500
+night 0
+bg 18 52 86
+waitms 1500
+pause
+waitms 3000
+fbdump frame1
+waitms 2000
+shot fb_shot
+waitms 1500
+mem end
+mark scene captured, app keeps running

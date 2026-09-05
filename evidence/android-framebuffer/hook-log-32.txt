@@ -1,0 +1,21 @@
+[frame 0] script loaded: 18 commands; COLOUR_DEPTH=32 sizeof(PIXVAL)=4 threads=4 fps=25
+[frame 1] wait 60
+[frame 62] closeall: windows closed
+[frame 62] waitms 2000
+[frame 638] newmap 64x64 (map number 33 from the default settings): init()
+[frame 638] newmap done: 64x64, 2 cities
+[frame 638] waitms 4000
+[frame 3583] center 0 0
+[frame 3583] waitms 1500
+[frame 4730] daynight_level 0
+[frame 4730] background RGB(18,52,86) -> system colour FF123456
+[frame 4730] waitms 1500
+[frame 5678] pause
+[frame 5678] waitms 3000
+[frame 8276] fbdump requested: /storage/emulated/0/Android/data/com.simutrans/files/frame1.fb (presents so far 2845)
+[frame 8276] waitms 2000
+[frame 8348] QUIT-PROVENANCE fbdump written a=496 b=1097 /storage/emulated/0/Android/data/com.simutrans/files/frame1.fb (presents 2846)
+[frame 9809] screenshot /storage/emulated/0/Android/data/com.simutrans/files/fb_shot.png (493x1097) -> ok
+[frame 9809] waitms 1500
+[frame 11163] MEM end not available on this platform
+[frame 11163] mark scene captured, app keeps running

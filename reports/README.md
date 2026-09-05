@@ -56,3 +56,9 @@ for review. They can be provided on request.
   rule applies: default 16, opt-in 32); the old `AndroidBuild.sh` is not
   used; a TRUE32 x86_64 APK built, installed and rendered on the emulator;
   internal framebuffer precision left UNVERIFIED there.
+- **RGBA32-ANDROID-FRAMEBUFFER-CERT-01.md** - closes that: the raw
+  framebuffer captured at the SDL3 present boundary on the emulator is
+  genuine ARGB8888 (99.90 % of the pixels outside the RGB565 grid, the
+  decisive colour 0xFF123456 present) while the 16-bit build captured the
+  same way is 0.00 % outside; a quantised negative control is rejected by
+  the oracle. Physical devices and ARM ABIs not run.

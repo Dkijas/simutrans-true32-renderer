@@ -24,6 +24,12 @@ Paksets are not redistributed; the screenshots were produced during local
 validation with pak64, pak128 2.10.1 (as the game reports it) and pak192.comic, as
 downloaded from their official locations; the exact files are identified in
 `reports/RECERTIFICATION-02-provenance.txt`.
+- `android-framebuffer/` (ANDROID-FRAMEBUFFER-CERT-01) - the oracle's
+  statistics for the three raw framebuffer dumps (32-bit, 16-bit control,
+  quantised negative control), the SHA256 of the dumps and of the three
+  laboratory APKs with their library build-ids, the two derived frames
+  and their RGB565-grid masks, and the hook logs of the three runs. The
+  raw dumps and the APKs are not redistributed.
 - `build-integration/` (CMAKE-MSVC-01) - the hook logs of the TRUE32
   scenario on the CMake-built GDI-32 and SDL3-32 executables, the legacy
   smoke on the CMake-built GDI-16 one, the T1-T4 probe linked against the

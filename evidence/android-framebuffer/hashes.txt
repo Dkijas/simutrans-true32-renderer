@@ -1,0 +1,27 @@
+SHA256 of the raw dumps (not redistributed), of the three laboratory APKs (not redistributed)
+and the GNU build-id of the library inside each APK, equal to that of the unstripped library of the
+CMake configuration carrying the arguments named in the report.
+
+3c98ede72489370e7d185f0a77ab2c669257731ddc05db6097b970d3ec18ec63  runs/fb-hook32/frame1.fb
+184101297e05673651c891c554157631cae5bc36a7717b6951529df8bd6a305c  runs/fb-hook16/frame1.fb
+e90e4a1f51dbf23473f4d3e639090d9a812d9e20194ff3f4659899fe00dc40e8  runs/fb-nc32/frame1.fb
+cd5135e2e6226a9bf16c27731c77b70c459c64d3db7db4afc4caf376a8fd7586  out/simutrans-hook32-x86_64.apk
+8e41c66062be6cf38f0139f1fbc2b575f4c0d4c0237a4dbd6516746ac0fa1785  out/simutrans-hook16-x86_64.apk
+b51e567373c701a2a89baeafe1ce879547f9c6920dd8c095cd89e0d78b99b192  out/simutrans-nc32-x86_64.apk
+
+build-id (GNU, first 20 hex) of lib/x86_64/libsimutrans.so inside the APK:
+  hook32  1ca23e63f323f8b34df7  (COLOUR_DEPTH 32, -DSTLAB_CERT_HARNESS)
+  hook16  21e606e96c5654136b28  (COLOUR_DEPTH 16, -DSTLAB_CERT_HARNESS)
+  nc32    57670457bc54aa469bf7  (COLOUR_DEPTH 32, -DSTLAB_CERT_HARNESS -DSTLAB_NC_QUANTISE)
+
+Derived files in this directory:
+9ed61ede2479b55e504ddd5a18cc03c5d818f60bfb658381fd40749c4314d20c  frame-32.png
+4b7ff08c9130eaae7d9c531dba2f5d041a6206aa86004b9c802c3782cf168602  frame-16.png
+01fd9fe0418a8e026f12e2218398ba5a400ce57b1f815caeec6ed47ad4a7e66a  mask-32.png
+3ad3856fa2a241a1e46f4c6789165ca2af824f3febdade42bd20b061b81e86a1  mask-16.png
+b678166717eabcf7b85e1f5c68188cb59a1c0c8eeebec64497bd96782d1cfe0f  android-framebuffer-precision.png
+a3bd4f7893b9ee34a8f9b30e0d052b282b31f00e417b1588fafd039ef5954c93  hook-log-32.txt
+8c7c4aece6cf79e549dc9bebb43f57fd16f5003735c0943efeda0ba56f229d00  hook-log-16.txt
+867991f37e91bc3e06e6c52296e7d3495637cac6ae7ee58f35af140d905a927a  hook-log-nc32.txt
+2425de53f396af669f26006492535f5168d294ef2d2545640ae6eb5142e3730e  fb_analysis.py
+d9e5db45199e5c9b9b7e9748270fd3198adcfcc20a3a35f6372cc69c5517dc70  scene-script.txt

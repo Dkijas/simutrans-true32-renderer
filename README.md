@@ -119,8 +119,9 @@ see [docs/BUILDING.md](docs/BUILDING.md) and the build-integration section of
     Windows GDI32 / SDL2-32 / SDL3-32   PRODUCT CERTIFIED
     Build systems Makefile / CMake / MSBuild   certified (16 and 32)
     Linux                               compile PASS, runtime ENVIRONMENT_BLOCKED
-    Android (Gradle/CMake, x86_64)      compile, package and emulator run PASS at 32;
-                                        internal framebuffer precision UNVERIFIED
+    Android (Gradle/CMake, x86_64)      compile, package, emulator run and internal
+                                        framebuffer precision CERTIFIED at 32 (emulator);
+                                        physical device / ARM NOT RUN
 
 ## Known limitation
 

@@ -1,0 +1,27 @@
+Oracle output (fb_analysis.py) for the three raw framebuffer dumps of ANDROID-FRAMEBUFFER-CERT-01.
+hook32 = TRUE32 build, hook16 = 16-bit control, nc32 = 32-bit build with the capture forced through RGB565 (negative control).
+
+== hook32 ==
+  file frame1.fb  sha256 3c98ede72489370e
+  COLOUR_DEPTH=32  screen 493x1097  pitch 496  fb_height 1097  sizeof(PIXVAL)=4  captured at present #2846
+  pixels analysed 540821  RGB565-representable 558 (0.10%)  NOT representable 540263 (99.90%)  distinct non-representable colours 1047
+  decisive vector RGB(18,52,86) = 0xFF123456: 336294 pixels; its RGB565 round-trip is 0xFF103452
+    example: framebuffer 0xFF72B2DD -> RGB565 round-trip 0xFF73B2DE
+    example: framebuffer 0xFF355367 -> RGB565 round-trip 0xFF315062
+    example: framebuffer 0xFFC0C0C0 -> RGB565 round-trip 0xFFC5C2C5
+    example: framebuffer 0xFFF8F8F8 -> RGB565 round-trip 0xFFFFFAFF
+    example: framebuffer 0xFF4E7A97 -> RGB565 round-trip 0xFF4A7994
+    example: framebuffer 0xFF233745 -> RGB565 round-trip 0xFF203441
+RESULT: TRUE32-PROVEN (substantial population outside the RGB565 grid)
+== hook16 ==
+  file frame1.fb  sha256 184101297e056736
+  COLOUR_DEPTH=16  screen 493x1097  pitch 496  fb_height 1097  sizeof(PIXVAL)=2  captured at present #2872
+  pixels analysed 540821  RGB565-representable 540821 (100.00%)  NOT representable 0 (0.00%)  distinct non-representable colours 0
+  decisive vector RGB(18,52,86) = 0xFF123456: 0 pixels; its RGB565 round-trip is 0xFF103452
+RESULT: CONTROL-OK (0 outside the RGB565 grid)
+== nc32 ==
+  file frame1.fb  sha256 e90e4a1f51dbf234
+  COLOUR_DEPTH=32  screen 493x1097  pitch 496  fb_height 1097  sizeof(PIXVAL)=4  captured at present #2867
+  pixels analysed 540821  RGB565-representable 540821 (100.00%)  NOT representable 0 (0.00%)  distinct non-representable colours 0
+  decisive vector RGB(18,52,86) = 0xFF123456: 0 pixels; its RGB565 round-trip is 0xFF103452
+RESULT: FAIL (unexpected population for this depth)
