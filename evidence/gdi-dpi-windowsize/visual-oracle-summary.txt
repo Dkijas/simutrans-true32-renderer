@@ -1,0 +1,24 @@
+Product-visible oracle: real screen pixels of the client area (no PrintWindow), window kept in the
+foreground and verified per capture. A capture passes when the game's bottom status bar is lit
+across the bottom-right of the client area; it fails when that region is black, the signature of a
+framebuffer smaller than the window.
+
+BASE-EVENT 150 % run 1           captures 12   VISUAL_PASS  5   VISUAL_FAIL  7   not decisive 0
+BASE-EVENT 150 % run 2           captures 12   VISUAL_PASS  5   VISUAL_FAIL  7   not decisive 0
+BASE-EVENT 150 % run 3           captures 12   VISUAL_PASS  5   VISUAL_FAIL  7   not decisive 0
+BASE-EVENT + DPI 150 % run 1     captures 12   VISUAL_PASS 12   VISUAL_FAIL  0   not decisive 0
+BASE-EVENT + DPI 150 % run 2     captures 12   VISUAL_PASS 12   VISUAL_FAIL  0   not decisive 0
+BASE-EVENT + DPI 150 % run 3     captures 12   VISUAL_PASS 11   VISUAL_FAIL  0   not decisive 1
+BASE-EVENT 100 % control         captures  9   VISUAL_PASS  9   VISUAL_FAIL  0   not decisive 0
+BASE-EVENT + DPI 100 % control   captures  9   VISUAL_PASS  9   VISUAL_FAIL  0   not decisive 0
+SDL2 150 % control               captures  9   VISUAL_PASS  9   VISUAL_FAIL  0   not decisive 0
+
+Without the DPI fix the failures are the enlarge operations: maximize failed in 6 / 6 runs across
+the series (content 909 of 1369 rows, about 2/3, status bar absent, still so 10 s later), and the
+same 2/3 signature appears on resize-larger, drags to a larger size, the resize stream and restore.
+With the DPI fix no capture failed in the three on-screen runs.
+
+"not decisive" counts captures where Windows denied the foreground to the test window, or where the
+enlarged window extended past the bottom of the display so the screen capture could not see it.
+Those are harness conditions, recorded rather than scored: a blit-coverage trace showed the game
+painting to the last framebuffer row in exactly those states.

@@ -124,8 +124,11 @@ see [docs/BUILDING.md](docs/BUILDING.md) and the build-integration section of
                                         physical device / ARM NOT RUN
     Windows GDI resize-event delivery   CERTIFIED FIX AVAILABLE as a separate auxiliary
                                         patch (patches/gdi-resize-event-delivery-r12254.diff);
-                                        NOT in SVN, maintainer approval required; the DPI
-                                        WindowSize unit defect (topic 23805) stays OPEN
+                                        NOT in SVN, maintainer approval required
+    Windows GDI DPI WindowSize units    CERTIFIED FIX AVAILABLE as a separate auxiliary patch
+                                        (patches/gdi-dpi-windowsize-r12254.diff), certified on
+                                        top of the resize-event fix; forum topic 23805 root
+                                        cause PROVEN, the topic itself stays OPEN; NOT in SVN
 
 ## Known limitation
 

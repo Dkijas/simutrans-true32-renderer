@@ -1,0 +1,21 @@
+SHA256 provenance - GDI DPI WindowSize unit fix (base SVN trunk r12254)
+
+e916e833993daa32f06f4d79de1b3c5c8ea5dadfe771fb49a5a0554913a97504  patches/gdi-dpi-windowsize-r12254.diff (published, LF, a/ b/ prefixes)
+bf9af5f595cd3e01d9796b03c50392f997efe2952291667d574d96d6bdb40dec  the frozen certified candidate as produced by the certifying mission (svn -p0 form;
+                                                                  applying either form to pristine r12254 gives byte-identical output)
+
+c4b1f8b8e2837eebeb6d5fcf93169b13367cbb55d5616e987ad3a18d6b2ee646  src/simutrans/sys/simsys_w.cc at r12254 (LF-normalised)
+53b5efae2ab24dff0b7e0178194f0dc9d1d2b7e35120c3463b6dcc17b955223d  src/simutrans/sys/simsys_w.cc with the DPI fix (LF-normalised)
+
+prerequisite, already published in this repository:
+13f283a63235bfb913a231b945f02ea93a71b5f336da135088944bd8dbeeb76b  patches/gdi-resize-event-delivery-r12254.diff
+
+canonical TRUE32 candidate (unchanged by this delivery):
+2254278c071018fbf2d8cbe9be7fa2ae7690b1a0b5068f776a075600561cdbc4  patches/true32-r12254-v2.diff
+
+Files in this directory:
+aec02013ad84742e3a3bee8d2ebc838a381e6560f90818af6d2ff3896364a8d7  composition-gate.txt
+7b52b5f31201f60d72f92acbbdebe4a0e09b34ac51b16a7d5d1befcd2dce78d5  contract-oracle-summary.txt
+aa0621c7975c948fe026569fe7d8e4dba96017d7b901500035731b1f35d394f3  decisive-transitions.txt
+048a98b03d03c6d3361c3dd9d8ca4d1da02839a0fcc7b99d6d332d3415d2a0e1  test-suite-summary.txt
+122fdc92eee7ce008f9c9b1b7cbc7ba26572ea7d4c3008b97454905934dfd520  visual-oracle-summary.txt

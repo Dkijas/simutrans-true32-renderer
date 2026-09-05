@@ -89,18 +89,24 @@ What remains untested:
 The Android default stays 16-bit; nothing in the Android release
 configuration was changed.
 
-## Windows GDI: resize-event delivery fixed separately, DPI unit defect still open
+## Windows GDI: two certified auxiliary fixes, neither in SVN
 
-TRUE32 inherits the Windows backend's event delivery. A pre-existing defect there (the newest
-client size lost or reverted after a resize, see CERTIFICATION.md "GDI resize-event delivery")
-has a certified fix published as the separate auxiliary patch
-`patches/gdi-resize-event-delivery-r12254.diff`. It is not part of the TRUE32 candidate (v2
-unchanged) and it is NOT in official SVN (maintainer approval required). The separate DPI
-defect - `WindowSize` mixing physical and logical pixels at scaling other than 100 % (forum
-topic 23805) - is not fixed by it and stays OPEN; it can now be re-certified deterministically.
+TRUE32 inherits the Windows backend, so both of these affect a TRUE32 GDI build, and neither is
+TRUE32-specific or part of the candidate (v2 unchanged). Both are published as separate auxiliary
+patches and are NOT in official SVN; integration requires maintainer approval.
 
     GDI resize-event delivery:   CERTIFIED FIX AVAILABLE, NOT INTEGRATED
-    GDI DPI WindowSize units:    OPEN / SEPARATE (topic 23805 not resolved)
+    GDI DPI WindowSize units:    CERTIFIED FIX AVAILABLE, NOT INTEGRATED
+    forum topic 23805:           OPEN (root cause PROVEN, fix not upstream)
+
+They are ordered: the DPI fix was certified on top of the resize-event fix, which is a
+prerequisite of that configuration - before it, resize delivery was nondeterministic and
+contaminated every DPI experiment. Nothing claims the DPI patch is certified against uncorrected
+event delivery.
+
+What the DPI patch does not cover: a one-row floor rounding of the stored height (no visible
+effect in any run), and a transient present in trunk where a runtime scale change leaves
+`WindowSize` computed with the previous scale until the resize that the change itself triggers.
 
 ## Not measured
 

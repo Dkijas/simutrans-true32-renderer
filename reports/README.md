@@ -70,3 +70,8 @@ for review. They can be provided on request.
   re-queued obsolete resize), its CURRENT_STATE contract, the certified two-file fix
   (`patches/gdi-resize-event-delivery-r12254.diff`), mutants, SDL2/SDL3 controls and the
   302 / 302 suite. Not part of TRUE32 v2; not in SVN; does not fix the DPI defect of topic 23805.
+- **GDI-DPI-WINDOWSIZE-CERT-01.md** - the DPI half: `WindowSize` must hold physical client
+  pixels, `dr_textur_resize` wrote logical ones, and at scaling other than 100 % the next repaint
+  shrinks the DIB height so the bottom third stops being painted (forum topic 23805). Certified
+  one-hunk fix on top of the resize-event patch, with the contract oracle, the visible 150 %
+  runs, the negative control, SDL2, 302 / 302 and the three-way composition with TRUE32 v2.

@@ -1,0 +1,29 @@
+Three-way composition gate (package composition only; not a recertification).
+Disposable tree from a clean SVN r12254 checkout, sources LF-normalised, patches applied in the
+certified dependency order with 'patch -p1'.
+
+  1. patches/true32-r12254-v2.diff                 sha256 2254278c...  applied, 0 rejects, 0 fuzz
+  2. patches/gdi-resize-event-delivery-r12254.diff  sha256 13f283a6...  applied, 0 rejects, hunks at offset +12
+  3. patches/gdi-dpi-windowsize-r12254.diff         sha256 e916e833...  applied, 0 rejects, hunk at offset +9
+
+  Offsets are expected: each patch is generated against pristine r12254, and the earlier patches
+  shift the line numbers of the file they share (sys/simsys_w.cc). No fuzz, no rejects, no
+  semantic conflict: the three changes touch different functions.
+
+  composed tree: simgraph32.cc present, event fix present, DPI fix present, queue coalescing present
+  fresh GDI32 build (COLOUR_DEPTH=32): 0 errors, 361 objects, simgraph32.cc.obj only (0 simgraph16)
+
+Smoke on the composed binary (GDI32, scale 150 %), real screen pixels, foreground verified per capture.
+One slow border drag; "client" is the physical client rectangle, "win" the window rectangle on screen:
+
+  01-startup|t+37s|client=1200x900|win=0,0,1216,939|content_bbox_right=1197|content_bbox_bottom=897|statusbar_lit=99.9%|foreground=True|VISUAL_PASS
+  02-resize-smaller|t+41s|client=957x712|win=0,0,973,751|content_bbox_right=957|content_bbox_bottom=709|statusbar_lit=99.9%|foreground=True|VISUAL_PASS
+  03-resize-larger|t+45s|client=1686x1276|win=0,0,1702,1315|content_bbox_right=1685|content_bbox_bottom=1273|statusbar_lit=99.9%|foreground=True|VISUAL_PASS
+  04-drag-1|t+65s|client=835x618|win=0,0,851,657|content_bbox_right=833|content_bbox_bottom=617|statusbar_lit=100%|foreground=True|VISUAL_PASS
+  05-resize-stream|t+82s|client=1565x1088|win=0,0,1581,1127|content_bbox_right=1565|content_bbox_bottom=1085|statusbar_lit=100%|foreground=True|VISUAL_PASS
+  06-maximize|t+87s|client=3440x1369|win=-8,-8,3448,1400|content_bbox_right=3437|content_bbox_bottom=1365|statusbar_lit=100%|foreground=True|VISUAL_PASS
+  07-maximize-10s|t+94s|client=3440x1369|win=-8,-8,3448,1400|content_bbox_right=3437|content_bbox_bottom=1365|statusbar_lit=100%|foreground=True|VISUAL_PASS
+  08-restore|t+99s|client=1565x1088|win=0,0,1581,1127|content_bbox_right=1565|content_bbox_bottom=1085|statusbar_lit=100%|foreground=True|VISUAL_PASS
+
+  8 / 8 captures VISUAL_PASS. The enlarge operations that fail without the DPI fix (resize larger,
+  resize stream, maximize, restore) all paint the full client area here, status bar 100 %.

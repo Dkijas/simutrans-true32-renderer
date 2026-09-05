@@ -58,6 +58,10 @@ Against SVN trunk r12254. 18 files: 12 modified, 6 new. Patch:
 - `patches/gdi-resize-event-delivery-r12254.diff` (`sys/simsys_w.cc` 3 hunks, `simevent.cc`
   1 hunk) - the certified fix for the Windows backend resize-event delivery defect. Independent
   of the renderer; published separately so that v2 stays the canonical TRUE32 patch. Not in SVN.
+- `patches/gdi-dpi-windowsize-r12254.diff` (`sys/simsys_w.cc` 1 hunk, +8/-2) - the certified fix
+  for the `WindowSize` physical/logical unit contract, the root cause of the DPI-scaling failure
+  of forum topic 23805. Certified on top of the resize-event patch, which is a prerequisite of
+  that configuration. Also independent of the renderer, also not folded into v2, also not in SVN.
 
 ## What is deliberately not in the candidate
 

@@ -1,0 +1,27 @@
+The same operation (enlarge the window at 150 %) on the event-fixed base, without and with the DPI fix.
+
+--- WITHOUT the DPI fix (trunk behaviour): WindowSize receives the LOGICAL framebuffer size,
+    and the next WM_PAINT paints a 2/3 rectangle and rewrites the DIB height to 2/3.
+
+    WM_SIZE          phys=1686x1276 -> logical=1124x850 (pending)
+    WM_SIZE          scale=48/48 client(phys)=1686x1276 logical=1124x850 WindowSize=640x474 DIB=640x474 unit=OTHER MISMATCH
+    dr_textur_resize scale=48/48 client(phys)=1686x1276 logical=1124x850 WindowSize=1136x850 DIB=1136x850 unit=LOGICAL MISMATCH
+    WM_PAINT         scale=48/48 client(phys)=1686x1276 logical=1124x850 WindowSize=1136x850 DIB=1136x850 unit=LOGICAL MISMATCH
+    WM_PAINT         biHeight 850 -> 566 ; dest rect 1136x850 ; source 1136x566
+    WM_SIZE          phys=1674x1267 -> logical=1116x844 (pending)
+    WM_SIZE          scale=48/48 client(phys)=1674x1267 logical=1116x844 WindowSize=1136x850 DIB=1136x566 unit=OTHER MISMATCH
+    dr_textur_resize scale=48/48 client(phys)=1674x1267 logical=1116x844 WindowSize=1120x844 DIB=1120x844 unit=LOGICAL MISMATCH
+
+--- WITH the DPI fix: WindowSize receives the PHYSICAL client size; the DIB height survives.
+
+    WM_SIZE          phys=1686x1276 -> logical=1124x850 (pending)
+    WM_SIZE          scale=48/48 client(phys)=1686x1276 logical=1124x850 WindowSize=960x711 DIB=640x474 unit=OTHER MISMATCH
+    dr_textur_resize scale=48/48 client(phys)=1686x1276 logical=1124x850 WindowSize=1704x1275 DIB=1136x850 unit=PHYSICAL MATCH
+    WM_PAINT         scale=48/48 client(phys)=1686x1276 logical=1124x850 WindowSize=1704x1275 DIB=1136x850 unit=PHYSICAL MATCH
+    WM_PAINT         biHeight 850 -> 850 ; dest rect 1704x1275 ; source 1136x850
+    WM_SIZE          phys=1674x1267 -> logical=1116x844 (pending)
+    WM_SIZE          scale=48/48 client(phys)=1674x1267 logical=1116x844 WindowSize=1704x1275 DIB=1136x850 unit=OTHER MISMATCH
+    dr_textur_resize scale=48/48 client(phys)=1674x1267 logical=1116x844 WindowSize=1680x1266 DIB=1120x844 unit=PHYSICAL MATCH
+
+The WM_SIZE line itself is expected to be a mismatch: it is logged before the resize has been
+processed, so WindowSize still describes the previous window state.

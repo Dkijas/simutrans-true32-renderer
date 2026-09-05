@@ -1,0 +1,15 @@
+Contract oracle for WindowSize (lab-only instrumentation, GDI, screen scale 100 % and 150 %).
+A WindowSize observation is PHYSICAL when it equals the physical client rectangle, LOGICAL when it
+equals that rectangle converted to Simutrans logical pixels. WindowSize must be PHYSICAL for its
+whole lifetime: dr_os_open writes it that way and WM_PAINT consumes it that way (blit destination,
+and the divisor that rewrites the DIB height).
+
+    configuration                          dr_textur_resize observations   DIB height rewrites that shrink
+    100 %  without the DPI fix              PHYSICAL 93 / 93                0
+    150 %  without the DPI fix              LOGICAL 136 / 136               131        <- negative control
+    150 %  with the DPI fix                 PHYSICAL 136 / 136              44, all a one-row floor rounding
+    100 %  with the DPI fix                 PHYSICAL 93 / 93                0          <- regression control
+
+At 100 % physical and logical are numerically equal, so the defect is invisible there - which is why
+the 100 % rows are controls, not proof. Each run performs startup, resize smaller, resize larger,
+a slow border drag, a fast resize stream, maximize and restore.

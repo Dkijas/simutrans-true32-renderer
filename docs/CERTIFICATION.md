@@ -143,7 +143,8 @@ the unmodified tree and the candidate alike.
     Android internal framebuffer precision       CERTIFIED (emulator, x86_64)  (ANDROID-FRAMEBUFFER-CERT-01)
     Android physical device / ARM                NOT RUN
     GDI resize-event delivery (auxiliary patch)  CERTIFIED FIX (GDI-RESIZE-EVENT-DELIVERY-CERT-01), NOT IN SVN
-    GDI DPI WindowSize unit defect (topic 23805) OPEN / SEPARATE
+    GDI DPI WindowSize units (auxiliary patch)   CERTIFIED FIX (GDI-DPI-WINDOWSIZE-CERT-01), NOT IN SVN;
+                                                 forum 23805 root cause PROVEN, the topic stays OPEN
 
 ## GDI resize-event delivery (GDI-RESIZE-EVENT-DELIVERY-CERT-01, separate from the renderer)
 
@@ -158,6 +159,33 @@ applications with 0 backward ones, mutants A and B each reproduce their historic
 SDL3 PASS, official suite 302 / 302 on base and candidate. Not in SVN; maintainer approval
 required. It does not fix the DPI WindowSize unit defect (topic 23805), which stays OPEN. Composition with TRUE32 v2: CLEAN_COMMUTATIVE - the two application orders (v2 then GDI fix, GDI fix then v2) produce byte-identical trees (one order needs a 12-line offset in simsys_w.cc, no fuzz, no rejects); a GDI32 build of the composed tree (COLOUR_DEPTH=32) compiles clean (361 objects, simgraph32 only) and passes one maximize/restore smoke (3440x1369 painted in full, restore to 800x600) and one resize-storm final-state check (final 1212x818 painted in full). Documented for compatibility only; no consolidated candidate is created.
 Report: `reports/GDI-RESIZE-EVENT-DELIVERY-CERT-01.md`; evidence: `evidence/gdi-resize-event-delivery/`.
+
+## GDI DPI WindowSize units (GDI-DPI-WINDOWSIZE-CERT-01, separate from the renderer)
+
+The Windows backend keeps the client size in `WindowSize`, whose contract is physical client
+pixels: `dr_os_open` writes it that way and `WM_PAINT` consumes it that way, both as the blit
+destination and as the divisor that rewrites the DIB height. `dr_textur_resize` wrote the logical
+framebuffer size instead. At 100 % the two units coincide numerically; at scaling other than
+100 % the next repaint paints a two-thirds rectangle and shrinks the DIB height, after which
+partial blits clip their rows - the "content at two thirds, black or stale remainder" of forum
+topic 23805. Certified one-hunk fix (`patches/gdi-dpi-windowsize-r12254.diff`, +8/-2 in
+`sys/simsys_w.cc`, base r12254), certified **on top of the resize-event delivery fix**, which is
+a prerequisite of that configuration:
+
+    contract oracle 150 %   136 / 136 observations LOGICAL without the fix (131 harmful DIB
+                            height rewrites) -> 136 / 136 PHYSICAL with it (0 harmful)
+    contract oracle 100 %   93 / 93 PHYSICAL in both configurations (control, not proof)
+    visible 150 %           maximize FAIL 6 / 6 without the fix (909 of 1369 rows, persistent)
+                            -> 0 failures in 3 on-screen runs with it
+    negative control        old-unit mutant reproduces mismatch and corruption
+    official suite          302 / 302 with and without the fix, identical script output
+    SDL2 150 % control      PASS (no WindowSize in SDL2; the defect is GDI-specific)
+    composition             TRUE32 v2 + event fix + this patch: clean apply, GDI32 build,
+                            maximize / resize-stream / restore smoke PASS
+
+Status: `WINDOWS_GDI_DPI_UNIT_DEBT = CERTIFIED_FIXED at candidate level`,
+`FORUM_23805_ROOT_CAUSE = PROVEN`, `FORUM_23805 = OPEN`, `SVN_INTEGRATION = NOT_AUTHORISED`.
+Report: `reports/GDI-DPI-WINDOWSIZE-CERT-01.md`; evidence: `evidence/gdi-dpi-windowsize/`.
 
 ## Android (ANDROID-BUILD-DEPTH-01)
 

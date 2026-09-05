@@ -1,0 +1,4 @@
+Official automated scenario suite (tests/ mounted as scenario "automated-tests", as CI runs it), GDI.
+
+BASE-EVENT (no DPI fix)    [302/302] test_schedule_route_corner_terminus | Tests completed successfully.
+BASE-EVENT + DPI fix       [302/302] test_schedule_route_corner_terminus | Tests completed successfully.

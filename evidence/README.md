@@ -35,6 +35,11 @@ downloaded from their official locations; the exact files are identified in
   WM_SIZE, final 1212x818 applied), the mutant A and B extracts, the official-suite summary
   (302 / 302 base and candidate), the screen-oracle table of all runs, and the SHA256
   provenance of the patch and of the two files before and after. No binaries, no logs in full.
+- `gdi-dpi-windowsize/` (GDI-DPI-WINDOWSIZE-CERT-01) - the contract-oracle summary for the four
+  configurations, the decisive geometry transitions before and after the fix, the visual-oracle
+  tally per run, the official-suite result on both configurations, the three-way composition gate
+  and the SHA256 provenance of the patch and of the file before and after. Derived summaries
+  only: no raw logs, no binaries, no paksets.
 - `build-integration/` (CMAKE-MSVC-01) - the hook logs of the TRUE32
   scenario on the CMake-built GDI-32 and SDL3-32 executables, the legacy
   smoke on the CMake-built GDI-16 one, the T1-T4 probe linked against the

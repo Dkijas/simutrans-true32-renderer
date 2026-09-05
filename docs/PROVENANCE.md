@@ -118,6 +118,17 @@ SHA256 `b07d33cbaf87e95782d80526d1923f0134299ed7091318a12c8f71bffed58fa0` (local
 identical hunk content). Certified by GDI-RESIZE-EVENT-DELIVERY-SVN-CERT-01; not integrated.
 The canonical TRUE32 patch stays v2; the two are published separately on purpose.
 
+## Auxiliary patch: GDI DPI WindowSize units (not part of the candidate)
+
+`patches/gdi-dpi-windowsize-r12254.diff` - base r12254, `src/simutrans/sys/simsys_w.cc`, one hunk,
++8 / -2, SHA256 `e916e833993daa32f06f4d79de1b3c5c8ea5dadfe771fb49a5a0554913a97504`. The certifying
+mission froze the change as an svn-form patch with SHA256
+`bf9af5f595cd3e01d9796b03c50392f997efe2952291667d574d96d6bdb40dec`; the published form here was
+derived from that frozen file, not rewritten, and applying either form to pristine r12254 gives
+byte-identical output (`c4b1f8b8...` before, `53b5efae...` after, LF-normalised).
+Certified by GDI-DPI-WINDOWSIZE-CERT-01 on top of the resize-event delivery fix, which is a
+prerequisite of the certified configuration. Not integrated; the canonical TRUE32 patch stays v2.
+
 ## Statements
 
 - No SVN integration has occurred. The official trunk is unchanged.
