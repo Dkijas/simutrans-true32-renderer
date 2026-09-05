@@ -213,7 +213,7 @@ also:          CHANGELOG-TRUE32 (build files section), MAINTAINER-REVIEW
                this report copied (paths anonymised) as reports/RGBA32-CMAKE-MSVC-01.md
 
 ## Public hygiene
-result:  PASS - recursive scan of the changed files for the user name,
+result:  PASS - recursive scan of the changed files for the user name and
          C:\Users, /c/Users, /home/, token, password, secret, vscode-webview,
          claude.ai: 0 hits; no build directories, paksets or binaries added;
          the three new screenshots are window captures with label bands
