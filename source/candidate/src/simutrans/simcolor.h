@@ -1,0 +1,340 @@
+/*
+ * This file is part of the Simutrans project under the Artistic License.
+ * (see LICENSE.txt)
+ */
+
+#ifndef SIMCOLOR_H
+#define SIMCOLOR_H
+
+
+#include "simtypes.h"
+
+
+#define LIGHT_COUNT         (15)
+#define SPECIAL_COLOR_COUNT (224)
+
+// this is a player color => use different table for conversion
+//
+// The draw flags sit ABOVE the screen colour, never inside it. With a 16 bit
+// screen colour they land at bits 19-23 of a 32 bit word; with a 32 bit screen
+// colour they move 16 bits further up so that all 32 colour bits stay usable.
+#if COLOUR_DEPTH == 32
+#	define PLAYER_FLAG        (0x800000ULL << 16)
+#	define TRANSPARENT_FLAGS  (0x780000ULL << 16)
+#	define TRANSPARENT25_FLAG (0x200000ULL << 16)
+#	define TRANSPARENT50_FLAG (0x400000ULL << 16)
+#	define TRANSPARENT75_FLAG (0x600000ULL << 16)
+#	define OUTLINE_FLAG       (0x080000ULL << 16)
+#else
+#	define PLAYER_FLAG        (0x800000)
+#	define TRANSPARENT_FLAGS  (0x780000)
+#	define TRANSPARENT25_FLAG (0x200000)
+#	define TRANSPARENT50_FLAG (0x400000)
+#	define TRANSPARENT75_FLAG (0x600000)
+#	define OUTLINE_FLAG       (0x080000)
+#endif
+
+typedef uint8 palette_index_t;
+
+#if COLOUR_DEPTH == 32
+// screen pixel, full ARGB8888: every one of the 32 bits carries colour
+typedef uint32 PIXVAL;
+// PIXVAL with the above flags stacked on top of it (uint64)
+typedef uint64 FLAGGED_PIXVAL;
+#else
+// screen pixel in system type, RGB565 (uint16)
+typedef unsigned short PIXVAL;
+// PIXVAL with above flags (eg. transparent) (uint32)
+typedef unsigned int FLAGGED_PIXVAL;
+#endif
+
+/**
+ * Bits of a FLAGGED_PIXVAL that carry the screen colour rather than a draw flag.
+ *
+ * A flagged value is built by its callers as "colour | FLAG", which says nothing
+ * about where either half lives. The accessors below are the only place that
+ * knows the layout, so it can be changed here without touching those callers.
+ */
+#if COLOUR_DEPTH == 32
+#	define FLAGGED_PIXVAL_COLOUR_MASK (0xFFFFFFFFull)
+#else
+#	define FLAGGED_PIXVAL_COLOUR_MASK (0xFFFFu)
+#endif
+
+/// The screen colour carried by a flagged value.
+inline PIXVAL get_flagged_colour(FLAGGED_PIXVAL c)
+{
+	return (PIXVAL)(c & FLAGGED_PIXVAL_COLOUR_MASK);
+}
+
+/// Whether the value asks for outline drawing rather than blending.
+inline bool has_outline_flag(FLAGGED_PIXVAL c)
+{
+	return (c & OUTLINE_FLAG) != 0;
+}
+
+/// Transparency step of the value: 0 for none, else 1, 2 or 3 for 25/50/75 %.
+inline uint8 get_transparency_level(FLAGGED_PIXVAL c)
+{
+	return (uint8)((c & TRANSPARENT_FLAGS) / TRANSPARENT25_FLAG);
+}
+
+/**
+ * Colour word as stored in an image (image_t::data and the renderer's copies
+ * of it).
+ *
+ * This is NOT a screen colour: it is the historical stored encoding, where
+ * 0x0000-0x7FFF is RGB555, 0x8000-0x800F are player colours, 0x8010-0x801F are
+ * day/night lights and everything above is a class+alpha code. Code reading
+ * this space may legitimately classify a pixel by its numeric value.
+ *
+ * It is a distinct contract from a screen pixel, and always 16 bit.
+ */
+typedef uint16 STORED_PIXVAL;
+
+static_assert(sizeof(STORED_PIXVAL) == 2, "stored image data must stay 16 bit");
+
+/**
+ * Colour word as written to a savegame.
+ *
+ * Its width is fixed by the savegame contract, not by the width of a screen
+ * pixel: files written since version 120.5 carry a 32 bit word holding either
+ * PLAYER_FLAG plus a player number, or a plain screen colour. Older files
+ * carry 16 bit and are converted on load.
+ *
+ * A wider screen colour must not widen this.
+ */
+typedef uint32 SAVED_PIXVAL;
+
+static_assert(sizeof(SAVED_PIXVAL) == 4, "saved message colour must stay 32 bit");
+
+/**
+ * Colour word as put on the network wire.
+ *
+ * Its width is fixed by the protocol: the gameinfo minimap has always been
+ * sent as one 16 bit word per pixel, and every client in the wild reads it
+ * that way.
+ *
+ * A wider screen colour must not widen this either.
+ */
+typedef uint16 NETWORK_PIXVAL;
+
+static_assert(sizeof(NETWORK_PIXVAL) == 2, "gameinfo map colour must stay 16 bit");
+
+/*
+ * The screen colour is the only one of these three that may change width, so
+ * it is the only one that needs converting. At COLOUR_DEPTH 16 every function
+ * below is the identity and compiles away.
+ */
+#if COLOUR_DEPTH == 32
+/// Screen colour (ARGB8888) -> the frozen 16 bit RGB565 representation.
+inline uint16 screen_colour_to_rgb565(PIXVAL c)
+{
+	return (uint16)( ((c >> 8) & 0xF800) | ((c >> 5) & 0x07E0) | ((c >> 3) & 0x001F) );
+}
+
+/// Frozen 16 bit RGB565 -> screen colour (ARGB8888), fully opaque.
+inline PIXVAL rgb565_to_screen_colour(uint16 c)
+{
+	const uint32 r = (c >> 11) & 0x1F;
+	const uint32 g = (c >>  5) & 0x3F;
+	const uint32 b = (c      ) & 0x1F;
+	// scale each channel so that an all-ones input gives 0xFF
+	return 0xFF000000u | ((r * 255 / 31) << 16) | ((g * 255 / 63) << 8) | (b * 255 / 31);
+}
+#else
+inline uint16 screen_colour_to_rgb565(PIXVAL c) { return c; }
+inline PIXVAL rgb565_to_screen_colour(uint16 c) { return c; }
+#endif
+
+/// Screen colour -> the 16 bit word the gameinfo protocol carries.
+inline NETWORK_PIXVAL network_colour_from_screen(PIXVAL c)
+{
+	return (NETWORK_PIXVAL)screen_colour_to_rgb565( c );
+}
+
+/// The 16 bit word the gameinfo protocol carries -> screen colour.
+inline PIXVAL screen_colour_from_network(NETWORK_PIXVAL c)
+{
+	return rgb565_to_screen_colour( (uint16)c );
+}
+
+/**
+ * Flagged screen colour -> the frozen savegame word.
+ *
+ * The savegame layout does not move: draw flags at bits 19-23, and in the low
+ * 16 bits either a player number (when PLAYER_FLAG is set) or an RGB565
+ * colour. Only the screen colour may be wider, so only it is converted.
+ */
+inline SAVED_PIXVAL flagged_colour_to_saved(FLAGGED_PIXVAL c)
+{
+#if COLOUR_DEPTH == 32
+	const SAVED_PIXVAL flags = (SAVED_PIXVAL)((c >> 16) & 0x00F80000u);
+	const SAVED_PIXVAL payload = (c & PLAYER_FLAG)
+		? (SAVED_PIXVAL)(c & 0xFFFFu)
+		: (SAVED_PIXVAL)screen_colour_to_rgb565( get_flagged_colour( c ) );
+	return flags | payload;
+#else
+	return (SAVED_PIXVAL)c;
+#endif
+}
+
+/// The frozen savegame word -> flagged screen colour.
+inline FLAGGED_PIXVAL saved_to_flagged_colour(SAVED_PIXVAL c)
+{
+#if COLOUR_DEPTH == 32
+	const FLAGGED_PIXVAL flags = ((FLAGGED_PIXVAL)(c & 0x00F80000u)) << 16;
+	const FLAGGED_PIXVAL payload = (flags & PLAYER_FLAG)
+		? (FLAGGED_PIXVAL)(c & 0xFFFFu)
+		: (FLAGGED_PIXVAL)rgb565_to_screen_colour( (uint16)(c & 0xFFFFu) );
+	return flags | payload;
+#else
+	return (FLAGGED_PIXVAL)c;
+#endif
+}
+
+// Menu colours (they don't change between day and night)
+#define MN_GREY0            229
+#define MN_GREY1            230
+#define MN_GREY2            231
+#define MN_GREY3            232
+#define MN_GREY4            233
+
+
+// fixed colors
+#define COL_BLACK           240
+#define COL_WHITE           215
+#define COL_RED             131
+#define COL_DARK_RED        128
+#define COL_LIGHT_RED       134
+#define COL_YELLOW          171
+#define COL_DARK_YELLOW     168
+#define COL_LIGHT_YELLOW    175
+#define COL_LEMON_YELLOW    31
+#define COL_BLUE            147
+#define COL_DARK_BLUE       144
+#define COL_SOFT_BLUE       100
+#define COL_LIGHT_BLUE      103
+#define COL_GREEN           140
+#define COL_DARK_GREEN      136
+#define COL_LIGHT_GREEN     143
+#define COL_ORANGE          155
+#define COL_DARK_ORANGE     153
+#define COL_LIGHT_ORANGE    158
+#define COL_BRIGHT_ORANGE   133
+#define COL_LILAC           221
+#define COL_MAGENTA         63
+#define COL_PURPLE          76
+#define COL_DARK_PURPLE     73
+#define COL_LIGHT_PURPLE    79
+#define COL_TURQUOISE       53
+#define COL_LIGHT_TURQUOISE 55
+#define COL_DARK_TURQUOISE  50
+#define COL_LIGHT_BROWN     191
+#define COL_BROWN           189
+#define COL_DARK_BROWN      178
+
+// message colors
+#define CITY_KI             gfx->palette_lookup(209)
+#define NEW_VEHICLE         gfx->palette_lookup(COL_PURPLE)
+
+// by niels
+#define COL_GREY1           208
+#define COL_GREY2           210
+#define COL_GREY3           212
+#define COL_GREY4           11
+#define COL_GREY5           213
+#define COL_GREY6           15
+
+// Way colours for the map
+#define COL_ROAD            gfx->palette_lookup(COL_GREY1)
+#define COL_RAIL            gfx->palette_lookup(185)
+#define COL_CANAL           gfx->palette_lookup(23)
+#define COL_MONORAIL        gfx->palette_lookup(COL_ORANGE)
+#define COL_RUNWAY          gfx->palette_lookup(28)
+#define COL_POWERLINE       gfx->palette_lookup(COL_LIGHT_TURQUOISE)
+#define COL_HALT            gfx->palette_lookup(COL_RED)
+#define COL_BUILDING        gfx->palette_lookup(COL_GREY3)
+#define COL_VEHICLE         gfx->palette_lookup(COL_YELLOW)
+
+// used in many dialogues graphs
+#define COL_REVENUE         142
+#define COL_OPERATION       132
+#define COL_MAINTENANCE     COL_LIGHT_RED
+#define COL_TOLL            157
+#define COL_POWERLINES      46
+#define COL_OPS_PROFIT      87
+#define COL_NEW_VEHICLES    COL_LIGHT_PURPLE
+#define COL_CONSTRUCTION    110
+#define COL_PROFIT          6
+#define COL_TRANSPORTED     COL_YELLOW
+#define COL_MAXSPEED        COL_TURQUOISE
+
+#define COL_CASH            52
+#define COL_VEHICLE_ASSETS  COL_MAGENTA
+#define COL_MARGIN          COL_LIGHT_YELLOW
+#define COL_WEALTH          95
+
+#define COL_CONVOI_COUNT    COL_LIGHT_TURQUOISE
+#define COL_FREE_CAPACITY   COL_TOLL
+#define COL_DISTANCE        COL_OPS_PROFIT
+
+#define COL_CITIZENS        COL_WHITE
+#define COL_GROWTH          122
+#define COL_HAPPY           COL_WHITE
+#define COL_UNHAPPY         COL_RED
+#define COL_NO_ROUTE        COL_BLUE
+#define COL_WAITING         COL_YELLOW
+#define COL_ARRIVED         COL_DARK_ORANGE
+#define COL_DEPARTED        COL_DARK_YELLOW
+
+#define SYSCOL_TEXT                         gui_theme_t::gui_color_text
+#define SYSCOL_TEXT_HIGHLIGHT               gui_theme_t::gui_color_text_highlight
+#define SYSCOL_TEXT_SHADOW                  gui_theme_t::gui_color_text_shadow
+#define SYSCOL_TEXT_TITLE                   gui_theme_t::gui_color_text_title
+#define SYSCOL_TEXT_STRONG                  gui_theme_t::gui_color_text_strong
+#define MONEY_MINUS                         gui_theme_t::gui_color_text_minus
+#define MONEY_PLUS                          gui_theme_t::gui_color_text_plus
+#define SYSCOL_TEXT_UNUSED                  gui_theme_t::gui_color_text_unused
+#define SYSCOL_EDIT_TEXT                    gui_theme_t::gui_color_edit_text
+#define SYSCOL_EDIT_TEXT_SELECTED           gui_theme_t::gui_color_edit_text_selected
+#define SYSCOL_EDIT_TEXT_DISABLED           gui_theme_t::gui_color_edit_text_disabled
+#define SYSCOL_EDIT_BACKGROUND_SELECTED     gui_theme_t::gui_color_edit_background_selected
+#define SYSCOL_CURSOR_BEAM                  gui_theme_t::gui_color_edit_beam
+#define SYSCOL_CHART_BACKGROUND             gui_theme_t::gui_color_chart_background
+#define SYSCOL_CHART_LINES_ZERO             gui_theme_t::gui_color_chart_lines_zero
+#define SYSCOL_CHART_LINES_ODD              gui_theme_t::gui_color_chart_lines_odd
+#define SYSCOL_CHART_LINES_EVEN             gui_theme_t::gui_color_chart_lines_even
+#define SYSCOL_LIST_TEXT_SELECTED_FOCUS     gui_theme_t::gui_color_list_text_selected_focus
+#define SYSCOL_LIST_TEXT_SELECTED_NOFOCUS   gui_theme_t::gui_color_list_text_selected_nofocus
+#define SYSCOL_LIST_BACKGROUND_SELECTED_F   gui_theme_t::gui_color_list_background_selected_f
+#define SYSCOL_LIST_BACKGROUND_SELECTED_NF  gui_theme_t::gui_color_list_background_selected_nf
+#define SYSCOL_BUTTON_TEXT                  gui_theme_t::gui_color_button_text
+#define SYSCOL_BUTTON_TEXT_DISABLED         gui_theme_t::gui_color_button_text_disabled
+#define SYSCOL_BUTTON_TEXT_SELECTED         gui_theme_t::gui_color_button_text_selected
+#define SYSCOL_COLORED_BUTTON_TEXT          gui_theme_t::gui_color_colored_button_text
+#define SYSCOL_COLORED_BUTTON_TEXT_SELECTED gui_theme_t::gui_color_colored_button_text_selected
+#define SYSCOL_CHECKBOX_TEXT                gui_theme_t::gui_color_checkbox_text
+#define SYSCOL_CHECKBOX_TEXT_DISABLED       gui_theme_t::gui_color_checkbox_text_disabled
+#define SYSCOL_TICKER_BACKGROUND            gui_theme_t::gui_color_ticker_background
+#define SYSCOL_TICKER_DIVIDER               gui_theme_t::gui_color_ticker_divider
+#define SYSCOL_STATUSBAR_TEXT               gui_theme_t::gui_color_statusbar_text
+#define SYSCOL_STATUSBAR_BACKGROUND         gui_theme_t::gui_color_statusbar_background
+#define SYSCOL_STATUSBAR_DIVIDER            gui_theme_t::gui_color_statusbar_divider
+#define SYSCOL_HIGHLIGHT                    gui_theme_t::gui_highlight_color
+#define SYSCOL_SHADOW                       gui_theme_t::gui_shadow_color
+#define SYSCOL_LOADINGBAR_INNER             gui_theme_t::gui_color_loadingbar_inner
+#define SYSCOL_LOADINGBAR_PROGRESS          gui_theme_t::gui_color_loadingbar_progress
+#define SYSCOL_OBSOLETE                     gui_theme_t::gui_color_obsolete
+#define SYSCOL_EMPTY                        gui_theme_t::gui_color_empty
+#define SYSCOL_IMAGE_TRANSPARENCY           gui_theme_t::gui_color_image_transparency
+#define SYSCOL_OBJECT_HIGHLIGHT             gui_theme_t::gui_color_object_highlight
+
+
+struct rgb888_t
+{
+	uint8 r, g, b;
+};
+
+
+#endif
