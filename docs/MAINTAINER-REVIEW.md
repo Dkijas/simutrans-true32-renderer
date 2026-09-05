@@ -45,8 +45,13 @@ Tick, annotate, or open a "Maintainer review feedback" issue.
 
 ## Build systems
 
-- [ ] Makefile-only 32-bit build is acceptable for a first integration
-- [ ] who adds `simgraph32.cc` to CMake / the Visual Studio projects
+- [ ] CMake: one cache variable `COLOUR_DEPTH` (16/32, validated) and
+      `simgraph${COLOUR_DEPTH}.cc` in the three GUI branches is the right
+      shape (vs. e.g. an option in `cmake/SimutransBackend.cmake`)
+- [ ] Visual Studio projects: an MSBuild property with a default of 16 and
+      a checking target, instead of extra project configurations, is
+      acceptable
+- [ ] the `none` / Server build staying at `COLOUR_DEPTH=0` is right
 
 ## Open points worth a maintainer's opinion
 

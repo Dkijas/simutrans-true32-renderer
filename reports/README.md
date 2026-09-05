@@ -42,3 +42,9 @@ day-night, zoom, blend, primitives, text, GUI, dirty contract, threading,
 API residual, SDL system colours) - their gates are re-run and reported
 as "internal identity" inside the recertification, which is sufficient
 for review. They can be provided on request.
+
+## Build-system integration (after the renderer certification)
+
+- **RGBA32-CMAKE-MSVC-01.md** - CMake and Visual Studio renderer selection
+  by `COLOUR_DEPTH`, certified as build-file changes only (v2 patch); the
+  18 renderer files unchanged.

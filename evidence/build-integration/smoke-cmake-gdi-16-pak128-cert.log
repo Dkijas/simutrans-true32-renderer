@@ -1,0 +1,33 @@
+# legacy 16-bit smoke on the CMake-built GDI 16-bit executable (CMAKE-MSVC-01)
+[frame 0 t=1018177093ms] script loaded: 30 commands; COLOUR_DEPTH=16 sizeof(PIXVAL)=2 threads=4 fps=25
+[frame 1 t=1018177093ms] wait 100
+[frame 102 t=1018177343ms] closeall: windows closed
+[frame 102 t=1018177343ms] wait 5
+[frame 108 t=1018177421ms] screenshot 00_start.png (1024x640) -> ok
+[frame 108 t=1018177421ms] center 60 40
+[frame 108 t=1018177421ms] wait 30
+[frame 139 t=1018177562ms] screenshot 01_center.png (1024x640) -> ok
+[frame 139 t=1018177562ms] zoomout -> changed, tile_raster_width now 96
+[frame 139 t=1018177562ms] wait 20
+[frame 160 t=1018177734ms] screenshot 02_zoomout.png (1024x640) -> ok
+[frame 160 t=1018177734ms] zoomin -> changed, tile_raster_width now 128
+[frame 160 t=1018177734ms] wait 20
+[frame 181 t=1018177796ms] daynight_level 4
+[frame 181 t=1018177796ms] wait 20
+[frame 202 t=1018178000ms] screenshot 03_night.png (1024x640) -> ok
+[frame 202 t=1018178000ms] daynight_level 0
+[frame 202 t=1018178000ms] resize request 800x500 -> screen 800x500
+[frame 202 t=1018178000ms] wait 30
+[frame 233 t=1018178078ms] clip lane0 x 0..800 y 0..500  screen 800x500  MATCH
+[frame 233 t=1018178125ms] screenshot 04_resized_800x500.png (800x500) -> ok
+[frame 233 t=1018178125ms] resize request 1024x640 -> screen 1024x640
+[frame 233 t=1018178125ms] wait 30
+[frame 264 t=1018178203ms] clip lane0 x 0..1024 y 0..640  screen 1024x640  MATCH
+[frame 264 t=1018178281ms] screenshot 05_back.png (1024x640) -> ok
+[frame 264 t=1018178359ms] save cert_saved.sve
+[frame 264 t=1018178359ms] wait 20
+[frame 285 t=1018178453ms] load cert_saved.sve -> ok (192x512, 22 cities)
+[frame 285 t=1018178453ms] wait 60
+[frame 346 t=1018178703ms] screenshot 06_after_reload.png (1024x640) -> ok
+[frame 346 t=1018178703ms] quit (harness-initiated: env_t::quit_simutrans = true, presents so far 413)
+[frame 346 t=1018178703ms] QUIT-PROVENANCE simsys_w WM_DESTROY a=2 b=1  (presents 415)

@@ -66,24 +66,41 @@ Two hash lists are provided in [`../evidence/hashes/`](../evidence/hashes/):
   system whose `svn:eol-style native` is LF, plus the patch. Use this
   list to verify an applied tree; line endings are the only difference.
 
-The canonical patch:
+The patches (all LF line endings, paths a/ b/):
 
-    patches/true32-r12254.diff
-    SHA256 1092abe59e177a9eff1da1ad1ea35ff121be95957556d230f8c3be8f7301e3e3
-    18 files, 47 hunks, +4424 / -771 lines, LF line endings, paths a/ b/
+    v1  patches/true32-r12254.diff                 - the renderer candidate as certified (Makefile-only build)
+        SHA256 1092abe59e177a9eff1da1ad1ea35ff121be95957556d230f8c3be8f7301e3e3
+        18 files, 47 hunks, +4424 / -771
+
+    v2  patches/true32-r12254-v2.diff              - the same renderer + the CMake / Visual Studio selection (current)
+        SHA256 2254278c071018fbf2d8cbe9be7fa2ae7690b1a0b5068f776a075600561cdbc4
+        23 files, 65 hunks, +4484 / -791   (= v1 followed by the build-integration diff, byte for byte)
+
+        patches/build-integration-r12254.diff      - the build-file part alone
+        SHA256 b9d99f53b33617e5c20f155643570808e702fad743f6430e636563890f7b466c
+        5 files, 18 hunks, +60 / -20: CMakeLists.txt, Simutrans-GDI.vcxproj,
+        Simutrans-SDL2.vcxproj, Simutrans-SDL3.vcxproj, Simutrans-GDI.vcxproj.filters
+
+The build files are stored byte-exact under `source/build/`; their hashes
+(raw and LF-normalised) are `evidence/hashes/build-files.*`. The 18
+renderer files are unchanged since RECERTIFICATION-02 (verified before
+and after the build-file work, raw SHA256 18/18). Build-integration
+certification: 2026-09-05, MinGW-w64 g++ 16.1.0 / CMake 4.4 (MSYS2),
+MSVC 2022 17.14 (v143 14.44, MSBuild 17.14, bundled CMake, vcpkg
+x64-windows-static).
 
 ## How to obtain the base and apply the candidate
 
     svn checkout -r 12254 svn://servers.simutrans.org/simutrans/trunk simutrans-r12254
     cd simutrans-r12254
-    svn patch --strip 1 /path/to/true32-r12254.diff
-    svn status          # expect 12 M + 6 A, no C
+    svn patch --strip 1 /path/to/true32-r12254-v2.diff
+    svn status          # expect 17 M + 6 A, no C   (v1: 12 M + 6 A)
 
-Verified during packaging on a fresh working copy: `svn patch --strip 1`
-applied with 0 conflicts on Windows (CRLF working copy) and `patch -p1`
-applied cleanly on an LF-normalised export; in both cases the 18 files
-matched the certified candidate after line-ending normalisation
-(18/18 SHA256).
+Verified on fresh working copies: `svn patch --strip 1` applied v1 and v2
+with 0 conflicts on Windows (CRLF working copy) and `patch -p1` applied
+them cleanly on an LF-normalised export; in every case the files matched
+the certified ones after line-ending normalisation (18/18 renderer files,
+5/5 build files).
 
 Then verify:
 

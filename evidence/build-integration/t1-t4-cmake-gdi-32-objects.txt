@@ -1,0 +1,52 @@
+# T1-T4 core blitter identity probe linked against the objects of the CMake gdi-32 build (CMAKE-MSVC-01); frozen reference nc 0xDA18C545 wc 0x19D5EC05 pc 0x0F526995 class+alpha 0x7B4F5C85
+== U5 blitter probe, framebuffer 32x16, background 0xFF204060 ==
+widths: STORED=2 SCREEN=4 SAVED=4 NETWORK=2
+T1 colour: rgb(18,52,86) -> screen 0xFF123456
+image 0 registered: 12x4 at (0,0), cache built
+
+-- T1 nc --
+  nc: changed=32 hash=0xDA18C545
+    y=2  ....########....................
+    y=3  ....########....................
+    y=4  ....########....................
+    y=5  ....########....................
+  expected 0xFF123456 in 32 pixels, actual sample 0xFF123456, wrong=0
+  T1: PASS
+
+-- T2 wc --
+  wc: changed=16 hash=0x19D5EC05
+    y=2  ......####......................
+    y=3  ......####......................
+    y=4  ......####......................
+    y=5  ......####......................
+  inside wrong=0  outside written=0  changed=16 (expected 16)
+  T2: PASS
+
+-- T3 pc --
+  pc: changed=16 hash=0x0F526995
+    y=2  .....#######....................
+    y=3  .......#####....................
+    y=4  .........###....................
+    y=5  ...........#....................
+  wc: changed=32 hash=0xDA18C545
+  pc: changed=16 hash=0x0F526995
+  pc differs from wc for the geometric reason: yes
+  T3: PASS
+
+-- T4 class+alpha --
+  class+alpha: changed=18 hash=0x7B4F5C85
+    y=8  ....######......................
+    y=9  ....######......................
+    y=10 ....######......................
+  stored 0x808C -> cache 0x0000BACB (class 484, alpha 16)
+  foreground from rgbmap_day_night: 0xFF6080A0
+  expected blended: 0xFF406080   actual: 0xFF406080
+  wrong=0 changed=18 (expected 18) opaque-alpha=yes
+  T4: PASS
+
+-- memory --
+  stored sprite : 44 words x 2 bytes = 88 bytes
+  SCREEN32 cache: 44 words x 4 bytes = 176 bytes
+  ratio         : 2.0x
+
+RESULT: PASS (0 failures)

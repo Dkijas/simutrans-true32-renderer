@@ -40,9 +40,17 @@ day/night, transparency, blending, outlines, zoom filtering - works with
   saved and network pixel formats are separate typedefs from the screen
   pixel (`PIXVAL`)
 
-18 production files: 12 modified, 6 new. One canonical patch:
-[`patches/true32-r12254.diff`](patches/true32-r12254.diff)
-(47 hunks, +4424/-771 lines).
+18 production files: 12 modified, 6 new (the renderer candidate, frozen
+since its certification), plus 5 build files (CMake and Visual Studio
+renderer selection by `COLOUR_DEPTH`). Patches:
+
+- [`patches/true32-r12254-v2.diff`](patches/true32-r12254-v2.diff) - the
+  current review patch: renderer candidate + build integration (23 files,
+  65 hunks, +4484/-791)
+- [`patches/true32-r12254.diff`](patches/true32-r12254.diff) - v1, the
+  renderer candidate alone as certified (kept for audit)
+- [`patches/build-integration-r12254.diff`](patches/build-integration-r12254.diff) -
+  the build-file part on its own (5 files, 18 hunks, +60/-20)
 
 ## What does not change
 
@@ -90,9 +98,13 @@ Summary: [docs/CERTIFICATION.md](docs/CERTIFICATION.md).
     SDL2-32   (ARGB8888 streaming texture)
     SDL3-32   (ARGB8888 streaming texture)
 
-Build system: the GNU Makefile (`make COLOUR_DEPTH=32`). The CMake and
-Visual Studio project files still list `simgraph16.cc` by name and were not
-adapted in this candidate - see [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+Build systems: the GNU Makefile (`make COLOUR_DEPTH=32`), CMake
+(`-DCOLOUR_DEPTH=32`, MinGW and the Visual Studio generator) and the
+hand-maintained Visual Studio projects (`msbuild /p:COLOUR_DEPTH=32`). The
+CMake and Visual Studio selection was added and certified after the renderer
+certification, as build-file changes only (5 files, no renderer change) -
+see [docs/BUILDING.md](docs/BUILDING.md) and the build-integration section of
+[docs/CERTIFICATION.md](docs/CERTIFICATION.md).
 
 ## Tested paksets
 
@@ -117,13 +129,16 @@ succeeds. Linux runtime is therefore **not certified** here, neither way.
 2. Apply the patch: `svn patch --strip 1 true32-r12254.diff` (or
    `patch -p1` on an LF checkout)
 3. Check the identity: hashes in [`evidence/hashes/`](evidence/hashes/)
-4. Build: `make COLOUR_DEPTH=32` with `BACKEND := gdi|sdl2|sdl3` in
-   `config.default` - [docs/BUILDING.md](docs/BUILDING.md)
+4. Build: `make COLOUR_DEPTH=32` (with `BACKEND := gdi|sdl2|sdl3` in
+   `config.default`), or `cmake -DCOLOUR_DEPTH=32`, or
+   `msbuild Simutrans-GDI.vcxproj /p:COLOUR_DEPTH=32` -
+   [docs/BUILDING.md](docs/BUILDING.md)
 5. Test: the quick path in [docs/TESTING.md](docs/TESTING.md)
 6. Review checklist: [docs/MAINTAINER-REVIEW.md](docs/MAINTAINER-REVIEW.md)
 
-The exact certified files are also stored byte-for-byte under
-[`source/candidate/`](source/candidate/).
+The exact certified renderer files are also stored byte-for-byte under
+[`source/candidate/`](source/candidate/), and the five certified build files
+under [`source/build/`](source/build/).
 
 ## Documents
 

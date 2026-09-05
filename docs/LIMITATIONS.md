@@ -33,26 +33,37 @@ certified** by this package, either way. A Linux reviewer with a working
 FreeType/BDF setup would close this gap by running the quick test path
 in TESTING.md.
 
-## Build systems: Makefile only
+## Build systems
 
-The GNU Makefile selects the renderer generically
-(`src/simutrans/display/simgraph$(COLOUR_DEPTH).cc`), so
-`make COLOUR_DEPTH=32` works unchanged. The CMake project and the Visual
-Studio project files list `simgraph16.cc` explicitly and were not adapted
-in the certified candidate; a 32-bit CMake or MSVC build needs
-`simgraph32.cc` added to those lists. Deliberately left out of the frozen
-candidate to keep it identical to what was certified; a one-line follow-up
-for integration.
+Closed after the renderer certification (CMAKE-MSVC-01): CMake and the
+hand-maintained Visual Studio projects now select `simgraph16.cc` or
+`simgraph32.cc` from `COLOUR_DEPTH`, exactly as the Makefile does, and
+reject any other value. Certified with fresh builds through CMake+MinGW,
+CMake+Visual Studio generator (MSVC 2022) and MSBuild on the hand projects
+(see CERTIFICATION.md). Two environment notes that are not the renderer's:
+
+- a tree exported without `.svn`/`.git` has no `revision.h`; CMake then
+  needs `-DSIMUTRANS_USE_REVISION=<n>` (checkouts do not)
+- on this machine the MSBuild pre-build step `tools/get_revision.bat`
+  writes `revision.h` as UTF-16 (a PowerShell redirection in a Spanish
+  locale), which breaks the compile of pristine r12254 exactly the same
+  way; the certification runs disabled that step
+  (`/p:PreBuildEventUseInBuild=false`) with an ASCII `revision.h` in place.
+  Official CI does not hit this.
+
+The `none` (headless) backend keeps `COLOUR_DEPTH=0`; the Simutrans-Server
+project is untouched.
 
 ## Line endings in the frozen files
 
-The certified files are stored byte-exact under `source/candidate/` and
-carry the line endings they had in the Windows laboratory: most are CRLF
-(as a Windows SVN checkout is), three of the new headers are LF, and
-`simgraph16.cc` has mixed endings from laboratory editing. The review
-patch is LF-canonical and applies on both LF and CRLF checkouts (verified
-with `patch -p1` and `svn patch --strip 1`); after normalisation the
-content is identical (18/18 SHA256). On integration, SVN's
+The certified files are stored byte-exact under `source/candidate/` (and
+the build files under `source/build/`) and carry the line endings they had
+in the Windows laboratory: most are CRLF (as a Windows SVN checkout is),
+three of the new headers are LF, and `simgraph16.cc` has mixed endings
+from laboratory editing. The review patches are LF-canonical and apply on
+both LF and CRLF checkouts (verified with `patch -p1` and
+`svn patch --strip 1`); after normalisation the content is identical
+(18/18 renderer files, 5/5 build files). On integration, SVN's
 `svn:eol-style native` would normalise the files - a maintainer step, not
 done here so that the certified identity stays verifiable.
 

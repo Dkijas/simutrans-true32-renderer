@@ -40,10 +40,22 @@ Against SVN trunk r12254. 18 files: 12 modified, 6 new. Patch:
 - `dataobj/gameinfo.cc` (1) and `simmesg.cc` (1) - use the screen-colour /
   saved-pixel helpers instead of assuming a 16-bit screen word.
 
+## Build files (v2 patch, CMAKE-MSVC-01; not part of the frozen renderer)
+
+- `CMakeLists.txt` (+27/-7) - cache variable `COLOUR_DEPTH` (16 default,
+  32), validated for the graphical backends; the sdl2/sdl3/gdi branches
+  compile `src/simutrans/display/simgraph${COLOUR_DEPTH}.cc` and define
+  `COLOUR_DEPTH=${COLOUR_DEPTH}`; `none` keeps 0; any other value is a
+  configuration error.
+- `Simutrans-GDI.vcxproj`, `Simutrans-SDL2.vcxproj`, `Simutrans-SDL3.vcxproj`
+  (+11/-4 each) - MSBuild property `COLOUR_DEPTH` (16 unless given), used
+  by the preprocessor definitions and the renderer `ClCompile` item; a
+  target `SimutransCheckColourDepth` rejects other values before compiling.
+- `Simutrans-GDI.vcxproj.filters` (+1/-1) - the renderer item follows.
+
 ## What is deliberately not in the candidate
 
-- no Makefile / CMake / MSVC project change (the Makefile already selects
-  `simgraph$(COLOUR_DEPTH).cc`)
+- no Makefile change (it already selects `simgraph$(COLOUR_DEPTH).cc`)
 - no pak, makeobj, savegame or network format change
 - no laboratory instrumentation (the certification hook lives outside the
   candidate, behind `-DSTLAB_CERT_HARNESS`, and is not published)

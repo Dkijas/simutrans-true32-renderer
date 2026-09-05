@@ -1,0 +1,16 @@
+# width guards compiled with the CMake definitions (CMAKE-MSVC-01)
+  STORED  sizeof(STORED_PIXVAL) == 2                         PASS
+  SCREEN32 sizeof(PIXVAL) == 4                               PASS
+  SAVED   sizeof(SAVED_PIXVAL) == 4                          PASS
+  WIRE    sizeof(NETWORK_PIXVAL) == 2                        PASS
+  FLAGGED sizeof(FLAGGED_PIXVAL) == 8                        PASS
+  no flag bit inside the colour word                         PASS
+  SCREEN32 colour mask covers all 32 bits                    PASS
+COLOUR_DEPTH=32 width guards: PASS
+  STORED  sizeof(STORED_PIXVAL) == 2                         PASS
+  SCREEN16 sizeof(PIXVAL) == 2                               PASS
+  SAVED   sizeof(SAVED_PIXVAL) == 4                          PASS
+  WIRE    sizeof(NETWORK_PIXVAL) == 2                        PASS
+  FLAGGED sizeof(FLAGGED_PIXVAL) == 4                        PASS
+  no flag bit inside the colour word                         PASS
+COLOUR_DEPTH=16 width guards: PASS

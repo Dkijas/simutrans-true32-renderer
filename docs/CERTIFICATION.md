@@ -96,6 +96,39 @@ Linux runtime not certified: the laboratory's WSL FreeType cannot load the
 BDF fonts, which blocks the 16-bit runtime in the same way. See
 [LIMITATIONS.md](LIMITATIONS.md).
 
+## Build-system integration (CMAKE-MSVC-01, after the renderer certification)
+
+Scope: build files only - `CMakeLists.txt`, the three GUI `.vcxproj` and
+the GDI `.filters` (5 files, +60/-20). The 18 renderer files were verified
+identical to the certified candidate before and after (raw SHA256), and no
+renderer file was touched.
+
+    CMake + MinGW      GDI-16 PASS (simgraph16 only)   GDI-32 PASS (simgraph32 only)   SDL3-32 PASS
+                       COLOUR_DEPTH=24: configuration stops with a clear message; default = 16
+    CMake + VS 2022    GDI-16 PASS   GDI-32 PASS   24 rejected   (vcpkg x64-windows-static; generated
+    generator          simutrans.vcxproj lists simgraph32.cc and COLOUR_DEPTH=32)
+    MSBuild hand       16 PASS   32 PASS   default(16) PASS   24 rejected by the new target
+    projects           (pristine r12254 builds the same way with the same environment workaround)
+    Makefile control   GDI-16 and GDI-32 rebuilt after the change: PASS, same executable sizes as certified
+
+Same renderer through the new path: T1-T4 linked against the CMake gdi-32
+objects reproduce the frozen hashes (nc 0xDA18C545, wc 0x19D5EC05,
+pc 0x0F526995, class+alpha 0x7B4F5C85); width guards STORED 2 / SCREEN32 4
+/ SAVED 4 / WIRE 2, no flag bit inside the colour word (7/7 at 32, 6/6 at
+16); the TRUE32 product scenario (scroll, zoom, night, transparency, road
+tool, rotation, resize with 3/3 clip MATCH, screenshot, save + reload) on
+the CMake-built GDI-32 and SDL3-32 executables with pak128, 99.7 % of
+pixels off the RGB565 lattice; the legacy smoke on the CMake-built GDI-16
+executable, 0.0 % off-lattice; the MSVC-built executables (hand project
+and CMake generator, 32) run the same world with 97.7 % of window pixels
+off the RGB565 lattice, the MSVC 16-bit control 0.0 % off GDI's 16-bit
+lattice. Warning categories: CMake-16 identical to the unmodified tree;
+CMake-32 adds only the categories the certified Makefile-32 build already
+had (from the candidate source), none from the selection. `cmake --install`
+places the executable and the data directory as before (the install rules
+never name a renderer object); its NSIS step fails in this environment for
+the unmodified tree and the candidate alike.
+
 ## Earlier certification and remediation
 
 The first full certification

@@ -1,0 +1,255 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -210,8 +210,28 @@
+ 	target_link_libraries(simutrans PRIVATE Threads::Threads)
+ endif (SIMUTRANS_MULTI_THREAD)
+ 
++# Renderer colour depth of the graphical backends, the same rule as the
++# Makefile (SOURCES += src/simutrans/display/simgraph$(COLOUR_DEPTH).cc):
++#   16 - the RGB565 renderer, simgraph16.cc (default)
++#   32 - the ARGB8888 renderer, simgraph32.cc
++# Exactly one renderer is compiled into the executable. Anything else stops
++# here rather than silently building the 16 bit renderer. The headless
++# backend "none" has no renderer and keeps COLOUR_DEPTH 0 below.
++set(COLOUR_DEPTH "16" CACHE STRING "Renderer colour depth for the graphical backends: 16 (RGB565) or 32 (ARGB8888)")
++set_property(CACHE COLOUR_DEPTH PROPERTY STRINGS 16 32)
++if (NOT SIMUTRANS_BACKEND STREQUAL "none")
++	if (NOT COLOUR_DEPTH MATCHES "^(16|32)$")
++		message(FATAL_ERROR "COLOUR_DEPTH='${COLOUR_DEPTH}' is not supported: "
++			"use -DCOLOUR_DEPTH=16 (RGB565) or -DCOLOUR_DEPTH=32 (ARGB8888).")
++	endif ()
++	set(SIMUTRANS_RENDERER_SOURCE src/simutrans/display/simgraph${COLOUR_DEPTH}.cc)
++	if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${SIMUTRANS_RENDERER_SOURCE}")
++		message(FATAL_ERROR "The renderer source ${SIMUTRANS_RENDERER_SOURCE} for COLOUR_DEPTH=${COLOUR_DEPTH} does not exist in this tree.")
++	endif ()
++endif ()
++
+ if (SIMUTRANS_BACKEND STREQUAL "sdl2")
+-	target_sources(simutrans PRIVATE src/simutrans/display/simgraph16.cc src/simutrans/sys/simsys_s2.cc src/simutrans/sound/sdl2_sound.cc)
++	target_sources(simutrans PRIVATE ${SIMUTRANS_RENDERER_SOURCE} src/simutrans/sys/simsys_s2.cc src/simutrans/sound/sdl2_sound.cc)
+ 	target_include_directories(simutrans PRIVATE ${SDL2_INCLUDE_DIRS})
+ 	if (MINGW)
+ 		target_link_libraries(simutrans PRIVATE ${SDL2_STATIC_LIBRARIES})
+@@ -224,7 +244,7 @@
+ 	else ()
+ 		target_link_libraries(simutrans PRIVATE PkgConfig::SDL2)
+ 	endif ()
+-	target_compile_definitions(simutrans PRIVATE COLOUR_DEPTH=16)
++	target_compile_definitions(simutrans PRIVATE COLOUR_DEPTH=${COLOUR_DEPTH})
+ 
+ elseif (SIMUTRANS_BACKEND STREQUAL "sdl3")
+ 	# Asking for a backend whose library is missing has to say so. Without this
+@@ -241,11 +261,11 @@
+ 	endif ()
+ 
+ 	# SDL3 as the platform layer, with the EXISTING software renderer on top:
+-	# simgraph16 still draws into a CPU framebuffer, exactly as for sdl2.
++	# simgraph${COLOUR_DEPTH} still draws into a CPU framebuffer, exactly as for sdl2.
+ 	# Sound is sdl3_sound.cc, the SDL3 counterpart of the sdl2_sound.cc the
+ 	# sdl2 backend uses. Music is not an SDL concern for either backend: it
+ 	# comes from the same per-platform routines, selected further down.
+-	target_sources(simutrans PRIVATE src/simutrans/display/simgraph16.cc src/simutrans/sys/simsys_s3.cc
++	target_sources(simutrans PRIVATE ${SIMUTRANS_RENDERER_SOURCE} src/simutrans/sys/simsys_s3.cc
+ 		src/simutrans/sound/sdl3_sound.cc)
+ 	target_include_directories(simutrans PRIVATE ${SDL3_INCLUDE_DIRS})
+ 	if (MINGW)
+@@ -264,7 +284,7 @@
+ 	else ()
+ 		target_link_libraries(simutrans PRIVATE PkgConfig::SDL3)
+ 	endif ()
+-	target_compile_definitions(simutrans PRIVATE COLOUR_DEPTH=16)
++	target_compile_definitions(simutrans PRIVATE COLOUR_DEPTH=${COLOUR_DEPTH})
+ 
+ 	# Freetype is mandatory for graphical builds, exactly as for sdl2 and gdi -
+ 	# including the ANDROID arm, where freetype is an imported target rather than
+@@ -286,9 +306,9 @@
+ 	endif ()
+ 
+ elseif (SIMUTRANS_BACKEND STREQUAL "gdi")
+-	target_sources(simutrans PRIVATE src/simutrans/display/simgraph16.cc src/simutrans/sys/simsys_w.cc ${BACKUP_SOUND} )
++	target_sources(simutrans PRIVATE ${SIMUTRANS_RENDERER_SOURCE} src/simutrans/sys/simsys_w.cc ${BACKUP_SOUND} )
+ 	target_link_libraries(simutrans PRIVATE imm32 xaudio2_8)
+-	target_compile_definitions(simutrans PRIVATE COLOUR_DEPTH=16)
++	target_compile_definitions(simutrans PRIVATE COLOUR_DEPTH=${COLOUR_DEPTH})
+ 
+ elseif (SIMUTRANS_BACKEND STREQUAL "none")
+ 	target_sources(simutrans PRIVATE src/simutrans/display/simgraph0.cc src/simutrans/sys/simsys_posix.cc src/simutrans/sound/no_sound.cc src/simutrans/music/no_midi.cc)
+--- a/Simutrans-GDI.vcxproj
++++ b/Simutrans-GDI.vcxproj
+@@ -26,6 +26,10 @@
+       <Platform>x64</Platform>
+     </ProjectConfiguration>
+   </ItemGroup>
++  <PropertyGroup Label="ColourDepth">
++    <!-- Renderer colour depth: 16 (RGB565, simgraph16.cc, default) or 32 (ARGB8888, simgraph32.cc). Build with /p:COLOUR_DEPTH=32 for the 32 bit renderer. -->
++    <COLOUR_DEPTH Condition="'$(COLOUR_DEPTH)' == ''">16</COLOUR_DEPTH>
++  </PropertyGroup>
+   <PropertyGroup Label="Globals">
+     <ProjectGuid>{0621B295-BEB7-4767-82F1-F27995610323}</ProjectGuid>
+     <RootNamespace>Simutrans</RootNamespace>
+@@ -130,7 +134,7 @@
+     <ClCompile>
+       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+       <Optimization>Disabled</Optimization>
+-      <PreprocessorDefinitions>MSG_LEVEL=4;USE_ZSTD;USE_UPNP;COLOUR_DEPTH=16;MULTI_THREAD=1;DEBUG=3;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
++      <PreprocessorDefinitions>MSG_LEVEL=4;USE_ZSTD;USE_UPNP;COLOUR_DEPTH=$(COLOUR_DEPTH);MULTI_THREAD=1;DEBUG=3;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
+       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+     </ClCompile>
+@@ -148,12 +152,12 @@
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+     <ClCompile>
+-      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=16;MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
++      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=$(COLOUR_DEPTH);MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
+     </ClCompile>
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)'=='Stable'">
+     <ClCompile>
+-      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=16;MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
++      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=$(COLOUR_DEPTH);MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
+     </ClCompile>
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='Release'">
+@@ -190,13 +194,16 @@
+     </Link>
+   </ItemDefinitionGroup>
+   <ItemGroup>
+-    <ClCompile Include="src\simutrans\display\simgraph16.cc" />
++    <ClCompile Include="src\simutrans\display\simgraph$(COLOUR_DEPTH).cc" />
+     <ClCompile Include="src\simutrans\music\w32_midi.cc" />
+     <ClCompile Include="src\simutrans\sound\win32_sound_xa.cc" />
+     <ClCompile Include="src\simutrans\sys\clipboard_w32.cc" />
+     <ClCompile Include="src\simutrans\sys\simsys_w.cc" />
+   </ItemGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
++  <Target Name="SimutransCheckColourDepth" BeforeTargets="ClCompile">
++    <Error Condition="'$(COLOUR_DEPTH)' != '16' And '$(COLOUR_DEPTH)' != '32'" Text="COLOUR_DEPTH='$(COLOUR_DEPTH)' is not supported: build with /p:COLOUR_DEPTH=16 (RGB565) or /p:COLOUR_DEPTH=32 (ARGB8888)." />
++  </Target>
+   <ImportGroup Label="ExtensionTargets">
+   </ImportGroup>
+ </Project>
+\ No newline at end of file
+--- a/Simutrans-SDL2.vcxproj
++++ b/Simutrans-SDL2.vcxproj
+@@ -26,6 +26,10 @@
+       <Platform>x64</Platform>
+     </ProjectConfiguration>
+   </ItemGroup>
++  <PropertyGroup Label="ColourDepth">
++    <!-- Renderer colour depth: 16 (RGB565, simgraph16.cc, default) or 32 (ARGB8888, simgraph32.cc). Build with /p:COLOUR_DEPTH=32 for the 32 bit renderer. -->
++    <COLOUR_DEPTH Condition="'$(COLOUR_DEPTH)' == ''">16</COLOUR_DEPTH>
++  </PropertyGroup>
+   <PropertyGroup Label="Globals">
+     <ProjectGuid>{E74757E8-C2FD-44AD-87BD-3D55F4709484}</ProjectGuid>
+     <RootNamespace>Simutrans</RootNamespace>
+@@ -112,7 +116,7 @@
+     <ClCompile>
+       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+       <Optimization>Disabled</Optimization>
+-      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=16;MULTI_THREAD=1;MSG_LEVEL=3;DEBUG=3;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
++      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=$(COLOUR_DEPTH);MULTI_THREAD=1;MSG_LEVEL=3;DEBUG=3;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
+       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+     </ClCompile>
+@@ -130,12 +134,12 @@
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+     <ClCompile>
+-      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=16;MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
++      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=$(COLOUR_DEPTH);MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
+     </ClCompile>
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)'=='Stable'">
+     <ClCompile>
+-      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=16;MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
++      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=$(COLOUR_DEPTH);MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
+     </ClCompile>
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='Release'">
+@@ -180,13 +184,16 @@
+     </Link>
+   </ItemDefinitionGroup>
+   <ItemGroup>
+-    <ClCompile Include="src\simutrans\display\simgraph16.cc" />
++    <ClCompile Include="src\simutrans\display\simgraph$(COLOUR_DEPTH).cc" />
+     <ClCompile Include="src\simutrans\music\w32_midi.cc" />
+     <ClCompile Include="src\simutrans\sound\sdl2_sound.cc" />
+     <ClCompile Include="src\simutrans\sys\clipboard_s2.cc" />
+     <ClCompile Include="src\simutrans\sys\simsys_s2.cc" />
+   </ItemGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
++  <Target Name="SimutransCheckColourDepth" BeforeTargets="ClCompile">
++    <Error Condition="'$(COLOUR_DEPTH)' != '16' And '$(COLOUR_DEPTH)' != '32'" Text="COLOUR_DEPTH='$(COLOUR_DEPTH)' is not supported: build with /p:COLOUR_DEPTH=16 (RGB565) or /p:COLOUR_DEPTH=32 (ARGB8888)." />
++  </Target>
+   <ImportGroup Label="ExtensionTargets">
+   </ImportGroup>
+ </Project>
+\ No newline at end of file
+--- a/Simutrans-SDL3.vcxproj
++++ b/Simutrans-SDL3.vcxproj
+@@ -26,6 +26,10 @@
+       <Platform>x64</Platform>
+     </ProjectConfiguration>
+   </ItemGroup>
++  <PropertyGroup Label="ColourDepth">
++    <!-- Renderer colour depth: 16 (RGB565, simgraph16.cc, default) or 32 (ARGB8888, simgraph32.cc). Build with /p:COLOUR_DEPTH=32 for the 32 bit renderer. -->
++    <COLOUR_DEPTH Condition="'$(COLOUR_DEPTH)' == ''">16</COLOUR_DEPTH>
++  </PropertyGroup>
+   <PropertyGroup Label="Globals">
+     <ProjectGuid>{3F44593E-6FED-4F86-8C94-58B859302798}</ProjectGuid>
+     <RootNamespace>Simutrans</RootNamespace>
+@@ -125,7 +129,7 @@
+     <ClCompile>
+       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+       <Optimization>Disabled</Optimization>
+-      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=16;MULTI_THREAD=1;MSG_LEVEL=3;DEBUG=3;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
++      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=$(COLOUR_DEPTH);MULTI_THREAD=1;MSG_LEVEL=3;DEBUG=3;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
+       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+     </ClCompile>
+@@ -143,12 +147,12 @@
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+     <ClCompile>
+-      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=16;MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
++      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=$(COLOUR_DEPTH);MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;REVISION_FROM_FILE;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
+     </ClCompile>
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)'=='Stable'">
+     <ClCompile>
+-      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=16;MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
++      <PreprocessorDefinitions>USE_ZSTD;USE_UPNP;COLOUR_DEPTH=$(COLOUR_DEPTH);MULTI_THREAD=1;MSG_LEVEL=3;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;WINVER=_WIN32_WINNT_WINXP</PreprocessorDefinitions>
+     </ClCompile>
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='Release'">
+@@ -193,13 +197,16 @@
+     </Link>
+   </ItemDefinitionGroup>
+   <ItemGroup>
+-    <ClCompile Include="src\simutrans\display\simgraph16.cc" />
++    <ClCompile Include="src\simutrans\display\simgraph$(COLOUR_DEPTH).cc" />
+     <ClCompile Include="src\simutrans\music\w32_midi.cc" />
+     <ClCompile Include="src\simutrans\sound\sdl3_sound.cc" />
+     <ClCompile Include="src\simutrans\sys\clipboard_s3.cc" />
+     <ClCompile Include="src\simutrans\sys\simsys_s3.cc" />
+   </ItemGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
++  <Target Name="SimutransCheckColourDepth" BeforeTargets="ClCompile">
++    <Error Condition="'$(COLOUR_DEPTH)' != '16' And '$(COLOUR_DEPTH)' != '32'" Text="COLOUR_DEPTH='$(COLOUR_DEPTH)' is not supported: build with /p:COLOUR_DEPTH=16 (RGB565) or /p:COLOUR_DEPTH=32 (ARGB8888)." />
++  </Target>
+   <ImportGroup Label="ExtensionTargets">
+   </ImportGroup>
+ </Project>
+\ No newline at end of file
+--- a/Simutrans-GDI.vcxproj.filters
++++ b/Simutrans-GDI.vcxproj.filters
+@@ -1056,7 +1056,7 @@
+     <ClCompile Include="$(MSBuildThisFileDirectory)src\squirrel\squirrel\sqvm.cc">
+       <Filter>Source Files</Filter>
+     </ClCompile>
+-    <ClCompile Include="src\simutrans\display\simgraph16.cc">
++    <ClCompile Include="src\simutrans\display\simgraph$(COLOUR_DEPTH).cc">
+       <Filter>Source Files</Filter>
+     </ClCompile>
+     <ClCompile Include="src\simutrans\music\w32_midi.cc">

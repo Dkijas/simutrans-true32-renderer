@@ -24,3 +24,9 @@ Paksets are not redistributed; the screenshots were produced during local
 validation with pak64, pak128 2.10.1 (as the game reports it) and pak192.comic, as
 downloaded from their official locations; the exact files are identified in
 `reports/RECERTIFICATION-02-provenance.txt`.
+- `build-integration/` (CMAKE-MSVC-01) - the hook logs of the TRUE32
+  scenario on the CMake-built GDI-32 and SDL3-32 executables, the legacy
+  smoke on the CMake-built GDI-16 one, the T1-T4 probe linked against the
+  CMake objects, and the width guards; screenshots 14-16 are window
+  captures of the MSVC-built executables (hand project 32 and 16, CMake
+  Visual Studio generator 32).
