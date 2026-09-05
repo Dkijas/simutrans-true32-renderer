@@ -62,3 +62,11 @@ for review. They can be provided on request.
   decisive colour 0xFF123456 present) while the 16-bit build captured the
   same way is 0.00 % outside; a quantised negative control is rejected by
   the oracle. Physical devices and ARM ABIs not run.
+
+## Separate: Windows GDI resize-event delivery
+
+- **GDI-RESIZE-EVENT-DELIVERY-CERT-01.md** - a pre-existing Windows backend / shared
+  event-queue defect (newest client size lost in the single GDI event slot, or reverted by a
+  re-queued obsolete resize), its CURRENT_STATE contract, the certified two-file fix
+  (`patches/gdi-resize-event-delivery-r12254.diff`), mutants, SDL2/SDL3 controls and the
+  302 / 302 suite. Not part of TRUE32 v2; not in SVN; does not fix the DPI defect of topic 23805.

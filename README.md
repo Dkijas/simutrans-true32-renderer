@@ -122,6 +122,10 @@ see [docs/BUILDING.md](docs/BUILDING.md) and the build-integration section of
     Android (Gradle/CMake, x86_64)      compile, package, emulator run and internal
                                         framebuffer precision CERTIFIED at 32 (emulator);
                                         physical device / ARM NOT RUN
+    Windows GDI resize-event delivery   CERTIFIED FIX AVAILABLE as a separate auxiliary
+                                        patch (patches/gdi-resize-event-delivery-r12254.diff);
+                                        NOT in SVN, maintainer approval required; the DPI
+                                        WindowSize unit defect (topic 23805) stays OPEN
 
 ## Known limitation
 

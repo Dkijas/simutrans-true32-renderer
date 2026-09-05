@@ -1,0 +1,8 @@
+Resize storm (scripted border drag: 800->1400->700->1237 px in 12-px steps, 40 ms apart), candidate trace build, run GDI-TRACE-drag-r2
+WM_SIZE observed by the backend: 155
+resize applications at the consumers: 158
+ordering violations: 0
+overwrites of a pending SIM_SYSTEM slot: 0
+last application: ORDERING: APPLY id=155 size=1212x818 at win_poll_event (previous id=154, application #158)
+last renderer call: EV:     RENDERER on_window_resized requested=1212x818 current=1200x811
+final client size (harness): 1212x818

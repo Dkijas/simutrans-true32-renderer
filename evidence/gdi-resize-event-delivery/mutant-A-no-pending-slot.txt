@@ -1,0 +1,14 @@
+Mutant A: candidate with the simsys_w.cc pending-resize mechanism removed (queue coalescing kept), trace build, maximize after loading (run MUTA-noslot-after-r1).
+Expected: the maximize resize is written into the single slot and overwritten before any poll (historical path B).
+
+EV: FRESH-FROM-BACKEND id=1 code=2 size=800x600
+ORDERING: APPLY id=1 size=800x600 at loadingscreen (previous id=0, application #1)
+ORDERING: APPLY id=1 size=800x600 at loadingscreen (previous id=1, application #2)
+ORDERING: APPLY id=1 size=800x600 at loadingscreen (previous id=1, application #3)
+ORDERING: APPLY id=1 size=800x600 at win_poll_event (previous id=1, application #4)
+SLOT: WNDPROC WM_SIZE wParam=2 phys=3440x1369 | slot before: type=0 800x600
+SLOT: OVERWRITE by WM_MOUSEMOVE         | before: type=254 3440x1369 | after: type=3 code=7 3440x1369
+SLOT: WNDPROC WM_SIZE wParam=2 phys=3440x1369 | slot before: type=0 3440x1369
+SLOT: OVERWRITE by WM_MOUSEMOVE         | before: type=254 3440x1369 | after: type=3 code=7 3440x1369
+
+Result: the 3440x1369 resize is overwritten by WM_MOUSEMOVE; no FRESH event and no application with 3440x1369 follows. Reproduced in 2 / 2 runs.

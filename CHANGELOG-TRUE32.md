@@ -53,6 +53,12 @@ Against SVN trunk r12254. 18 files: 12 modified, 6 new. Patch:
   target `SimutransCheckColourDepth` rejects other values before compiling.
 - `Simutrans-GDI.vcxproj.filters` (+1/-1) - the renderer item follows.
 
+## Separate auxiliary patch (not in the candidate)
+
+- `patches/gdi-resize-event-delivery-r12254.diff` (`sys/simsys_w.cc` 3 hunks, `simevent.cc`
+  1 hunk) - the certified fix for the Windows backend resize-event delivery defect. Independent
+  of the renderer; published separately so that v2 stays the canonical TRUE32 patch. Not in SVN.
+
 ## What is deliberately not in the candidate
 
 - no Makefile change (it already selects `simgraph$(COLOUR_DEPTH).cc`)

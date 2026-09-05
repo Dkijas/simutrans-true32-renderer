@@ -1,0 +1,44 @@
+GDI-CAND-after-r1        PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+GDI-CAND-after-r2        PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+GDI-CAND-after-r3        PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+GDI-CAND-drag-r1         PASS     client=1212x818 content bbox right=1212 bottom=818 bottom-right status bar lit=99.2% foreground=True
+GDI-CAND-drag-r2         PASS     client=1212x818 content bbox right=1212 bottom=818 bottom-right status bar lit=99.2% foreground=True
+GDI-CAND-load128-r1      PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+GDI-CAND-load128-r2      PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+GDI-CAND-load128-r3      PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+GDI-CAND-load64-r1       PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.5% foreground=True
+GDI-CAND-load64-r2       PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+GDI-CAND-load64-r3       PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+GDI-TRACE-after-r1       UNVERIFIED(foreground) client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.5% foreground=False
+GDI-TRACE-after-r2       UNVERIFIED(foreground) client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.6% foreground=False
+GDI-TRACE-after-r3       PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+GDI-TRACE-drag-r1        UNVERIFIED(foreground) client=1212x818 content bbox right=1212 bottom=818 bottom-right status bar lit=99.2% foreground=False
+GDI-TRACE-drag-r2        UNVERIFIED(foreground) client=1212x818 content bbox right=1212 bottom=818 bottom-right status bar lit=98.5% foreground=False
+GDI-TRACE-load128-r1     no decisive capture
+GDI-TRACE-load128-r2     no decisive capture
+GDI-TRACE-load128-r3     no decisive capture
+GDI-TRACE-load64-r1      no decisive capture
+GDI-TRACE-load64-r2      no decisive capture
+GDI-TRACE-load64-r3      no decisive capture
+MUTA-noslot-after-r1     no decisive capture
+MUTA-noslot-after-r2     no decisive capture
+MUTB-noqueue-load128-r1  no decisive capture
+MUTB-noqueue-load128-r2  no decisive capture
+MUTB-noqueue-load128-r3  no decisive capture
+ORACLE-SUMMARY.txt       no decisive capture
+SUITE-BASE-gdi           no decisive capture
+SUITE-CAND-gdi           no decisive capture
+sdl2-cand-after          PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+sdl2-cand-drag           PASS     client=1212x818 content bbox right=1212 bottom=818 bottom-right status bar lit=99.2% foreground=True
+sdl2-cand-load128        PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+sdl2-cand-load64         PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+sdl2-head-after          PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+sdl2-head-drag           PASS     client=1212x818 content bbox right=1212 bottom=818 bottom-right status bar lit=99.2% foreground=True
+sdl2-head-load64         PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+sdl3-cand-after          PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+sdl3-cand-drag           PASS     client=1212x818 content bbox right=1212 bottom=818 bottom-right status bar lit=99.2% foreground=True
+sdl3-cand-load128        PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+sdl3-cand-load64         PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+sdl3-head-after          PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True
+sdl3-head-drag           PASS     client=1212x818 content bbox right=1212 bottom=818 bottom-right status bar lit=99.2% foreground=True
+sdl3-head-load64         PASS     client=3440x1369 content bbox right=3440 bottom=1369 bottom-right status bar lit=99.8% foreground=True

@@ -89,6 +89,19 @@ What remains untested:
 The Android default stays 16-bit; nothing in the Android release
 configuration was changed.
 
+## Windows GDI: resize-event delivery fixed separately, DPI unit defect still open
+
+TRUE32 inherits the Windows backend's event delivery. A pre-existing defect there (the newest
+client size lost or reverted after a resize, see CERTIFICATION.md "GDI resize-event delivery")
+has a certified fix published as the separate auxiliary patch
+`patches/gdi-resize-event-delivery-r12254.diff`. It is not part of the TRUE32 candidate (v2
+unchanged) and it is NOT in official SVN (maintainer approval required). The separate DPI
+defect - `WindowSize` mixing physical and logical pixels at scaling other than 100 % (forum
+topic 23805) - is not fixed by it and stays OPEN; it can now be re-certified deterministically.
+
+    GDI resize-event delivery:   CERTIFIED FIX AVAILABLE, NOT INTEGRATED
+    GDI DPI WindowSize units:    OPEN / SEPARATE (topic 23805 not resolved)
+
 ## Not measured
 
 - Load time at 32 bits (initial image recode), observed about 3x longer

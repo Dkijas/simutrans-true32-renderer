@@ -108,6 +108,16 @@ Then verify:
     sha256sum -c candidate-18-files.lf-normalised.sha256
     # on a CRLF checkout: strip CR first, e.g.  tr -d '\r' < file | sha256sum
 
+## Auxiliary patch: GDI resize-event delivery (not part of the candidate)
+
+`patches/gdi-resize-event-delivery-r12254.diff` - base r12254, `src/simutrans/sys/simsys_w.cc`
+(3 hunks) and `src/simutrans/simevent.cc` (1 hunk), SHA256
+`13f283a63235bfb913a231b945f02ea93a71b5f336da135088944bd8dbeeb76b`; applying it to pure r12254
+reproduces the certified files byte for byte. The certified `svn diff` of the same change has
+SHA256 `b07d33cbaf87e95782d80526d1923f0134299ed7091318a12c8f71bffed58fa0` (localised svn headers,
+identical hunk content). Certified by GDI-RESIZE-EVENT-DELIVERY-SVN-CERT-01; not integrated.
+The canonical TRUE32 patch stays v2; the two are published separately on purpose.
+
 ## Statements
 
 - No SVN integration has occurred. The official trunk is unchanged.

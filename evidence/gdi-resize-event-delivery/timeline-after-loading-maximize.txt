@@ -1,0 +1,17 @@
+Candidate (frozen two-file fix) + lab identity trace, GDI, 100 %, pak64, maximize 35 s after the window appears (run GDI-TRACE-after-r3).
+Every SYSTEM event fetched from the backend carries a monotonic lab id; SLOT lines are transitions of the single sys_event slot; ORDERING lines are the lab invariant (generation never moves backwards).
+Startup lines omitted; the sequence starts at the maximize.
+
+SLOT: WNDPROC WM_SIZE wParam=2 phys=3440x1369 | slot before: type=0 800x600
+SLOT: WM_SIZE -> pending 3440x1369 (replaces pending no 800x600)
+SLOT: WRITE     by WM_MOUSEMOVE         | before: type=0 800x600 | after: type=3 code=7 800x600
+SLOT: PENDING-RESIZE 3440x1369 -> slot (slot was empty)
+EV: FRESH-FROM-BACKEND id=2 code=2 size=3440x1369
+ORDERING: APPLY id=2 size=3440x1369 at win_poll_event (previous id=1, application #5)
+EV:     RENDERER on_window_resized requested=3440x1369 current=800x600
+SLOT: WNDPROC WM_SIZE wParam=0 phys=800x600 | slot before: type=0 3440x1369
+SLOT: WM_SIZE -> pending 800x600 (replaces pending no 3440x1369)
+SLOT: PENDING-RESIZE 800x600 -> slot (slot was empty)
+EV: FRESH-FROM-BACKEND id=3 code=2 size=800x600
+ORDERING: APPLY id=3 size=800x600 at win_poll_event (previous id=2, application #6)
+EV:     RENDERER on_window_resized requested=800x600 current=3440x1369

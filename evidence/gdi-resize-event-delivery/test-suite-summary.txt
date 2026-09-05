@@ -1,0 +1,6 @@
+Official automated scenario suite (tests/ as scenario automated-tests, as CI runs it), GDI builds, pak64.
+
+BASE (pure r12254):      first: Compatibility mode for version 112.3 in effect  last: [302/302] test_schedule_route_corner_terminus  final: Tests completed successfully.
+CANDIDATE (r12254+fix):  first: Compatibility mode for version 112.3 in effect  last: [302/302] test_schedule_route_corner_terminus  final: Tests completed successfully.
+
+script output lines BASE 308, CANDIDATE 308, identical: True

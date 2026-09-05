@@ -142,6 +142,22 @@ the unmodified tree and the candidate alike.
     Android emulator run 32                      PASS
     Android internal framebuffer precision       CERTIFIED (emulator, x86_64)  (ANDROID-FRAMEBUFFER-CERT-01)
     Android physical device / ARM                NOT RUN
+    GDI resize-event delivery (auxiliary patch)  CERTIFIED FIX (GDI-RESIZE-EVENT-DELIVERY-CERT-01), NOT IN SVN
+    GDI DPI WindowSize unit defect (topic 23805) OPEN / SEPARATE
+
+## GDI resize-event delivery (GDI-RESIZE-EVENT-DELIVERY-CERT-01, separate from the renderer)
+
+A Windows backend / shared event-queue defect isolated while testing the TRUE32 backends: the
+newest client size could be lost (the single GDI pending-event slot overwritten by the mouse move
+that follows a size change) or reverted (an obsolete resize stored and re-queued by successive
+loading screens applied after the real one). Certified two-file fix
+(`patches/gdi-resize-event-delivery-r12254.diff`, `simsys_w.cc` + `simevent.cc`, base r12254):
+GDI maximize after loading PASS 3 / 3 (pure trunk FAIL 3 / 3), during loading pak64 and pak128
+PASS, resize storm 155 WM_SIZE with the final 1212x818 applied, restore PASS, 369 ordered
+applications with 0 backward ones, mutants A and B each reproduce their historical path, SDL2 and
+SDL3 PASS, official suite 302 / 302 on base and candidate. Not in SVN; maintainer approval
+required. It does not fix the DPI WindowSize unit defect (topic 23805), which stays OPEN. Composition with TRUE32 v2: CLEAN_COMMUTATIVE - the two application orders (v2 then GDI fix, GDI fix then v2) produce byte-identical trees (one order needs a 12-line offset in simsys_w.cc, no fuzz, no rejects); a GDI32 build of the composed tree (COLOUR_DEPTH=32) compiles clean (361 objects, simgraph32 only) and passes one maximize/restore smoke (3440x1369 painted in full, restore to 800x600) and one resize-storm final-state check (final 1212x818 painted in full). Documented for compatibility only; no consolidated candidate is created.
+Report: `reports/GDI-RESIZE-EVENT-DELIVERY-CERT-01.md`; evidence: `evidence/gdi-resize-event-delivery/`.
 
 ## Android (ANDROID-BUILD-DEPTH-01)
 

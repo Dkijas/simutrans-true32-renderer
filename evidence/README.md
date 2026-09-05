@@ -30,6 +30,11 @@ downloaded from their official locations; the exact files are identified in
   laboratory APKs with their library build-ids, the two derived frames
   and their RGB565-grid masks, and the hook logs of the three runs. The
   raw dumps and the APKs are not redistributed.
+- `gdi-resize-event-delivery/` (GDI-RESIZE-EVENT-DELIVERY-CERT-01) - the decisive traced
+  timeline of the after-loading maximize with the fix, the two resize-storm summaries (155
+  WM_SIZE, final 1212x818 applied), the mutant A and B extracts, the official-suite summary
+  (302 / 302 base and candidate), the screen-oracle table of all runs, and the SHA256
+  provenance of the patch and of the two files before and after. No binaries, no logs in full.
 - `build-integration/` (CMAKE-MSVC-01) - the hook logs of the TRUE32
   scenario on the CMake-built GDI-32 and SDL3-32 executables, the legacy
   smoke on the CMake-built GDI-16 one, the T1-T4 probe linked against the

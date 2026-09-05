@@ -1,0 +1,31 @@
+Mutant B: candidate with the simevent.cc queue coalescing removed (pending-resize fix kept), trace build, maximize during loading, pak128 (run MUTB-noqueue-load128-r1).
+Expected: the startup resize (id=1) stored and re-queued by the loading screens is replayed after the newer one (historical path A).
+
+EV: FRESH-FROM-BACKEND id=1 code=2 size=800x600
+EV: LOADSCREEN consume id=1 size=800x600 -> applies AND stores (own list len=0)
+ORDERING: APPLY id=1 size=800x600 at loadingscreen (previous id=0, application #1)
+EV: LOADSCREEN dtor FLUSH id=1 code=2 size=800x600 -> global queue
+EV: LOADSCREEN dtor FLUSH id=0 code=32 size=0x0 -> global queue
+EV: DEQUEUE-FROM-GLOBAL id=1 code=2 size=800x600 left=1 (backend NOT polled)
+EV: LOADSCREEN consume id=1 size=800x600 -> applies AND stores (own list len=0)
+ORDERING: APPLY id=1 size=800x600 at loadingscreen (previous id=1, application #2)
+SLOT: WNDPROC WM_SIZE wParam=2 phys=3440x1369 | slot before: type=0 800x600
+EV: FRESH-FROM-BACKEND id=2 code=2 size=3440x1369
+EV: LOADSCREEN consume id=2 size=3440x1369 -> applies AND stores (own list len=0)
+ORDERING: APPLY id=2 size=3440x1369 at loadingscreen (previous id=1, application #3)
+EV: LOADSCREEN dtor FLUSH id=2 code=2 size=3440x1369 -> global queue
+EV: LOADSCREEN dtor FLUSH id=1 code=2 size=800x600 -> global queue
+EV: LOADSCREEN dtor FLUSH id=0 code=32 size=0x0 -> global queue
+EV: DEQUEUE-FROM-GLOBAL id=2 code=2 size=3440x1369 left=2 (backend NOT polled)
+EV: LOADSCREEN consume id=2 size=3440x1369 -> applies AND stores (own list len=0)
+ORDERING: APPLY id=2 size=3440x1369 at loadingscreen (previous id=2, application #4)
+EV: LOADSCREEN dtor FLUSH id=2 code=2 size=3440x1369 -> global queue
+EV: DEQUEUE-FROM-GLOBAL id=1 code=2 size=800x600 left=2 (backend NOT polled)
+ERROR: ORDERING: VIOLATION: resize id=1 size=800x600 applied at win_poll_event AFTER id=2 (application #5)
+EV: DEQUEUE-FROM-GLOBAL id=2 code=2 size=3440x1369 left=0 (backend NOT polled)
+ORDERING: APPLY id=2 size=3440x1369 at win_poll_event (previous id=2, application #6)
+SLOT: WNDPROC WM_SIZE wParam=2 phys=3440x1369 | slot before: type=0 3440x1369
+EV: FRESH-FROM-BACKEND id=3 code=2 size=3440x1369
+ORDERING: APPLY id=3 size=3440x1369 at win_poll_event (previous id=2, application #7)
+
+Result: ORDERING VIOLATION - id=1 (800x600) applied after id=2 (3440x1369). Reproduced in 1 / 3 runs (the phase is a race; one decisive failure suffices).

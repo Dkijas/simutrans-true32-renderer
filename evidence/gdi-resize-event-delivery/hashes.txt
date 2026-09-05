@@ -1,0 +1,19 @@
+SHA256 provenance of GDI-RESIZE-EVENT-DELIVERY-SVN-CERT-01 (base SVN trunk r12254)
+
+13f283a63235bfb913a231b945f02ea93a71b5f336da135088944bd8dbeeb76b  patches/gdi-resize-event-delivery-r12254.diff (published, LF, a/ b/ prefixes)
+b07d33cbaf87e95782d80526d1923f0134299ed7091318a12c8f71bffed58fa0  certified svn diff of the same two files (svn localised headers, CRLF headers; content identical)
+8a6ddcac86913cad0c622ee7d5dfd97ebbcbb8a0337cb3bb71a6b56868d48384  src/simutrans/simevent.cc (r12254, LF-normalised)
+7820f04cd09d5ad4586f262643f9b2d05a3d1851eda76c7a3b511f91ef384379  src/simutrans/simevent.cc (candidate, LF-normalised)
+c4b1f8b8e2837eebeb6d5fcf93169b13367cbb55d5616e987ad3a18d6b2ee646  src/simutrans/sys/simsys_w.cc (r12254, LF-normalised)
+4a95d1768599fbab29cf2b3a3970f69f27cb6e6ce1bf0d5dad00292927dbd859  src/simutrans/sys/simsys_w.cc (candidate, LF-normalised)
+
+laboratory binaries (not redistributed), SHA256 first 16 hex:
+  339b18dfad36c07c  cand-gdi.exe
+  c49442f8c507b82b  cand-sdl2.exe
+  1b92f831800b76f7  cand-sdl3.exe
+  8d1e4a4e62d6e7e1  head-gdi.exe
+  acda2e424aeee9de  head-sdl2.exe
+  47d9d83c9c55f554  head-sdl3.exe
+  b58f8d616739fd18  mutA-noslot-gdi.exe
+  63f3db65e6a401ff  mutB-noqueue-gdi.exe
+  bb090a8049044701  trace-cand-gdi.exe
