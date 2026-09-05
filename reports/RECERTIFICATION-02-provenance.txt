@@ -1,0 +1,33 @@
+RECERTIFICATION-02 provenance  2026-09-05 07:04:31
+lane: <lab>/_stlab-rgba32-recert2
+candidate src: simgraph32.cc 504b9409e6  simsys_w.cc 115b417fed
+candidate vs head (trunk r12254): 12 modified, 7 new (incl. generated revision.h)
+
+binaries (sha256 prefix, bytes, mtime):
+  cand-gdi-16    34885faa6455d50c  10267108 06:25:17  cand-gdi-16 gdi 16 src=<lab>/_stlab-rgba32-recert2/src flags=
+  cand-gdi-32    06041c6ba40454b2  10280923 06:26:42  cand-gdi-32 gdi 32 src=<lab>/_stlab-rgba32-recert2/src flags=
+  cand-sdl2-16   9272107d57e32de1  10269201 06:27:58  cand-sdl2-16 sdl2 16 src=<lab>/_stlab-rgba32-recert2/src flags=
+  cand-sdl2-32   64cc9da5ee0814a3  10281180 06:28:51  cand-sdl2-32 sdl2 32 src=<lab>/_stlab-rgba32-recert2/src flags=
+  cand-sdl3-16   0a49f3c7571f010d  10270962 06:30:03  cand-sdl3-16 sdl3 16 src=<lab>/_stlab-rgba32-recert2/src flags=
+  cand-sdl3-32   ea95f79502892c38  10284623 06:31:43  cand-sdl3-32 sdl3 32 src=<lab>/_stlab-rgba32-recert2/src flags=
+  hook-gdi-16    9ac31b1c370ba1f1  10292430 06:42:43  hook-gdi-16 gdi 16 src=<lab>/_stlab-rgba32-recert2/src flags=-DSTLAB_CERT_HARNESS
+  hook-gdi-32    40d3c351b0e5ae4e  10306757 06:42:21  hook-gdi-32 gdi 32 src=<lab>/_stlab-rgba32-recert2/src flags=-DSTLAB_CERT_HARNESS
+  hook-sdl2-16   cc33f7c362c75bad  10296379 06:42:52  hook-sdl2-16 sdl2 16 src=<lab>/_stlab-rgba32-recert2/src flags=-DSTLAB_CERT_HARNESS
+  hook-sdl2-32   c8192f8801ac5cbb  10308870 06:42:32  hook-sdl2-32 sdl2 32 src=<lab>/_stlab-rgba32-recert2/src flags=-DSTLAB_CERT_HARNESS
+  hook-sdl3-16   a8f30f12edba608c  10298255 06:43:02  hook-sdl3-16 sdl3 16 src=<lab>/_stlab-rgba32-recert2/src flags=-DSTLAB_CERT_HARNESS
+  hook-sdl3-32   02f5cbd11a0ccfbe  10311404 06:42:11  hook-sdl3-32 sdl3 32 src=<lab>/_stlab-rgba32-recert2/src flags=-DSTLAB_CERT_HARNESS
+  ref-gdi-16     11c2387ae3d94998  10291918 06:43:12  ref-gdi-16 gdi 16 src=<lab>/_stlab-rgba32-recert2/head/src flags=-DSTLAB_CERT_HARNESS
+
+paksets:
+  pak64: 810 pak files, 17M, ground.Outside 4a2fb9d6b4
+  pak128: 96 pak files, 408M, ground.Outside 86e4f50e5c
+  pak192.comic: 3669 pak files, 889M, ground.Outside 175a05b974
+
+saves: q25.sve b7b775328f (304734 bytes)
+
+toolchain: g++.exe (Rev5, Built by MSYS2 project) 16.1.0; WSL g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+  linux plain-sdl2-16        f8a7e0b83eeab0cb 8704536
+  linux plain-sdl2-32        345a9cd731d5ee93 8723184
+  linux plain-sdl3-32        72b08cf967f0be38 8728448
+  linux hook-sdl2-32         e6a18c9ba379133d 8735992
+  linux hook-sdl2-32-asan    00ba3204123a3632 25378248

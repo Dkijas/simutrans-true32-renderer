@@ -1,0 +1,84 @@
+# Real-frame benchmark - RECERTIFICATION-02
+# frames = completed presents (dr_flush) counted in the backends (laboratory build); world marked dirty every loop iteration;
+# pak128 q25.sve paused, camera 60,40, 3 windows of 20 s per run; ref-gdi-16 = pure trunk r12254 + lab hook,
+# hook-gdi-16 = candidate built at 16, hook-gdi-32 = candidate built at 32 (TRUE32). g++ 16.1.0 MinGW-w64, -O3, MULTI_THREAD.
+
+capped at the product frame limiter (fps 100), 1920x1080, 1 lane: all three hold 100.0 fps (2000 frames per window, min 1985)
+
+uncapped (fps target 1000), 1920x1080, 1 lane, quiet machine, interleaved 3 passes x 3 windows:
+  ref-gdi-16   ms/frame median 4.883 (4.574-5.135)  fps 204.8
+  hook-gdi-32  ms/frame median 2.550 (2.138-3.160)  fps 392.2
+uncapped, 5 runs x 3 windows (first series, other laboratory load present):
+  ref-gdi-16   5.726 (5.168-6.653)   hook-gdi-16 5.187 (4.661-5.380)   hook-gdi-32 2.410 (2.259-4.036)
+scaling checks (2 runs x 3 windows):
+  GDI  1024x640  1 lane:  16-bit 1.331   32-bit 1.071
+  SDL2 1920x1080 1 lane:  16-bit 3.252   32-bit 2.861   (candidate built at 16 vs at 32)
+  GDI  1920x1080 4 lanes: 16-bit 5.671   32-bit 5.059
+
+memory (working set, pak128 q25, 1 lane): GDI 16-bit 487.5 MB / 32-bit 919.6 MB; SDL3 16-bit 522.7 MB / 32-bit 962.2 MB
+stability run (SDL3 32-bit, 38 min): 964 MB at start, 983-990 MB from cycle 5 on, 990 MB at the end, peak 998 MB
+
+raw per-window lines (build, then the hook's BENCH line):
+  ref-gdi-16  BENCH frames=3870 elapsed=20000 ms  5.168 ms/frame  193.50 fps  cpu=19859.4 ms  5.132 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3662 elapsed=20000 ms  5.461 ms/frame  183.10 fps  cpu=20000.0 ms  5.461 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3471 elapsed=20009 ms  5.765 ms/frame  173.47 fps  cpu=19859.4 ms  5.722 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3612 elapsed=20004 ms  5.538 ms/frame  180.56 fps  cpu=19859.4 ms  5.498 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3334 elapsed=20006 ms  6.001 ms/frame  166.65 fps  cpu=19859.4 ms  5.957 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3557 elapsed=20004 ms  5.624 ms/frame  177.81 fps  cpu=20015.6 ms  5.627 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3493 elapsed=20001 ms  5.726 ms/frame  174.64 fps  cpu=20000.0 ms  5.726 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3573 elapsed=20002 ms  5.598 ms/frame  178.63 fps  cpu=20000.0 ms  5.598 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3687 elapsed=20009 ms  5.427 ms/frame  184.27 fps  cpu=20093.8 ms  5.450 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3006 elapsed=20000 ms  6.653 ms/frame  150.30 fps  cpu=19921.9 ms  6.627 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3323 elapsed=20003 ms  6.020 ms/frame  166.13 fps  cpu=19875.0 ms  5.981 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3456 elapsed=20004 ms  5.788 ms/frame  172.77 fps  cpu=19890.6 ms  5.755 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3026 elapsed=20007 ms  6.612 ms/frame  151.25 fps  cpu=19875.0 ms  6.568 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3198 elapsed=20007 ms  6.256 ms/frame  159.84 fps  cpu=19953.1 ms  6.239 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3817 elapsed=20002 ms  5.240 ms/frame  190.83 fps  cpu=20171.9 ms  5.285 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=4036 elapsed=20001 ms  4.956 ms/frame  201.79 fps  cpu=20109.4 ms  4.983 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=4165 elapsed=20007 ms  4.804 ms/frame  208.18 fps  cpu=20140.6 ms  4.836 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=4096 elapsed=20000 ms  4.883 ms/frame  204.80 fps  cpu=20093.8 ms  4.906 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3896 elapsed=20007 ms  5.135 ms/frame  194.73 fps  cpu=19921.9 ms  5.113 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=4223 elapsed=20000 ms  4.736 ms/frame  211.15 fps  cpu=19953.1 ms  4.725 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=3962 elapsed=20006 ms  5.049 ms/frame  198.04 fps  cpu=20000.0 ms  5.048 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=4374 elapsed=20008 ms  4.574 ms/frame  218.61 fps  cpu=20000.0 ms  4.572 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=4339 elapsed=20008 ms  4.611 ms/frame  216.86 fps  cpu=20000.0 ms  4.609 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  ref-gdi-16  BENCH frames=4045 elapsed=20007 ms  4.946 ms/frame  202.18 fps  cpu=20031.2 ms  4.952 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=3920 elapsed=20005 ms  5.103 ms/frame  195.95 fps  cpu=20078.1 ms  5.122 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=3856 elapsed=20000 ms  5.187 ms/frame  192.80 fps  cpu=20109.4 ms  5.215 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=3719 elapsed=20007 ms  5.380 ms/frame  185.88 fps  cpu=20062.5 ms  5.395 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=3854 elapsed=20000 ms  5.189 ms/frame  192.70 fps  cpu=20187.5 ms  5.238 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=3804 elapsed=20001 ms  5.258 ms/frame  190.19 fps  cpu=20046.9 ms  5.270 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=3718 elapsed=20000 ms  5.379 ms/frame  185.90 fps  cpu=20234.4 ms  5.442 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=4175 elapsed=20006 ms  4.792 ms/frame  208.69 fps  cpu=20093.8 ms  4.813 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=4291 elapsed=20000 ms  4.661 ms/frame  214.55 fps  cpu=20109.4 ms  4.686 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=4076 elapsed=20002 ms  4.907 ms/frame  203.78 fps  cpu=20203.1 ms  4.957 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=3850 elapsed=20005 ms  5.196 ms/frame  192.45 fps  cpu=20078.1 ms  5.215 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=3731 elapsed=20005 ms  5.362 ms/frame  186.50 fps  cpu=20000.0 ms  5.360 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=3770 elapsed=20001 ms  5.305 ms/frame  188.49 fps  cpu=20062.5 ms  5.322 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=4151 elapsed=20005 ms  4.819 ms/frame  207.50 fps  cpu=19968.8 ms  4.811 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=4284 elapsed=20006 ms  4.670 ms/frame  214.14 fps  cpu=20046.9 ms  4.679 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-16  BENCH frames=4223 elapsed=20002 ms  4.736 ms/frame  211.13 fps  cpu=20109.4 ms  4.762 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=6927 elapsed=20000 ms  2.887 ms/frame  346.35 fps  cpu=20000.0 ms  2.887 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=7852 elapsed=20000 ms  2.547 ms/frame  392.60 fps  cpu=19984.4 ms  2.545 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8178 elapsed=20006 ms  2.446 ms/frame  408.78 fps  cpu=20093.8 ms  2.457 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8440 elapsed=20000 ms  2.370 ms/frame  422.00 fps  cpu=19984.4 ms  2.368 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8628 elapsed=20001 ms  2.318 ms/frame  431.38 fps  cpu=20031.2 ms  2.322 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8055 elapsed=20000 ms  2.483 ms/frame  402.75 fps  cpu=20156.2 ms  2.502 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=4956 elapsed=20001 ms  4.036 ms/frame  247.79 fps  cpu=19812.5 ms  3.998 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8364 elapsed=20001 ms  2.391 ms/frame  418.18 fps  cpu=19953.1 ms  2.386 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8300 elapsed=20001 ms  2.410 ms/frame  414.98 fps  cpu=20031.2 ms  2.413 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=7286 elapsed=20001 ms  2.745 ms/frame  364.28 fps  cpu=19984.4 ms  2.743 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8469 elapsed=20003 ms  2.362 ms/frame  423.39 fps  cpu=20171.9 ms  2.382 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8057 elapsed=20000 ms  2.482 ms/frame  402.85 fps  cpu=20156.2 ms  2.502 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8624 elapsed=20000 ms  2.319 ms/frame  431.20 fps  cpu=19968.8 ms  2.315 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8831 elapsed=20005 ms  2.265 ms/frame  441.44 fps  cpu=19937.5 ms  2.258 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8853 elapsed=20003 ms  2.259 ms/frame  442.58 fps  cpu=20000.0 ms  2.259 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=6329 elapsed=20000 ms  3.160 ms/frame  316.45 fps  cpu=19937.5 ms  3.150 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=7051 elapsed=20000 ms  2.836 ms/frame  352.55 fps  cpu=20015.6 ms  2.839 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=7125 elapsed=20005 ms  2.808 ms/frame  356.16 fps  cpu=20078.1 ms  2.818 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=7844 elapsed=20001 ms  2.550 ms/frame  392.18 fps  cpu=20093.8 ms  2.562 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8113 elapsed=20002 ms  2.465 ms/frame  405.61 fps  cpu=19984.4 ms  2.463 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=7522 elapsed=20006 ms  2.660 ms/frame  375.99 fps  cpu=19984.4 ms  2.657 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=9356 elapsed=20004 ms  2.138 ms/frame  467.71 fps  cpu=19968.8 ms  2.134 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8636 elapsed=20006 ms  2.317 ms/frame  431.67 fps  cpu=20000.0 ms  2.316 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000
+  hook-gdi-32  BENCH frames=8572 elapsed=20002 ms  2.333 ms/frame  428.56 fps  cpu=20062.5 ms  2.340 cpu-ms/frame  screen 1920x1080 threads=1 fps-target=1000

@@ -1,0 +1,17 @@
+# Cross-backend consistency (paused state, wall-clock waits) and presentation checks - RECERTIFICATION-02
+framebuffer, same paused state (pak128 q25, camera 60,40, 1024x640, load report closed):
+  c1_day         GDI/SDL2 100.00% identical | GDI/SDL3 100.00% | SDL2/SDL3 100.00%
+  c2_night5      GDI/SDL2 100.00% | GDI/SDL3 100.00% | SDL2/SDL3 100.00%
+  c3_zoomout     GDI/SDL2 100.00% | GDI/SDL3 100.00% | SDL2/SDL3 100.00%
+  c4_transparent GDI/SDL2 100.00% | GDI/SDL3 100.00% | SDL2/SDL3 100.00%
+window (PrintWindow of the process's own window) vs framebuffer (production screenshot), per backend:
+  GDI 32-bit, SDL2 32-bit, SDL3 32-bit: 100.00% identical on all 4 frames each
+
+TRUE32 pixel evidence - fraction of pixels whose value is NOT on the RGB565 lattice (r,b in k*255//31; g in k*255//63):
+  view32-gdi-pak128    02_center_60_40 99.7%   07_night6 99.8%   09_hide_transparent1 99.7%   15_resized_1400x900 99.9%
+  view32-sdl2-pak128   02_center_60_40 99.7%   07_night6 99.8%
+  view32-sdl3-pak128   02_center_60_40 99.7%   07_night6 99.7%
+  view32-gdi-pak64     02_center_60_40 99.5%   07_night6 98.9%
+  smoke16-gdi-pak128   01_center 0.0%   03_night 0.0%   (legacy 16-bit control)
+  smoke16-sdl3-pak128  01_center 0.0%   03_night 0.0%   (legacy 16-bit control)
+  same paused frame, evidence/true32-precision.png: GDI 16-bit 0.0%, GDI 32-bit 99.7%

@@ -1,0 +1,62 @@
+# resize sequences - sdl3 32-bit, 1 lane, live: clip sequence + maximise geometry (RECERTIFICATION-02)
+[frame 0 t=1009892281ms] script loaded: 36 commands; COLOUR_DEPTH=32 sizeof(PIXVAL)=4 threads=1 fps=25
+[frame 1 t=1009892281ms] wait 100
+[frame 102 t=1009892468ms] closeall: windows closed
+[frame 102 t=1009892468ms] wait 5
+[frame 108 t=1009892468ms] clip lane0 x 0..1024 y 0..640  screen 1024x640  MATCH
+[frame 108 t=1009892562ms] screenshot r0_1024x640.png (1024x640) -> ok
+[frame 108 t=1009892562ms] resize request 900x600 -> screen 900x600
+[frame 108 t=1009892562ms] wait 30
+[frame 139 t=1009892640ms] clip lane0 x 0..900 y 0..600  screen 900x600  MATCH
+[frame 139 t=1009892765ms] screenshot r1_shrink_900x600.png (900x600) -> ok
+[frame 139 t=1009892765ms] resize request 1400x900 -> screen 1400x900
+[frame 139 t=1009892765ms] wait 30
+[frame 170 t=1009892765ms] clip lane0 x 0..1400 y 0..900  screen 1400x900  MATCH
+[frame 170 t=1009893015ms] screenshot r2_enlarge_1400x900.png (1400x900) -> ok
+[frame 170 t=1009893015ms] resize request 640x400 -> screen 640x400
+[frame 170 t=1009893015ms] wait 30
+[frame 201 t=1009893093ms] clip lane0 x 0..640 y 0..400  screen 640x400  MATCH
+[frame 201 t=1009893140ms] screenshot r3_shrink_640x400.png (640x400) -> ok
+[frame 201 t=1009893140ms] resize request 1280x800 -> screen 1280x800
+[frame 201 t=1009893140ms] wait 30
+[frame 232 t=1009893218ms] clip lane0 x 0..1280 y 0..800  screen 1280x800  MATCH
+[frame 232 t=1009893421ms] screenshot r4_enlarge_1280x800.png (1280x800) -> ok
+[frame 232 t=1009893437ms] resize request 800x500 -> screen 800x500
+[frame 232 t=1009893437ms] wait 30
+[frame 263 t=1009893500ms] clip lane0 x 0..800 y 0..500  screen 800x500  MATCH
+[frame 263 t=1009893500ms] resize request 1200x750 -> screen 1200x750
+[frame 263 t=1009893500ms] wait 30
+[frame 294 t=1009893578ms] clip lane0 x 0..1200 y 0..750  screen 1200x750  MATCH
+[frame 294 t=1009893578ms] resize request 700x450 -> screen 700x450
+[frame 294 t=1009893578ms] wait 30
+[frame 325 t=1009893625ms] clip lane0 x 0..700 y 0..450  screen 700x450  MATCH
+[frame 325 t=1009893703ms] screenshot r5_after_cycles.png (700x450) -> ok
+[frame 325 t=1009893703ms] resize request 1024x640 -> screen 1024x640
+[frame 325 t=1009893703ms] wait 30
+[frame 356 t=1009893781ms] clip lane0 x 0..1024 y 0..640  screen 1024x640  MATCH
+[frame 356 t=1009893921ms] screenshot r6_back.png (1024x640) -> ok
+[frame 356 t=1009893921ms] quit (harness-initiated: env_t::quit_simutrans = true, presents so far 253)
+[frame 0 t=1009909625ms] script loaded: 23 commands; COLOUR_DEPTH=32 sizeof(PIXVAL)=4 threads=1 fps=25
+[frame 1 t=1009909625ms] wait 100
+[frame 102 t=1009909828ms] closeall: windows closed
+[frame 102 t=1009909828ms] wait 5
+[frame 108 t=1009909828ms] clip lane0 x 0..1024 y 0..640  screen 1024x640  MATCH
+[frame 108 t=1009909828ms] resize request 3424x1360 -> screen 3424x1360
+[frame 108 t=1009909828ms] wait 30
+[frame 139 t=1009909921ms] clip lane0 x 0..3424 y 0..1360  screen 3424x1360  MATCH
+[frame 139 t=1009910765ms] screenshot m1_max_3424x1360.png (3424x1360) -> ok
+[frame 139 t=1009910765ms] resize request 1024x640 -> screen 1024x640
+[frame 139 t=1009910765ms] wait 30
+[frame 170 t=1009910843ms] clip lane0 x 0..1024 y 0..640  screen 1024x640  MATCH
+[frame 170 t=1009911000ms] screenshot m2_restore_1024x640.png (1024x640) -> ok
+[frame 170 t=1009911000ms] resize request 640x400 -> screen 640x400
+[frame 170 t=1009911000ms] wait 30
+[frame 201 t=1009911078ms] clip lane0 x 0..640 y 0..400  screen 640x400  MATCH
+[frame 201 t=1009911078ms] resize request 3424x1360 -> screen 3424x1360
+[frame 201 t=1009911078ms] wait 30
+[frame 232 t=1009911187ms] clip lane0 x 0..3424 y 0..1360  screen 3424x1360  MATCH
+[frame 232 t=1009912031ms] screenshot m3_max_again.png (3424x1360) -> ok
+[frame 232 t=1009912031ms] resize request 1024x640 -> screen 1024x640
+[frame 232 t=1009912031ms] wait 30
+[frame 263 t=1009912109ms] clip lane0 x 0..1024 y 0..640  screen 1024x640  MATCH
+[frame 263 t=1009912109ms] quit (harness-initiated: env_t::quit_simutrans = true, presents so far 251)
