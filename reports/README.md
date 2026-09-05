@@ -48,3 +48,11 @@ for review. They can be provided on request.
 - **RGBA32-CMAKE-MSVC-01.md** - CMake and Visual Studio renderer selection
   by `COLOUR_DEPTH`, certified as build-file changes only (v2 patch); the
   18 renderer files unchanged.
+
+## Android build path (after the build-system integration)
+
+- **RGBA32-ANDROID-BUILD-DEPTH-01.md** - the Android build chain is
+  Gradle -> CMake -> Simutrans' root CMakeLists (so the v2 `COLOUR_DEPTH`
+  rule applies: default 16, opt-in 32); the old `AndroidBuild.sh` is not
+  used; a TRUE32 x86_64 APK built, installed and rendered on the emulator;
+  internal framebuffer precision left UNVERIFIED there.

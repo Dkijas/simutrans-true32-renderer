@@ -114,6 +114,14 @@ see [docs/BUILDING.md](docs/BUILDING.md) and the build-integration section of
 
 (Not redistributed here; see [docs/TESTING.md](docs/TESTING.md).)
 
+## Status by platform
+
+    Windows GDI32 / SDL2-32 / SDL3-32   PRODUCT CERTIFIED
+    Build systems Makefile / CMake / MSBuild   certified (16 and 32)
+    Linux                               compile PASS, runtime ENVIRONMENT_BLOCKED
+    Android (Gradle/CMake, x86_64)      compile, package and emulator run PASS at 32;
+                                        internal framebuffer precision UNVERIFIED
+
 ## Known limitation
 
 In the WSL Linux environment used for certification, FreeType cannot load

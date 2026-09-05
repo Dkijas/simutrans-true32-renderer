@@ -129,6 +129,33 @@ places the executable and the data directory as before (the install rules
 never name a renderer object); its NSIS step fails in this environment for
 the unmodified tree and the candidate alike.
 
+## Status matrix
+
+    Windows GDI32              PRODUCT CERTIFIED  (RECERTIFICATION-02)
+    Windows SDL2-32            PRODUCT CERTIFIED
+    Windows SDL3-32            PRODUCT CERTIFIED
+    Build systems (Makefile / CMake / MSBuild)   CERTIFIED (CMAKE-MSVC-01)
+    Linux compile (SDL2-16/32, SDL3-32)          PASS
+    Linux runtime                                ENVIRONMENT_BLOCKED (fonts)
+    Android compile 32 (x86_64)                  PASS      (ANDROID-BUILD-DEPTH-01)
+    Android package 32 (APK)                     PASS
+    Android emulator run 32                      PASS
+    Android internal framebuffer precision       UNVERIFIED
+    Android physical device / ARM                NOT RUN
+
+## Android (ANDROID-BUILD-DEPTH-01)
+
+Build chain Gradle -> CMake -> Simutrans root CMakeLists; `COLOUR_DEPTH`
+default 16, opt-in 32 through the project's gradle CMake arguments;
+`src/android/AndroidBuild.sh` and `AndroidAppSettings.cfg.in` are not on
+that chain. TRUE32 x86_64 build: compile PASS, link PASS, APK PASS,
+`simgraph32.cc.o` only, 89 simgraph32 / 0 simgraph16 symbols; default
+build: `simgraph16.cc.o` only. Emulator (android-35 x86_64, swiftshader):
+startup, pak128 selection, welcome world and a new 256x256 game rendered;
+SDL3 presentation surface RGBA8888. Width contracts (STORED 2, SCREEN32 4,
+SAVED 4, NETWORK 2) hold under the NDK. Not proven: pixel precision of the
+internal framebuffer (see LIMITATIONS.md).
+
 ## Earlier certification and remediation
 
 The first full certification

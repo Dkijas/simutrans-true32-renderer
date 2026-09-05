@@ -67,6 +67,27 @@ both LF and CRLF checkouts (verified with `patch -p1` and
 `svn:eol-style native` would normalise the files - a maintainer step, not
 done here so that the certified identity stays verifiable.
 
+## Android: builds and runs at 32, pixel precision UNVERIFIED
+
+The Gradle/CMake Android build selects the renderer by `COLOUR_DEPTH`
+(default 16, `-DCOLOUR_DEPTH=32` opt-in; BUILDING.md section 5). The
+TRUE32 x86_64 APK was built, installed and run on an android-35 emulator:
+startup, pakset selection, welcome world and a new game render, the
+SDL3 window/presentation surface is RGBA8888, and the installed library
+contains the 32-bit renderer only. What is NOT yet proven on Android is
+pixel precision inside the app's own framebuffer: emulator screen
+captures pass through SDL's GLES renderer, which scales and filters the
+texture of the 16-bit and 32-bit builds alike, so they cannot tell the
+two apart (both show many intermediate colours). Until an internal,
+pre-presentation framebuffer capture is analysed, the status is
+
+    Android compile 32 / package / emulator run:  PASS
+    Android TRUE32 framebuffer precision:         UNVERIFIED
+    physical devices, ARM ABIs, performance:      not tested
+
+The Android default stays 16-bit; nothing in the Android release
+configuration was changed.
+
 ## Not measured
 
 - Load time at 32 bits (initial image recode), observed about 3x longer

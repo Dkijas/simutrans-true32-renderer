@@ -93,12 +93,41 @@ The executable is `<Platform>\<Configuration>\Simutrans GDI Nightly.exe`
 - MSBuild hand projects (MSVC 2022 17.14, x64 Release): 16, 32 and default
   link with 0 errors; 24 rejected; pristine r12254 builds the same way.
 
+## 5. Android (Gradle -> CMake; validated: ANDROID-BUILD-DEPTH-01)
+
+The Android app is built by the separate `simutrans-android-project`
+(Gradle): `simutrans/build.gradle` -> `externalNativeBuild` ->
+`jni/CMakeLists.txt` -> `add_subdirectory(simutrans)`, i.e. Simutrans'
+own root `CMakeLists.txt` with `-DSIMUTRANS_BACKEND=sdl3`. The renderer is
+therefore selected by the same `COLOUR_DEPTH` rule as any CMake build:
+
+    default (no argument)         -> COLOUR_DEPTH=16, simgraph16.cc   (unchanged)
+    arguments "-DCOLOUR_DEPTH=32" -> COLOUR_DEPTH=32, simgraph32.cc   (opt-in, TRUE32)
+
+added to the `cmake { arguments ... }` list of that project's
+`simutrans/build.gradle`. No Simutrans-side change is needed.
+
+`src/android/AndroidBuild.sh` (which writes `COLOUR_DEPTH=16` into a
+Makefile config) and `AndroidAppSettings.cfg.in` (`VideoDepthBpp=16`) are
+files of the earlier ndk-build / pelya-SDL route; the current Gradle build
+does not execute them, so their fixed 16 has no effect on the tested
+route. They are left as they are (separate Android maintenance).
+
+Validated (x86_64, NDK 27.0.12077973, SDK platforms 35, Gradle 8.13, JDK
+21, `./gradlew assembleDebug`): the 32-bit build compiles and links only
+`simgraph32.cc.o` (89 simgraph32 symbols, 0 simgraph16 in the unstripped
+library), packages as an APK, installs on an android-35 x86_64 emulator,
+shows the pakset chooser, loads pak128, renders the welcome world and a
+newly generated 256x256 game; the default build compiles only
+`simgraph16.cc.o`. See docs/LIMITATIONS.md for what is not yet proven on
+Android.
+
 ## Not covered
 
 - `COLOUR_DEPTH=0` (headless server): unchanged, not exercised by this
   work.
-- macOS and Android CMake arms: the selection code is generic, but no
-  build was run there.
+- macOS CMake arm: the selection code is generic, but no build was run
+  there.
 
 ## Runtime
 
