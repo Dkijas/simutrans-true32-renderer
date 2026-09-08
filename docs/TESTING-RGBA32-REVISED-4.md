@@ -4,11 +4,17 @@ This branch carries a **later candidate** than the r12254 one on `main`. It is
 published for **testers**, with a prebuilt Windows binary, so people can play
 with it without building anything.
 
-    EXPERIMENTAL PROTOTYPE FOR TESTING
-    Not integrated into Simutrans Standard
-    Not an official Simutrans release
+    CANDIDATE PUBLISHED FOR TESTING
+    STANDARD INTEGRATION: NOT AUTHORISED / NOT PERFORMED
+    Experimental prototype. Not an official Simutrans release.
+
+Next step: **tester feedback and its evaluation** — not SVN integration.
 
 `main` is untouched. The r12254 review candidate stays exactly where it is.
+
+Download: [`rgba32-revised-4-r12261-testing-1`](https://github.com/Dkijas/simutrans-true32-renderer/releases/tag/rgba32-revised-4-r12261-testing-1)
+(Windows x86_64, SDL2, archive sha256
+`99a1c3e46c0d875ce8cb6bab30058c302d93d8cf199b1284cf24957522319632`).
 
 ## Identity
 
