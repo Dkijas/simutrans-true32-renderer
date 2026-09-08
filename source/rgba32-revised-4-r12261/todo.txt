@@ -1,0 +1,18 @@
+To be done:
+- weight limit on ways by axle_load entry in vehicles (to avoid problem when going back and forth with diff. load)
+- busy platform images
+- city wayobj instead just sidewalks
+- building/tree heights in dats
+- fog view to the top?
+- bahnhofsdetaildialog (more text on the station buildings)
+- pier like extended instead monorail ground
+
+partially done:
+- connection weighted by their intermediate stops => A* for goods routing [A* did not worked out, but intermediate stops may be considered]
+
+reconsider:
+- leave stop if other convoi has arrived there patch
+- viewports (even if they are perfomance killers ... )
+- routing penalty sign (but a proper one)
+
+
