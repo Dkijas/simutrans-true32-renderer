@@ -152,7 +152,7 @@ Not introduced by this candidate, not fixed by it, and not claimed harmless.
 |---|---|---|
 | L1 | left shift of a negative value in the clipping code | verbatim from `simgraph16.cc`; reproduces in trunk; now also compiled into `blit_clip_core.h` |
 | L2 | unlocked read of `recode_flags` in the main viewport | trunk's; this candidate adds a writer under the same mutex and does not widen it |
-| L3 | one-element overread in `create_texture_from_tile` when a **ground** image carries a semi-transparent pixel | trunk's; no shipped pakset has such art. AddressSanitizer could not cover the case: it aborts during world creation before the first frame |
+| L3 | one-element overread in `create_texture_from_tile` when a **ground** image carries a semi-transparent pixel | trunk's; no shipped pakset has such art. AddressSanitizer **did detect** it, during world creation; that abort is what prevented running the later semi-transparent fixture rendering test under ASan |
 
 ## Reporting
 
