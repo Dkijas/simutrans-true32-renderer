@@ -1,0 +1,232 @@
+Simutrans RGBA32 - experimental Linux test build
+================================================
+
+EXPERIMENTAL PROTOTYPE. NOT integrated into Simutrans Standard, not an official
+Simutrans release, and not a stable version.
+
+  candidate      RGBA32-CANDIDATE-REVISED-4
+  patch sha256   b562c2da8dd1281809cb8a08a657423578a0daf67068d0560e0936238d6cc08c
+  base           official SVN trunk r12261
+                 (git ecca332dca25025833f5ce6641491f8886a3ef9f)
+  build          Linux x86_64, SDL2, GCC 15.2.0, Release, multithreaded
+  built from     cmake -DSIMUTRANS_BACKEND=sdl2 -DSIMUTRANS_TRUE32=ON
+
+
+1. What is in this folder
+-------------------------
+
+  simutrans-rgba32       the build to test. 32-bit ARGB8888 renderer, ACTIVE.
+  simutrans-16bit        the same source tree built with the ordinary 16-bit
+                         renderer, for side-by-side comparison.
+  config/ font/ text/    the Simutrans data directory from r12261
+  themes/ script/ ai/
+  music/
+  LICENSE.txt            Artistic License 1.0, as shipped with the source
+  license.txt            the data directory's own licence notice
+  RGBA32-CANDIDATE-REVISED-4.diff   the exact patch this build was made from
+  SHA256SUMS.txt         hashes of the two executables and the patch
+
+No pakset is included. No savegames are included.
+
+
+2. What your system needs
+-------------------------
+
+These are dynamically linked, not bundled. The direct dependencies are:
+
+  libSDL2-2.0.so.0   libpng16.so.16   libz.so.1        libbz2.so.1.0
+  libfontconfig.so.1 libfreetype.so.6 libzstd.so.1     libminiupnpc.so.21
+  libstdc++.so.6     libgcc_s.so.1    libm.so.6        libc.so.6
+
+On the Ubuntu 26.04 box these were built on, that is:
+
+  libsdl2-classic libpng16-16t64 zlib1g libbz2-1.0 libfontconfig1
+  libfreetype6 libzstd1 libminiupnpc21
+
+Check before reporting a startup failure:
+
+  ldd ./simutrans-rgba32 | grep 'not found'
+
+libminiupnpc is the one most likely to be missing or to carry a different
+soname on your distribution - it is versioned (`.so.21` here). If that is your
+only blocker, say so in the report; it is a packaging question, not a renderer
+question.
+
+Built and linked against glibc on Ubuntu 26.04. **One build is not a promise
+that it runs on every distribution.** If it does not start on yours, that is
+useful information - please report the distribution and the exact error.
+
+
+3. How to run it
+----------------
+
+  1. Extract into a directory of its own, NOT over your normal Simutrans
+     installation. It is a separate test directory on purpose.
+
+       tar -xzf simutrans-rgba32-revised4-r12261-linux-x86_64-sdl2.tar.gz
+       cd simutrans-rgba32-revised4-r12261-linux-x86_64-sdl2
+
+  2. Put a pakset inside it, as a subdirectory, exactly as in a normal
+     Simutrans directory:
+
+       ./pak/        (pak64)
+       ./pak128/
+
+     Copy it from your own installation or fetch it from simutrans.com.
+
+  3. Copy in any savegames you want to try, under ./save/.
+     PLEASE USE COPIES. Do not point this build at your only copy of a game
+     you care about.
+
+  4. Run:
+
+       ./simutrans-rgba32 -singleuser
+
+     `-singleuser` keeps settings, screenshots and saves inside this directory
+     instead of your ~/.simutrans (or ~/simutrans). That is what keeps the test
+     separate from your normal installation.
+
+     With more than one pakset present, choose one with `-objects pak128`.
+
+  To compare, run `./simutrans-16bit -singleuser` on the same world. The two
+  binaries differ only in the renderer.
+
+  Useful when reporting: `-debug 3` writes the log to stderr.
+
+
+4. What this build actually changes
+-----------------------------------
+
+The screen framebuffer and the per-player image caches are ARGB8888 instead of
+RGB565. Everything that mixes colours while drawing - day and night shading,
+transparency, blending, player colours, outlines, zoom filtering - works with
+8 bits per channel instead of 5/6/5.
+
+Pakset image data is NOT changed and is not widened: the stored images stay
+16-bit exactly as they are today. Savegames and the network protocol are
+unchanged.
+
+
+5. XR32 - please read before expecting anything from it
+-------------------------------------------------------
+
+XR32 is an optional extra node this engine can read from a pak file. It needs
+all three of:
+
+  - a 32-bit build (this one is), and
+  - the environment variable SIMUTRANS_XR32 set so that its FIRST CHARACTER is
+    '1'. It is read once at startup with getenv("SIMUTRANS_XR32"). It is not a
+    CMake option, not a command-line switch and not a simuconf.tab setting:
+
+      SIMUTRANS_XR32=1 ./simutrans-rgba32 -singleuser
+
+  - and a pakset that actually contains XR32 nodes.
+
+NO PUBLIC PAKSET CONTAINS THEM. The makeobj that would write them is not part
+of this candidate at all. On any pakset you can download today, setting
+SIMUTRANS_XR32=1 changes nothing you can see.
+
+Testing the 32-bit renderer with your ordinary IMG paksets is the useful test.
+
+
+6. What has been measured, and what has not
+--------------------------------------------
+
+Measured:
+
+  - The 16-bit renderer's output is unchanged by this candidate: 13440 drawing
+    cases - three zooms, four clipping passes, seven draw families, eighty
+    images, two players - byte-identical to trunk r12261, with two deliberately
+    injected defects in the shared code caught by the same comparison.
+  - The 32-bit renderer's colour contracts, its zoom resampling (exact over 645
+    million pixels) and three multithreading defects found and fixed with
+    sanitizers and negative controls.
+  - This Linux package: extracted from the archive, both binaries start, load a
+    pakset and enter a world, with the 32-bit framebuffer confirmed active.
+
+NOT measured, and exactly what your feedback is for:
+
+  - long real play sessions on real paksets;
+  - any distribution, driver, desktop or GPU other than the one this was built
+    on;
+  - Wayland versus X11 differences;
+  - the GDI and SDL3 backends: not built here.
+
+Three known defects are inherited from Simutrans itself and are NOT fixed by
+this candidate. None is introduced by it, and none is claimed harmless:
+
+  L1  a left shift of a negative value in the clipping code, present in trunk
+      and now also compiled into the shared clipping header.
+  L2  an unlocked read of an image's recode flags in the main viewport, which
+      is trunk's, and which this candidate does not widen.
+  L3  a one-element overread when a GROUND image contains a semi-transparent
+      pixel. AddressSanitizer did detect it, during world creation. No shipped
+      pakset has such art. Reproduces in unmodified trunk.
+
+
+7. Reporting what you find
+--------------------------
+
+  https://github.com/Dkijas/simutrans-true32-renderer/issues
+
+There is a "Bug / regression" template. Please include:
+
+  - this package name and the candidate from the top of this file;
+  - your distribution and version, desktop (X11 or Wayland), GPU and driver;
+  - pakset and its version;
+  - the steps that produce it, from a fresh start;
+  - the ZOOM LEVEL and which window was open - most of the changed code is in
+    clipping and zoom, so this matters more than usual;
+  - a screenshot, and the log if the program stopped (`-debug 3`);
+  - a minimal savegame if the problem needs one.
+
+Most useful to try, in rough order:
+
+  - scroll and zoom through a large map, all zoom levels, watching for
+    misplaced or missing pixels at tile edges;
+  - open info windows - tile, station, convoy, depot, line - at zoom levels
+    other than the default one;
+  - transparency: underground view, cursors, the transparent building mode;
+  - player colours on vehicles and stations, with more than one player;
+  - day/night transitions;
+  - a long session, an hour or more, on a busy map;
+  - save and reload, and compare against simutrans-16bit on the same save.
+
+Please report differences against `simutrans-16bit` rather than against your
+memory of another version - that comparison is the useful signal.
+
+
+8. Building it yourself
+-----------------------
+
+The complete source tree is in the repository, on the branch
+`candidate/rgba32-revised-4-r12261`, under
+`source/rgba32-revised-4-r12261/`. It is r12261 plus the patch above and
+nothing else.
+
+  cmake -S source/rgba32-revised-4-r12261 -B build32 \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DSIMUTRANS_BACKEND=sdl2 \
+        -DSIMUTRANS_TRUE32=ON \
+        -DSIMUTRANS_MULTI_THREAD=ON \
+        -DSIMUTRANS_USE_REVISION=12261
+  cmake --build build32 --target simutrans -j $(nproc)
+
+Note `--target simutrans`: CMake creates a *directory* called simutrans in the
+build tree, so plain `make simutrans` is silently a no-op.
+
+Build dependencies on Ubuntu 26.04:
+
+  build-essential cmake pkg-config libsdl2-dev zlib1g-dev libpng-dev
+  libbz2-dev libfreetype-dev libfontconfig-dev libzstd-dev libminiupnpc-dev
+
+`SIMUTRANS_TRUE32` is honoured only for `SIMUTRANS_BACKEND=sdl2`; sdl3 and gdi
+stay at COLOUR_DEPTH 16 and headless at 0. Only CMake can build the 32-bit
+renderer - the GNU Makefile and the Visual Studio projects name simgraph16.cc
+and are not changed by this candidate.
+
+To confirm a build of your own really is 32-bit, look in the binary:
+
+  nm -C ./simutrans-rgba32 | grep g_simgraph
+
+must find g_simgraph32 and must not find g_simgraph16.
