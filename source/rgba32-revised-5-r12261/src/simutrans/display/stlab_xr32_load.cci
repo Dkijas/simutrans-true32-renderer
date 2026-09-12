@@ -1,0 +1,75 @@
+/* ==========================================================================
+ * XR32 candidate nodes: the loader seam.
+ *
+ * Included by pakset_manager.cc. Turns the "Skipping unknown XR32-node" branch
+ * into a parse, and pairs the parsed nodes with their sibling IMG once the
+ * parent's children have all been read.
+ *
+ * The association is the one FORMAT CANDIDATE v1 specifies: the explicit
+ * img_index, checked against the geometry guard. Nothing here depends on the
+ * candidate nodes being in any particular position beyond being children of
+ * the same parent, which is what the placement invariant already guarantees.
+ * ==========================================================================*/
+
+#include <vector>
+#include "../descriptor/image.h"
+#include "../display/stlab_xr32.h"
+
+static std::vector<stlab_xr32_image_t *> stlab_pending_candidates;
+
+
+/// read and parse one candidate node body; true if the body was consumed from the stream
+static bool stlab_xr32_read_candidate(FILE *fp, uint32 size)
+{
+	uint8 *buf = (uint8 *)malloc(size ? size : 1);
+	if(  buf == NULL  ) {
+		return false;
+	}
+	if(  size != 0  &&  fread(buf, size, 1, fp) != 1  ) {
+		free(buf);
+		return false;                      // let the caller fall back to the plain skip
+	}
+	stlab_xr32_image_t *img = NULL;
+	const char *why = "";
+	const stlab_xr32_status_t st = stlab_xr32_parse(buf, size, img, &why);
+	free(buf);
+
+	switch(  st  ) {
+		case STLAB_XR32_OK:
+			stlab_pending_candidates.push_back(img);
+			break;
+		case STLAB_XR32_UNSUPPORTED:
+			dbg->warning("stlab_xr32", "candidate node ignored, using the legacy IMG: %s", why);
+			break;
+		default:
+			dbg->warning("stlab_xr32", "candidate node rejected, using the legacy IMG: %s", why);
+			break;
+	}
+	return true;                           // the body was consumed either way
+}
+
+
+/// pair every candidate parsed while reading this node's children with its sibling IMG
+static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren)
+{
+	if(  stlab_pending_candidates.empty()  ) {
+		return;
+	}
+	for(  size_t i = 0;  i < stlab_pending_candidates.size();  i++  ) {
+		stlab_xr32_image_t *img = stlab_pending_candidates[i];
+		bool attached = false;
+		if(  children != NULL  &&  img->img_index < (uint16)nchildren  ) {
+			const image_t *im = static_cast<const image_t *>(children[img->img_index]);
+			if(  im != NULL  &&  im->get_id() != IMG_EMPTY  ) {
+				attached = stlab_xr32_attach(im->get_id(), img,
+				                             im->x, im->y, im->w, im->h, im->zoomable);
+			}
+		}
+		if(  !attached  ) {
+			dbg->warning("stlab_xr32", "candidate node could not be paired with an image, "
+			             "using the legacy IMG");
+			delete img;
+		}
+	}
+	stlab_pending_candidates.clear();
+}
