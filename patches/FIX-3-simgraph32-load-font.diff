@@ -1,0 +1,33 @@
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -14,6 +14,7 @@
+  */
+ 
+ #include "../simconst.h"
++#include "../pathes.h"      // FONT_PATH_X, for the font fallback
+ #include "../sys/simsys.h"
+ #include "../descriptor/image.h"
+ #include "../io/raw_image.h"
+@@ -2459,6 +2460,22 @@
+ 		return false;
+ 	}
+ 
++	// init, load, and check fonts. simgraph16_init() has always done this here,
++	// and doing it here is what matters: later on the working directory is the
++	// user directory, where the relative fallback below cannot resolve. Without
++	// it a 32 bit build can end up with no font at all - panels and buttons draw,
++	// because they are boxes, and no text does.
++	if (!gfx->load_font(env_t::fontname.c_str(), false)) {
++		env_t::fontname = dr_get_system_font();
++		if (!gfx->load_font(env_t::fontname.c_str(), false)) {
++			env_t::fontname = FONT_PATH_X "cyr.bdf";
++			if (!gfx->load_font(env_t::fontname.c_str(), false)) {
++				dr_fatal_notify("No fonts found!");
++				return false;
++			}
++		}
++	}
++
+ 	init_colour_tables();
+ 	dirty_state_alloc();
+ 
