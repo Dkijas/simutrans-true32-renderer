@@ -1,0 +1,42 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -250,13 +250,22 @@
+ 			"or the sdl3 vcpkg port) and configure again.")
+ 	endif ()
+ 
+-	# SDL3 as the platform layer, with the EXISTING software renderer on top:
+-	# simgraph16 still draws into a CPU framebuffer, exactly as for sdl2.
++	# SDL3 as the platform layer, with a software renderer on top drawing into a
++	# CPU framebuffer, exactly as for sdl2: simgraph16 at 16 bit, simgraph32 at
++	# 32 bit. simsys_s3.cc is already written against PIXVAL rather than against
++	# a fixed width - the framebuffer, its pitch, the pixel format and its alpha
++	# mask all follow COLOUR_DEPTH - so selecting the renderer is all that this
++	# needs.
+ 	# Sound is sdl3_sound.cc, the SDL3 counterpart of the sdl2_sound.cc the
+ 	# sdl2 backend uses. Music is not an SDL concern for either backend: it
+ 	# comes from the same per-platform routines, selected further down.
+-	target_sources(simutrans PRIVATE src/simutrans/display/simgraph16.cc src/simutrans/sys/simsys_s3.cc
+-		src/simutrans/sound/sdl3_sound.cc)
++	if (SIMUTRANS_TRUE32)
++		target_sources(simutrans PRIVATE src/simutrans/display/simgraph32.cc src/simutrans/display/stlab_xr32.cc src/simutrans/sys/simsys_s3.cc
++			src/simutrans/sound/sdl3_sound.cc)
++	else ()
++		target_sources(simutrans PRIVATE src/simutrans/display/simgraph16.cc src/simutrans/sys/simsys_s3.cc
++			src/simutrans/sound/sdl3_sound.cc)
++	endif ()
+ 	target_include_directories(simutrans PRIVATE ${SDL3_INCLUDE_DIRS})
+ 	if (MINGW)
+ 		# The static libSDL3.a pulls in a long tail of Windows libraries
+@@ -274,7 +283,11 @@
+ 	else ()
+ 		target_link_libraries(simutrans PRIVATE PkgConfig::SDL3)
+ 	endif ()
+-	set(SIMUTRANS_COLOUR_DEPTH 16)
++	if (SIMUTRANS_TRUE32)
++		set(SIMUTRANS_COLOUR_DEPTH 32)
++	else ()
++		set(SIMUTRANS_COLOUR_DEPTH 16)
++	endif ()
+ 
+ 	# Freetype is mandatory for graphical builds, exactly as for sdl2 and gdi -
+ 	# including the ANDROID arm, where freetype is an imported target rather than

@@ -1,0 +1,270 @@
+/*
+ * This file is part of the Simutrans project under the Artistic License.
+ * (see LICENSE.txt)
+ */
+
+#include <stdio.h>
+
+#include "../simdebug.h"
+#include "../pathes.h"
+#include "../display/simimg.h"
+#include "../simskin.h"
+#include "../tool/simmenu.h"
+#include "../descriptor/skin_desc.h"
+#include "sprachen.h"
+#include "loadfont_frame.h"
+#include "simwin.h"
+#include "components/gui_image.h"
+#include "components/gui_divider.h"
+
+#include "../display/font.h"
+
+#include "../dataobj/environment.h"
+#include "../dataobj/translator.h"
+#include "../sys/simsys.h"
+#include "../utils/simstring.h"
+#include "../utils/unicode.h"
+#include "../world/simworld.h"
+
+
+
+int sprachengui_t::cmp_language_button(sprachengui_t::language_button_t a, sprachengui_t::language_button_t b)
+{
+	return strcmp( a.button->get_text(), b.button->get_text() )<0;
+}
+
+
+// set currency symbol
+void sprachengui_t::init_currency_from_lang()
+{
+	const char* org = "CURRENCY";
+	const char* trans = translator::translate(org);
+	if (trans != org && env_t::currency_symbol[0] == 0) {
+		// no special symbol selected
+		bool left = *translator::translate("CURRENCY_LEFT") == '1';
+		set_currency_string(trans, left);
+		env_t::currency_symbol[0] = 0;
+		env_t::currency_left = left;
+	}
+	else if (env_t::currency_symbol[0]) {
+		set_currency_string(env_t::currency_symbol, env_t::currency_left);
+	}
+	else {
+		env_t::currency_left = false;
+		set_currency_string("$", false);
+	}
+}
+
+
+/**
+ * Causes the required fonts for currently selected
+ * language to be loaded
+ */
+void sprachengui_t::init_font_from_lang()
+{
+#if COLOUR_DEPTH != 0
+	const utf8* new_world = (const utf8*)translator::translate("Beenden");
+	size_t len;
+	utf16 testfor_this_character = utf8_decoder_t::decode(new_world, len);
+
+	bool reload_font = !gfx->font_has_character(testfor_this_character);
+
+	if(reload_font) {
+		if (env_t::fontsize == 11) {
+			// can only use fixed default with current font size
+			std::string old_font = env_t::fontname;
+
+			static const char* default_name = "PROP_FONT_FILE";
+			const char* prop_font_file = translator::translate(default_name);
+
+			if (prop_font_file == default_name) {
+				// missing font	
+			}
+			else {
+				// load large font
+				dr_chdir(env_t::base_dir);
+				bool ok = false;
+				char prop_font_file_name[4096];
+				tstrncpy(prop_font_file_name, prop_font_file, lengthof(prop_font_file_name));
+				char* f = strtok(prop_font_file_name, ";");
+				do {
+					std::string fname = FONT_PATH_X;
+					fname += prop_font_file_name;
+					ok = gfx->load_font(fname.c_str(), false);
+					f = strtok(NULL, ";");
+				} while (!ok && f);
+				dr_chdir(env_t::user_dir);
+				reload_font = false;
+			}
+
+		}
+		// if nothing is found => display font selector
+	}
+#endif
+
+	init_currency_from_lang();
+
+	const char * p = translator::translate("SEP_THOUSAND");
+	char c = ',';
+	if(*p != 'S') {
+		c = *p;
+	}
+	set_thousand_sep(c);
+	set_thousand_sep_exponent(atoi(translator::translate("SEP_THOUSAND_EXPONENT")));
+
+	p = translator::translate("SEP_FRACTION");
+	c = '.';
+	if(*p != 'S') {
+		c = *p;
+	}
+	set_fraction_sep(c);
+
+	const char *str = "LARGE_NUMBER_STRING";
+	p = translator::translate(str);
+	double v = atof( translator::translate("LARGE_NUMBER_VALUE") );
+	if(p == str  ||  v==0.0) {
+		// fallback: will ignore it
+		p = "";
+		v = 1e99;
+	}
+	set_large_amount(p,v);
+}
+
+
+sprachengui_t::sprachengui_t() :
+	gui_frame_t( translator::translate("Sprachen") ),
+	text_label(&buf),
+	buttons(translator::get_language_count())
+{
+	set_table_layout(2,0);
+
+	buf.clear();
+	buf.append(translator::translate("LANG_CHOOSE\n"));
+	text_label.set_buf(&buf); // force recalculation of size
+	add_component( &text_label );
+
+	if (skinverwaltung_t::flaggensymbol) {
+		gui_image_t *flags = new_component<gui_image_t>(skinverwaltung_t::flaggensymbol->get_image_id(0));
+		flags->enable_offset_removal(true);
+	}
+	else {
+		new_component<gui_empty_t>();
+	}
+
+	tab.add_tab(&button_plane, translator::translate("GUI"));
+	if (env_t::networkmode  ||  !world()) {
+		new_component_span<gui_divider_t>(2);
+		add_component(&button_plane, 2);
+		tab.set_active_tab_index(0);
+	}
+	else {
+		tab.add_tab(&button_plane, translator::translate("Names"));
+		add_component(&tab,2);
+		tab.add_listener(this);
+	}
+	button_plane.set_table_layout(0, 2);
+
+	const translator::lang_info* lang = translator::get_langs();
+	dr_chdir( env_t::base_dir );
+
+	for (int i = 0; i < translator::get_language_count(); ++i, ++lang) {
+		button_t* b = new button_t();
+
+		b->set_typ(button_t::square_state);
+		b->set_text(lang->name);
+		b->set_no_translate(true);
+
+		// we do not check for a working font anymore
+		b->add_listener(this);
+
+		// press button
+		int id = translator::get_language(lang->iso);
+		if(  translator::get_language() == id  ) {
+			b->pressed = true;
+		}
+
+		// insert ordered by language name
+		language_button_t lb;
+		lb.button = b;
+		lb.id = id;
+		buttons.insert_ordered(lb, sprachengui_t::cmp_language_button);
+	}
+	dr_chdir(env_t::user_dir);
+
+	// insert buttons such that language appears columnswise
+	button_plane.set_table_layout(3, 0);
+	const uint32 count = buttons.get_count();
+	const uint32 half = (count+1)/2;
+	for(uint32 i=0; i < half; i++) {
+		button_plane.add_component(buttons[i].button);
+		if (i+ half < count) {
+			button_plane.add_component(buttons[i+half].button);
+		}
+	}
+	button_plane.set_size(button_plane.get_max_size());
+
+	reset_min_windowsize();
+	set_windowsize(get_min_windowsize() );
+}
+
+
+bool sprachengui_t::action_triggered( gui_action_creator_t *comp, value_t p)
+{
+	if (comp == &tab) {
+		int lang_id = (p.i == 0) ? translator::get_language() : world()->get_settings().get_name_language_id();
+		for (int i = 0; i < translator::get_language_count(); i++) {
+			button_t* b = buttons[i].button;
+			b->pressed = lang_id == buttons[i].id;
+		}
+		return true;
+	}
+
+	for(int i=0; i<translator::get_language_count(); i++) {
+		button_t *b = buttons[i].button;
+
+		if(b == comp) {
+			b->pressed = true;
+
+			if(p.i==0) {
+				env_t::language_names_iso = NULL;
+				translator::set_language( buttons[i].id );
+				init_font_from_lang();
+
+				event_t* ev = new event_t();
+				ev->ev_class = EVENT_SYSTEM;
+				ev->ev_code = SYSTEM_RELOAD_WINDOWS;
+				queue_event( ev );
+
+				// check if we need another font ...
+
+				// we only show matching fonts for this language
+				const utf8 *new_world = (const utf8 *)translator::translate("Beenden");
+				size_t len;
+				if (!gfx->font_has_character(utf8_decoder_t::decode(new_world, len))) {
+					// load a matching font ...
+					create_win(new loadfont_frame_t(), w_info, magic_font);
+				}
+
+				if (world()) {
+					// must not update non-existent toolbars
+					tool_t::update_toolbars();
+				}
+			}
+			else {
+				if (translator::get_language() == buttons[i].id) {
+					world()->get_settings().set_name_language_iso(NULL);
+				}
+				else {
+					world()->get_settings().set_name_language_iso((translator::get_langs())[buttons[i].id].iso);
+					// maybe we should warn that there might no be a matching font in not unicode ...
+					translator::init_custom_names(world()->get_settings().get_name_language_id());
+				}
+			}
+		}
+		else {
+			b->pressed = false;
+		}
+
+	}
+	return true;
+}
