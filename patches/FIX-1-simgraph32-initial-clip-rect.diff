@@ -1,0 +1,15 @@
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -2462,6 +2462,12 @@
+ 	init_colour_tables();
+ 	dirty_state_alloc();
+ 
++	// The clipping state is a zeroed static, so without this every drawing
++	// operation is clipped against an empty rectangle and nothing reaches the
++	// framebuffer. simgraph16_init() has always ended with this line; leaving
++	// it out here made the first window black until something else set a clip.
++	simgraph32_set_clip_rect( 0, 0, disp_width, disp_height  CLIP_NUM_DEFAULT, false );
++
+ 	return true;
+ }
+ 
