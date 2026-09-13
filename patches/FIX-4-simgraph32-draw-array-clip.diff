@@ -1,0 +1,40 @@
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -2398,17 +2398,31 @@
+ 	if(  textur == NULL  ||  arr == NULL  ) {
+ 		return;
+ 	}
++	// The array has to be clipped against the active clip rectangle and not
++	// merely against the screen. The minimap reaches the framebuffer through
++	// here and is routinely larger than the window that shows it, so clipping
++	// only to the screen lets it paint over the toolbar and over the map view.
++	// simgraph16_draw_array() has always clipped against CR0.clip_rect.
++	const scr_coord_val arr_w = w;
++	const scr_coord_val xoff  = clip_wh32( &xp, &w, CR32_0.clip_rect.x, CR32_0.clip_rect.xx );
++	const scr_coord_val yoff  = clip_wh32( &yp, &h, CR32_0.clip_rect.y, CR32_0.clip_rect.yy );
++	if(  w <= 0  ||  h <= 0  ) {
++		return;
++	}
+ 	simgraph32_mark_rect_dirty_wc( xp, yp, xp + w - 1, yp + h - 1 );
+ 
++	const PIXVAL *arr_src = arr;
++	if(  xp == CR32_0.clip_rect.x  ) {
++		arr_src += xoff;
++	}
++	if(  yp == CR32_0.clip_rect.y  ) {
++		arr_src += (size_t)yoff * arr_w;
++	}
++
+ 	for(  scr_coord_val y = 0;  y < h;  y++  ) {
+-		if(  yp + y < 0  ||  yp + y >= disp_height  ) {
+-			continue;
+-		}
+ 		PIXVAL *p = textur + (size_t)(yp + y) * disp_width + xp;
+ 		for(  scr_coord_val x = 0;  x < w;  x++  ) {
+-			if(  xp + x >= 0  &&  xp + x < disp_actual_width  ) {
+-				p[x] = arr[(size_t)y * w + x];
+-			}
++			p[x] = arr_src[(size_t)y * arr_w + x];
+ 		}
+ 	}
+ }

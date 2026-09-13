@@ -1,0 +1,53 @@
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -2063,15 +2063,41 @@
+ }
+ 
+ 
+-static scr_rect simgraph32_get_image_offset(image_id)
+-{
+-	return scr_rect{ 0, 0, 0, 0 };
+-}
+-
+-
+-static scr_rect simgraph32_get_base_image_offset(image_id)
+-{
+-	return scr_rect{ 0, 0, 0, 0 };
++// query zoomed offsets
++static scr_rect simgraph32_get_image_offset(image_id image)
++{
++	// Returning an empty rectangle here is what the headless renderer does,
++	// because it has no images. This one has them, and every GUI component that
++	// asks how much room an image needs - gui_image_t, gui_building_t,
++	// gui_convoiinfo_t, gui_flowtext_t, gui_image_list_t - lays out on the answer.
++	if(  image < anz_images  ) {
++		return scr_rect{
++			images[image].x,
++			images[image].y,
++			images[image].w,
++			images[image].h
++		};
++	}
++	else {
++		return scr_rect{ 0, 0, 0, 0 };
++	}
++}
++
++
++// query un-zoomed offsets
++static scr_rect simgraph32_get_base_image_offset(image_id image)
++{
++	if(  image < anz_images  ) {
++		return scr_rect{
++			images[image].base_x,
++			images[image].base_y,
++			images[image].base_w,
++			images[image].base_h
++		};
++	}
++	else {
++		return scr_rect{ 0, 0, 0, 0 };
++	}
+ }
+ 
+ 

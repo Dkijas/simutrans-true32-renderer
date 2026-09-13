@@ -1,0 +1,307 @@
+/*
+ * This file is part of the Simutrans project under the Artistic License.
+ * (see LICENSE.txt)
+ */
+
+#ifndef OBJ_WAY_WEG_H
+#define OBJ_WAY_WEG_H
+
+
+#include "../../display/simimg.h"
+#include "../../simtypes.h"
+#include "../../obj/simobj.h"
+#include "../../descriptor/way_desc.h"
+#include "../../dataobj/koord3d.h"
+
+
+class karte_t;
+class way_desc_t;
+class cbuffer_t;
+template <class T> class slist_tpl;
+
+
+// maximum number of months to store information
+#define MAX_WAY_STAT_MONTHS 2
+
+// number of different statistics collected
+#define MAX_WAY_STATISTICS 2
+
+enum way_statistics {
+	WAY_STAT_GOODS   = 0, ///< number of goods transported over this way
+	WAY_STAT_CONVOIS = 1, ///< number of convois that passed this way
+	WAY_STAT_MAX
+};
+
+
+/**
+ * Ways is the base class for all traffic routes. (roads, track, runway etc.)
+ * Ways always "belong" to a ground. They have direction bits (ribis) as well as
+ * a mask for ribis.
+ *
+ * A way always is of a single type (waytype_t).
+ * Crossings are supported by the fact that a ground can have more than one way.
+ */
+class weg_t : public obj_no_info_t
+{
+public:
+	/**
+	* Get list of all ways
+	*/
+	static const slist_tpl <weg_t *> & get_alle_wege();
+
+private:
+	/**
+	* array for statistical values
+	* MAX_WAY_STAT_MONTHS: [0] = actual value; [1] = last month value
+	* MAX_WAY_STATISTICS: see #define at top of file
+	*/
+	sint16 statistics[MAX_WAY_STAT_MONTHS][MAX_WAY_STATISTICS];
+
+	static uint16 cityroad_speed;
+
+	/**
+	* Way type description
+	*/
+	const way_desc_t * desc;
+
+	/**
+	* Direction bits (ribis) for the way. North is in the upper right corner of the monitor.
+	* 1=North, 2=East, 4=South, 8=West
+	*/
+	uint8 ribi:4;
+
+	/**
+	* Mask for ribi (Richtungsbits => Direction Bits)
+	*/
+	uint8 ribi_maske:4;
+
+	// former flags
+	uint8 close_diagonal_state : 2; // 0=no, 1=horizontal, 2=vertical
+	uint8 diagonal_flag : 1;
+	uint8 switch_state : 2; // 0=undefined, 1=sw or nw, 2=other
+	uint8 show_flag : 1;
+	uint8 sidewalk_flag : 1;
+	uint8 electrified_flag : 1;
+	uint8 sign_flag : 1;
+	uint8 signal_flag : 1;
+	uint8 wayobj_flag : 1;
+	uint8 crossing_flag : 1;
+
+	/**
+	* max speed; could not be taken for desc, since other object may modify the speed
+	*/
+	uint16 max_speed;
+
+	image_id image;
+	image_id foreground_image;
+
+	/**
+	* Initializes all member variables
+	*/
+	void init();
+
+	/**
+	* initializes statistic array
+	*/
+	void init_statistics();
+
+protected:
+
+public:
+	weg_t(loadsave_t*) : obj_no_info_t() { init(); }
+	weg_t() : obj_no_info_t() { init(); }
+
+	virtual ~weg_t();
+
+	/**
+	 * @returns true if a crossing is needed
+	 */
+	bool needs_crossing(const way_desc_t* other) const;
+
+#ifdef MULTI_THREAD
+	void lock_mutex();
+	void unlock_mutex();
+#endif
+
+	virtual bool is_clipping_below_needed() const OVERRIDE;
+
+	/**
+	 * Actual image recalculation
+	 */
+	void calc_image() OVERRIDE;
+
+	enum image_type {
+		image_flat,
+		image_slope,
+		image_diagonal,
+		image_close_diagonal,
+		image_switch
+	};
+
+	/**
+	 * initializes both front and back images
+	 * switch images are set in schiene_t::reserve
+	 * needed by tunnel mouths
+	 */
+	void set_images(image_type typ, uint8 ribi, bool snow, uint8 switch_nw = 0);
+
+	/**
+	 * Called whenever the season or snowline height changes
+	 * return false and the obj_t will be deleted
+	 */
+	bool check_season(const bool calc_only_season_change) OVERRIDE;
+
+	void set_max_speed(sint32 s) { max_speed = s; }
+	sint32 get_max_speed() const { return max_speed; }
+
+	static void set_cityroad_speedlimit(uint16 new_limit);
+	static uint16 get_cityroad_speedlimit() { return cityroad_speed; }
+
+	/// @note Replaces max speed of the way by the max speed property of the descriptor.
+	void set_desc(const way_desc_t *b);
+	const way_desc_t *get_desc() const { return desc; }
+
+	// returns a way with the matching type
+	static weg_t *alloc(waytype_t wt);
+
+	// returns a string with the "official name of the waytype"
+	static const char *waytype_to_string(waytype_t wt);
+
+	void rdwr(loadsave_t *file) OVERRIDE;
+
+	/**
+	* Info-text for this way
+	*/
+	void info(cbuffer_t & buf) const OVERRIDE;
+
+	/**
+	 * @return NULL if OK, otherwise an error message
+	 */
+	const char *get_removal_error(const player_t *player) OVERRIDE;
+
+	waytype_t get_waytype() const OVERRIDE = 0;
+
+	/// @copydoc obj_t::get_typ
+	typ get_typ() const OVERRIDE { return obj_t::way; }
+
+	/**
+	* Die Bezeichnung des Wegs
+	*/
+	const char *get_name() const OVERRIDE { return desc->get_name(); }
+
+	/**
+	* Add direction bits (ribi) for a way.
+	*
+	* @note After changing of ribi the image of the way is wrong. To correct this,
+	* grund_t::calc_image needs to be called. This is not done here (Too expensive).
+	*/
+	void ribi_add(ribi_t::ribi ribi) { this->ribi |= (uint8)ribi;}
+
+	/**
+	* Remove direction bits (ribi) for a way.
+	*
+	* @note After changing of ribi the image of the way is wrong. To correct this,
+	* grund_t::calc_image needs to be called. This is not done here (Too expensive).
+	*/
+	void ribi_rem(ribi_t::ribi ribi) { this->ribi &= (uint8)~ribi;}
+
+	/**
+	* Set direction bits (ribi) for the way.
+	*
+	* @note After changing of ribi the image of the way is wrong. To correct this,
+	* grund_t::calc_image needs to be called. This is not done here (Too expensive).
+	*/
+	void set_ribi(ribi_t::ribi ribi) { this->ribi = (uint8)ribi;}
+
+	/**
+	* Get the unmasked direction bits (ribi) for the way (without signals or other ribi changer).
+	*/
+	ribi_t::ribi get_ribi_unmasked() const { return (ribi_t::ribi)ribi; }
+
+	/**
+	* Get the masked direction bits (ribi) for the way (with signals or other ribi changer).
+	*/
+	ribi_t::ribi get_ribi() const { return (ribi_t::ribi)(ribi & ~ribi_maske); }
+
+	/**
+	* For signals it is necessary to mask out certain ribi to prevent vehicles
+	* from driving the wrong way (e.g. oneway roads)
+	*/
+	void set_ribi_maske(ribi_t::ribi ribi) { ribi_maske = (uint8)ribi; }
+	ribi_t::ribi get_ribi_maske() const { return (ribi_t::ribi)ribi_maske; }
+
+	/**
+	 * called during map rotation
+	 */
+	void rotate90() OVERRIDE;
+
+	/**
+	* book statistics - is called very often and therefore inline
+	*/
+	void book(int amount, way_statistics type) { statistics[0][type] += amount; }
+
+	/**
+	* return statistics value
+	* always returns last month's value
+	*/
+	int get_statistics(int type) const { return statistics[1][type]; }
+
+	sint64 get_stat(int month, int stat_type) const { assert(stat_type<WAY_STAT_MAX  &&  0<=month  &&  month<MAX_WAY_STAT_MONTHS); return statistics[month][stat_type]; }
+	/**
+	* new month
+	*/
+	void new_month();
+
+	void check_diagonal();
+
+	void count_sign();
+
+	/* flag query routines */
+	void set_gehweg(const bool yesno) { sidewalk_flag = yesno; }
+	inline bool hat_gehweg() const { return sidewalk_flag; }
+
+	void set_switched(const bool ne_se) { switch_state = 1+ ne_se; }
+	inline uint8 get_switched() const { return switch_state; }
+
+	void set_electrify(bool janein) { electrified_flag = janein; }
+	inline bool is_electrified() const {return electrified_flag; }
+
+	inline void set_close_diagonal(uint8 n) { close_diagonal_state = n&3; }
+	inline uint8 is_close_diagonal() const { return close_diagonal_state; }
+
+	inline bool has_sign() const {return sign_flag; }
+	inline bool has_signal() const {return signal_flag; }
+	inline bool has_wayobj() const {return wayobj_flag; }
+	inline bool is_crossing() const {return crossing_flag; }
+	inline bool is_diagonal() const {return diagonal_flag; }
+	inline bool is_snow() const {return show_flag; }
+
+	// this is needed during a change from crossing to tram track
+	void clear_crossing() { crossing_flag = false; }
+
+	/**
+	 * Clear the has-sign flag when roadsign or signal got deleted.
+	 * As there is only one of signal or roadsign on the way we can safely clear both flags.
+	 */
+	void clear_sign_flag() {sign_flag = signal_flag = 0; }
+
+	inline void set_image( image_id b ) { image = b; }
+	image_id get_image() const OVERRIDE {return image;}
+
+	inline void set_foreground_image( image_id b ) { foreground_image = b; }
+	image_id get_front_image() const OVERRIDE {return foreground_image;}
+
+	FLAGGED_PIXVAL get_outline_colour() const OVERRIDE;
+
+	void display(int xpos, int ypos  CLIP_NUM_DEF) const OVERRIDE;
+
+	/*
+	 * to show single tile
+	 */
+	image_id get_outline_image() const OVERRIDE { return image; }
+
+	// correct maintenance
+	bool finish_rd() OVERRIDE;
+} GCC_PACKED;
+
+#endif
