@@ -305,10 +305,11 @@ in and three out, then two full sweeps of eleven in and eleven out. Sixty-six
 zoom steps, about ninety seconds, five thousand four hundred frames.
 
 The measurement is the **top 90 rows of the screen**, against the first recorded
-frame. The map window's own title bar starts at y=94 in every arm - checked, not
-assumed, with `tools/wincheck.py` - so those rows are outside the window with
-four rows to spare, and with the world paused nothing in them has any reason to
-change.
+frame. The map window's own title bar starts at y=95 in the 32-bit arms and y=94
+in the 16-bit ones - checked in each arm's own screenshot with
+`tools/wincheck.py`, not assumed - so those 90 rows are outside the window with
+four rows to spare in the worst case, and with the world paused nothing in them
+has any reason to change.
 
 ### 6.2 The result
 
@@ -410,7 +411,7 @@ Revised-8 differs from revised-7 in exactly one file,
 
 ---
 
-## 9. What this does not say
+## 8. What this does not say
 
 - **Xvfb, not a desktop.** Every run here is on a virtual X server. It exercises
   the X11 path, the event delivery and the drawing; it is not Wayland, not a
@@ -434,7 +435,7 @@ Revised-8 differs from revised-7 in exactly one file,
 
 ---
 
-## 10. Verdict and next action
+## 9. Verdict and next action
 
     D1  minimap paints outside its window   REAL -> FIXED (FIX-4)
     D2  icons misplaced in the GUI          REAL -> FIXED (FIX-5)
@@ -448,7 +449,7 @@ and then the branch, the release and the forum reply can go out.
 
 ---
 
-## 11. What was produced
+## 10. What was produced
 
 ### Patches — `patches/`
 
