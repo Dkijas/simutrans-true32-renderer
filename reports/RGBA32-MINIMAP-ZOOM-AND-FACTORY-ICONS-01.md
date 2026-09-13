@@ -527,5 +527,19 @@ checked for explicitly.
 ### The branch
 
 Prepared **locally only**, in `C:\Users\Victor\dev\simutrans-true32-renderer`,
-on `fix/minimap-clip-and-image-offsets`. Nothing was pushed. `main` is
-untouched, no tag was created or moved, and no release was made.
+on `fix/minimap-clip-and-image-offsets`, commit `ddd0419`. It carries
+`source/rgba32-revised-8-r12261/` (2164 files, of which 772 font and text and 16
+under `src/simutrans/builder/`, all added with `git add -f` because the
+Simutrans tree's own `.gitignore` would otherwise drop them), the three patches,
+this report and the release notes.
+
+**Nothing was pushed.** `main` is still at `2bb5846`, there are no tags, and no
+release was made.
+
+One thing worth recording for the next delivery: CMake writes `revision.h` and
+the two files it generates from `.in` templates **into the source directory it
+is pointed at**, and the Windows build here was pointed straight at `src-r8`. So
+three build artefacts appeared in the source tree and were staged on the first
+attempt. They were removed and the tree re-staged; `src-r8` is now byte-identical
+to the tree the patch was generated from and verified against. The packages were
+never affected - they copy only `src-r8/simutrans/`.
