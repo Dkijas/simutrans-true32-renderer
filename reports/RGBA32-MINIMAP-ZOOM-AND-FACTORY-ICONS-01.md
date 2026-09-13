@@ -464,8 +464,14 @@ and then the branch, the release and the forum reply can go out.
 | package | bytes | sha256 |
 |---|---|---|
 | `simutrans-rgba32-revised8-r12261-linux-x86_64-sdl2.tar.gz` | 8 527 572 | `0cac9d0944ccf1f86117e13f02a7a6bd3615a7ef93a7fbd7dc91e4606d5bd680` |
-| `simutrans-rgba32-revised8-r12261-win64-sdl2.zip` | 15 212 039 | `3210195ab1d3faa2574651484026140916efabdef9f1a6f6110ee8095ceb10d1` |
-| `simutrans-rgba32-revised8-r12261-win64-sdl3.zip` | 17 043 259 | `bc0ca0ce2cf5d091c8fb67be007ec5e9d9f8de2d1d68a61c095a16bfba5272e4` |
+| `simutrans-rgba32-revised8-r12261-win64-sdl2.zip` | 15 212 513 | `731b840e562e0286a22f8107efaa508cd7a7a2dc524918f22d185b20a8930bd6` |
+| `simutrans-rgba32-revised8-r12261-win64-sdl3.zip` | 17 043 733 | `1e794f2f22559e1eefe0f251c4deeff6c1a9bddffe9b0bec388c9ec95d30da16` |
+
+The two Windows zips were rebuilt once, **before** publication, for two packaging
+defects that the pre-publication check found and that the earlier published
+Windows packages also carry. See section 11. The four executables inside them
+are byte-identical to the ones that were built and smoke tested:
+`5561599f…` / `0d04f1fe…` for SDL2 and `09687803…` / `780f457a…` for SDL3.
 
 Linux: Debian 13, GCC 14.2.0, CMake 3.31.6, SDL2 2.32.4, Release, multithreaded,
 with bzip2 and miniupnpc linked statically exactly as revised-7 was. Measured
@@ -485,8 +491,31 @@ Windows: MSYS2 MinGW-w64, Release, multithreaded, SDL2 and SDL3, both depths.
 SDL, libstdc++ and libwinpthread static, **0 DLLs in either package**. Each
 package unpacks to 925 files with 772 font and text files - the count that
 proves the Simutrans `.gitignore` did not eat the data directory - two
-executables, three patches, `README-TESTERS.txt`, `LICENSE.txt`, and a
+executables, three patches, `README-TESTERS.txt`, the three licence files, and a
 `SHA256SUMS.txt` whose five entries all verify. No pakset, no savegames.
+
+### Two packaging defects the pre-publication check found
+
+Neither is in the code and both were fixed before anything was uploaded. Both
+are also present in the **already published** revised-5 and revised-6 Windows
+packages, which is worth knowing when those are next touched.
+
+1. **The Windows packages had lost the third party licence notices.** Copying
+   the source root's `LICENSE.txt` (123 lines) into the package overwrote the
+   data directory's `license.txt` (142 lines) - the filesystem is
+   case-insensitive, so they are the same name. The 142-line file is the
+   superset: the same Artistic License plus the notices for libbz2, libpng,
+   libminiupnpc, libzstd and the rest. Fixed by not copying the source root file
+   at all; the Windows packages now ship the complete `license.txt`. The Linux
+   package was never affected, because the two names differ there.
+2. **`SHA256SUMS.txt` inside the Windows packages was CRLF**, written by
+   PowerShell's `Set-Content`, so `sha256sum -c` reported "No such file or
+   directory" for all five lines. Fixed by writing it with an explicit LF join.
+   Both packages now verify 5 of 5 from inside.
+
+The zips were rebuilt for those two fixes and their hashes changed accordingly.
+**The executables did not**: all four are byte-identical to the ones that were
+built and smoke tested, so no measurement was carried over to different bytes.
 
 All four Windows binaries start headlessly, read the pakset and enter a world:
 
