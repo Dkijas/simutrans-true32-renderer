@@ -7,8 +7,8 @@
     LANE:           C:\Users\Victor\dev\_stlab-rgba32-minimap-icons-01   (dedicated)
     BUILD ROOT:     WSL Ubuntu 26.04, GCC 15.2.0, CMake, SDL2, /root/mm
     OBJECTIVE:      the two symptoms Yona-TYT reported on revised-7
-    ALLOWED WRITES: this lane and a local branch; no publication
-    PUBLICATION:    NOT AUTHORISED
+    ALLOWED WRITES: this lane; the testing repo on an isolated branch
+    PUBLICATION:    AUTHORISED 13-sep-2026, PUBLISHED as a prerelease
     REQUIRED GATES: negative control per defect + a 16-bit reference arm
     STOP CONDITION: READY_FOR_APPROVAL
 
@@ -440,12 +440,17 @@ Revised-8 differs from revised-7 in exactly one file,
     D1  minimap paints outside its window   REAL -> FIXED (FIX-4)
     D2  icons misplaced in the GUI          REAL -> FIXED (FIX-5)
     candidate                               RGBA32-CANDIDATE-REVISED-8
-    readiness                               READY_FOR_APPROVAL
-    publication                             NOT_AUTHORISED
+    readiness                               READY
+    publication                             PUBLISHED FOR TESTING (13 Sep 2026)
+    Standard integration                    NOT AUTHORISED / NOT PERFORMED
 
-Nothing has been published, nothing has been pushed, `main` is untouched and no
-tag was created or moved. The next action is the user's: approve the delivery,
-and then the branch, the release and the forum reply can go out.
+The prerelease `rgba32-revised-8-r12261-testing-1` is out, for Linux SDL2 and
+Windows SDL2 and SDL3; see section 10. Nothing was written to SVN or to
+`simutrans/simutrans`, and no message was sent to the forum - the reply is
+drafted and waiting.
+
+The next action belongs to the testers: Yona-TYT on the minimap and the icons,
+makie on the tree flicker.
 
 ---
 
@@ -554,17 +559,37 @@ checked for explicitly.
     out/repro-*/21-factory-info.png  the factory window in every arm
     out/probe-cand-imgoff-{16,32}.txt   what the GUI is told about 6962 images
 
-### The branch
+### The branch and the release
 
-Prepared **locally only**, in `C:\Users\Victor\dev\simutrans-true32-renderer`,
-on `fix/minimap-clip-and-image-offsets`, commit `ddd0419`. It carries
+Published on 13 September 2026, on the authorisation given after this report's
+first version was written.
+
+    branch    fix/minimap-clip-and-image-offsets   (new branch, no force push)
+    commit    9c75ceee8498a3da79133ad0629dd56589e328fa
+    tag       rgba32-revised-8-r12261-testing-1 -> the same commit
+    release   https://github.com/Dkijas/simutrans-true32-renderer/releases/tag/rgba32-revised-8-r12261-testing-1
+              prerelease = true, draft = false, 7 assets
+
+Checked after publishing, from the public URLs and from the remote:
+
+* all seven assets downloaded and **byte-identical** to what was validated here;
+  the published `SHA256SUMS.txt` verifies 6 of 6 against the published files
+* the 2164-file source tree **at the tag** is identical to the tree the binaries
+  were built from, and its `simgraph32.cc` carries FIX-4 and FIX-5 and differs
+  from revised-7's - so the tag identifies the corrected sources, not earlier ones
+* `main` still at `2bb5846711fb34b7a478ef43a92eaf0c14988cfb`
+* the four earlier tags unchanged, their four releases still prerelease with
+  5 / 6 / 4 / 6 assets, none touched
+* the repository has **no workflows** (only issue templates), so the push ran
+  nothing: 0 workflow runs
+
+The branch carries
 `source/rgba32-revised-8-r12261/` (2164 files, of which 772 font and text and 16
 under `src/simutrans/builder/`, all added with `git add -f` because the
 Simutrans tree's own `.gitignore` would otherwise drop them), the three patches,
 this report and the release notes.
 
-**Nothing was pushed.** `main` is still at `2bb5846`, there are no tags, and no
-release was made.
+`main` was never touched and no existing tag was moved or deleted.
 
 One thing worth recording for the next delivery: CMake writes `revision.h` and
 the two files it generates from `.in` templates **into the source directory it
