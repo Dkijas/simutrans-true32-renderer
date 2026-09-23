@@ -1,0 +1,38 @@
+--- a/src/simutrans/display/simview.cc
++++ b/src/simutrans/display/simview.cc
+@@ -432,8 +432,33 @@
+ 	if( grund_t::underground_mode ) {
+ 		gfx->draw_rect(clip_rr.x, clip_rr.y, clip_rr.w, clip_rr.h, gfx->palette_lookup(COL_BLACK), force_dirty);
+ 	}
+-	else if( welt->is_background_dirty()  &&  outside_visible  ) {
+-		// we check if background will be visible, no need to clear screen if it's not.
++	else if( outside_visible ) {
++		// The area outside the map has to be repainted on EVERY frame that any of
++		// it is visible, not only when something set background_dirty.
++		//
++		// Inside the map every sprite is blended onto the tile's own opaque ground
++		// image, which is redrawn each frame, so drawing the same sprite again is
++		// harmless. Outside the map there is no tile and therefore no repaint, so
++		// the destination of the blend was whatever the previous frame left there:
++		// anything semi-transparent that overhangs the map edge - a tree, its
++		// shadow - was composited onto its own output once per frame and drifted
++		// further from the background every frame, until some unrelated event
++		// happened to set background_dirty and reset it. Measured on a tester's
++		// recording: the affected pixels move monotonically away from the
++		// background colour over five frames and then snap back.
++		//
++		// This is what draw_outside_tile=1 does implicitly - it paints every
++		// outside tile with an opaque image every frame - which is why the defect
++		// disappears with that option on.
++		//
++		// Done here, before the ground pass, so it cannot erase anything: nothing
++		// has been drawn yet this frame. display_background() itself still returns
++		// without drawing when draw_earth_border and draw_outside_tile are both on,
++		// so neither setting changes appearance.
++		//
++		// outside_visible is set again by the ground pass below whenever any tile
++		// outside the map is on screen, so the cost is paid only while the map edge
++		// is in view and not at all otherwise.
+ 		display_background(clip_rr.x, clip_rr.y, clip_rr.w, clip_rr.h, force_dirty);
+ 		welt->unset_background_dirty();
+ 		// reset
