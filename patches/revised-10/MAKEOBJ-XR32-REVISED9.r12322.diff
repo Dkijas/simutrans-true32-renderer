@@ -1,0 +1,1038 @@
+diff --git a/src/makeobj/CMakeLists.txt b/src/makeobj/CMakeLists.txt
+index f7787dce2f37ca5a3e105977ebec0857e5da4bc5..176d2ba084d3f6cf62293594debba2d16eac40ce 100644
+--- a/src/makeobj/CMakeLists.txt
++++ b/src/makeobj/CMakeLists.txt
+@@ -38,6 +38,8 @@ target_sources(makeobj PRIVATE
+ 	../simutrans/descriptor/writer/groundobj_writer.cc
+ 	../simutrans/descriptor/writer/ground_writer.cc
+ 	../simutrans/descriptor/writer/image_writer.cc
++	../simutrans/descriptor/writer/stlab_semantic.cc
++	../simutrans/descriptor/writer/stlab_xr32_writer.cc
+ 	../simutrans/descriptor/writer/imagelist2d_writer.cc
+ 	../simutrans/descriptor/writer/imagelist_writer.cc
+ 	../simutrans/descriptor/writer/obj_node.cc
+diff --git a/src/makeobj/Makefile b/src/makeobj/Makefile
+index 29eef5f37b067a5fdd5ababb39f1942796abaf39..683083163f02400a36b9ab72d5d223d7ed631b40 100644
+--- a/src/makeobj/Makefile
++++ b/src/makeobj/Makefile
+@@ -100,6 +100,8 @@ SOLO_SOURCES += ../simutrans/descriptor/writer/good_writer.cc
+ SOLO_SOURCES += ../simutrans/descriptor/writer/groundobj_writer.cc
+ SOLO_SOURCES += ../simutrans/descriptor/writer/ground_writer.cc
+ SOLO_SOURCES += ../simutrans/descriptor/writer/image_writer.cc
++SOLO_SOURCES += ../simutrans/descriptor/writer/stlab_semantic.cc
++SOLO_SOURCES += ../simutrans/descriptor/writer/stlab_xr32_writer.cc
+ SOLO_SOURCES += ../simutrans/descriptor/writer/imagelist2d_writer.cc
+ SOLO_SOURCES += ../simutrans/descriptor/writer/imagelist_writer.cc
+ SOLO_SOURCES += ../simutrans/descriptor/writer/obj_node.cc
+diff --git a/src/makeobj/Makeobj.vcxproj b/src/makeobj/Makeobj.vcxproj
+index 489ad73d8ce8ee49aaf084dcfac5cc860ba407b7..24b831fd8c31feb9949c0739c6aec0bd04093cfa 100644
+--- a/src/makeobj/Makeobj.vcxproj
++++ b/src/makeobj/Makeobj.vcxproj
+@@ -109,6 +109,8 @@
+     <ClCompile Include="..\simutrans\descriptor\writer\ground_writer.cc" />
+     <ClCompile Include="..\simutrans\descriptor\writer\groundobj_writer.cc" />
+     <ClCompile Include="..\simutrans\descriptor\writer\image_writer.cc" />
++    <ClCompile Include="..\simutrans\descriptor\writer\stlab_semantic.cc" />
++    <ClCompile Include="..\simutrans\descriptor\writer\stlab_xr32_writer.cc" />
+     <ClCompile Include="..\simutrans\descriptor\writer\imagelist_writer.cc" />
+     <ClCompile Include="..\simutrans\descriptor\writer\imagelist2d_writer.cc" />
+     <ClCompile Include="..\simutrans\descriptor\writer\obj_node.cc" />
+@@ -183,6 +185,8 @@
+     <ClInclude Include="..\simutrans\descriptor\writer\ground_writer.h" />
+     <ClInclude Include="..\simutrans\descriptor\writer\groundobj_writer.h" />
+     <ClInclude Include="..\simutrans\descriptor\writer\image_writer.h" />
++    <ClInclude Include="..\simutrans\descriptor\writer\stlab_semantic.h" />
++    <ClInclude Include="..\simutrans\descriptor\writer\stlab_xr32_writer.h" />
+     <ClInclude Include="..\simutrans\descriptor\writer\imagelist_writer.h" />
+     <ClInclude Include="..\simutrans\descriptor\writer\imagelist2d_writer.h" />
+     <ClInclude Include="..\simutrans\descriptor\writer\obj_node.h" />
+diff --git a/src/simutrans/descriptor/writer/image_writer.cc b/src/simutrans/descriptor/writer/image_writer.cc
+index d39429a11e3efa49e0d6f5db5bffe345d3c04799..4d14fdfccb64cdeb76a5c2f852103ac8cdb52027 100644
+--- a/src/simutrans/descriptor/writer/image_writer.cc
++++ b/src/simutrans/descriptor/writer/image_writer.cc
+@@ -8,6 +8,10 @@
+ #include <string.h>
+ #include <string>
+ #include "image_writer.h"
++
++/* STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT */
++#include "stlab_semantic.h"
++#include "stlab_xr32_writer.h"
+ #include "root_writer.h"
+ #include "obj_node.h"
+ #include "obj_pak_exception.h"
+@@ -40,6 +44,13 @@ std::string image_writer_t::last_img_file;
+ raw_image_t image_writer_t::input_img;
+ int image_writer_t::img_size = 64;
+ 
++/* STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
++ * One extraction per source PNG, reused by every tile cut from it. */
++static std::string stlab_cached_file;
++static std::vector<uint8> stlab_cached_rgba;
++static std::vector<stlab_semantic_record_t> stlab_cached_records;
++static int stlab_cached_w = 0, stlab_cached_h = 0;
++
+ 
+ uint32 image_writer_t::block_getpix(int x, int y)
+ {
+@@ -75,6 +86,45 @@ uint32 image_writer_t::block_getpix(int x, int y)
+ }
+ 
+ 
++/* ==========================================================================
++ * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
++ *
++ * A straight RGBA8888 view of the loaded image, built from block_getpix() so the
++ * semantic extractor and the legacy encoder see the same pixels.
++ *
++ * block_getpix() returns 0xAARRGGBB with the alpha channel INVERTED (0 == opaque) for
++ * FMT_RGBA8888, and a zero top byte for the two formats that carry no alpha. XOR with
++ * 0xFF therefore recovers the source alpha in all three cases: an RGB or grayscale
++ * source becomes fully opaque, which is what it is.
++ * ==========================================================================*/
++void image_writer_t::stlab_rgba_from_input(std::vector<uint8> &rgba, int &w, int &h)
++{
++	w = (int)input_img.get_width();
++	h = (int)input_img.get_height();
++	rgba.assign((size_t)w * h * 4, 0);
++	for(  int y = 0;  y < h;  y++  ) {
++		for(  int x = 0;  x < w;  x++  ) {
++			const uint32 pix = block_getpix(x, y);
++			uint8 *o = &rgba[((size_t)y * w + x) * 4];
++			o[0] = (uint8)((pix >> 16) & 0xFF);
++			o[1] = (uint8)((pix >>  8) & 0xFF);
++			o[2] = (uint8)( pix        & 0xFF);
++			o[3] = (uint8)(((pix >> 24) & 0xFF) ^ 0xFF);
++		}
++	}
++}
++
++
++bool image_writer_t::stlab_load_rgba(const char *fname, std::vector<uint8> &rgba, int &w, int &h)
++{
++	if(  !the_instance.block_load(fname)  ) {
++		return false;
++	}
++	stlab_rgba_from_input(rgba, w, h);
++	return true;
++}
++
++
+ // colors with higher alpha are considered transparent
+ #define ALPHA_THRESHOLD (0xF8000000u)
+ 
+@@ -363,6 +413,9 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
+ 	} image;
+ 	dimension dim;
+ 	uint16 *pixdata = NULL;
++	// STLAB probe: the region origin in the source image, captured where col/row live
++	int stlab_x0 = 0, stlab_y0 = 0;
++	bool stlab_have_region = false;
+ 
+ 	// if first char is a '>' then this image is not zoomable
+ 	if(  an_imagekey[0] == '>'  ) {
+@@ -445,6 +498,9 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
+ 		init_dim(image_data, &dim, img_size);
+ 		delete [] image_data;
+ 
++		stlab_x0 = col + dim.xmin;
++		stlab_y0 = row + dim.ymin;
++		stlab_have_region = true;
+ 		image.x += dim.xmin;
+ 		image.y += dim.ymin;
+ 		image.w = dim.xmax - dim.xmin + 1;
+@@ -521,4 +577,51 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
+ #endif
+ 
+ 	node.check_and_write_header(outfp);
++
++	/* ----------------------------------------------------------------------
++	 * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
++	 *
++	 * The legacy IMG above is finished and untouched. Beside it, and from the same
++	 * pixels, build the candidate node body. It is only queued here: the node itself
++	 * is emitted by the parent, after every IMG, so the placement invariant holds by
++	 * construction.
++	 *
++	 * The extractor runs over the WHOLE source image, once per file, and the tile then
++	 * takes the records that fall inside it. Running it per tile would clip the
++	 * 8-neighbourhood at the tile border and change the result.
++	 * ---------------------------------------------------------------------- */
++	if(  stlab_writer_enabled()  &&  stlab_have_region  &&  image.h > 0  &&  image.w > 0  ) {
++		if(  stlab_cached_file != last_img_file  ) {
++			stlab_rgba_from_input(stlab_cached_rgba, stlab_cached_w, stlab_cached_h);
++			stlab_extract_semantics(&stlab_cached_rgba[0], stlab_cached_w, stlab_cached_h,
++			                        stlab_cached_records, NULL);
++			stlab_cached_file = last_img_file;
++		}
++		const int x0 = stlab_x0;
++		const int y0 = stlab_y0;
++		const int rw = image.w, rh = image.h;
++
++		std::vector<uint8> region((size_t)rw * rh * 4);
++		for(  int yy = 0;  yy < rh;  yy++  ) {
++			const uint8 *src = &stlab_cached_rgba[((size_t)(y0 + yy) * stlab_cached_w + x0) * 4];
++			memcpy(&region[(size_t)yy * rw * 4], src, (size_t)rw * 4);
++		}
++
++		std::vector<stlab_semantic_record_t> local;
++		for(  size_t i = 0;  i < stlab_cached_records.size();  i++  ) {
++			const stlab_semantic_record_t &r = stlab_cached_records[i];
++			const int sy = (int)(r.position / (uint32)stlab_cached_w);
++			const int sx = (int)(r.position % (uint32)stlab_cached_w);
++			if(  sy < y0  ||  sy >= y0 + rh  ||  sx < x0  ||  sx >= x0 + rw  ) continue;
++			stlab_semantic_record_t l = r;
++			l.position = (uint32)((sy - y0) * rw + (sx - x0));
++			local.push_back(l);
++		}
++
++		stlab_pending_node_t pn;
++		pn.img_index = (uint16)index;
++		stlab_xr32_build_body(&region[0], rw, rh, (sint16)image.x, (sint16)image.y,
++		                      image.zoomable, (uint16)index, local, pn.body);
++		stlab_pending_nodes().push_back(pn);
++	}
+ }
+diff --git a/src/simutrans/descriptor/writer/image_writer.h b/src/simutrans/descriptor/writer/image_writer.h
+index 7c3e88dd6655632ac3d196a5a25209c93ee58698..a49059c66df731d5b22768f4abc8a042c4b60c9c 100644
+--- a/src/simutrans/descriptor/writer/image_writer.h
++++ b/src/simutrans/descriptor/writer/image_writer.h
+@@ -8,6 +8,7 @@
+ 
+ 
+ #include <string>
++#include <vector>
+ #include <stdio.h>
+ #include "obj_writer.h"
+ #include "../objversion.h"
+@@ -36,6 +37,13 @@ public:
+ 
+ 	static void set_img_size(int _img_size) { img_size = _img_size; }
+ 
++	/* STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
++	 * Load a PNG through makeobj's own loader and hand back a straight RGBA8888 view
++	 * of it (source alpha convention, 255 = opaque). The semantic extractor reads
++	 * exactly the pixels the legacy writer reads: no second decoder, no external file. */
++	static bool stlab_load_rgba(const char *fname, std::vector<uint8> &rgba, int &w, int &h);
++	static void stlab_rgba_from_input(std::vector<uint8> &rgba, int &w, int &h);
++
+ 	obj_type get_type() const OVERRIDE { return obj_image; }
+ 	const char* get_type_name() const OVERRIDE { return "image"; }
+ 
+diff --git a/src/simutrans/descriptor/writer/imagelist_writer.cc b/src/simutrans/descriptor/writer/imagelist_writer.cc
+index efbee336ee473a4e2e31bc1b1426ffe4c42d36ad..49542c72c8511c330d19221c9fcc9dc7794fb7f1 100644
+--- a/src/simutrans/descriptor/writer/imagelist_writer.cc
++++ b/src/simutrans/descriptor/writer/imagelist_writer.cc
+@@ -6,6 +6,7 @@
+ #include <string>
+ #include "../../tpl/slist_tpl.h"
+ #include "obj_node.h"
++#include "stlab_xr32_writer.h"   // STLAB probe, NOT FOR COMMIT
+ #include "image_writer.h"
+ #include "obj_pak_exception.h"
+ #include "imagelist_writer.h"
+@@ -29,6 +30,9 @@ void imagelist_writer_t::write_obj(FILE* fp, obj_node_t& parent, const slist_tpl
+ 		dbg->warning( obj_writer_t::last_name, "Expected %i but found %i images (might be correct)!\n", keys.get_count(), count);
+ 	}
+ 
++	// STLAB probe: the candidate nodes go after every IMG child, never between them
++	stlab_xr32_flush(fp, node);
++
+ 	node.write_uint16(fp, count);
+ 	node.write_uint16(fp, 0);
+ 	node.check_and_write_header(fp);
+diff --git a/src/simutrans/descriptor/writer/stlab_semantic.cc b/src/simutrans/descriptor/writer/stlab_semantic.cc
+new file mode 100644
+index 0000000000000000000000000000000000000000..4d6f9fcb217db5fe9808274caf91771effe53a82
+--- /dev/null
++++ b/src/simutrans/descriptor/writer/stlab_semantic.cc
+@@ -0,0 +1,397 @@
++/*
++ * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- semantic extractor for makeobj.
++ * NOT FOR COMMIT. Laboratory only.
++ *
++ * A mechanical port of probe.py::reconstruct() and records.py::build(). Every fidelity
++ * decision is written down beside the code it governs, because the acceptance gate of this
++ * mission is exact equality with the Python oracle, record for record.
++ */
++#include "stlab_semantic.h"
++
++#include <algorithm>
++#include <cfenv>
++#include <cmath>
++#include <cstdlib>
++#include <cstring>
++
++#include "../image.h"
++
++stlab_semantic_counters_t stlab_semantic_counters;
++
++/* ---------------------------------------------------------------- CONFIG (probe.py) --
++ * Copied verbatim from CONFIG in tools/probe.py. Changing any of these changes what the
++ * oracle means, so they are not tunable here.
++ */
++static const double CFG_ALPHA_MIN               = 0.04;
++static const double CFG_ALPHA_MAX               = 0.96;
++static const double CFG_RESIDUAL_CLEAN          = 2.0;
++static const double CFG_RESIDUAL_WITHERROR      = 6.0;
++static const double CFG_RESIDUAL_SLACK          = 0.5;
++static const double CFG_COMPLEX_UNDER_SEPARATION = 16.0;
++static const double CFG_RIVAL_DNORM_FRACTION    = 0.8;
++
++/* The 8-neighbourhood, in the order probe.py builds it:
++ *     NB = [(dy, dx) for dy in (-1, 0, 1) for dx in (-1, 0, 1) if (dy, dx) != (0, 0)]
++ * The order is load-bearing: it fixes the insertion order of the M and N candidate sets,
++ * which in turn fixes the tie-breaks below. */
++static const int NB[8][2] = {
++	{ -1, -1 }, { -1, 0 }, { -1, 1 },
++	{  0, -1 },            {  0, 1 },
++	{  1, -1 }, {  1, 0 }, {  1, 1 }
++};
++
++
++bool stlab_writer_enabled()
++{
++	static int cached = -1;
++	if(  cached < 0  ) {
++		const char *e = getenv("STLAB_XR32_WRITE");
++		cached = (e != NULL  &&  e[0] == '1') ? 1 : 0;
++	}
++	return cached == 1;
++}
++
++
++stlab_taxonomy_t stlab_taxonomy_of(stlab_solver_class_t c)
++{
++	switch(  c  ) {
++		case STLAB_CLEANLY_RECONSTRUCTABLE:  return STLAB_CLEAN;
++		case STLAB_RECONSTRUCTABLE_WITH_ERROR:
++		case STLAB_COMPLEX_INTERNAL_BLEND:   return STLAB_AMBIGUOUS;
++		default:                             return STLAB_UNRECOVERABLE;
++	}
++}
++
++
++const char *stlab_solver_class_name(stlab_solver_class_t c)
++{
++	static const char *N[] = { "CLEANLY_RECONSTRUCTABLE", "RECONSTRUCTABLE_WITH_ERROR",
++	                           "COMPLEX_INTERNAL_BLEND", "NOT_AN_EDGE",
++	                           "NOT_RECONSTRUCTABLE", "AMBIGUOUS" };
++	return (c < STLAB_SOLVER_CLASS_COUNT) ? N[c] : "?";
++}
++
++
++const char *stlab_taxonomy_name(stlab_taxonomy_t t)
++{
++	static const char *N[] = { "CLEAN", "AMBIGUOUS", "UNRECOVERABLE" };
++	return (t < STLAB_TAXONOMY_COUNT) ? N[t] : "?";
++}
++
++
++/**
++ * Python's round() on a float is round-half-to-even, not round-half-away-from-zero.
++ * nearbyint() under the default FE_TONEAREST is exactly that, so the two agree on the
++ * halfway cases that a naive (int)(x + 0.5) would get wrong.
++ */
++static inline int py_round(double v)
++{
++	return (int)std::nearbyint(v);
++}
++
++
++namespace {
++
++struct rgb_t {
++	uint8 r, g, b;
++	bool operator==(const rgb_t &o) const { return r == o.r && g == o.g && b == o.b; }
++};
++
++struct fit_t {
++	double res;
++	double alpha;      ///< raw, unclamped
++	double alpha_c;    ///< clamped to [0,1]
++	double dnorm;      ///< Chebyshev norm of M-N
++	rgb_t  M;
++	int    mi;
++	rgb_t  N;
++	int    order;      ///< insertion order, so the sort can be made stable explicitly
++};
++
++/// an ordered set with Python dict semantics: first insertion fixes the position, a later
++/// assignment overwrites the value but does not move the key
++struct ordered_markers_t {
++	std::vector<rgb_t> keys;
++	std::vector<int>   vals;
++	void put(const rgb_t &k, int v)
++	{
++		for(  size_t i = 0;  i < keys.size();  i++  ) {
++			if(  keys[i] == k  ) { vals[i] = v; return; }
++		}
++		keys.push_back(k);
++		vals.push_back(v);
++	}
++};
++
++struct ordered_unders_t {
++	std::vector<rgb_t> keys;
++	void put(const rgb_t &k)
++	{
++		for(  size_t i = 0;  i < keys.size();  i++  ) {
++			if(  keys[i] == k  ) return;
++		}
++		keys.push_back(k);
++	}
++};
++
++} // namespace
++
++
++/* SPECIAL_TRANSPARENT, and the alpha rule probe.py::masks() uses:
++ *     hole   = (packed == 0xE7FFFF) | (alpha <= 7)
++ *     opaque = (~hole) & (alpha == 255)
++ * Note that a pixel with 7 < alpha < 255 is neither hole nor opaque: it takes part in
++ * nothing, exactly as in the oracle. */
++#define STLAB_SPECIAL_TRANSPARENT (0x00E7FFFFu)
++
++
++void stlab_extract_semantics(const uint8 *rgba, int w, int h,
++                             std::vector<stlab_semantic_record_t> &out,
++                             std::vector<stlab_edge_candidate_t> *edges)
++{
++	out.clear();
++	if(  edges  ) edges->clear();
++	if(  w <= 0  ||  h <= 0  ) {
++		return;
++	}
++	const size_t npx = (size_t)w * h;
++
++	std::vector<uint8> hole(npx, 0), opaque(npx, 0);
++	std::vector<sint16> midx(npx, -1);
++
++	for(  size_t i = 0;  i < npx;  i++  ) {
++		const uint8 *p = rgba + i * 4;
++		const uint32 packed = ((uint32)p[0] << 16) | ((uint32)p[1] << 8) | (uint32)p[2];
++		const uint8 a = p[3];
++		hole[i] = (packed == STLAB_SPECIAL_TRANSPARENT  ||  a <= 7) ? 1 : 0;
++		opaque[i] = (!hole[i]  &&  a == 255) ? 1 : 0;
++		// probe.py assigns midx marker by marker in table order, so a duplicate RGB would
++		// leave the LAST index. image_t::rgbtab has no duplicates, but the loop keeps the
++		// same rule rather than relying on that.
++		for(  int m = 0;  m < SPECIAL;  m++  ) {
++			if(  image_t::rgbtab[m] == packed  ) {
++				midx[i] = (sint16)m;
++			}
++		}
++	}
++
++	// ---- 1. exact marker pixels, coverage 255 (records.py step 1) -------------------
++	// Order: records.py fills a dict keyed by linear index and sorts at the end, so the
++	// emission order is by position. The same is achieved here by walking in order.
++	for(  size_t i = 0;  i < npx;  i++  ) {
++		if(  !opaque[i]  ||  midx[i] < 0  ) continue;
++		const int m = midx[i];
++		stlab_semantic_record_t r;
++		r.position = (uint32)i;
++		if(  m < 8  )        { r.semantic_class = STLAB_CLASS_PLAYER_1; r.semantic_parameter = (uint8)m; }
++		else if(  m < 16  )  { r.semantic_class = STLAB_CLASS_PLAYER_2; r.semantic_parameter = (uint8)(m - 8); }
++		else                 { r.semantic_class = STLAB_CLASS_LIGHT;    r.semantic_parameter = (uint8)(m - 16); }
++		r.coverage_alpha8 = 255;
++		r.under_r = r.under_g = r.under_b = 0;
++		r.has_under = false;
++		out.push_back(r);
++	}
++
++	// ---- 2. the edge candidates (probe.py::reconstruct) -----------------------------
++	// cand = dilate(player markers) & opaque & (midx < 0). Only PLAYER markers dilate:
++	// LIGHT edge semantics are NOT certified and are deliberately not produced here.
++	std::vector<uint8> pm(npx, 0);
++	for(  size_t i = 0;  i < npx;  i++  ) {
++		pm[i] = (opaque[i]  &&  midx[i] >= 0  &&  midx[i] < 16) ? 1 : 0;
++	}
++	bool any_pm = false;
++	for(  size_t i = 0;  i < npx  &&  !any_pm;  i++  ) any_pm = pm[i] != 0;
++
++	std::vector<stlab_semantic_record_t> edge_records;
++
++	if(  any_pm  ) {
++		for(  int y = 0;  y < h;  y++  ) {
++			for(  int x = 0;  x < w;  x++  ) {
++				const size_t i = (size_t)y * w + x;
++				if(  !opaque[i]  ||  midx[i] >= 0  ) continue;
++
++				bool dil = false;
++				for(  int k = 0;  k < 8  &&  !dil;  k++  ) {
++					const int yy = y + NB[k][0], xx = x + NB[k][1];
++					if(  yy < 0  ||  yy >= h  ||  xx < 0  ||  xx >= w  ) continue;
++					dil = pm[(size_t)yy * w + xx] != 0;
++				}
++				if(  !dil  ) continue;
++
++				const uint8 *ep = rgba + i * 4;
++				const double E[3] = { (double)ep[0], (double)ep[1], (double)ep[2] };
++
++				ordered_markers_t Ms;
++				ordered_unders_t  Ns;
++				bool touches_hole = false;
++				for(  int k = 0;  k < 8;  k++  ) {
++					const int yy = y + NB[k][0], xx = x + NB[k][1];
++					if(  yy < 0  ||  yy >= h  ||  xx < 0  ||  xx >= w  ) continue;
++					const size_t j = (size_t)yy * w + xx;
++					if(  hole[j]  ) { touches_hole = true; continue; }
++					if(  !opaque[j]  ) continue;
++					const uint8 *q = rgba + j * 4;
++					const rgb_t key = { q[0], q[1], q[2] };
++					if(  midx[j] >= 0  &&  midx[j] < 16  ) Ms.put(key, midx[j]);
++					else                                   Ns.put(key);
++				}
++				if(  Ms.keys.empty()  ) continue;
++
++				// least squares over the three channels, exactly the CONFIG formula:
++				//     alpha = <E-N, M-N> / <M-N, M-N>
++				std::vector<fit_t> fits;
++				fits.reserve(Ms.keys.size() * Ns.keys.size());
++				int ord = 0;
++				for(  size_t a = 0;  a < Ms.keys.size();  a++  ) {
++					const rgb_t &M = Ms.keys[a];
++					const double Md[3] = { (double)M.r, (double)M.g, (double)M.b };
++					for(  size_t b = 0;  b < Ns.keys.size();  b++  ) {
++						const rgb_t &N = Ns.keys[b];
++						const double Nd[3] = { (double)N.r, (double)N.g, (double)N.b };
++						const double d[3] = { Md[0] - Nd[0], Md[1] - Nd[1], Md[2] - Nd[2] };
++						const double dd = d[0] * d[0] + d[1] * d[1] + d[2] * d[2];
++						if(  dd < 1e-9  ) continue;
++						const double num = (E[0] - Nd[0]) * d[0] + (E[1] - Nd[1]) * d[1]
++						                 + (E[2] - Nd[2]) * d[2];
++						const double al = num / dd;
++						const double ac = al < 0.0 ? 0.0 : (al > 1.0 ? 1.0 : al);
++						double res = 0.0, dnorm = 0.0;
++						for(  int c = 0;  c < 3;  c++  ) {
++							const double pred = Nd[c] + ac * d[c];
++							res   = std::max(res,   std::fabs(E[c] - pred));
++							dnorm = std::max(dnorm, std::fabs(d[c]));
++						}
++						fit_t f;
++						f.res = res; f.alpha = al; f.alpha_c = ac; f.dnorm = dnorm;
++						f.M = M; f.mi = Ms.vals[a]; f.N = N; f.order = ord++;
++						fits.push_back(f);
++					}
++				}
++
++				stlab_edge_candidate_t rec;
++				rec.y = (uint32)y; rec.x = (uint32)x;
++				rec.er = ep[0]; rec.eg = ep[1]; rec.eb = ep[2];
++				rec.touches_hole = touches_hole;
++				rec.has_rival = false;
++				rec.rival_r = rec.rival_g = rec.rival_b = 0;
++
++				if(  fits.empty()  ) {
++					// probe.py: "no opaque under-colour in the neighbourhood"; it records
++					// the FIRST marker of Ms and no under-colour at all.
++					rec.cls = STLAB_NO_UNDER_COLOUR;
++					rec.marker_index = Ms.vals[0];
++					rec.residual = -1.0;
++					rec.alpha_raw = rec.alpha_clamped = -1.0;
++					rec.coverage = -1;
++					rec.has_under = false;
++					rec.under_r = rec.under_g = rec.under_b = 0;
++					if(  edges  ) edges->push_back(rec);
++					stlab_semantic_counters.unrecoverable_edges++;
++					continue;
++				}
++
++				// fits.sort(key=res) in Python is STABLE, so equal residuals keep the
++				// insertion order fixed by the neighbourhood scan above.
++				std::stable_sort(fits.begin(), fits.end(),
++				                 [](const fit_t &a, const fit_t &b) { return a.res < b.res; });
++
++				const double rmin = fits[0].res;
++				size_t near_end = 0;
++				while(  near_end < fits.size()  &&  fits[near_end].res <= rmin + CFG_RESIDUAL_SLACK  ) {
++					near_end++;
++				}
++				// max(near, key=dnorm): Python's max returns the FIRST maximum, so the
++				// comparison must be strict.
++				size_t bi = 0;
++				for(  size_t k = 1;  k < near_end;  k++  ) {
++					if(  fits[k].dnorm > fits[bi].dnorm  ) bi = k;
++				}
++				const fit_t &best = fits[bi];
++
++				// is the under-colour determined? First rival wins, iterating in order.
++				const fit_t *rival = NULL;
++				for(  size_t k = 0;  k < near_end;  k++  ) {
++					if(  k == bi  ||  fits[k].dnorm < best.dnorm * CFG_RIVAL_DNORM_FRACTION  ) continue;
++					const double sep = std::max(std::max(
++						std::fabs((double)fits[k].N.r - best.N.r),
++						std::fabs((double)fits[k].N.g - best.N.g)),
++						std::fabs((double)fits[k].N.b - best.N.b));
++					if(  sep >= CFG_COMPLEX_UNDER_SEPARATION  ) { rival = &fits[k]; break; }
++				}
++
++				// the class test uses the RAW alpha, not the clamped one
++				const bool a_ok = (CFG_ALPHA_MIN <= best.alpha  &&  best.alpha <= CFG_ALPHA_MAX);
++				if(  !a_ok  &&  best.res <= CFG_RESIDUAL_WITHERROR  ) {
++					rec.cls = STLAB_NOT_AN_EDGE;
++				}
++				else if(  best.res > CFG_RESIDUAL_WITHERROR  ) {
++					rec.cls = STLAB_NOT_RECONSTRUCTABLE;
++				}
++				else if(  rival != NULL  ) {
++					rec.cls = STLAB_COMPLEX_INTERNAL_BLEND;
++				}
++				else if(  best.res <= CFG_RESIDUAL_CLEAN  ) {
++					rec.cls = STLAB_CLEANLY_RECONSTRUCTABLE;
++				}
++				else {
++					rec.cls = STLAB_RECONSTRUCTABLE_WITH_ERROR;
++				}
++
++				rec.marker_index = best.mi;
++				rec.residual = best.res;
++				rec.alpha_raw = best.alpha;
++				rec.alpha_clamped = best.alpha_c;
++				rec.coverage = py_round(best.alpha_c * 255.0);
++				rec.has_under = true;
++				rec.under_r = best.N.r; rec.under_g = best.N.g; rec.under_b = best.N.b;
++				if(  rival  ) {
++					rec.has_rival = true;
++					rec.rival_r = rival->N.r; rec.rival_g = rival->N.g; rec.rival_b = rival->N.b;
++				}
++				if(  edges  ) edges->push_back(rec);
++
++				switch(  stlab_taxonomy_of(rec.cls)  ) {
++					case STLAB_CLEAN:       stlab_semantic_counters.clean_semantic_edges++; break;
++					case STLAB_AMBIGUOUS:   stlab_semantic_counters.ambiguous_edges++;      break;
++					default:                stlab_semantic_counters.unrecoverable_edges++;  break;
++				}
++
++				// records.py step 2: only the three usable classes, only with an
++				// under-colour, only with 0 < coverage < 255.
++				const bool usable = (rec.cls == STLAB_CLEANLY_RECONSTRUCTABLE
++				                  || rec.cls == STLAB_RECONSTRUCTABLE_WITH_ERROR
++				                  || rec.cls == STLAB_COMPLEX_INTERNAL_BLEND);
++				if(  usable  &&  rec.coverage > 0  &&  rec.coverage < 255  ) {
++					stlab_semantic_record_t s;
++					s.position = (uint32)i;
++					s.semantic_class = (best.mi < 8) ? STLAB_CLASS_PLAYER_1 : STLAB_CLASS_PLAYER_2;
++					s.semantic_parameter = (uint8)(best.mi % 8);
++					s.coverage_alpha8 = (uint8)rec.coverage;
++					s.under_r = best.N.r; s.under_g = best.N.g; s.under_b = best.N.b;
++					s.has_under = true;
++					edge_records.push_back(s);
++				}
++			}
++		}
++	}
++
++	// records.py builds one dict and sorts by linear index at the end; an edge record
++	// replaces a marker record at the same position, but the candidate set excludes marker
++	// pixels, so the two sets are disjoint by construction.
++	out.insert(out.end(), edge_records.begin(), edge_records.end());
++	std::stable_sort(out.begin(), out.end(),
++	                 [](const stlab_semantic_record_t &a, const stlab_semantic_record_t &b) {
++		                 return a.position < b.position;
++	                 });
++
++	for(  size_t i = 0;  i < out.size();  i++  ) {
++		switch(  out[i].semantic_class  ) {
++			case STLAB_CLASS_PLAYER_1: stlab_semantic_counters.player1_records++; break;
++			case STLAB_CLASS_PLAYER_2: stlab_semantic_counters.player2_records++; break;
++			default:                   stlab_semantic_counters.light_marker_records++; break;
++		}
++		if(  out[i].coverage_alpha8 == 255  ) stlab_semantic_counters.exact_marker_records++;
++	}
++	stlab_semantic_counters.semantic_records_total += (uint32)out.size();
++	stlab_semantic_counters.rgba32_images_seen++;
++}
+diff --git a/src/simutrans/descriptor/writer/stlab_semantic.h b/src/simutrans/descriptor/writer/stlab_semantic.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..ced23d469d21667c9fa6b0c47a1cd3f48f79bc46
+--- /dev/null
++++ b/src/simutrans/descriptor/writer/stlab_semantic.h
+@@ -0,0 +1,124 @@
++/*
++ * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- semantic extractor for makeobj.
++ *
++ * NOT FOR COMMIT. Laboratory only.
++ *
++ * This is a MECHANICAL PORT of the certified solver of
++ * STLAB-RGBA32-SEMANTIC-ALPHA-PROBE-01 (tools/probe.py, reconstruct()), plus the record
++ * assembly of STLAB-RGBA32-NODE-DESIGN-01 (tools/records.py). Nothing here is a new
++ * algorithm, a new threshold or an improvement: every constant and every tie-break is the
++ * one the Python oracle uses, and the port is gated on reproducing it exactly.
++ *
++ * Layering, deliberately separate (the extractor knows nothing about the binary node):
++ *
++ *   RGBA source pixels -> stlab_extract_semantics() -> semantic records
++ *   semantic records   -> the XR32 serializer (a different translation unit)
++ *
++ * The in-memory record below is NOT the on-disk layout. Never serialise it with sizeof.
++ */
++#ifndef DESCRIPTOR_WRITER_STLAB_SEMANTIC_H
++#define DESCRIPTOR_WRITER_STLAB_SEMANTIC_H
++
++#include <vector>
++#include "../../simtypes.h"
++
++/// semantic classes of FORMAT CANDIDATE v1
++#define STLAB_CLASS_PLAYER_1 (1)
++#define STLAB_CLASS_PLAYER_2 (2)
++#define STLAB_CLASS_LIGHT    (3)
++
++/// the solver's own classes, kept verbatim so the port can be compared class by class
++enum stlab_solver_class_t {
++	STLAB_CLEANLY_RECONSTRUCTABLE = 0,
++	STLAB_RECONSTRUCTABLE_WITH_ERROR,
++	STLAB_COMPLEX_INTERNAL_BLEND,
++	STLAB_NOT_AN_EDGE,
++	STLAB_NOT_RECONSTRUCTABLE,
++	STLAB_NO_UNDER_COLOUR,          ///< probe.py calls this class "AMBIGUOUS"
++	STLAB_SOLVER_CLASS_COUNT
++};
++
++/// the three-way reporting taxonomy the mission asks for
++enum stlab_taxonomy_t {
++	STLAB_CLEAN = 0,
++	STLAB_AMBIGUOUS,
++	STLAB_UNRECOVERABLE,
++	STLAB_TAXONOMY_COUNT
++};
++
++stlab_taxonomy_t stlab_taxonomy_of(stlab_solver_class_t c);
++const char *stlab_solver_class_name(stlab_solver_class_t c);
++const char *stlab_taxonomy_name(stlab_taxonomy_t t);
++
++
++/// one semantic record, in memory. Position is a linear index into the view it came from.
++struct stlab_semantic_record_t {
++	uint32 position;
++	uint8  semantic_class;
++	uint8  semantic_parameter;
++	uint8  coverage_alpha8;
++	uint8  under_r, under_g, under_b;
++	bool   has_under;
++};
++
++
++/// one solved edge candidate, kept so the port can be diagnosed against the oracle
++struct stlab_edge_candidate_t {
++	uint32 y, x;
++	uint8  er, eg, eb;                 ///< the observed pixel
++	stlab_solver_class_t cls;
++	int    marker_index;
++	double residual;
++	double alpha_raw;                  ///< before clamping, the value the class test uses
++	double alpha_clamped;
++	int    coverage;                   ///< round(alpha_clamped * 255), banker's rounding
++	bool   has_under;
++	uint8  under_r, under_g, under_b;
++	bool   has_rival;
++	uint8  rival_r, rival_g, rival_b;
++	bool   touches_hole;
++};
++
++
++struct stlab_semantic_counters_t {
++	uint32 rgba32_images_seen = 0;
++	uint32 exact_marker_records = 0;
++	uint32 clean_semantic_edges = 0;
++	uint32 ambiguous_edges = 0;
++	uint32 unrecoverable_edges = 0;
++	uint32 player1_records = 0;
++	uint32 player2_records = 0;
++	uint32 light_marker_records = 0;
++	uint32 semantic_records_total = 0;
++	uint64 rgba_raw_bytes = 0;
++	uint64 rgba_compressed_bytes = 0;
++	uint64 semantic_bytes = 0;
++	uint32 xr32_nodes_written = 0;
++	uint64 extract_micros = 0;
++	uint64 compress_micros = 0;
++	uint64 serialise_micros = 0;
++};
++
++extern stlab_semantic_counters_t stlab_semantic_counters;
++
++
++/**
++ * Extract the semantic records of one RGBA view.
++ *
++ * @param rgba   w*h*4 bytes, straight RGBA8888, row major, NOT premultiplied and with the
++ *               source alpha convention (255 = opaque), not makeobj's inverted one
++ * @param out    receives the records, sorted by position, exactly as records.py orders them
++ * @param edges  optional: every solved edge candidate, for the equivalence harness
++ */
++void stlab_extract_semantics(const uint8 *rgba, int w, int h,
++                             std::vector<stlab_semantic_record_t> &out,
++                             std::vector<stlab_edge_candidate_t> *edges);
++
++/// diagnostic dump command, defined in stlab_semanticdump.cc
++int stlab_semanticdump_main(const char *png, const char *recs_out, const char *cand_out,
++                            int tile_size);
++
++/// is the laboratory writer enabled at all? (env STLAB_XR32_WRITE=1)
++bool stlab_writer_enabled();
++
++#endif
+diff --git a/src/simutrans/descriptor/writer/stlab_xr32_writer.cc b/src/simutrans/descriptor/writer/stlab_xr32_writer.cc
+new file mode 100644
+index 0000000000000000000000000000000000000000..6923a3e9e925ecac2888e4bb91889029747b7694
+--- /dev/null
++++ b/src/simutrans/descriptor/writer/stlab_xr32_writer.cc
+@@ -0,0 +1,187 @@
++/*
++ * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- FORMAT CANDIDATE v1 serializer.
++ * NOT FOR COMMIT. Laboratory only.
++ *
++ * Layout, from RGBA32-NODE-V1-CANDIDATE.md, little-endian throughout:
++ *
++ *   0..3   magic "XR32"
++ *   4      version                       = 1
++ *   5      flags                         bit0 = base plane deflated
++ *   6      class_registry                = 1
++ *   7      reserved                      = 0
++ *   8..9   width          uint16
++ *   10..11 height         uint16
++ *   12..13 x              sint16
++ *   14..15 y              sint16
++ *   16     zoomable       uint8
++ *   17     reserved                      = 0
++ *   18..19 img_index      uint16
++ *   20..23 base_bytes     uint32         the plane as stored, compressed or not
++ *   24..27 run_count      uint32
++ *   28..31 run_bytes      uint32
++ *
++ * then the base plane, then the run block. One run is
++ *
++ *   varint(start - previous_end), varint(length), class, parameter, coverage
++ *   [, under R, G, B  when coverage != 255 and the UNDER_IS_FRAMEBUFFER bit is clear]
++ */
++#include "stlab_xr32_writer.h"
++
++#include <cstdlib>
++#include <cstring>
++#include <zlib.h>
++
++#include "obj_node.h"
++
++stlab_xr32_writer_t stlab_xr32_writer_t::the_instance;
++
++static const uint8 XR32_VERSION        = 1;
++static const uint8 XR32_CLASS_REGISTRY = 1;
++static const uint8 XR32_HEADER_LEN     = 32;
++static const uint8 XR32_FLAG_BASE_DEFLATED = 0x01;
++static const uint8 XR32_UNDER_IS_FRAMEBUFFER = 0x80;
++
++
++bool stlab_xr32_deflate_enabled()
++{
++	static int cached = -1;
++	if(  cached < 0  ) {
++		const char *e = getenv("STLAB_XR32_DEFLATE");
++		cached = (e != NULL  &&  e[0] == '0') ? 0 : 1;   // default: compress
++	}
++	return cached == 1;
++}
++
++
++std::vector<stlab_pending_node_t> &stlab_pending_nodes()
++{
++	static std::vector<stlab_pending_node_t> pending;
++	return pending;
++}
++
++
++static void put16(std::vector<uint8> &b, size_t at, uint16 v)
++{
++	b[at] = (uint8)(v & 0xFF);
++	b[at + 1] = (uint8)(v >> 8);
++}
++
++
++static void put32(std::vector<uint8> &b, size_t at, uint32 v)
++{
++	b[at] = (uint8)(v & 0xFF);
++	b[at + 1] = (uint8)((v >> 8) & 0xFF);
++	b[at + 2] = (uint8)((v >> 16) & 0xFF);
++	b[at + 3] = (uint8)((v >> 24) & 0xFF);
++}
++
++
++static void put_varint(std::vector<uint8> &b, uint32 v)
++{
++	for(  ;;  ) {
++		uint8 c = (uint8)(v & 0x7F);
++		v >>= 7;
++		b.push_back(v ? (uint8)(c | 0x80) : c);
++		if(  !v  ) return;
++	}
++}
++
++
++void stlab_xr32_build_body(const uint8 *rgba, int w, int h, sint16 x, sint16 y,
++                           uint8 zoomable, uint16 img_index,
++                           const std::vector<stlab_semantic_record_t> &records,
++                           std::vector<uint8> &body)
++{
++	const size_t plane_len = (size_t)w * h * 4;
++
++	std::vector<uint8> plane;
++	uint8 flags = 0;
++	if(  stlab_xr32_deflate_enabled()  ) {
++		uLongf cap = compressBound((uLong)plane_len);
++		plane.resize(cap);
++		if(  compress2(&plane[0], &cap, rgba, (uLong)plane_len, 9) != Z_OK  ) {
++			plane.assign(rgba, rgba + plane_len);        // fall back to the raw plane
++		}
++		else {
++			plane.resize(cap);
++			flags |= XR32_FLAG_BASE_DEFLATED;
++		}
++	}
++	else {
++		plane.assign(rgba, rgba + plane_len);
++	}
++
++	// run/delta encoding: fold neighbouring records that carry identical semantics
++	std::vector<uint8> runs;
++	uint32 run_count = 0, prev_end = 0;
++	size_t i = 0;
++	while(  i < records.size()  ) {
++		const stlab_semantic_record_t &r = records[i];
++		size_t j = i + 1;
++		while(  j < records.size()
++		        &&  records[j].position == records[j - 1].position + 1
++		        &&  records[j].semantic_class == r.semantic_class
++		        &&  records[j].semantic_parameter == r.semantic_parameter
++		        &&  records[j].coverage_alpha8 == r.coverage_alpha8
++		        &&  records[j].has_under == r.has_under
++		        &&  records[j].under_r == r.under_r
++		        &&  records[j].under_g == r.under_g
++		        &&  records[j].under_b == r.under_b  ) {
++			j++;
++		}
++		const uint32 length = (uint32)(j - i);
++		put_varint(runs, r.position - prev_end);
++		put_varint(runs, length);
++		runs.push_back(r.semantic_class);
++		runs.push_back(r.semantic_parameter);
++		runs.push_back(r.coverage_alpha8);
++		if(  r.coverage_alpha8 != 255
++		     &&  (r.semantic_class & XR32_UNDER_IS_FRAMEBUFFER) == 0  ) {
++			runs.push_back(r.under_r);
++			runs.push_back(r.under_g);
++			runs.push_back(r.under_b);
++		}
++		prev_end = r.position + length;
++		run_count++;
++		i = j;
++	}
++
++	body.assign(XR32_HEADER_LEN, 0);
++	body[0] = 'X'; body[1] = 'R'; body[2] = '3'; body[3] = '2';
++	body[4] = XR32_VERSION;
++	body[5] = flags;
++	body[6] = XR32_CLASS_REGISTRY;
++	body[7] = 0;
++	put16(body, 8, (uint16)w);
++	put16(body, 10, (uint16)h);
++	put16(body, 12, (uint16)x);
++	put16(body, 14, (uint16)y);
++	body[16] = zoomable;
++	body[17] = 0;
++	put16(body, 18, img_index);
++	put32(body, 20, (uint32)plane.size());
++	put32(body, 24, run_count);
++	put32(body, 28, (uint32)runs.size());
++
++	body.insert(body.end(), plane.begin(), plane.end());
++	body.insert(body.end(), runs.begin(), runs.end());
++
++	stlab_semantic_counters.rgba_raw_bytes += plane_len;
++	stlab_semantic_counters.rgba_compressed_bytes += plane.size();
++	stlab_semantic_counters.semantic_bytes += runs.size();
++}
++
++
++void stlab_xr32_flush(FILE *fp, obj_node_t &parent)
++{
++	std::vector<stlab_pending_node_t> &pending = stlab_pending_nodes();
++	for(  size_t i = 0;  i < pending.size();  i++  ) {
++		// creating the node bumps parent->nchildren, which is the only bookkeeping needed;
++		// the parent's own body still reports the IMG count, so get_image() is untouched
++		obj_node_t node(stlab_xr32_writer_t::instance(), (uint32)pending[i].body.size(), &parent);
++		node.write_bytes(fp, (uint32)pending[i].body.size(), &pending[i].body[0]);
++		node.check_and_write_header(fp);
++		stlab_semantic_counters.xr32_nodes_written++;
++	}
++	pending.clear();
++}
+diff --git a/src/simutrans/descriptor/writer/stlab_xr32_writer.h b/src/simutrans/descriptor/writer/stlab_xr32_writer.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..bba1baa568a2881b46977c401335d1005fea21dc
+--- /dev/null
++++ b/src/simutrans/descriptor/writer/stlab_xr32_writer.h
+@@ -0,0 +1,63 @@
++/*
++ * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- FORMAT CANDIDATE v1 serializer for makeobj.
++ *
++ * NOT FOR COMMIT. Laboratory only. `XR32` is an EXPERIMENTAL tag, not a final ABI.
++ *
++ * The byte layout is taken from RGBA32-NODE-V1-CANDIDATE.md and is not restated or
++ * "improved" here. This translation unit knows the layout; it knows nothing about how the
++ * semantic records were obtained. That separation is deliberate: the extractor is
++ * certified against the Python oracle on its own, and this file is certified against the
++ * independent parser on its own.
++ */
++#ifndef DESCRIPTOR_WRITER_STLAB_XR32_WRITER_H
++#define DESCRIPTOR_WRITER_STLAB_XR32_WRITER_H
++
++#include <vector>
++#include "obj_writer.h"
++#include "stlab_semantic.h"
++
++class obj_node_t;
++
++
++/// a node waiting to be emitted after all the IMG children of its parent
++struct stlab_pending_node_t {
++	uint16 img_index;
++	std::vector<uint8> body;
++};
++
++
++class stlab_xr32_writer_t : public obj_writer_t
++{
++private:
++	static stlab_xr32_writer_t the_instance;
++	stlab_xr32_writer_t() { register_writer(false); }
++
++public:
++	static stlab_xr32_writer_t *instance() { return &the_instance; }
++
++	obj_type get_type() const OVERRIDE { return (obj_type)C4ID('X', 'R', '3', '2'); }
++	const char *get_type_name() const OVERRIDE { return "xr32"; }
++};
++
++
++/// should the base plane be deflated? (env STLAB_XR32_DEFLATE, default yes)
++bool stlab_xr32_deflate_enabled();
++
++/**
++ * Build one candidate node body.
++ *
++ * @param rgba     the region, w*h*4 straight RGBA8888
++ * @param records  the region's semantic records, positions local to the region and sorted
++ */
++void stlab_xr32_build_body(const uint8 *rgba, int w, int h, sint16 x, sint16 y,
++                           uint8 zoomable, uint16 img_index,
++                           const std::vector<stlab_semantic_record_t> &records,
++                           std::vector<uint8> &body);
++
++/// the nodes accumulated while the current parent's images were written
++std::vector<stlab_pending_node_t> &stlab_pending_nodes();
++
++/// emit every pending node as a child of @p parent, then clear the list
++void stlab_xr32_flush(FILE *fp, obj_node_t &parent);
++
++#endif

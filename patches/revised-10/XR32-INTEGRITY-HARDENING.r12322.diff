@@ -1,0 +1,289 @@
+diff --git a/src/simutrans/dataobj/pakset_manager.cc b/src/simutrans/dataobj/pakset_manager.cc
+index fa4fe78d8716cca4bb36b6d7a6b338dc3d7e3dc4..dd4b3e670e3acacb1168dacddac8f8ac0466a993 100644
+--- a/src/simutrans/dataobj/pakset_manager.cc
++++ b/src/simutrans/dataobj/pakset_manager.cc
+@@ -5,6 +5,7 @@
+ 
+ #include "pakset_manager.h"
+ 
++#include <map>
+ #include <vector>
+ #include <zlib.h>
+ #include "../descriptor/image.h"
+@@ -36,7 +37,7 @@
+ #	include "../display/stlab_xr32_load.cci"
+ #else
+ static inline bool stlab_xr32_enabled() { return false; }
+-static inline void stlab_xr32_pair_candidates(obj_desc_t **, int) { }
++static inline void stlab_xr32_pair_candidates(obj_desc_t **, int, const obj_type *) { }
+ static inline bool stlab_xr32_read_candidate(FILE *, uint32) { return false; }
+ #endif
+ 
+@@ -373,6 +374,27 @@ static bool read_node_info(obj_node_info_t& node, FILE* const f, uint32 const ve
+ }
+ 
+ 
++/*
++ * What each parent's children were read as. Only kept between reading and
++ * resolve_multires(): a high-resolution pairing walks a path of child indices, and every
++ * step has to be checked against this rather than trusted (obj_desc_t does not store how
++ * many children it has).
++ */
++static std::map<const obj_desc_t *, std::vector<obj_type> > *multires_kinds = NULL;
++
++
++static void multires_note_children(const obj_desc_t *parent, const std::vector<obj_type> &kinds)
++{
++	if(  parent == NULL  ||  kinds.empty()  ) {
++		return;
++	}
++	if(  multires_kinds == NULL  ) {
++		multires_kinds = new std::map<const obj_desc_t *, std::vector<obj_type> >();
++	}
++	(*multires_kinds)[parent] = kinds;
++}
++
++
+ bool pakset_manager_t::read_nodes(FILE *fp, obj_desc_t *&data, int node_depth, uint32 version, obj_type *type_read)
+ {
+ 	obj_node_info_t node;
+@@ -393,6 +415,7 @@ bool pakset_manager_t::read_nodes(FILE *fp, obj_desc_t *&data, int node_depth, u
+ 		}
+ 
+ 		obj_type first_child = obj_root;
++		std::vector<obj_type> child_kinds(node.nchildren, obj_root);   // what each child was read as
+ 		if (node.nchildren != 0) {
+ 			data->children = new obj_desc_t *[node.nchildren];
+ 
+@@ -411,6 +434,7 @@ bool pakset_manager_t::read_nodes(FILE *fp, obj_desc_t *&data, int node_depth, u
+ 				// no reader, are consumed by the XR32 seam and leave a NULL slot, so
+ 				// this rule does not disturb them.)
+ 				if (i == 0) { first_child = child_type; }
++				child_kinds[i] = child_type;
+ 				if (node.type == obj_multires && child_type != obj_image) {
+ 					data->children[i] = NULL;
+ 				}
+@@ -426,9 +450,11 @@ bool pakset_manager_t::read_nodes(FILE *fp, obj_desc_t *&data, int node_depth, u
+ 			multires_note_object( static_cast<const text_desc_t *>(data->children[0])->get_text(), data );
+ 		}
+ 
++		multires_note_children( data, child_kinds );
++
+ 		// pair any candidate node parsed while reading these children
+ 		if(  stlab_xr32_enabled()  ) {
+-			stlab_xr32_pair_candidates( data->children, node.nchildren );
++			stlab_xr32_pair_candidates( data->children, node.nchildren, child_kinds.empty() ? NULL : &child_kinds[0] );
+ 		}
+ 
+ 		if(node_depth<2  ||  node.type!=obj_cursor) {
+@@ -548,6 +574,9 @@ void pakset_manager_t::multires_note_object(const char *name, obj_desc_t *desc)
+ void pakset_manager_t::resolve_multires()
+ {
+ 	if(  multires_pending == NULL  ) {
++		// nothing to pair: the table of child kinds is not needed either
++		delete multires_kinds;
++		multires_kinds = NULL;
+ 		return;
+ 	}
+ #if COLOUR_DEPTH != 0
+@@ -569,15 +598,20 @@ void pakset_manager_t::resolve_multires()
+ 		// walk to the image, keeping the slot so it can be repointed below
+ 		obj_desc_t **slot = NULL;
+ 		obj_desc_t *cur = obj;
++		bool on_image = false;
+ 		for(  uint8 d = 0;  d < pair.path_depth;  d++  ) {
+-			if(  cur == NULL  ||  cur->children == NULL  ) {
++			const std::map<const obj_desc_t *, std::vector<obj_type> >::const_iterator k =
++				(cur != NULL  &&  multires_kinds != NULL) ? multires_kinds->find( cur ) : std::map<const obj_desc_t *, std::vector<obj_type> >::const_iterator();
++			if(  cur == NULL  ||  cur->children == NULL  ||  multires_kinds == NULL  ||  k == multires_kinds->end()
++			     ||  pair.path[d] >= k->second.size()  ) {
+ 				slot = NULL;
+ 				break;
+ 			}
++			on_image = k->second[ pair.path[d] ] == obj_image;
+ 			slot = &cur->children[ pair.path[d] ];
+ 			cur = *slot;
+ 		}
+-		if(  slot == NULL  ||  cur == NULL  ) {
++		if(  slot == NULL  ||  cur == NULL  ||  !on_image  ) {
+ 			dbg->warning( "pakset_manager_t::resolve_multires", "the image path for '%s' leads nowhere; its high-resolution image is unused", pair.base_object.c_str() );
+ 			continue;
+ 		}
+@@ -628,6 +662,8 @@ void pakset_manager_t::resolve_multires()
+ 	multires_pending = NULL;
+ 	delete multires_objects;
+ 	multires_objects = NULL;
++	delete multires_kinds;
++	multires_kinds = NULL;
+ }
+ 
+ 
+diff --git a/src/simutrans/descriptor/writer/stlab_mres_writer.cc b/src/simutrans/descriptor/writer/stlab_mres_writer.cc
+index 9d91751318c652e7951b6a71477c1d78a36c522f..e6f37a46589b616318ce5fc0041a2c21cc15a6b5 100644
+--- a/src/simutrans/descriptor/writer/stlab_mres_writer.cc
++++ b/src/simutrans/descriptor/writer/stlab_mres_writer.cc
+@@ -52,6 +52,14 @@ bool is_type(const pnode_t &n, const char *t)
+ }
+ 
+ 
++/// does this XR32 node (raw = its bytes, header included) end in a CRC-32 trailer?
++bool xr32_has_crc(const pnode_t &n, const std::vector<uint8> &raw)
++{
++	const size_t body_at = n.body - n.start;
++	return n.body_len >= 36  &&  (raw[body_at + 5] & 0x02) != 0;
++}
++
++
+ uint16 rd16(const std::vector<uint8> &b, size_t at) { return (uint16)(b[at] | (b[at + 1] << 8)); }
+ uint32 rd32(const std::vector<uint8> &b, size_t at)
+ {
+@@ -294,6 +302,9 @@ int stlab_mres_main(const char *out_name, const char *base_name, const char *hir
+ 			std::vector<uint8> k2 = xr_raw;
+ 			const size_t idx_at = (h.companion->body - h.companion->start) + 18;
+ 			k2[idx_at] = k2[idx_at + 1] = 0;             // the index is rewritten below
++			if(  xr32_has_crc(*h.companion, k2)  ) {
++				std::fill(k2.end() - 4, k2.end(), 0);    // and so is the CRC trailer
++			}
+ 			key.insert(key.end(), k2.begin(), k2.end());
+ 		}
+ 		uint16 child;
+@@ -321,6 +332,15 @@ int stlab_mres_main(const char *out_name, const char *base_name, const char *hir
+ 				const size_t idx_at = (h.companion->body - h.companion->start) + 18;
+ 				xr_raw[idx_at] = (uint8)child;
+ 				xr_raw[idx_at + 1] = (uint8)(child >> 8);
++				if(  xr32_has_crc(*h.companion, xr_raw)  ) {
++					// the trailer covers img_index, so it must follow the rewrite
++					const size_t body_at = h.companion->body - h.companion->start;
++					const size_t crc_at = xr_raw.size() - 4;
++					const uint32 crc = (uint32)crc32( crc32(0L, Z_NULL, 0), &xr_raw[body_at], (uInt)(crc_at - body_at) );
++					for(  int k = 0;  k < 4;  k++  ) {
++						xr_raw[crc_at + k] = (uint8)(crc >> (8 * k));
++					}
++				}
+ 				xr_children.push_back(xr_raw);
+ 			}
+ 		}
+diff --git a/src/simutrans/descriptor/writer/stlab_xr32_writer.cc b/src/simutrans/descriptor/writer/stlab_xr32_writer.cc
+index 6923a3e9e925ecac2888e4bb91889029747b7694..ded79317b7f1ba9b8d04e79b4945e7a5b09127c3 100644
+--- a/src/simutrans/descriptor/writer/stlab_xr32_writer.cc
++++ b/src/simutrans/descriptor/writer/stlab_xr32_writer.cc
+@@ -39,6 +39,7 @@ static const uint8 XR32_VERSION        = 1;
+ static const uint8 XR32_CLASS_REGISTRY = 1;
+ static const uint8 XR32_HEADER_LEN     = 32;
+ static const uint8 XR32_FLAG_BASE_DEFLATED = 0x01;
++static const uint8 XR32_FLAG_CRC32 = 0x02;
+ static const uint8 XR32_UNDER_IS_FRAMEBUFFER = 0x80;
+ 
+ 
+@@ -149,6 +150,7 @@ void stlab_xr32_build_body(const uint8 *rgba, int w, int h, sint16 x, sint16 y,
+ 	body.assign(XR32_HEADER_LEN, 0);
+ 	body[0] = 'X'; body[1] = 'R'; body[2] = '3'; body[3] = '2';
+ 	body[4] = XR32_VERSION;
++	flags |= XR32_FLAG_CRC32;
+ 	body[5] = flags;
+ 	body[6] = XR32_CLASS_REGISTRY;
+ 	body[7] = 0;
+@@ -166,6 +168,13 @@ void stlab_xr32_build_body(const uint8 *rgba, int w, int h, sint16 x, sint16 y,
+ 	body.insert(body.end(), plane.begin(), plane.end());
+ 	body.insert(body.end(), runs.begin(), runs.end());
+ 
++	// integrity trailer: CRC-32 of every byte above, so a reader can refuse a damaged
++	// plane or run block before it allocates or inflates anything
++	const uint32 crc = (uint32)crc32( crc32(0L, Z_NULL, 0), &body[0], (uInt)body.size() );
++	const size_t at = body.size();
++	body.resize(at + 4);
++	put32(body, at, crc);
++
+ 	stlab_semantic_counters.rgba_raw_bytes += plane_len;
+ 	stlab_semantic_counters.rgba_compressed_bytes += plane.size();
+ 	stlab_semantic_counters.semantic_bytes += runs.size();
+diff --git a/src/simutrans/display/stlab_xr32.cc b/src/simutrans/display/stlab_xr32.cc
+index 6d1e0baa608c0723efa631ff46a2b664565ecd6e..cbd96e9609a48d8625db88f1827a7ccd73fb60e3 100644
+--- a/src/simutrans/display/stlab_xr32.cc
++++ b/src/simutrans/display/stlab_xr32.cc
+@@ -17,6 +17,7 @@ static const uint8 XR32_MAGIC[4] = { 'X', 'R', '3', '2' };
+ static const uint8 XR32_SUPPORTED_VERSION = 1;
+ static const uint8 XR32_HEADER_LEN = 32;
+ static const uint8 XR32_FLAG_BASE_DEFLATED = 0x01;
++static const uint8 XR32_FLAG_CRC32 = 0x02;           ///< body ends in a CRC-32 of everything before it
+ static const uint8 XR32_UNDER_IS_FRAMEBUFFER = 0x80;
+ 
+ static const uint8 XR32_CLASS_PLAYER_1 = 1;
+@@ -80,7 +81,20 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
+ 		return STLAB_XR32_UNSUPPORTED;   // fall back to IMG, not an error
+ 	}
+ 	if(  body[7] != 0  ||  body[17] != 0  ) { *why = "reserved byte not zero"; return STLAB_XR32_REJECTED; }
+-	if(  (flags & ~XR32_FLAG_BASE_DEFLATED) != 0  ) { *why = "unknown flag bit"; return STLAB_XR32_REJECTED; }
++	if(  (flags & ~(XR32_FLAG_BASE_DEFLATED | XR32_FLAG_CRC32)) != 0  ) { *why = "unknown flag bit"; return STLAB_XR32_REJECTED; }
++
++	// integrity first: nothing is allocated or inflated before the trailer has been checked
++	if(  flags & XR32_FLAG_CRC32  ) {
++		if(  len < (uint32)XR32_HEADER_LEN + 4  ) { *why = "body too short for its checksum"; return STLAB_XR32_REJECTED; }
++		len -= 4;
++		const uint32 stored = rd32(body + len);
++		const uint32 actual = (uint32)crc32( crc32(0L, Z_NULL, 0), (const Bytef *)body, (uInt)len );
++		if(  stored != actual  ) { *why = "checksum mismatch"; return STLAB_XR32_REJECTED; }
++	}
++	else if(  (flags & XR32_FLAG_BASE_DEFLATED) == 0  ) {
++		// a raw plane carries no check of its own, so without the trailer corruption is invisible
++		*why = "raw plane without checksum"; return STLAB_XR32_REJECTED;
++	}
+ 
+ 	const uint16 w = rd16(body + 8);
+ 	const uint16 h = rd16(body + 10);
+@@ -99,6 +113,16 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
+ 
+ 	const uint64 want_plane = (uint64)w * h * 4u;
+ 	if(  want_plane > 0x40000000ull  ) { *why = "implausible plane size"; return STLAB_XR32_REJECTED; }
++	// nothing is allocated for what the node cannot actually contain
++	if(  (flags & XR32_FLAG_BASE_DEFLATED)  &&  want_plane > (uint64)base_bytes * 1032u + 1024u  ) {
++		*why = "declared plane larger than its compressed stream can expand to"; return STLAB_XR32_REJECTED;
++	}
++	if(  (flags & XR32_FLAG_BASE_DEFLATED) == 0  &&  (uint64)base_bytes != want_plane  ) {
++		*why = "raw base plane has the wrong length"; return STLAB_XR32_REJECTED;
++	}
++	if(  (uint64)run_count * 5u > (uint64)run_bytes  ) {
++		*why = "more runs than the run block can hold"; return STLAB_XR32_REJECTED;
++	}
+ 
+ 	uint8 *plane = (uint8 *)malloc((size_t)want_plane);
+ 	if(  plane == NULL  ) { *why = "out of memory for the plane"; return STLAB_XR32_REJECTED; }
+@@ -114,12 +138,7 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
+ 		}
+ 	}
+ 	else {
+-		if(  (uint64)base_bytes != want_plane  ) {
+-			free(plane);
+-			*why = "raw base plane has the wrong length";
+-			return STLAB_XR32_REJECTED;
+-		}
+-		memcpy(plane, body + XR32_HEADER_LEN, (size_t)want_plane);
++		memcpy(plane, body + XR32_HEADER_LEN, (size_t)want_plane);   // length checked above
+ 	}
+ 
+ 	stlab_xr32_run_t *runs = NULL;
+diff --git a/src/simutrans/display/stlab_xr32_load.cci b/src/simutrans/display/stlab_xr32_load.cci
+index 9e6a6d0ef93fd73112b9279ea8f9fcd221841dc3..9fc963d01aff0ff0c7c8d1c173e5f8052650d1c4 100644
+--- a/src/simutrans/display/stlab_xr32_load.cci
++++ b/src/simutrans/display/stlab_xr32_load.cci
+@@ -50,7 +50,7 @@ static bool stlab_xr32_read_candidate(FILE *fp, uint32 size)
+ 
+ 
+ /// pair every candidate parsed while reading this node's children with its sibling IMG
+-static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren)
++static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren, const obj_type *kinds)
+ {
+ 	if(  stlab_pending_candidates.empty()  ) {
+ 		return;
+@@ -58,7 +58,10 @@ static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren)
+ 	for(  size_t i = 0;  i < stlab_pending_candidates.size();  i++  ) {
+ 		stlab_xr32_image_t *img = stlab_pending_candidates[i];
+ 		bool attached = false;
+-		if(  children != NULL  &&  img->img_index < (uint16)nchildren  ) {
++		// only a child that was READ as an IMG node is an image: img_index may name any
++		// child (a TEXT name, an XREF, a list), and casting that to image_t is undefined
++		if(  children != NULL  &&  img->img_index < (uint16)nchildren
++		     &&  kinds != NULL  &&  kinds[img->img_index] == obj_image  ) {
+ 			const image_t *im = static_cast<const image_t *>(children[img->img_index]);
+ 			if(  im != NULL  &&  im->get_id() != IMG_EMPTY  ) {
+ 				attached = stlab_xr32_attach(im->get_id(), img,

@@ -1,0 +1,444 @@
+diff --git a/src/simutrans/display/simgraph32.cc b/src/simutrans/display/simgraph32.cc
+index 2c92344b8f03355099e661aa3c222de50e58e120..f0edce1da19a7c33535115548bb4a1117a25b56a 100644
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -391,15 +391,71 @@ static inline void pixcopy32(PIXVAL *dest, const PIXVAL *src, const PIXVAL * con
+ }
+ 
+ 
++/**
++ * Composite one straight-alpha ARGB pixel over the framebuffer, alpha 0..255.
++ *
++ * The XR32 contract: (s*a + d*(255-a) + 127) / 255 per channel, the same integer
++ * arithmetic stlab_xr32_resolve() already uses for its semantic edges. Only XR32
++ * screen caches carry such pixels (see colorpixcopy_screen32()).
++ */
++static inline PIXVAL blend_straight8_argb(PIXVAL background, PIXVAL foreground)
++{
++	const uint32 a  = foreground >> 24, ia = 255u - a;
++	const uint32 br = (background >> 16) & 0xFF, bg = (background >> 8) & 0xFF, bb = background & 0xFF;
++	const uint32 fr = (foreground >> 16) & 0xFF, fg = (foreground >> 8) & 0xFF, fb = foreground & 0xFF;
++	return 0xFF000000u | (((fr * a + br * ia + 127) / 255) << 16)
++	                   | (((fg * a + bg * ia + 127) / 255) << 8)
++	                   |  ((fb * a + bb * ia + 127) / 255);
++}
++
++
++/// an XR32 translucent pixel: straight alpha 1..254 in the top byte. A legacy
++/// class+alpha code is below 0x10000 and an opaque screen colour has 0xFF there.
++static inline bool is_straight_alpha32(const PIXVAL v)
++{
++	return v >= 0x01000000u  &&  v < 0xFF000000u;
++}
++
++
++/* The XR32 run loops below are kept OUT of line on purpose. Inlined next to the legacy
++ * loops they share a caller with, they made the unchanged legacy semi-transparent loop
++ * 7.5 % slower (measured, interleaved, n=7); out of line the legacy loop is back to its
++ * previous speed exactly. The same pattern as NORETURN in simtypes.h. */
++#if defined(_MSC_VER)
++#	define XR32_NOINLINE __declspec(noinline)
++#elif defined(__GNUC__)
++#	define XR32_NOINLINE __attribute__ ((noinline))
++#else
++#	define XR32_NOINLINE
++#endif
++
++
++/// an XR32 semi-transparent run, composited over the framebuffer by each pixel's own alpha
++XR32_NOINLINE static void colorpixcopy_straight32(PIXVAL *dest, const PIXVAL *src, const PIXVAL * const end)
++{
++	while(  src < end  ) {
++		*dest = blend_straight8_argb( *dest, *src++ );
++		dest++;
++	}
++}
++
++
+ /**
+  * Composite semi-transparent pixels that are already in SCREEN space.
+  *
+  * Counterpart of colorpixcopy_screen() in simgraph16.cc.  The caller has
+- * already established from the run header that this run is semi-transparent,
+- * so no classification by pixel value happens here.
++ * already established from the run header that this run is semi-transparent.
++ * A semi-transparent run holds either legacy class+alpha codes (a legacy
++ * image) or straight-alpha ARGB words (an XR32 image), never both: a screen
++ * cache comes whole from one producer. So the FIRST pixel decides the run, as
++ * in colorpixcopy_stored32(), and the legacy loop is the unchanged one.
+  */
+ static inline void colorpixcopy_screen32(PIXVAL *dest, const PIXVAL *src, const PIXVAL * const end)
+ {
++	if(  src < end  &&  *src >= 0x01000000u  ) {
++		colorpixcopy_straight32( dest, src, end );
++		return;
++	}
+ 	while(  src < end  ) {
+ 		const uint32 aux   = (uint32)*src++ - 0x8020u;
+ 		const uint32 alpha = (aux % 31u) + 1u;
+@@ -812,8 +868,19 @@ struct PixelOps32Blend {
+ 	{
+ 		while(  src < end  ) { *dest = F::blend( *dest, *src ); dest++; src++; }
+ 	}
++	XR32_NOINLINE static void straight_run(screen_t *dest, const source_t *src, const source_t * const end)
++	{
++		while(  src < end  ) { *dest = F::blend( *dest, blend_straight8_argb( *dest, *src ) ); dest++; src++; }
++	}
+ 	inline void alpha(screen_t *dest, const source_t *src, const source_t * const end) const
+ 	{
++		// an XR32 translucent run (decided by its first pixel, see colorpixcopy_screen32()):
++		// each pixel is first put over the framebuffer by its own alpha, then the family
++		// blends that result. Legacy runs take the unchanged path.
++		if(  src < end  &&  is_straight_alpha32( *src )  ) {
++			straight_run( dest, src, end );
++			return;
++		}
+ 		copy( dest, src, end );
+ 	}
+ };
+@@ -921,8 +988,36 @@ struct PixelOps32Alpha {
+ 			dest++; src++; am++;
+ 		}
+ 	}
++	/// an XR32 translucent run: each pixel's own alpha first, then the mask's
++	XR32_NOINLINE static void straight_run(screen_t *dest, const source_t *src, const source_t * const end, const uint8 *am)
++	{
++		while(  src < end  ) {
++			uint16 alpha_value = *am;
++
++			if(  alpha_value > 0  ) {
++				const PIXVAL c = blend_straight8_argb( *dest, (PIXVAL)*src );
++				if(  alpha_value > 30  ) {
++					*dest = c;
++				}
++				else {
++					alpha_value = alpha_value > 15 ? (uint16)(alpha_value + 1) : alpha_value;
++					*dest = blend_alpha32_argb( *dest, c, (int)alpha_value );
++				}
++			}
++			dest++; src++; am++;
++		}
++	}
+ 	inline void alpha(screen_t *dest, const source_t *src, const source_t * const end) const
+ 	{
++		// an XR32 translucent run is recognised by its first pixel (see colorpixcopy_screen32());
++		// legacy runs take the unchanged copy()
++		if(  !RECODE  &&  src < end  &&  is_straight_alpha32( (PIXVAL)*src )  ) {
++			const ptrdiff_t off = dest - dest_base;
++			const int y = (int)(off / pitch) + row_offset;
++			const int x = (int)(off % pitch);
++			straight_run( dest, src, end, plane + (size_t)y * (size_t)plane_w + (size_t)x );
++			return;
++		}
+ 		copy( dest, src, end );
+ 	}
+ };
+diff --git a/src/simutrans/display/stlab_xr32.cc b/src/simutrans/display/stlab_xr32.cc
+index cbd96e9609a48d8625db88f1827a7ccd73fb60e3..878fd0f1297c553aee47891a8ec312e0be7725d0 100644
+--- a/src/simutrans/display/stlab_xr32.cc
++++ b/src/simutrans/display/stlab_xr32.cc
+@@ -249,9 +249,11 @@ void stlab_xr32_resolve(const stlab_xr32_image_t *img, sint8 player_nr, uint32 *
+ 			out_argb[i] = 0;                      // hole
+ 			continue;
+ 		}
+-		out_argb[i] = 0xFF000000u | ((uint32)lrg[p[0]] << 16)
+-		                          | ((uint32)lrg[p[1]] << 8)
+-		                          | (uint32)lb[p[2]];
++		// the straight alpha travels with the colour (0xFF when opaque); night touches the
++		// colour only. The renderer composites 8..254 over the framebuffer.
++		out_argb[i] = ((uint32)a << 24) | ((uint32)lrg[p[0]] << 16)
++		                                | ((uint32)lrg[p[1]] << 8)
++		                                | (uint32)lb[p[2]];
+ 	}
+ 
+ 
+@@ -284,7 +286,8 @@ void stlab_xr32_resolve(const stlab_xr32_image_t *img, sint8 player_nr, uint32 *
+ 		for(  uint32 k = 0;  k < run.length;  k++  ) {
+ 			const uint32 idx = run.start + k;
+ 			if(  idx < npx  &&  out_argb[idx] != 0  ) {
+-				out_argb[idx] = value;
++				// the record sets the colour, the plane keeps deciding the alpha
++				out_argb[idx] = (value & 0x00FFFFFFu) | (out_argb[idx] & 0xFF000000u);
+ 			}
+ 		}
+ 	}
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index 0aea0808f972d27f0f3feb4780580f59b973aec0..b8f283d34c9232dd6d5f124e53f362fa259182b7 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -196,6 +196,54 @@ void stlab_xr32_scratch_release()
+ }
+ 
+ 
++/// worst case of stlab_xr32_encode_rows(): per row a leading clear, then per pixel a
++/// separator + count + the pixel (alternating opaque and translucent), and the terminator
++static inline size_t stlab_xr32_encode_cap(uint32 w, uint32 h)
++{
++	return (size_t)h * (3 + 3 * (size_t)w) + 8;
++}
++
++
++/**
++ * Encode a resolved raster as the screen run stream: [clear][count][pixels...]...[0] per
++ * row. A raster pixel is 0 (hole), 0xFFrrggbb (opaque) or 0xAArrggbb with 8 <= AA <= 254
++ * (straight alpha). Opaque and translucent pixels go into separate runs; a translucent run
++ * carries TRANSPARENT_RUN and keeps the full ARGB word, which the screen-space blitters
++ * tell apart from the legacy class+alpha codes (all below 0x10000) by the top byte. Two
++ * adjacent runs are separated by TRANSPARENT_RUN as a zero-length clear run, the separator
++ * the legacy encoder uses, because a clear run of 0 ends the row.
++ */
++static PIXVAL *stlab_xr32_encode_rows(const uint32 *raster, uint32 w, uint32 h, PIXVAL *d)
++{
++	for(  uint32 y = 0;  y < h;  y++  ) {
++		const uint32 *row = raster + (size_t)y * w;
++		uint32 x = 0;
++		bool first = true;
++		while(  x < w  ) {
++			uint32 clear = 0;
++			while(  x < w  &&  row[x] == 0  ) { clear++; x++; }
++			if(  x >= w  ) {
++				if(  first  ) { *d++ = 0; *d++ = 0; }   // an entirely empty row
++				break;
++			}
++			*d++ = first  ||  clear  ?  (PIXVAL)clear  :  (PIXVAL)TRANSPARENT_RUN;
++			const bool opaque = (row[x] >> 24) == 0xFFu;
++			const uint32 start = x;
++			while(  x < w  &&  row[x] != 0  &&  ((row[x] >> 24) == 0xFFu) == opaque  ) { x++; }
++			const uint32 count = x - start;
++			*d++ = opaque  ?  (PIXVAL)count  :  (PIXVAL)(count | TRANSPARENT_RUN);
++			for(  uint32 k = 0;  k < count;  k++  ) {
++				*d++ = (PIXVAL)row[start + k];
++			}
++			first = false;
++		}
++		if(  first  &&  w == 0  ) { *d++ = 0; *d++ = 0; }
++		*d++ = 0;                                        // end of row
++	}
++	return d;
++}
++
++
+ /**
+  * Resolve the candidate node for one player and encode the result as the screen run
+  * stream the blitters already consume: [clear][count][pixels...]...[0] per row.
+@@ -287,40 +335,14 @@ bool stlab_xr32_recode(image_id n, sint8 player_nr)
+ 	const uint32 w = img->width, h = img->height;
+ 	const uint32 npx = w * h;
+ 
+-	// worst case per row: leading clear + (count + pixel) per pixel + terminator
+-	const size_t cap = (size_t)h * (3 + 2 * (size_t)w) + 8;
+-	if(  !stlab_scratch_reserve( npx, cap )  ) {
++	if(  !stlab_scratch_reserve( npx, stlab_xr32_encode_cap( w, h ) )  ) {
+ 		return false;
+ 	}
+ 	uint32 *raster = stlab_scratch_raster;
+ 	stlab_xr32_resolve( img, player_nr, raster );
+ 
+ 	PIXVAL *out = stlab_scratch_out;
+-	PIXVAL *d = out;
+-	for(  uint32 y = 0;  y < h;  y++  ) {
+-		const uint32 *row = raster + (size_t)y * w;
+-		uint32 x = 0;
+-		bool first = true;
+-		while(  x < w  ) {
+-			uint32 clear = 0;
+-			while(  x < w  &&  row[x] == 0  ) { clear++; x++; }
+-			if(  x >= w  ) {
+-				if(  first  ) { *d++ = 0; *d++ = 0; }   // an entirely empty row
+-				break;
+-			}
+-			*d++ = (PIXVAL)clear;
+-			uint32 start = x;
+-			while(  x < w  &&  row[x] != 0  ) { x++; }
+-			const uint32 count = x - start;
+-			*d++ = (PIXVAL)count;
+-			for(  uint32 k = 0;  k < count;  k++  ) {
+-				*d++ = (PIXVAL)row[start + k];
+-			}
+-			first = false;
+-		}
+-		if(  first  &&  w == 0  ) { *d++ = 0; *d++ = 0; }
+-		*d++ = 0;                                        // end of row
+-	}
++	PIXVAL *d = stlab_xr32_encode_rows( raster, w, h, out );
+ 	imd32 &im = images[n];
+ 	const size_t used = (size_t)(d - out);
+ 	if(  im.data[player_nr] != NULL  ) {
+diff --git a/src/simutrans/display/stlab_xr32_zoom.cci b/src/simutrans/display/stlab_xr32_zoom.cci
+index f6d3a4838bbf3ee2538586ba0719dc4e189b2e8f..e196ecb48aeecd4b7eb743545791c61ee59f52cf 100644
+--- a/src/simutrans/display/stlab_xr32_zoom.cci
++++ b/src/simutrans/display/stlab_xr32_zoom.cci
+@@ -164,8 +164,10 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	uint32 *acc_w = MALLOCN( uint32, nd );   ///< non-semantic weight numerator, x255
+ 	uint32 *cnt   = MALLOCN( uint32, nd );   ///< source pixels landing here
+ 	uint32 *opq   = MALLOCN( uint32, nd );   ///< opaque source pixels landing here
++	uint32 *alp   = MALLOCN( uint32, nd );   ///< sum of their straight alpha
+ 	MEMZERON( acc_r, nd );  MEMZERON( acc_g, nd );  MEMZERON( acc_b, nd );
+ 	MEMZERON( acc_w, nd );  MEMZERON( cnt, nd );    MEMZERON( opq, nd );
++	MEMZERON( alp, nd );
+ 
+ 	// The semantic side is sparse: only opaque semantic source pixels contribute,
+ 	// and there are far fewer of those than nd * 32. They are appended to a flat
+@@ -175,6 +177,12 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	for(  uint32 r = 0;  r < img->run_count;  r++  ) {
+ 		sem_src += img->runs[r].length;
+ 	}
++	// enlarging, one source pixel feeds several destination pixels; each destination
++	// still has at most one contributor, so the list is bounded by the destination
++	const bool enlarge = num > den;
++	if(  enlarge  &&  sem_src  ) {
++		sem_src = nd;
++	}
+ 	uint32 *hit_d = sem_src ? MALLOCN( uint32, sem_src ) : NULL;
+ 	uint8  *hit_k = sem_src ? MALLOCN( uint8, sem_src ) : NULL;
+ 	uint16 *hit_c = sem_src ? MALLOCN( uint16, sem_src ) : NULL;
+@@ -207,28 +215,43 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 		}
+ 	}
+ 
+-	// one ascending pass over the source
+-	for(  uint32 y = 0;  y < h;  y++  ) {
+-		const uint32 dy = (uint32)(((sint64)y * num) / den);
+-		const uint32 dyc = (dy < dh) ? dy : dh - 1;
+-		for(  uint32 x = 0;  x < w;  x++  ) {
+-			const uint32 si = y * w + x;
++	// Every destination pixel gets its contributing source pixels. Reducing, that is the
++	// box of source pixels mapping onto it, in one ascending pass over the source.
++	// Enlarging, a source pixel covers several destination pixels, so the destination is
++	// walked instead and each one takes the source pixel it lies in (nearest neighbour):
++	// walking the source would leave every other destination pixel empty.
++	const uint32 n_steps = enlarge ? nd : w * h;
++	for(  uint32 step = 0;  step < n_steps;  step++  ) {
++		uint32 si, d;
++		if(  enlarge  ) {
++			d = step;
++			const uint32 sx = (uint32)(((sint64)(d % dw) * den) / num);
++			const uint32 sy = (uint32)(((sint64)(d / dw) * den) / num);
++			si = ((sy < h) ? sy : h - 1) * w + ((sx < w) ? sx : w - 1);
++		}
++		else {
++			si = step;
++			const uint32 dy = (uint32)(((sint64)(si / w) * num) / den);
++			const uint32 dx = (uint32)(((sint64)(si % w) * num) / den);
++			d = ((dy < dh) ? dy : dh - 1) * dw + ((dx < dw) ? dx : dw - 1);
++		}
++		{
+ 			const uint8 *p = img->rgba + (size_t)si * 4;
+-			const uint32 dx = (uint32)(((sint64)x * num) / den);
+-			const uint32 d = dyc * dw + ((dx < dw) ? dx : dw - 1);
+ 			cnt[d]++;
+ 			const uint8 a = p[3];
+ 			if(  a <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF)  ) {
+ 				continue;                       // a hole contributes nothing
+ 			}
+ 			opq[d]++;
++			alp[d] += a;
+ 			const uint8 k = skey[si];
+ 			if(  k == 0  ) {
+-				// a normal pixel: all of its weight is non-semantic
+-				acc_r[d] += (uint32)p[0] * 255u;
+-				acc_g[d] += (uint32)p[1] * 255u;
+-				acc_b[d] += (uint32)p[2] * 255u;
+-				acc_w[d] += 255u;
++				// a normal pixel: its colour is weighted by its alpha (straight alpha,
++				// averaged as premultiplied), so a translucent pixel counts for less
++				acc_r[d] += (uint32)p[0] * a;
++				acc_g[d] += (uint32)p[1] * a;
++				acc_b[d] += (uint32)p[2] * a;
++				acc_w[d] += a;
+ 			}
+ 			else {
+ 				// a framebuffer-under record is the whole pixel: the shipped
+@@ -264,8 +287,12 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 			o[1] = (uint8)((acc_g[d] + den_w / 2) / den_w);
+ 			o[2] = (uint8)((acc_b[d] + den_w / 2) / den_w);
+ 		}
++		// whether the box is drawn at all is decided by how much of it is not a hole, as
++		// before; how opaque it is drawn is the mean alpha of the pixels that are not holes
++		// (255 when they are all opaque, so opaque art keeps its exact previous result)
+ 		const uint32 c = cnt[d] ? cnt[d] : 1;
+-		o[3] = (uint8)((opq[d] * 255u + c / 2) / c);
++		const uint32 coverage = (opq[d] * 255u + c / 2) / c;
++		o[3] = coverage <= 7 ? (uint8)coverage : (uint8)((alp[d] + opq[d] / 2) / opq[d]);
+ 	}
+ 
+ 	// group the hits by destination with a counting sort, so the walk below still
+@@ -362,7 +389,7 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	z->sem_count = w_sem;
+ 
+ 	free( acc_r );  free( acc_g );  free( acc_b );  free( acc_w );
+-	free( cnt );    free( opq );
++	free( cnt );    free( opq );    free( alp );
+ 	free( hit_d );  free( hit_k );  free( hit_c );
+ 	free( bucket ); free( order );
+ 	free( skey );   free( scov );   free( sufb );
+@@ -494,9 +521,10 @@ static bool stlab_xr32_zoom_resolve(const stlab_xr32_zoom_t *z, sint8 player_nr,
+ 			out_argb[i] = 0;                    // the box was (almost) all holes
+ 			continue;
+ 		}
+-		out_argb[i] = 0xFF000000u | ((uint32)lrg[p[0]] << 16)
+-		                          | ((uint32)lrg[p[1]] << 8)
+-		                          | (uint32)lb[p[2]];
++		// the box's straight alpha travels with the colour; night touches the colour only
++		out_argb[i] = ((uint32)p[3] << 24) | ((uint32)lrg[p[0]] << 16)
++		                                   | ((uint32)lrg[p[1]] << 8)
++		                                   | (uint32)lb[p[2]];
+ 	}
+ 
+ 	// the semantic contributions, in ascending destination order
+@@ -520,9 +548,10 @@ static bool stlab_xr32_zoom_resolve(const stlab_xr32_zoom_t *z, sint8 player_nr,
+ 			tot = 255;                          // the box cannot be more than full
+ 		}
+ 		const int rest = 255 - tot;
+-		out_argb[s.dest] = stlab_pack_argb( (ar + base_r * rest + 127) / 255,
+-		                                    (ag + base_g * rest + 127) / 255,
+-		                                    (ab + base_b * rest + 127) / 255 );
++		out_argb[s.dest] = (stlab_pack_argb( (ar + base_r * rest + 127) / 255,
++		                                     (ag + base_g * rest + 127) / 255,
++		                                     (ab + base_b * rest + 127) / 255 ) & 0x00FFFFFFu)
++		                   | ((uint32)p[3] << 24);    // semantics set the colour, the plane the alpha
+ 	}
+ 	return true;
+ }
+@@ -544,39 +573,14 @@ static bool stlab_xr32_zoom_recode(image_id n, sint8 player_nr)
+ 	const stlab_xr32_zoom_t *z = s->zoom;
+ 	const uint32 w = z->width, h = z->height, npx = w * h;
+ 
+-	const size_t cap = (size_t)h * (3 + 2 * (size_t)w) + 8;
+-	if(  !stlab_scratch_reserve( npx, cap )  ) {
++	if(  !stlab_scratch_reserve( npx, stlab_xr32_encode_cap( w, h ) )  ) {
+ 		return false;
+ 	}
+ 	uint32 *raster = stlab_scratch_raster;
+ 	stlab_xr32_zoom_resolve( z, player_nr, raster );
+ 
+ 	PIXVAL *out = stlab_scratch_out;
+-	PIXVAL *d = out;
+-	for(  uint32 y = 0;  y < h;  y++  ) {
+-		const uint32 *row = raster + (size_t)y * w;
+-		uint32 x = 0;
+-		bool first = true;
+-		while(  x < w  ) {
+-			uint32 clear = 0;
+-			while(  x < w  &&  row[x] == 0  ) { clear++; x++; }
+-			if(  x >= w  ) {
+-				if(  first  ) { *d++ = 0; *d++ = 0; }
+-				break;
+-			}
+-			*d++ = (PIXVAL)clear;
+-			uint32 start = x;
+-			while(  x < w  &&  row[x] != 0  ) { x++; }
+-			const uint32 count = x - start;
+-			*d++ = (PIXVAL)count;
+-			for(  uint32 k = 0;  k < count;  k++  ) {
+-				*d++ = (PIXVAL)row[start + k];
+-			}
+-			first = false;
+-		}
+-		if(  first  &&  w == 0  ) { *d++ = 0; *d++ = 0; }
+-		*d++ = 0;
+-	}
++	PIXVAL *d = stlab_xr32_encode_rows( raster, w, h, out );
+ 
+ 	imd32 &im = images[n];
+ 	const size_t used = (size_t)(d - out);
