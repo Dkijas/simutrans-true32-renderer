@@ -5,6 +5,13 @@
 
 #include "pakset_manager.h"
 
+#include <map>
+#include <vector>
+#include <zlib.h>
+#include "../descriptor/image.h"
+#include "../descriptor/text_desc.h"
+#include "../descriptor/reader/multires_reader.h"
+
 #include "../utils/searchfolder.h"
 #include "../display/simgraph.h"
 #include "../sys/simsys.h"
@@ -30,7 +37,7 @@
 #	include "../display/stlab_xr32_load.cci"
 #else
 static inline bool stlab_xr32_enabled() { return false; }
-static inline void stlab_xr32_pair_candidates(obj_desc_t **, int) { }
+static inline void stlab_xr32_pair_candidates(obj_desc_t **, int, const obj_type *) { }
 static inline bool stlab_xr32_read_candidate(FILE *, uint32) { return false; }
 #endif
 
@@ -258,6 +265,8 @@ bool pakset_manager_t::finish_loading()
 	obj_for_xref( obj_vehicle, "any", vehicle_desc_t::any_vehicle );
 
 	resolve_xrefs();
+	// after the xrefs, so object replacement has settled
+	resolve_multires();
 
 	for(auto const& elem : *registered_readers) {
 		PAKSET_INFO("pakset_manager_t::finish_loading", "Checking %s objects...", elem.value->get_type_name());
@@ -365,12 +374,35 @@ static bool read_node_info(obj_node_info_t& node, FILE* const f, uint32 const ve
 }
 
 
-bool pakset_manager_t::read_nodes(FILE *fp, obj_desc_t *&data, int node_depth, uint32 version)
+/*
+ * What each parent's children were read as. Only kept between reading and
+ * resolve_multires(): a high-resolution pairing walks a path of child indices, and every
+ * step has to be checked against this rather than trusted (obj_desc_t does not store how
+ * many children it has).
+ */
+static std::map<const obj_desc_t *, std::vector<obj_type> > *multires_kinds = NULL;
+
+
+static void multires_note_children(const obj_desc_t *parent, const std::vector<obj_type> &kinds)
+{
+	if(  parent == NULL  ||  kinds.empty()  ) {
+		return;
+	}
+	if(  multires_kinds == NULL  ) {
+		multires_kinds = new std::map<const obj_desc_t *, std::vector<obj_type> >();
+	}
+	(*multires_kinds)[parent] = kinds;
+}
+
+
+bool pakset_manager_t::read_nodes(FILE *fp, obj_desc_t *&data, int node_depth, uint32 version, obj_type *type_read)
 {
 	obj_node_info_t node;
 	if (!read_node_info(node, fp, version)) {
 		return false;
 	}
+	// so a caller can tell whether an object's first child is its name
+	if (type_read) { *type_read = static_cast<obj_type>(node.type); }
 
 	obj_reader_t *reader = registered_readers->get(static_cast<obj_type>(node.type));
 
@@ -382,23 +414,47 @@ bool pakset_manager_t::read_nodes(FILE *fp, obj_desc_t *&data, int node_depth, u
 			return false;
 		}
 
+		obj_type first_child = obj_root;
+		std::vector<obj_type> child_kinds(node.nchildren, obj_root);   // what each child was read as
 		if (node.nchildren != 0) {
 			data->children = new obj_desc_t *[node.nchildren];
 
 			for (int i = 0; i < node.nchildren; i++) {
-				if (!read_nodes(fp, data->children[i], node_depth + 1, version)) {
+				obj_type child_type = obj_root;
+				if (!read_nodes(fp, data->children[i], node_depth + 1, version, &child_type)) {
 					// Note: cannot delete siblings of data->children[i], since equal images point to the same desc
 					delete data; // data->children is delete[]'d by the destructor
 					data = NULL;
 					return false;
 				}
+				// A high-resolution image list may only hold images. A damaged file
+				// can put anything there, and the pairing must not end up casting it
+				// to one, so anything else is dropped here where the type is known.
+				// (MRES v2 also allows XR32 companions after the images; those have
+				// no reader, are consumed by the XR32 seam and leave a NULL slot, so
+				// this rule does not disturb them.)
+				if (i == 0) { first_child = child_type; }
+				child_kinds[i] = child_type;
+				if (node.type == obj_multires && child_type != obj_image) {
+					data->children[i] = NULL;
+				}
 			}
 		}
 
 //DBG_DEBUG("obj_reader_t","registering with '%s'", reader->get_type_name());
+		// A high-resolution pairing names its base object, so the names have
+		// to be recallable later. An object node carries its name in its
+		// first child, and this is where the object and that child are both
+		// in hand.
+		if(  node_depth == 1  &&  node.nchildren > 0  &&  first_child == obj_text  &&  data->children  ) {
+			multires_note_object( static_cast<const text_desc_t *>(data->children[0])->get_text(), data );
+		}
+
+		multires_note_children( data, child_kinds );
+
 		// pair any candidate node parsed while reading these children
 		if(  stlab_xr32_enabled()  ) {
-			stlab_xr32_pair_candidates( data->children, node.nchildren );
+			stlab_xr32_pair_candidates( data->children, node.nchildren, child_kinds.empty() ? NULL : &child_kinds[0] );
 		}
 
 		if(node_depth<2  ||  node.type!=obj_cursor) {
@@ -451,6 +507,163 @@ bool pakset_manager_t::skip_nodes(FILE *fp,uint32 version)
 	}
 
 	return true;
+}
+
+
+/*
+ * High-resolution counterparts.
+ *
+ * This runs late on purpose. Pak files are enumerated unsorted, and a later pak
+ * may replace an object of the same name, so nothing may be bound while paks
+ * are still being read. By the time resolve_xrefs() has run, replacement has
+ * settled and the answer no longer depends on the order the files arrived in.
+ *
+ * A pairing names its base by the owning object's name and the path of child
+ * indices to the image, and carries what that image looked like when the
+ * pairing was made. A name alone would not be safe: duplicate names resolve to
+ * the last one loaded, so an add-on can keep the name and change the art, and
+ * the guard is what stops a counterpart built for the old art being used for
+ * the new.
+ */
+
+static std::vector<mres_pair_t> *multires_pending = NULL;
+static stringhashtable_tpl<obj_desc_t *> *multires_objects = NULL;
+
+
+void pakset_manager_t::multires_add(const mres_pair_t &pair)
+{
+	if(  multires_pending == NULL  ) {
+		multires_pending = new std::vector<mres_pair_t>();
+	}
+	multires_pending->push_back( pair );
+}
+
+
+void pakset_manager_t::multires_bind_images(obj_desc_t *mres)
+{
+	// The reader could only carry the child index, since the images are read
+	// after it returns. They exist now.
+	if(  multires_pending == NULL  ) {
+		return;
+	}
+	for(  size_t i = 0;  i < multires_pending->size();  i++  ) {
+		mres_pair_t &pair = (*multires_pending)[i];
+		if(  pair.bound  ||  pair.hires == IMG_EMPTY  ) {
+			continue;
+		}
+		obj_desc_t *child = mres->children ? mres->children[pair.hires] : NULL;
+		pair.hires = child ? static_cast<image_t *>(child)->imageid : IMG_EMPTY;
+		pair.bound = true;
+	}
+}
+
+
+void pakset_manager_t::multires_note_object(const char *name, obj_desc_t *desc)
+{
+	if(  name == NULL  ||  *name == 0  ) {
+		return;
+	}
+	if(  multires_objects == NULL  ) {
+		multires_objects = new stringhashtable_tpl<obj_desc_t *>();
+	}
+	// last one wins, which is how a duplicate object name resolves anyway
+	multires_objects->set( name, desc );
+}
+
+
+void pakset_manager_t::resolve_multires()
+{
+	if(  multires_pending == NULL  ) {
+		// nothing to pair: the table of child kinds is not needed either
+		delete multires_kinds;
+		multires_kinds = NULL;
+		return;
+	}
+#if COLOUR_DEPTH != 0
+	for(  size_t i = 0;  i < multires_pending->size();  i++  ) {
+		const mres_pair_t &pair = (*multires_pending)[i];
+		// `bound` is only set once the node's images have been read and the
+		// carried child index turned into an image id. A node that failed part
+		// way through never gets that far, and its pairings still hold indices -
+		// which must not be mistaken for image ids.
+		if(  !pair.bound  ||  pair.hires == IMG_EMPTY  ) {
+			continue;
+		}
+		obj_desc_t *obj = multires_objects ? multires_objects->get( pair.base_object.c_str() ) : NULL;
+		if(  obj == NULL  ) {
+			dbg->warning( "pakset_manager_t::resolve_multires", "'%s' is not in this pakset; its high-resolution image is unused", pair.base_object.c_str() );
+			continue;
+		}
+
+		// walk to the image, keeping the slot so it can be repointed below
+		obj_desc_t **slot = NULL;
+		obj_desc_t *cur = obj;
+		bool on_image = false;
+		for(  uint8 d = 0;  d < pair.path_depth;  d++  ) {
+			const std::map<const obj_desc_t *, std::vector<obj_type> >::const_iterator k =
+				(cur != NULL  &&  multires_kinds != NULL) ? multires_kinds->find( cur ) : std::map<const obj_desc_t *, std::vector<obj_type> >::const_iterator();
+			if(  cur == NULL  ||  cur->children == NULL  ||  multires_kinds == NULL  ||  k == multires_kinds->end()
+			     ||  pair.path[d] >= k->second.size()  ) {
+				slot = NULL;
+				break;
+			}
+			on_image = k->second[ pair.path[d] ] == obj_image;
+			slot = &cur->children[ pair.path[d] ];
+			cur = *slot;
+		}
+		if(  slot == NULL  ||  cur == NULL  ||  !on_image  ) {
+			dbg->warning( "pakset_manager_t::resolve_multires", "the image path for '%s' leads nowhere; its high-resolution image is unused", pair.base_object.c_str() );
+			continue;
+		}
+
+		image_t *base = static_cast<image_t *>(cur);
+
+		// the guard: shape first, then the pixels
+		bool same = base->x == pair.guard_x  &&  base->y == pair.guard_y  &&
+		            base->w == pair.guard_w  &&  base->h == pair.guard_h  &&
+		            (uint32)base->len == pair.guard_len;
+		if(  same  &&  base->len > 0  &&  base->data != NULL  ) {
+			// over the words as serialised little-endian - the bytes of the IMG
+			// body on disk - so the check does not depend on host byte order
+			uLong a = adler32( 0L, NULL, 0 );
+			uint8 le[512];
+			for(  uint32 w = 0;  w < (uint32)base->len;  ) {
+				uint32 k = 0;
+				for(  ;  k < sizeof(le) / 2  &&  w < (uint32)base->len;  k++, w++  ) {
+					le[2 * k]     = (uint8)( base->data[w] & 0xFF );
+					le[2 * k + 1] = (uint8)( base->data[w] >> 8 );
+				}
+				a = adler32( a, (const Bytef *)le, 2 * k );
+			}
+			same = (uint32)a == pair.guard_adler;
+		}
+		if(  !same  ) {
+			dbg->warning( "pakset_manager_t::resolve_multires", "'%s' is not the image its high-resolution counterpart was made for; using the authored one", pair.base_object.c_str() );
+			continue;
+		}
+
+		const image_id attached = simgraph_get_hires( base->imageid );
+		if(  attached != IMG_EMPTY  ) {
+			if(  attached == pair.hires  ) {
+				continue;   // the same pairing twice; nothing to do
+			}
+			// Two logically different images share one id because their pixels
+			// are identical, and they want different counterparts. Give this
+			// one an image of its own so both can be right.
+			image_t *split = image_t::copy_image( *base );
+			split->register_image();
+			*slot = split;
+			base = split;
+		}
+		simgraph_set_hires( base->imageid, pair.hires );
+	}
+#endif
+	delete multires_pending;
+	multires_pending = NULL;
+	delete multires_objects;
+	multires_objects = NULL;
+	delete multires_kinds;
+	multires_kinds = NULL;
 }
 
 

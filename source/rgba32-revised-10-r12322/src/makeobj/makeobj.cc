@@ -18,6 +18,7 @@ log_t::level_t debuglevel = log_t::LEVEL_WARN;
 #include "../simutrans/descriptor/writer/obj_pak_exception.h"
 #include "../simutrans/descriptor/writer/root_writer.h"
 #include "../simutrans/descriptor/writer/image_writer.h"
+#include "../simutrans/descriptor/writer/stlab_mres_writer.h"
 
 
 // Needed to avoid linking problems
@@ -53,6 +54,10 @@ int main(int argc, char* argv[])
 	if(  debuglevel>=log_t::LEVEL_WARN  ) {
 		puts( "Makeobj version " MAKEOBJ_VERSION " for Simutrans " VERSION_NUMBER " and higher" );
 		puts( "(c) 2002-2012 V. Meyer, Hj. Malthaner, M. Pristovsek & Simutrans development team\n" );
+	}
+
+	if (argc >= 4 && !STRICMP(argv[0], "mres")) {
+		return stlab_mres_main(argv[1], argv[2], argv[3]);
 	}
 
 	if (argc && !STRICMP(argv[0], "capabilities")) {
@@ -187,6 +192,9 @@ int main(int argc, char* argv[])
 		"         Expands minified notation to complete notation on dat file(s)\n"
 		"      MakeObj EXTRACT <pak file archive>\n"
 		"         Creates single files from a pak file library\n"
+		"      MakeObj MRES <pak file> <base pak> <2x pak>\n"
+		"         Adds 2x counterparts to base pak (experimental MRES v2 node);\n"
+		"         2x pak = the same dat files compiled at twice the tile size\n"
 		"\n"
 		"      with a trailing slash a directory is searched rather than a file\n"
 		"      default for PAK is PAK ./ ./\n"

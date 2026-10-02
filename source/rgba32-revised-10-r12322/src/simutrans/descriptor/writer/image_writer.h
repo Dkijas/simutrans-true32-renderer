@@ -8,6 +8,7 @@
 
 
 #include <string>
+#include <vector>
 #include <stdio.h>
 #include "obj_writer.h"
 #include "../objversion.h"
@@ -35,6 +36,13 @@ public:
 	static image_writer_t* instance() { return &the_instance; }
 
 	static void set_img_size(int _img_size) { img_size = _img_size; }
+
+	/* STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
+	 * Load a PNG through makeobj's own loader and hand back a straight RGBA8888 view
+	 * of it (source alpha convention, 255 = opaque). The semantic extractor reads
+	 * exactly the pixels the legacy writer reads: no second decoder, no external file. */
+	static bool stlab_load_rgba(const char *fname, std::vector<uint8> &rgba, int &w, int &h);
+	static void stlab_rgba_from_input(std::vector<uint8> &rgba, int &w, int &h);
 
 	obj_type get_type() const OVERRIDE { return obj_image; }
 	const char* get_type_name() const OVERRIDE { return "image"; }

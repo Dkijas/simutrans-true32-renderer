@@ -29,6 +29,7 @@
 #include "simgraph32.h"
 #include "stlab_xr32.h"   // the XR32 candidate consumer
 static bool stlab_xr32_zoom_prepare(image_id n);   // native zoom for candidate-backed images
+static bool stlab_xr32_hires_prepare(image_id n);  // MRES: an authored 2x candidate at exactly 2/1
 #include "simgraph_palette.h"
 
 #include "../macros.h"
@@ -391,14 +392,70 @@ static inline void pixcopy32(PIXVAL *dest, const PIXVAL *src, const PIXVAL * con
 
 
 /**
+ * Composite one straight-alpha ARGB pixel over the framebuffer, alpha 0..255.
+ *
+ * The XR32 contract: (s*a + d*(255-a) + 127) / 255 per channel, the same integer
+ * arithmetic stlab_xr32_resolve() already uses for its semantic edges. Only XR32
+ * screen caches carry such pixels (see colorpixcopy_screen32()).
+ */
+static inline PIXVAL blend_straight8_argb(PIXVAL background, PIXVAL foreground)
+{
+	const uint32 a  = foreground >> 24, ia = 255u - a;
+	const uint32 br = (background >> 16) & 0xFF, bg = (background >> 8) & 0xFF, bb = background & 0xFF;
+	const uint32 fr = (foreground >> 16) & 0xFF, fg = (foreground >> 8) & 0xFF, fb = foreground & 0xFF;
+	return 0xFF000000u | (((fr * a + br * ia + 127) / 255) << 16)
+	                   | (((fg * a + bg * ia + 127) / 255) << 8)
+	                   |  ((fb * a + bb * ia + 127) / 255);
+}
+
+
+/// an XR32 translucent pixel: straight alpha 1..254 in the top byte. A legacy
+/// class+alpha code is below 0x10000 and an opaque screen colour has 0xFF there.
+static inline bool is_straight_alpha32(const PIXVAL v)
+{
+	return v >= 0x01000000u  &&  v < 0xFF000000u;
+}
+
+
+/* The XR32 run loops below are kept OUT of line on purpose. Inlined next to the legacy
+ * loops they share a caller with, they made the unchanged legacy semi-transparent loop
+ * 7.5 % slower (measured, interleaved, n=7); out of line the legacy loop is back to its
+ * previous speed exactly. The same pattern as NORETURN in simtypes.h. */
+#if defined(_MSC_VER)
+#	define XR32_NOINLINE __declspec(noinline)
+#elif defined(__GNUC__)
+#	define XR32_NOINLINE __attribute__ ((noinline))
+#else
+#	define XR32_NOINLINE
+#endif
+
+
+/// an XR32 semi-transparent run, composited over the framebuffer by each pixel's own alpha
+XR32_NOINLINE static void colorpixcopy_straight32(PIXVAL *dest, const PIXVAL *src, const PIXVAL * const end)
+{
+	while(  src < end  ) {
+		*dest = blend_straight8_argb( *dest, *src++ );
+		dest++;
+	}
+}
+
+
+/**
  * Composite semi-transparent pixels that are already in SCREEN space.
  *
  * Counterpart of colorpixcopy_screen() in simgraph16.cc.  The caller has
- * already established from the run header that this run is semi-transparent,
- * so no classification by pixel value happens here.
+ * already established from the run header that this run is semi-transparent.
+ * A semi-transparent run holds either legacy class+alpha codes (a legacy
+ * image) or straight-alpha ARGB words (an XR32 image), never both: a screen
+ * cache comes whole from one producer. So the FIRST pixel decides the run, as
+ * in colorpixcopy_stored32(), and the legacy loop is the unchanged one.
  */
 static inline void colorpixcopy_screen32(PIXVAL *dest, const PIXVAL *src, const PIXVAL * const end)
 {
+	if(  src < end  &&  *src >= 0x01000000u  ) {
+		colorpixcopy_straight32( dest, src, end );
+		return;
+	}
 	while(  src < end  ) {
 		const uint32 aux   = (uint32)*src++ - 0x8020u;
 		const uint32 alpha = (aux % 31u) + 1u;
@@ -811,8 +868,19 @@ struct PixelOps32Blend {
 	{
 		while(  src < end  ) { *dest = F::blend( *dest, *src ); dest++; src++; }
 	}
+	XR32_NOINLINE static void straight_run(screen_t *dest, const source_t *src, const source_t * const end)
+	{
+		while(  src < end  ) { *dest = F::blend( *dest, blend_straight8_argb( *dest, *src ) ); dest++; src++; }
+	}
 	inline void alpha(screen_t *dest, const source_t *src, const source_t * const end) const
 	{
+		// an XR32 translucent run (decided by its first pixel, see colorpixcopy_screen32()):
+		// each pixel is first put over the framebuffer by its own alpha, then the family
+		// blends that result. Legacy runs take the unchanged path.
+		if(  src < end  &&  is_straight_alpha32( *src )  ) {
+			straight_run( dest, src, end );
+			return;
+		}
 		copy( dest, src, end );
 	}
 };
@@ -920,8 +988,36 @@ struct PixelOps32Alpha {
 			dest++; src++; am++;
 		}
 	}
+	/// an XR32 translucent run: each pixel's own alpha first, then the mask's
+	XR32_NOINLINE static void straight_run(screen_t *dest, const source_t *src, const source_t * const end, const uint8 *am)
+	{
+		while(  src < end  ) {
+			uint16 alpha_value = *am;
+
+			if(  alpha_value > 0  ) {
+				const PIXVAL c = blend_straight8_argb( *dest, (PIXVAL)*src );
+				if(  alpha_value > 30  ) {
+					*dest = c;
+				}
+				else {
+					alpha_value = alpha_value > 15 ? (uint16)(alpha_value + 1) : alpha_value;
+					*dest = blend_alpha32_argb( *dest, c, (int)alpha_value );
+				}
+			}
+			dest++; src++; am++;
+		}
+	}
 	inline void alpha(screen_t *dest, const source_t *src, const source_t * const end) const
 	{
+		// an XR32 translucent run is recognised by its first pixel (see colorpixcopy_screen32());
+		// legacy runs take the unchanged copy()
+		if(  !RECODE  &&  src < end  &&  is_straight_alpha32( (PIXVAL)*src )  ) {
+			const ptrdiff_t off = dest - dest_base;
+			const int y = (int)(off / pitch) + row_offset;
+			const int x = (int)(off % pitch);
+			straight_run( dest, src, end, plane + (size_t)y * (size_t)plane_w + (size_t)x );
+			return;
+		}
 		copy( dest, src, end );
 	}
 };
@@ -1153,7 +1249,7 @@ static void rezoom_img32(const image_id n)
 			return;
 		}
 #endif
-		if(  !stlab_xr32_zoom_prepare( n )  ) {
+		if(  !stlab_xr32_hires_prepare( n )  &&  !stlab_xr32_zoom_prepare( n )  ) {
 			// no cache could be built (degenerate size): fall back to base geometry
 			images[n].recode_flags &= ~FLAG_REZOOM;
 		}
@@ -1194,6 +1290,35 @@ static void rezoom_img32(const image_id n)
 			pthread_mutex_unlock( &rezoom_img_mutex32 );
 #endif
 			return;
+		}
+
+		// MRES: an authored counterpart replaces the enlargement at exactly 2/1
+		// (the legacy half; a candidate-backed image took the branch above)
+		if(  (images[n].recode_flags & FLAG_ZOOMABLE)
+		     &&  g_simgraph32.zoom_num[zoom_factor32] == 2
+		     &&  g_simgraph32.zoom_den[zoom_factor32] == 1  ) {
+			const image_id hi = simgraph_get_hires( n );
+			if(  hi != IMG_EMPTY  &&  hi < anz_images  &&  images[hi].base_data != NULL  ) {
+				const imd32 &hires = images[hi];
+				if(  hires.base_h >= images[n].base_h * 2 - 2
+				     &&  hires.base_h <= images[n].base_h * 2 + 2
+				     &&  hires.base_w >= images[n].base_w * 2 - 2
+				     &&  hires.base_w <= images[n].base_w * 2 + 2  ) {
+					const uint32 hlen = zoom_core_stored_len( hires.base_data, hires.base_h );
+					images[n].x = hires.base_x;
+					images[n].y = hires.base_y;
+					images[n].w = hires.base_w;
+					images[n].h = hires.base_h;
+					images[n].len = hlen;
+					images[n].zoom_data = MALLOCN( STORED_PIXVAL, hlen );
+					memcpy( images[n].zoom_data, hires.base_data, hlen * sizeof(STORED_PIXVAL) );
+					images[n].recode_flags &= ~FLAG_REZOOM;
+#ifdef MULTI_THREAD
+					pthread_mutex_unlock( &rezoom_img_mutex32 );
+#endif
+					return;
+				}
+			}
 		}
 
 		zoom_image_t out;

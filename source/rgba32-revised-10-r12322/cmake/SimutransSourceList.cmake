@@ -61,6 +61,7 @@ target_sources(simutrans PRIVATE
 	src/simutrans/descriptor/reader/vehicle_reader.cc
 	src/simutrans/descriptor/reader/way_obj_reader.cc
 	src/simutrans/descriptor/reader/way_reader.cc
+	src/simutrans/descriptor/reader/multires_reader.cc
 	src/simutrans/descriptor/reader/xref_reader.cc
 	src/simutrans/descriptor/sound_desc.cc
 	src/simutrans/descriptor/tunnel_desc.cc
@@ -194,6 +195,7 @@ target_sources(simutrans PRIVATE
 	src/simutrans/gui/tool_selector.cc
 	src/simutrans/gui/trafficlight_info.cc
 	src/simutrans/gui/vehiclelist_frame.cc
+	src/simutrans/gui/way_builder_frame.cc
 	src/simutrans/gui/welt.cc
 	src/simutrans/io/classify_file.cc
 	src/simutrans/io/raw_image.cc

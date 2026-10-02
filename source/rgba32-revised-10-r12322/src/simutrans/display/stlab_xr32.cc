@@ -17,6 +17,7 @@ static const uint8 XR32_MAGIC[4] = { 'X', 'R', '3', '2' };
 static const uint8 XR32_SUPPORTED_VERSION = 1;
 static const uint8 XR32_HEADER_LEN = 32;
 static const uint8 XR32_FLAG_BASE_DEFLATED = 0x01;
+static const uint8 XR32_FLAG_CRC32 = 0x02;           ///< body ends in a CRC-32 of everything before it
 static const uint8 XR32_UNDER_IS_FRAMEBUFFER = 0x80;
 
 static const uint8 XR32_CLASS_PLAYER_1 = 1;
@@ -80,7 +81,20 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
 		return STLAB_XR32_UNSUPPORTED;   // fall back to IMG, not an error
 	}
 	if(  body[7] != 0  ||  body[17] != 0  ) { *why = "reserved byte not zero"; return STLAB_XR32_REJECTED; }
-	if(  (flags & ~XR32_FLAG_BASE_DEFLATED) != 0  ) { *why = "unknown flag bit"; return STLAB_XR32_REJECTED; }
+	if(  (flags & ~(XR32_FLAG_BASE_DEFLATED | XR32_FLAG_CRC32)) != 0  ) { *why = "unknown flag bit"; return STLAB_XR32_REJECTED; }
+
+	// integrity first: nothing is allocated or inflated before the trailer has been checked
+	if(  flags & XR32_FLAG_CRC32  ) {
+		if(  len < (uint32)XR32_HEADER_LEN + 4  ) { *why = "body too short for its checksum"; return STLAB_XR32_REJECTED; }
+		len -= 4;
+		const uint32 stored = rd32(body + len);
+		const uint32 actual = (uint32)crc32( crc32(0L, Z_NULL, 0), (const Bytef *)body, (uInt)len );
+		if(  stored != actual  ) { *why = "checksum mismatch"; return STLAB_XR32_REJECTED; }
+	}
+	else if(  (flags & XR32_FLAG_BASE_DEFLATED) == 0  ) {
+		// a raw plane carries no check of its own, so without the trailer corruption is invisible
+		*why = "raw plane without checksum"; return STLAB_XR32_REJECTED;
+	}
 
 	const uint16 w = rd16(body + 8);
 	const uint16 h = rd16(body + 10);
@@ -99,6 +113,16 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
 
 	const uint64 want_plane = (uint64)w * h * 4u;
 	if(  want_plane > 0x40000000ull  ) { *why = "implausible plane size"; return STLAB_XR32_REJECTED; }
+	// nothing is allocated for what the node cannot actually contain
+	if(  (flags & XR32_FLAG_BASE_DEFLATED)  &&  want_plane > (uint64)base_bytes * 1032u + 1024u  ) {
+		*why = "declared plane larger than its compressed stream can expand to"; return STLAB_XR32_REJECTED;
+	}
+	if(  (flags & XR32_FLAG_BASE_DEFLATED) == 0  &&  (uint64)base_bytes != want_plane  ) {
+		*why = "raw base plane has the wrong length"; return STLAB_XR32_REJECTED;
+	}
+	if(  (uint64)run_count * 5u > (uint64)run_bytes  ) {
+		*why = "more runs than the run block can hold"; return STLAB_XR32_REJECTED;
+	}
 
 	uint8 *plane = (uint8 *)malloc((size_t)want_plane);
 	if(  plane == NULL  ) { *why = "out of memory for the plane"; return STLAB_XR32_REJECTED; }
@@ -114,12 +138,7 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
 		}
 	}
 	else {
-		if(  (uint64)base_bytes != want_plane  ) {
-			free(plane);
-			*why = "raw base plane has the wrong length";
-			return STLAB_XR32_REJECTED;
-		}
-		memcpy(plane, body + XR32_HEADER_LEN, (size_t)want_plane);
+		memcpy(plane, body + XR32_HEADER_LEN, (size_t)want_plane);   // length checked above
 	}
 
 	stlab_xr32_run_t *runs = NULL;
@@ -230,9 +249,11 @@ void stlab_xr32_resolve(const stlab_xr32_image_t *img, sint8 player_nr, uint32 *
 			out_argb[i] = 0;                      // hole
 			continue;
 		}
-		out_argb[i] = 0xFF000000u | ((uint32)lrg[p[0]] << 16)
-		                          | ((uint32)lrg[p[1]] << 8)
-		                          | (uint32)lb[p[2]];
+		// the straight alpha travels with the colour (0xFF when opaque); night touches the
+		// colour only. The renderer composites 8..254 over the framebuffer.
+		out_argb[i] = ((uint32)a << 24) | ((uint32)lrg[p[0]] << 16)
+		                                | ((uint32)lrg[p[1]] << 8)
+		                                | (uint32)lb[p[2]];
 	}
 
 
@@ -265,7 +286,8 @@ void stlab_xr32_resolve(const stlab_xr32_image_t *img, sint8 player_nr, uint32 *
 		for(  uint32 k = 0;  k < run.length;  k++  ) {
 			const uint32 idx = run.start + k;
 			if(  idx < npx  &&  out_argb[idx] != 0  ) {
-				out_argb[idx] = value;
+				// the record sets the colour, the plane keeps deciding the alpha
+				out_argb[idx] = (value & 0x00FFFFFFu) | (out_argb[idx] & 0xFF000000u);
 			}
 		}
 	}

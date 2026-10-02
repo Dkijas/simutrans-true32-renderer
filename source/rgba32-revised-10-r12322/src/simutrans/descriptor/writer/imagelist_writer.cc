@@ -6,6 +6,7 @@
 #include <string>
 #include "../../tpl/slist_tpl.h"
 #include "obj_node.h"
+#include "stlab_xr32_writer.h"   // STLAB probe, NOT FOR COMMIT
 #include "image_writer.h"
 #include "obj_pak_exception.h"
 #include "imagelist_writer.h"
@@ -28,6 +29,9 @@ void imagelist_writer_t::write_obj(FILE* fp, obj_node_t& parent, const slist_tpl
 	if (count < keys.get_count()) {
 		dbg->warning( obj_writer_t::last_name, "Expected %i but found %i images (might be correct)!\n", keys.get_count(), count);
 	}
+
+	// STLAB probe: the candidate nodes go after every IMG child, never between them
+	stlab_xr32_flush(fp, node);
 
 	node.write_uint16(fp, count);
 	node.write_uint16(fp, 0);

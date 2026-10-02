@@ -38,6 +38,9 @@ target_sources(makeobj PRIVATE
 	../simutrans/descriptor/writer/groundobj_writer.cc
 	../simutrans/descriptor/writer/ground_writer.cc
 	../simutrans/descriptor/writer/image_writer.cc
+	../simutrans/descriptor/writer/stlab_semantic.cc
+	../simutrans/descriptor/writer/stlab_xr32_writer.cc
+	../simutrans/descriptor/writer/stlab_mres_writer.cc
 	../simutrans/descriptor/writer/imagelist2d_writer.cc
 	../simutrans/descriptor/writer/imagelist_writer.cc
 	../simutrans/descriptor/writer/obj_node.cc

@@ -88,6 +88,14 @@ typedef image_id stretch_map_t[3][3];
 #endif
 
 
+/**
+ * An image may have an authored higher-resolution counterpart, attached
+ * once the pakset has finished loading. The table is read-only from then
+ * on, so drawing costs one array read and needs no lock.
+ */
+void     simgraph_set_hires(image_id base, image_id hires);
+image_id simgraph_get_hires(image_id base);
+
 enum simgraph_type_t
 {
 	SIMGRAPH_TYPE_NULL       = 0, // Dummy renderer, used for headless servers

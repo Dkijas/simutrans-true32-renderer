@@ -8,6 +8,10 @@
 #include <string.h>
 #include <string>
 #include "image_writer.h"
+
+/* STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT */
+#include "stlab_semantic.h"
+#include "stlab_xr32_writer.h"
 #include "root_writer.h"
 #include "obj_node.h"
 #include "obj_pak_exception.h"
@@ -39,6 +43,13 @@ std::string image_writer_t::last_img_file;
 
 raw_image_t image_writer_t::input_img;
 int image_writer_t::img_size = 64;
+
+/* STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
+ * One extraction per source PNG, reused by every tile cut from it. */
+static std::string stlab_cached_file;
+static std::vector<uint8> stlab_cached_rgba;
+static std::vector<stlab_semantic_record_t> stlab_cached_records;
+static int stlab_cached_w = 0, stlab_cached_h = 0;
 
 
 uint32 image_writer_t::block_getpix(int x, int y)
@@ -72,6 +83,45 @@ uint32 image_writer_t::block_getpix(int x, int y)
 		default:
 			dbg->fatal("image_writer_t::block_getpix", "Unsupported input image format");
 	}
+}
+
+
+/* ==========================================================================
+ * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
+ *
+ * A straight RGBA8888 view of the loaded image, built from block_getpix() so the
+ * semantic extractor and the legacy encoder see the same pixels.
+ *
+ * block_getpix() returns 0xAARRGGBB with the alpha channel INVERTED (0 == opaque) for
+ * FMT_RGBA8888, and a zero top byte for the two formats that carry no alpha. XOR with
+ * 0xFF therefore recovers the source alpha in all three cases: an RGB or grayscale
+ * source becomes fully opaque, which is what it is.
+ * ==========================================================================*/
+void image_writer_t::stlab_rgba_from_input(std::vector<uint8> &rgba, int &w, int &h)
+{
+	w = (int)input_img.get_width();
+	h = (int)input_img.get_height();
+	rgba.assign((size_t)w * h * 4, 0);
+	for(  int y = 0;  y < h;  y++  ) {
+		for(  int x = 0;  x < w;  x++  ) {
+			const uint32 pix = block_getpix(x, y);
+			uint8 *o = &rgba[((size_t)y * w + x) * 4];
+			o[0] = (uint8)((pix >> 16) & 0xFF);
+			o[1] = (uint8)((pix >>  8) & 0xFF);
+			o[2] = (uint8)( pix        & 0xFF);
+			o[3] = (uint8)(((pix >> 24) & 0xFF) ^ 0xFF);
+		}
+	}
+}
+
+
+bool image_writer_t::stlab_load_rgba(const char *fname, std::vector<uint8> &rgba, int &w, int &h)
+{
+	if(  !the_instance.block_load(fname)  ) {
+		return false;
+	}
+	stlab_rgba_from_input(rgba, w, h);
+	return true;
 }
 
 
@@ -363,6 +413,9 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
 	} image;
 	dimension dim;
 	uint16 *pixdata = NULL;
+	// STLAB probe: the region origin in the source image, captured where col/row live
+	int stlab_x0 = 0, stlab_y0 = 0;
+	bool stlab_have_region = false;
 
 	// if first char is a '>' then this image is not zoomable
 	if(  an_imagekey[0] == '>'  ) {
@@ -445,6 +498,9 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
 		init_dim(image_data, &dim, img_size);
 		delete [] image_data;
 
+		stlab_x0 = col + dim.xmin;
+		stlab_y0 = row + dim.ymin;
+		stlab_have_region = true;
 		image.x += dim.xmin;
 		image.y += dim.ymin;
 		image.w = dim.xmax - dim.xmin + 1;
@@ -521,4 +577,51 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
 #endif
 
 	node.check_and_write_header(outfp);
+
+	/* ----------------------------------------------------------------------
+	 * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
+	 *
+	 * The legacy IMG above is finished and untouched. Beside it, and from the same
+	 * pixels, build the candidate node body. It is only queued here: the node itself
+	 * is emitted by the parent, after every IMG, so the placement invariant holds by
+	 * construction.
+	 *
+	 * The extractor runs over the WHOLE source image, once per file, and the tile then
+	 * takes the records that fall inside it. Running it per tile would clip the
+	 * 8-neighbourhood at the tile border and change the result.
+	 * ---------------------------------------------------------------------- */
+	if(  stlab_writer_enabled()  &&  stlab_have_region  &&  image.h > 0  &&  image.w > 0  ) {
+		if(  stlab_cached_file != last_img_file  ) {
+			stlab_rgba_from_input(stlab_cached_rgba, stlab_cached_w, stlab_cached_h);
+			stlab_extract_semantics(&stlab_cached_rgba[0], stlab_cached_w, stlab_cached_h,
+			                        stlab_cached_records, NULL);
+			stlab_cached_file = last_img_file;
+		}
+		const int x0 = stlab_x0;
+		const int y0 = stlab_y0;
+		const int rw = image.w, rh = image.h;
+
+		std::vector<uint8> region((size_t)rw * rh * 4);
+		for(  int yy = 0;  yy < rh;  yy++  ) {
+			const uint8 *src = &stlab_cached_rgba[((size_t)(y0 + yy) * stlab_cached_w + x0) * 4];
+			memcpy(&region[(size_t)yy * rw * 4], src, (size_t)rw * 4);
+		}
+
+		std::vector<stlab_semantic_record_t> local;
+		for(  size_t i = 0;  i < stlab_cached_records.size();  i++  ) {
+			const stlab_semantic_record_t &r = stlab_cached_records[i];
+			const int sy = (int)(r.position / (uint32)stlab_cached_w);
+			const int sx = (int)(r.position % (uint32)stlab_cached_w);
+			if(  sy < y0  ||  sy >= y0 + rh  ||  sx < x0  ||  sx >= x0 + rw  ) continue;
+			stlab_semantic_record_t l = r;
+			l.position = (uint32)((sy - y0) * rw + (sx - x0));
+			local.push_back(l);
+		}
+
+		stlab_pending_node_t pn;
+		pn.img_index = (uint16)index;
+		stlab_xr32_build_body(&region[0], rw, rh, (sint16)image.x, (sint16)image.y,
+		                      image.zoomable, (uint16)index, local, pn.body);
+		stlab_pending_nodes().push_back(pn);
+	}
 }

@@ -1195,6 +1195,37 @@ static void rezoom_img(const image_id n)
 			return;
 		}
 
+		// An authored counterpart replaces the enlargement outright at exactly
+		// 2/1: no resampling, nothing invented (MRES). Its own x/y/w/h are used
+		// because each resolution is trimmed to its own bounding box, so a soft
+		// 2x edge need not begin at exactly twice the 1x edge.
+		if(  (images[n].recode_flags & FLAG_ZOOMABLE)
+		     &&  g_simgraph16.zoom_num[zoom_factor] == 2
+		     &&  g_simgraph16.zoom_den[zoom_factor] == 1  ) {
+			const image_id hi = simgraph_get_hires( n );
+			if(  hi != IMG_EMPTY  &&  hi < anz_images  &&  images[hi].base_data != NULL  ) {
+				const struct imd &hires = images[hi];
+				if(  hires.base_h >= images[n].base_h * 2 - 2
+				     &&  hires.base_h <= images[n].base_h * 2 + 2
+				     &&  hires.base_w >= images[n].base_w * 2 - 2
+				     &&  hires.base_w <= images[n].base_w * 2 + 2  ) {
+					const uint32 hlen = zoom_core_stored_len( hires.base_data, hires.base_h );
+					images[n].x = hires.base_x;
+					images[n].y = hires.base_y;
+					images[n].w = hires.base_w;
+					images[n].h = hires.base_h;
+					images[n].len = hlen;
+					images[n].zoom_data = MALLOCN( STORED_PIXVAL, hlen );
+					memcpy( images[n].zoom_data, hires.base_data, hlen * sizeof(STORED_PIXVAL) );
+					images[n].recode_flags &= ~FLAG_REZOOM;
+#ifdef MULTI_THREAD
+					pthread_mutex_unlock( &rezoom_img_mutex[n % env_t::num_threads] );
+#endif
+					return;
+				}
+			}
+		}
+
 		// the resampling itself is renderer-independent; this renderer keeps the
 		// historical in-band clear marker, so its output does not move
 		zoom_scratch_t scratch;

@@ -76,6 +76,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\descriptor\reader\vehicle_reader.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\descriptor\reader\way_obj_reader.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\descriptor\reader\way_reader.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\descriptor\reader\multires_reader.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\descriptor\reader\xref_reader.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\descriptor\sound_desc.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\descriptor\tunnel_desc.cc" />
@@ -209,6 +210,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\gui\tool_selector.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\gui\trafficlight_info.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\gui\vehiclelist_frame.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\gui\way_builder_frame.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\gui\welt.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\io\classify_file.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\simutrans\io\raw_image_bmp.cc" />
@@ -590,6 +592,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\simutrans\gui\tool_selector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\simutrans\gui\trafficlight_info.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\simutrans\gui\vehiclelist_frame.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\simutrans\gui\way_builder_frame.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\simutrans\gui\welt.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\simutrans\io\classify_file.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\simutrans\io\raw_image.h" />

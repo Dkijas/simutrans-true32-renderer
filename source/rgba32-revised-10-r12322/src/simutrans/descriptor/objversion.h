@@ -45,6 +45,9 @@ enum obj_type : uint32
 	obj_imagelist   = C4ID('I','M','G','1'),
 	obj_imagelist2d = C4ID('I','M','G','2'),
 	obj_menu        = C4ID('M','E','N','U'),
+	/// optional high-resolution pairings; a build that does not know this
+	/// type skips the node and its children (pakset_manager_t::read_nodes)
+	obj_multires    = C4ID('M','R','E','S'),
 	obj_miscimages  = C4ID('M','I','S','C'),
 	obj_pedestrian  = C4ID('P','A','S','S'),
 	obj_roadsign    = C4ID('S','I','G','N'),

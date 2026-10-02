@@ -61,6 +61,7 @@ struct stlab_xr32_slot_t {
 	stlab_xr32_image_t *img = NULL;
 	uint8 resolved_player = 0xFF;   ///< which player data[] currently holds
 	int   resolved_night = -999;
+	image_id hires_active = IMG_EMPTY; ///< MRES: the 2x counterpart shown now, if any
 };
 
 static stlab_xr32_slot_t *stlab_slots = NULL;
@@ -195,6 +196,54 @@ void stlab_xr32_scratch_release()
 }
 
 
+/// worst case of stlab_xr32_encode_rows(): per row a leading clear, then per pixel a
+/// separator + count + the pixel (alternating opaque and translucent), and the terminator
+static inline size_t stlab_xr32_encode_cap(uint32 w, uint32 h)
+{
+	return (size_t)h * (3 + 3 * (size_t)w) + 8;
+}
+
+
+/**
+ * Encode a resolved raster as the screen run stream: [clear][count][pixels...]...[0] per
+ * row. A raster pixel is 0 (hole), 0xFFrrggbb (opaque) or 0xAArrggbb with 8 <= AA <= 254
+ * (straight alpha). Opaque and translucent pixels go into separate runs; a translucent run
+ * carries TRANSPARENT_RUN and keeps the full ARGB word, which the screen-space blitters
+ * tell apart from the legacy class+alpha codes (all below 0x10000) by the top byte. Two
+ * adjacent runs are separated by TRANSPARENT_RUN as a zero-length clear run, the separator
+ * the legacy encoder uses, because a clear run of 0 ends the row.
+ */
+static PIXVAL *stlab_xr32_encode_rows(const uint32 *raster, uint32 w, uint32 h, PIXVAL *d)
+{
+	for(  uint32 y = 0;  y < h;  y++  ) {
+		const uint32 *row = raster + (size_t)y * w;
+		uint32 x = 0;
+		bool first = true;
+		while(  x < w  ) {
+			uint32 clear = 0;
+			while(  x < w  &&  row[x] == 0  ) { clear++; x++; }
+			if(  x >= w  ) {
+				if(  first  ) { *d++ = 0; *d++ = 0; }   // an entirely empty row
+				break;
+			}
+			*d++ = first  ||  clear  ?  (PIXVAL)clear  :  (PIXVAL)TRANSPARENT_RUN;
+			const bool opaque = (row[x] >> 24) == 0xFFu;
+			const uint32 start = x;
+			while(  x < w  &&  row[x] != 0  &&  ((row[x] >> 24) == 0xFFu) == opaque  ) { x++; }
+			const uint32 count = x - start;
+			*d++ = opaque  ?  (PIXVAL)count  :  (PIXVAL)(count | TRANSPARENT_RUN);
+			for(  uint32 k = 0;  k < count;  k++  ) {
+				*d++ = (PIXVAL)row[start + k];
+			}
+			first = false;
+		}
+		if(  first  &&  w == 0  ) { *d++ = 0; *d++ = 0; }
+		*d++ = 0;                                        // end of row
+	}
+	return d;
+}
+
+
 /**
  * Resolve the candidate node for one player and encode the result as the screen run
  * stream the blitters already consume: [clear][count][pixels...]...[0] per row.
@@ -202,6 +251,58 @@ void stlab_xr32_scratch_release()
  * No STORED_PIXVAL is read or written anywhere in here.
  */
 #include "stlab_xr32_zoom.cci"       // native zoom, section 39 of the design report
+
+
+/**
+ * MRES (MRES-V2-SPEC.md, section 5). At exactly 2/1, a candidate-backed image whose
+ * authored 2x counterpart ALSO carries a candidate shows that counterpart, resolved
+ * at 1:1, instead of its own native enlargement. Returns false - and clears any
+ * previous choice - whenever that does not apply, so the native zoom takes over.
+ * Called under rezoom_img_mutex32, like stlab_xr32_zoom_prepare().
+ */
+static bool stlab_xr32_hires_prepare(image_id n)
+{
+	stlab_xr32_slot_t *s = stlab_slot( n, false );
+	if(  s == NULL  ||  s->img == NULL  ) {
+		return false;
+	}
+	s->hires_active = IMG_EMPTY;
+	if(  (images[n].recode_flags & FLAG_ZOOMABLE) == 0
+	     ||  g_simgraph32.zoom_num[zoom_factor32] != 2
+	     ||  g_simgraph32.zoom_den[zoom_factor32] != 1  ) {
+		return false;
+	}
+	const image_id hi = simgraph_get_hires( n );
+	if(  hi == IMG_EMPTY  ||  hi >= anz_images  ) {
+		return false;
+	}
+	const stlab_xr32_slot_t *hs = stlab_slot( hi, false );
+	if(  hs == NULL  ||  hs->img == NULL  ) {
+		return false;             // a legacy-only counterpart: the 1x candidate is zoomed natively
+	}
+	const stlab_xr32_image_t *hi_img = hs->img;
+	if(  (sint32)hi_img->height < images[n].base_h * 2 - 2
+	     ||  (sint32)hi_img->height > images[n].base_h * 2 + 2
+	     ||  (sint32)hi_img->width < images[n].base_w * 2 - 2
+	     ||  (sint32)hi_img->width > images[n].base_w * 2 + 2  ) {
+		return false;
+	}
+	stlab_xr32_zoom_release( s );
+	images[n].player_flags = 0xFFFF;
+	for(  uint8 i = 0;  i < MAX_PLAYER_COUNT;  i++  ) {
+		if(  images[n].data[i] != NULL  ) {
+			free( images[n].data[i] );
+			images[n].data[i] = NULL;
+		}
+	}
+	images[n].x = hi_img->x;
+	images[n].y = hi_img->y;
+	images[n].w = (sint16)hi_img->width;
+	images[n].h = (sint16)hi_img->height;
+	s->hires_active = hi;
+	images[n].recode_flags &= ~FLAG_REZOOM;
+	return true;
+}
 
 
 bool stlab_xr32_recode(image_id n, sint8 player_nr)
@@ -214,6 +315,7 @@ bool stlab_xr32_recode(image_id n, sint8 player_nr)
 	// the image degenerates at this scale there is no cache to build and the
 	// unscaled candidate below serves it. Never the STORED16 path.
 	if(  zoom_factor32 != ZOOM_NEUTRAL
+	     &&  s->hires_active == IMG_EMPTY
 	     &&  (images[n].recode_flags & FLAG_ZOOMABLE) != 0
 	     &&  stlab_xr32_zoom_recode( n, player_nr )  ) {
 		return true;
@@ -223,43 +325,24 @@ bool stlab_xr32_recode(image_id n, sint8 player_nr)
 		stlab_xr32_zoom_release( s );
 	}
 	const stlab_xr32_image_t *img = s->img;
+	if(  s->hires_active != IMG_EMPTY  &&  zoom_factor32 != ZOOM_NEUTRAL  ) {
+		// MRES: the authored 2x candidate, resolved at 1:1 (stlab_xr32_hires_prepare)
+		const stlab_xr32_slot_t *hs = stlab_slot( s->hires_active, false );
+		if(  hs != NULL  &&  hs->img != NULL  ) {
+			img = hs->img;
+		}
+	}
 	const uint32 w = img->width, h = img->height;
 	const uint32 npx = w * h;
 
-	// worst case per row: leading clear + (count + pixel) per pixel + terminator
-	const size_t cap = (size_t)h * (3 + 2 * (size_t)w) + 8;
-	if(  !stlab_scratch_reserve( npx, cap )  ) {
+	if(  !stlab_scratch_reserve( npx, stlab_xr32_encode_cap( w, h ) )  ) {
 		return false;
 	}
 	uint32 *raster = stlab_scratch_raster;
 	stlab_xr32_resolve( img, player_nr, raster );
 
 	PIXVAL *out = stlab_scratch_out;
-	PIXVAL *d = out;
-	for(  uint32 y = 0;  y < h;  y++  ) {
-		const uint32 *row = raster + (size_t)y * w;
-		uint32 x = 0;
-		bool first = true;
-		while(  x < w  ) {
-			uint32 clear = 0;
-			while(  x < w  &&  row[x] == 0  ) { clear++; x++; }
-			if(  x >= w  ) {
-				if(  first  ) { *d++ = 0; *d++ = 0; }   // an entirely empty row
-				break;
-			}
-			*d++ = (PIXVAL)clear;
-			uint32 start = x;
-			while(  x < w  &&  row[x] != 0  ) { x++; }
-			const uint32 count = x - start;
-			*d++ = (PIXVAL)count;
-			for(  uint32 k = 0;  k < count;  k++  ) {
-				*d++ = (PIXVAL)row[start + k];
-			}
-			first = false;
-		}
-		if(  first  &&  w == 0  ) { *d++ = 0; *d++ = 0; }
-		*d++ = 0;                                        // end of row
-	}
+	PIXVAL *d = stlab_xr32_encode_rows( raster, w, h, out );
 	imd32 &im = images[n];
 	const size_t used = (size_t)(d - out);
 	if(  im.data[player_nr] != NULL  ) {

@@ -15,6 +15,7 @@
 
 class obj_desc_t;
 class obj_reader_t;
+struct mres_pair_t;
 
 
 /// Missing things during loading:
@@ -53,7 +54,20 @@ class pakset_manager_t
 	/// @param[out] data If reading is successful, contains descriptor for the object, else NULL.
 	/// @param register_nodes Nesting level for desc-nodes, should normally be 0
 	/// @param version File format version
-	static bool read_nodes(FILE *fp, obj_desc_t *&data, int register_nodes, uint32 version);
+	static bool read_nodes(FILE *fp, obj_desc_t *&data, int register_nodes, uint32 version, obj_type *type_read = 0);
+
+public:
+	/// Keep a high-resolution pairing until the pakset has finished loading.
+	static void multires_add(const mres_pair_t &pair);
+	/// Turn carried child indices into the images they were registered as.
+	static void multires_bind_images(obj_desc_t *mres);
+	/// Remember a top-level object by name, so a pairing can find it.
+	static void multires_note_object(const char *name, obj_desc_t *desc);
+	/// Attach counterparts, once every pak and add-on has been read.
+	static void resolve_multires();
+
+private:
+
 	static bool skip_nodes(FILE *fp, uint32 version);
 
 	static std::string doublettes;

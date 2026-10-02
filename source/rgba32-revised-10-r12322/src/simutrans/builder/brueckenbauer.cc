@@ -109,7 +109,7 @@ static bool compare_bridges(const bridge_desc_t* a, const bridge_desc_t* b)
 }
 
 
-void bridge_builder_t::fill_menu(tool_selector_t *tool_selector, const waytype_t wtyp, sint16 /*sound_ok*/)
+void bridge_builder_t::fill_menu(tool_selector_t *tool_selector, const waytype_t wtyp, sint16 sound_ok)
 {
 	// check if scenario forbids this
 	if (!welt->get_scenario()->is_tool_allowed(welt->get_active_player(), TOOL_BUILD_BRIDGE | GENERAL_TOOL, wtyp)) {
@@ -130,9 +130,20 @@ void bridge_builder_t::fill_menu(tool_selector_t *tool_selector, const waytype_t
 		}
 	}
 
+	// register_desc() builds one tool per bridge while the pakset is loading, which
+	// happens before read_menu() has parsed menuconf.tab, so the sound configured for
+	// TOOL_BUILD_BRIDGE cannot be copied there yet. By the time the toolbar is filled it
+	// is known, so take it from the tool the pakset configured unless this toolbar entry
+	// names one of its own. NO_SOUND stays NO_SOUND: a pakset that configures no sound
+	// keeps a silent tool.
+	if(  sound_ok == NO_SOUND  &&  TOOL_BUILD_BRIDGE < tool_t::general_tool.get_count()  ) {
+		sound_ok = tool_t::general_tool[TOOL_BUILD_BRIDGE]->ok_sound;
+	}
+
 	// now sorted ...
 	for(bridge_desc_t const *i : matching) {
 		i->get_builder()->enabled = enable  &&  welt->get_scenario()->is_tool_enabled(welt->get_active_player(), TOOL_BUILD_BRIDGE | GENERAL_TOOL, wtyp, i->get_name());
+		i->get_builder()->ok_sound = sound_ok;
 		tool_selector->add_tool_selector(i->get_builder());
 	}
 }
@@ -322,7 +333,7 @@ bool bridge_builder_t::is_monorail_junction(koord3d pos, player_t *player, const
 
 
 /**
- * checks if a bridge can start (or end) on this tile in priciple
+ * checks if a bridge can start (or end) on this tile in principle
  * @returns either an error_message (must abort bridge building) or NULL
  */
 const char* bridge_builder_t::check_start_tile(const player_t* player, const grund_t* gr, ribi_t::ribi bridge_ribi, const bridge_desc_t* desc)
@@ -372,7 +383,7 @@ const char* bridge_builder_t::check_start_tile(const player_t* player, const gru
 	}
 
 	if (const char* err = gr->kann_alle_obj_entfernen(player)) {
-		// therse is something not from us blocking construction
+		// there is something not from us blocking construction
 		return err;
 	}
 
@@ -992,8 +1003,12 @@ const char* bridge_builder_t::renovate(player_t* player, koord3d pos_start, wayt
 			return "Das Feld gehoert\neinem anderen Spieler\n";
 		}
 		if (br->get_desc() == desc) {
-			// same bridge already ...
-			return NULL;
+			// This bridge is already the one that was asked for: nothing is built,
+			// nothing is charged, and nothing changes. Reporting success would make
+			// the tool sound its ok_sound for an operation that did not happen, so
+			// report the "do not try again" result the rest of this file already
+			// uses when there is nothing to do.
+			return "";
 		}
 
 	}

@@ -50,7 +50,7 @@ static bool stlab_xr32_read_candidate(FILE *fp, uint32 size)
 
 
 /// pair every candidate parsed while reading this node's children with its sibling IMG
-static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren)
+static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren, const obj_type *kinds)
 {
 	if(  stlab_pending_candidates.empty()  ) {
 		return;
@@ -58,7 +58,10 @@ static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren)
 	for(  size_t i = 0;  i < stlab_pending_candidates.size();  i++  ) {
 		stlab_xr32_image_t *img = stlab_pending_candidates[i];
 		bool attached = false;
-		if(  children != NULL  &&  img->img_index < (uint16)nchildren  ) {
+		// only a child that was READ as an IMG node is an image: img_index may name any
+		// child (a TEXT name, an XREF, a list), and casting that to image_t is undefined
+		if(  children != NULL  &&  img->img_index < (uint16)nchildren
+		     &&  kinds != NULL  &&  kinds[img->img_index] == obj_image  ) {
 			const image_t *im = static_cast<const image_t *>(children[img->img_index]);
 			if(  im != NULL  &&  im->get_id() != IMG_EMPTY  ) {
 				attached = stlab_xr32_attach(im->get_id(), img,
