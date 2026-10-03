@@ -12,9 +12,10 @@
 #include <zlib.h>
 
 #include "../simdebug.h"
+#include "stlab_xr32_linear.h"
 
 static const uint8 XR32_MAGIC[4] = { 'X', 'R', '3', '2' };
-static const uint8 XR32_SUPPORTED_VERSION = 1;
+static const uint8 XR32_SUPPORTED_VERSION = 1;   ///< raised to 2 by the v2 composition (layer 03)
 static const uint8 XR32_HEADER_LEN = 32;
 static const uint8 XR32_FLAG_BASE_DEFLATED = 0x01;
 static const uint8 XR32_FLAG_CRC32 = 0x02;           ///< body ends in a CRC-32 of everything before it
@@ -23,6 +24,11 @@ static const uint8 XR32_UNDER_IS_FRAMEBUFFER = 0x80;
 static const uint8 XR32_CLASS_PLAYER_1 = 1;
 static const uint8 XR32_CLASS_PLAYER_2 = 2;
 static const uint8 XR32_CLASS_LIGHT = 3;
+
+/* XR32-SEMANTIC-MASK-PIPELINE-01 -- v2 (class registry 2). NOT FOR COMMIT. */
+static const uint8 XR32_V2_CLASS_REGISTRY = 2;
+static const uint8 XR32_V2_ID_COUNT = 31;        ///< ids 0..30 known; higher ids are skipped
+static const uint8 XR32_V2_MAX_CONTRIB = 4;      ///< per pixel, == STLAB_SEM_MAX_CONTRIB in makeobj
 
 
 stlab_xr32_image_t::~stlab_xr32_image_t()
@@ -120,7 +126,11 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
 	if(  (flags & XR32_FLAG_BASE_DEFLATED) == 0  &&  (uint64)base_bytes != want_plane  ) {
 		*why = "raw base plane has the wrong length"; return STLAB_XR32_REJECTED;
 	}
-	if(  (uint64)run_count * 5u > (uint64)run_bytes  ) {
+	if(  version == 2  &&  body[6] != XR32_V2_CLASS_REGISTRY  ) {
+		*why = "v2 node with an unknown class registry";
+		return STLAB_XR32_UNSUPPORTED;
+	}
+	if(  (uint64)run_count * (version == 2 ? 4u : 5u) > (uint64)run_bytes  ) {
 		*why = "more runs than the run block can hold"; return STLAB_XR32_REJECTED;
 	}
 
@@ -150,7 +160,54 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
 	const uint8 *blob = body + XR32_HEADER_LEN + base_bytes;
 	uint32 off = 0, kept = 0, skipped = 0, prev_end = 0;
 	const uint32 npx = (uint32)w * h;
-	for(  uint32 i = 0;  i < run_count;  i++  ) {
+	if(  version == 2  ) {
+		// contributor runs: start is relative to the previous START, runs may overlap.
+		// Per pixel: at most XR32_V2_MAX_CONTRIB contributors, coverage sum <= 255, no id twice.
+		uint16 *sum = (uint16 *)calloc(npx, sizeof(uint16));
+		uint8  *cnt = (uint8 *)calloc(npx, 1);
+		uint32 *ids = (uint32 *)calloc(npx, sizeof(uint32));
+		const char *err = NULL;
+		if(  sum == NULL  ||  cnt == NULL  ||  ids == NULL  ) {
+			err = "out of memory for the run check";
+		}
+		uint32 prev_start = 0;
+		for(  uint32 i = 0;  err == NULL  &&  i < run_count;  i++  ) {
+			uint32 d, ln;
+			if(  !read_varint(blob, run_bytes, off, d)  ||  !read_varint(blob, run_bytes, off, ln)  ) { err = "truncated run"; break; }
+			if(  off + 2 > run_bytes  ) { err = "truncated run payload"; break; }
+			const uint8 id = blob[off++];
+			const uint8 coverage = blob[off++];
+			if(  coverage == 0  ) { err = "coverage 0 is not representable"; break; }
+			if(  ln == 0  ) { err = "run length 0"; break; }
+			if(  d > npx  ||  prev_start > npx - d  ) { err = "run start out of range"; break; }
+			const uint32 start = prev_start + d;
+			if(  start >= npx  ||  ln > npx - start  ) { err = "run end out of range"; break; }
+			prev_start = start;
+			for(  uint32 k = 0;  k < ln;  k++  ) {
+				const uint32 px = start + k;
+				if(  ++cnt[px] > XR32_V2_MAX_CONTRIB  ) { err = "too many contributors on one pixel"; break; }
+				sum[px] += coverage;
+				if(  sum[px] > 255  ) { err = "contributors sum above full coverage"; break; }
+				if(  id < 32  ) {
+					if(  ids[px] & (1u << id)  ) { err = "the same id twice on one pixel"; break; }
+					ids[px] |= 1u << id;
+				}
+			}
+			if(  err  ) break;
+			if(  id >= XR32_V2_ID_COUNT  ) {
+				skipped++;          // forward compatibility: a future id, its share falls to the under plane
+				continue;
+			}
+			stlab_xr32_run_t &r = runs[kept++];
+			r.start = start; r.length = ln; r.coverage = coverage; r.under_is_framebuffer = false;
+			r.cls = id < 8 ? XR32_CLASS_PLAYER_1 : id < 16 ? XR32_CLASS_PLAYER_2 : XR32_CLASS_LIGHT;
+			r.param = id < 16 ? (uint8)(id & 7) : (uint8)(id - 16);
+		}
+		if(  err == NULL  &&  off != run_bytes  ) err = "trailing bytes in the run block";
+		free(sum); free(cnt); free(ids);
+		if(  err  ) { free(plane); free(runs); *why = err; return STLAB_XR32_REJECTED; }
+	}
+	for(  uint32 i = 0;  version != 2  &&  i < run_count;  i++  ) {
 		uint32 d, ln;
 		if(  !read_varint(blob, run_bytes, off, d)  ||  !read_varint(blob, run_bytes, off, ln)  ) {
 			free(plane); free(runs); *why = "truncated run"; return STLAB_XR32_REJECTED;
@@ -187,7 +244,7 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
 		r.coverage = coverage; r.under_is_framebuffer = under_fb;
 		r.under_r = ur; r.under_g = ug; r.under_b = ub;
 	}
-	if(  off != run_bytes  ) { free(plane); free(runs); *why = "trailing bytes in the run block"; return STLAB_XR32_REJECTED; }
+	if(  version != 2  &&  off != run_bytes  ) { free(plane); free(runs); *why = "trailing bytes in the run block"; return STLAB_XR32_REJECTED; }
 
 	stlab_xr32_image_t *img = new stlab_xr32_image_t();
 	img->width = w; img->height = h; img->x = x; img->y = y;

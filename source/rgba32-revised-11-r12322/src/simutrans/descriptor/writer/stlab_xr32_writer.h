@@ -54,6 +54,23 @@ void stlab_xr32_build_body(const uint8 *rgba, int w, int h, sint16 x, sint16 y,
                            const std::vector<stlab_semantic_record_t> &records,
                            std::vector<uint8> &body);
 
+/**
+ * XR32-SEMANTIC-MASK-PIPELINE-01: build one v2 node body (class registry 2).
+ *
+ * @param under     the region's UNDER plane, w*h*4 straight RGBA8888 (alpha = the pixel's)
+ * @param contribs  the region's contributors, positions local to the region, sorted by
+ *                  position then id; several may share a pixel
+ */
+struct stlab_sem_contrib_t {
+	uint32 position;       ///< linear index into the view it belongs to
+	uint8 id;              ///< semantic id, class registry 2 (0..30 == makeobj special index)
+	uint8 coverage;        ///< 1..255
+};
+void stlab_xr32_build_body_v2(const uint8 *under, int w, int h, sint16 x, sint16 y,
+                              uint8 zoomable, uint16 img_index,
+                              const std::vector<stlab_sem_contrib_t> &contribs,
+                              std::vector<uint8> &body);
+
 /// the nodes accumulated while the current parent's images were written
 std::vector<stlab_pending_node_t> &stlab_pending_nodes();
 

@@ -194,3 +194,111 @@ void stlab_xr32_flush(FILE *fp, obj_node_t &parent)
 	}
 	pending.clear();
 }
+
+
+/* ==========================================================================
+ * XR32-SEMANTIC-MASK-PIPELINE-01 -- FORMAT v2 (class registry 2). NOT FOR COMMIT.
+ *
+ * The header is the v1 header with version = 2 and class_registry = 2. The plane is the
+ * UNDER plane: the colour of the non-semantic surface of every pixel, alpha = the pixel's.
+ * The run block holds contributor runs:
+ *
+ *   varint(start - previous start), varint(length), id, coverage
+ *
+ * id is the semantic vocabulary of registry 2 (0..7 PC1 tones, 8..15 PC2 tones, 16..30
+ * lights, == the makeobj special index); coverage is 1..255. Starts never decrease and runs
+ * MAY overlap: a pixel inside k runs has k contributors (k <= 4, coverages summing to at most
+ * 255, no id twice). A v1 reader sees version 2 and falls back to the legacy IMG.
+ * ==========================================================================*/
+#include <algorithm>
+
+static const uint8 XR32_V2_VERSION = 2;
+static const uint8 XR32_V2_CLASS_REGISTRY = 2;
+
+namespace {
+struct v2_run_t {
+	uint32 start, length;
+	uint8 id, coverage;
+	bool operator<(const v2_run_t &o) const { return start != o.start ? start < o.start : id < o.id; }
+};
+}
+
+
+void stlab_xr32_build_body_v2(const uint8 *under, int w, int h, sint16 x, sint16 y,
+                              uint8 zoomable, uint16 img_index,
+                              const std::vector<stlab_sem_contrib_t> &contribs,
+                              std::vector<uint8> &body)
+{
+	const size_t plane_len = (size_t)w * h * 4;
+
+	std::vector<uint8> plane;
+	uint8 flags = 0;
+	{
+		uLongf cap = compressBound((uLong)plane_len);
+		plane.resize(cap);
+		if(  compress2(&plane[0], &cap, under, (uLong)plane_len, 9) != Z_OK  ) {
+			plane.assign(under, under + plane_len);
+		}
+		else {
+			plane.resize(cap);
+			flags |= XR32_FLAG_BASE_DEFLATED;
+		}
+	}
+
+	// fold each id's consecutive pixels with equal coverage into runs
+	std::vector<v2_run_t> runs_v;
+	for(  int id = 0;  id < 256;  id++  ) {
+		v2_run_t cur;
+		bool open = false;
+		for(  size_t i = 0;  i < contribs.size();  i++  ) {
+			const stlab_sem_contrib_t &c = contribs[i];
+			if(  c.id != id  ) continue;
+			if(  open  &&  c.position == cur.start + cur.length  &&  c.coverage == cur.coverage  ) {
+				cur.length++;
+				continue;
+			}
+			if(  open  ) runs_v.push_back(cur);
+			cur.start = c.position; cur.length = 1; cur.id = c.id; cur.coverage = c.coverage;
+			open = true;
+		}
+		if(  open  ) runs_v.push_back(cur);
+	}
+	std::sort(runs_v.begin(), runs_v.end());
+
+	std::vector<uint8> runs;
+	uint32 prev_start = 0;
+	for(  size_t i = 0;  i < runs_v.size();  i++  ) {
+		put_varint(runs, runs_v[i].start - prev_start);
+		put_varint(runs, runs_v[i].length);
+		runs.push_back(runs_v[i].id);
+		runs.push_back(runs_v[i].coverage);
+		prev_start = runs_v[i].start;
+	}
+
+	body.assign(XR32_HEADER_LEN, 0);
+	body[0] = 'X'; body[1] = 'R'; body[2] = '3'; body[3] = '2';
+	body[4] = XR32_V2_VERSION;
+	flags |= XR32_FLAG_CRC32;
+	body[5] = flags;
+	body[6] = XR32_V2_CLASS_REGISTRY;
+	put16(body, 8, (uint16)w);
+	put16(body, 10, (uint16)h);
+	put16(body, 12, (uint16)x);
+	put16(body, 14, (uint16)y);
+	body[16] = zoomable;
+	put16(body, 18, img_index);
+	put32(body, 20, (uint32)plane.size());
+	put32(body, 24, (uint32)runs_v.size());
+	put32(body, 28, (uint32)runs.size());
+	body.insert(body.end(), plane.begin(), plane.end());
+	body.insert(body.end(), runs.begin(), runs.end());
+
+	const uint32 crc = (uint32)crc32( crc32(0L, Z_NULL, 0), &body[0], (uInt)body.size() );
+	const size_t at = body.size();
+	body.resize(at + 4);
+	put32(body, at, crc);
+
+	stlab_semantic_counters.rgba_raw_bytes += plane_len;
+	stlab_semantic_counters.rgba_compressed_bytes += plane.size();
+	stlab_semantic_counters.semantic_bytes += runs.size();
+}
