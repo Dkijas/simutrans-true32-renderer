@@ -12,6 +12,7 @@
 /* STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT */
 #include "stlab_semantic.h"
 #include "stlab_xr32_writer.h"
+#include "stlab_semantic_masks.h"
 #include "root_writer.h"
 #include "obj_node.h"
 #include "obj_pak_exception.h"
@@ -50,6 +51,13 @@ static std::string stlab_cached_file;
 static std::vector<uint8> stlab_cached_rgba;
 static std::vector<stlab_semantic_record_t> stlab_cached_records;
 static int stlab_cached_w = 0, stlab_cached_h = 0;
+
+/* XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT. One mask solve per source PNG. */
+static std::string stlab_masks_file;
+static bool stlab_masks_present = false;
+static std::vector<uint8> stlab_masks_under;
+static std::vector<stlab_sem_contrib_t> stlab_masks_contribs;
+static int stlab_masks_w = 0, stlab_masks_h = 0;
 
 
 uint32 image_writer_t::block_getpix(int x, int y)
@@ -590,6 +598,51 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
 	 * takes the records that fall inside it. Running it per tile would clip the
 	 * 8-neighbourhood at the tile border and change the result.
 	 * ---------------------------------------------------------------------- */
+	if(  stlab_semantic_masks_requested()  &&  !stlab_writer_enabled()  ) {
+		static bool told = false;
+		if(  !told  ) {
+			dbg->warning("stlab_semantic_masks", "semantic_masks=1 is ignored: the XR32 writer is off (STLAB_XR32_WRITE=1)");
+			told = true;
+		}
+	}
+	/* XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT. An object that opted in with
+	 * semantic_masks=1 and whose sheet has masks gets a v2 node built from the masks; the
+	 * heuristic extractor is not run for it. Everything else takes the v1 path unchanged. */
+	if(  stlab_writer_enabled()  &&  stlab_semantic_masks_requested()  &&  stlab_have_region
+	     &&  image.h > 0  &&  image.w > 0  ) {
+		if(  stlab_masks_file != last_img_file  ) {
+			std::vector<uint8> base;
+			stlab_rgba_from_input(base, stlab_masks_w, stlab_masks_h);
+			stlab_masks_present = stlab_semantic_masks_solve(last_img_file, &base[0], stlab_masks_w, stlab_masks_h,
+			                                                 stlab_masks_under, stlab_masks_contribs);
+			stlab_masks_file = last_img_file;
+		}
+		if(  stlab_masks_present  ) {
+			const int x0 = stlab_x0, y0 = stlab_y0, rw = image.w, rh = image.h;
+			std::vector<uint8> region((size_t)rw * rh * 4);
+			for(  int yy = 0;  yy < rh;  yy++  ) {
+				memcpy(&region[(size_t)yy * rw * 4],
+				       &stlab_masks_under[((size_t)(y0 + yy) * stlab_masks_w + x0) * 4], (size_t)rw * 4);
+			}
+			std::vector<stlab_sem_contrib_t> local;
+			for(  size_t i = 0;  i < stlab_masks_contribs.size();  i++  ) {
+				const stlab_sem_contrib_t &c = stlab_masks_contribs[i];
+				const int sy = (int)(c.position / (uint32)stlab_masks_w);
+				const int sx = (int)(c.position % (uint32)stlab_masks_w);
+				if(  sy < y0  ||  sy >= y0 + rh  ||  sx < x0  ||  sx >= x0 + rw  ) continue;
+				stlab_sem_contrib_t l = c;
+				l.position = (uint32)((sy - y0) * rw + (sx - x0));
+				local.push_back(l);
+			}
+			stlab_pending_node_t pn;
+			pn.img_index = (uint16)index;
+			stlab_xr32_build_body_v2(&region[0], rw, rh, (sint16)image.x, (sint16)image.y,
+			                         image.zoomable, (uint16)index, local, pn.body);
+			stlab_sem_counters.v2_nodes++;
+			stlab_pending_nodes().push_back(pn);
+			return;
+		}
+	}
 	if(  stlab_writer_enabled()  &&  stlab_have_region  &&  image.h > 0  &&  image.w > 0  ) {
 		if(  stlab_cached_file != last_img_file  ) {
 			stlab_rgba_from_input(stlab_cached_rgba, stlab_cached_w, stlab_cached_h);

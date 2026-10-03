@@ -102,6 +102,7 @@ SOLO_SOURCES += ../simutrans/descriptor/writer/ground_writer.cc
 SOLO_SOURCES += ../simutrans/descriptor/writer/image_writer.cc
 SOLO_SOURCES += ../simutrans/descriptor/writer/stlab_semantic.cc
 SOLO_SOURCES += ../simutrans/descriptor/writer/stlab_xr32_writer.cc
+SOLO_SOURCES += ../simutrans/descriptor/writer/stlab_semantic_masks.cc
 SOLO_SOURCES += ../simutrans/descriptor/writer/stlab_mres_writer.cc
 SOLO_SOURCES += ../simutrans/descriptor/writer/imagelist2d_writer.cc
 SOLO_SOURCES += ../simutrans/descriptor/writer/imagelist_writer.cc

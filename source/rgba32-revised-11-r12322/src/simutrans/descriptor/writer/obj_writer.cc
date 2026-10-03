@@ -12,6 +12,7 @@
 #include "obj_node.h"
 #include "obj_writer.h"
 #include "image_writer.h"
+#include "stlab_semantic_masks.h"
 #include "text_writer.h"
 #include "xref_writer.h"
 
@@ -51,6 +52,8 @@ void obj_writer_t::write(FILE* fp, obj_node_t& parent, tabfileobj_t& obj)
 	}
 	// now get the image size
 	image_writer_t::set_img_size(obj.get_int("cell_size",default_image_size));
+	// XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT: per-object opt-in to explicit semantic masks
+	stlab_semantic_masks_set_requested(obj.get_int("semantic_masks", 0) != 0);
 
 	last_name = name;
 

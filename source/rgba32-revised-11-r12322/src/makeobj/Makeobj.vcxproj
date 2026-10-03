@@ -111,6 +111,7 @@
     <ClCompile Include="..\simutrans\descriptor\writer\image_writer.cc" />
     <ClCompile Include="..\simutrans\descriptor\writer\stlab_semantic.cc" />
     <ClCompile Include="..\simutrans\descriptor\writer\stlab_xr32_writer.cc" />
+    <ClCompile Include="..\simutrans\descriptor\writer\stlab_semantic_masks.cc" />
     <ClCompile Include="..\simutrans\descriptor\writer\stlab_mres_writer.cc" />
     <ClCompile Include="..\simutrans\descriptor\writer\imagelist_writer.cc" />
     <ClCompile Include="..\simutrans\descriptor\writer\imagelist2d_writer.cc" />
@@ -188,6 +189,7 @@
     <ClInclude Include="..\simutrans\descriptor\writer\image_writer.h" />
     <ClInclude Include="..\simutrans\descriptor\writer\stlab_semantic.h" />
     <ClInclude Include="..\simutrans\descriptor\writer\stlab_xr32_writer.h" />
+    <ClInclude Include="..\simutrans\descriptor\writer\stlab_semantic_masks.h" />
     <ClInclude Include="..\simutrans\descriptor\writer\stlab_mres_writer.h" />
     <ClInclude Include="..\simutrans\descriptor\writer\imagelist_writer.h" />
     <ClInclude Include="..\simutrans\descriptor\writer\imagelist2d_writer.h" />
