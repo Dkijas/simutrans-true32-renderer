@@ -1,0 +1,361 @@
+diff --git a/src/simutrans_object_studio/core/objects.py b/src/simutrans_object_studio/core/objects.py
+index 297580e..9ac1651 100644
+--- a/src/simutrans_object_studio/core/objects.py
++++ b/src/simutrans_object_studio/core/objects.py
+@@ -117,6 +117,10 @@ class Graphics:
+     source: str | None = None
+     sprites: str | None = None
+     sheet: str | None = None
++    #: The sheet comes with X.sem.<name>.png masks and the `.dat` should ask
++    #: makeobj to package them. Explicit, like the `.dat` key it turns on: a
++    #: mask lying next to a sheet changes nothing until somebody says so.
++    semantic_masks: bool = False
+ 
+     @classmethod
+     def from_json(cls, value: Any) -> "Graphics":
+@@ -124,12 +128,15 @@ class Graphics:
+             return cls()
+         return cls(source=value.get("source"),
+                    sprites=value.get("sprites"),
+-                   sheet=value.get("sheet"))
++                   sheet=value.get("sheet"),
++                   semantic_masks=bool(value.get("semantic_masks", False)))
+ 
+     def as_dict(self) -> dict | None:
+         data = {k: v for k, v in
+                 (("source", self.source), ("sprites", self.sprites),
+                  ("sheet", self.sheet)) if v is not None}
++        if self.semantic_masks:
++            data["semantic_masks"] = True
+         return data or None
+ 
+     def references(self) -> tuple[str, ...]:
+diff --git a/src/simutrans_object_studio/dat/emit.py b/src/simutrans_object_studio/dat/emit.py
+index b7d6321..e7bdc56 100644
+--- a/src/simutrans_object_studio/dat/emit.py
++++ b/src/simutrans_object_studio/dat/emit.py
+@@ -67,6 +67,10 @@ def header(dat_obj: str, definition) -> list:
+     lines = [BANNER, "", line("obj", dat_obj), line("name", definition.name)]
+     if definition.author:
+         lines.append(line("copyright", definition.author))
++    graphics = getattr(definition, "graphics", None)
++    if graphics is not None and getattr(graphics, "semantic_masks", False):
++        # makeobj then reads <sheet>.sem.<name>.png beside the sheet
++        lines.append(line("semantic_masks", 1))
+     return lines
+ 
+ 
+diff --git a/src/simutrans_object_studio/graphics/semantic.py b/src/simutrans_object_studio/graphics/semantic.py
+new file mode 100644
+index 0000000..86324d5
+--- /dev/null
++++ b/src/simutrans_object_studio/graphics/semantic.py
+@@ -0,0 +1,163 @@
++"""Semantic masks beside a sprite sheet: find them, read them, check them.
++
++A sheet `X.png` may carry one grey image per semantic, `X.sem.<name>.png`, that
++says how much of each pixel is player colour or a light (255 = all of it). The
++exporter writes them; makeobj packages them when the object's `.dat` says
++`semantic_masks=1`, which Object Studio emits when the object's graphics
++declare `"semantic_masks": true`.
++
++This module never changes a file. It answers two questions an artist needs
++answered before makeobj runs: which masks belong to this sheet, and would
++makeobj accept them. The rules are makeobj's:
++
++    size        every mask is exactly the sheet's size              (makeobj: fatal)
++    grey        a mask is coverage, not colour: R == G == B          (makeobj: fatal)
++    crowding    at most four semantics on one pixel                  (makeobj: fatal)
++    full        on one pixel the masks sum to at most 255, plus one
++                per extra semantic for independent rounding          (makeobj: fatal)
++    name        X.sem.<name>.png whose name is not a semantic        (makeobj: warning)
++    holes       coverage on a transparent pixel is ignored           (makeobj: counted)
++    agreement   the sheet pixel must be the mix the masks describe   (makeobj: warning)
++    undeclared  an exact special colour no mask declares is ordinary
++                paint in XR32 (the masks define meaning)             (makeobj: warning)
++
++The agreement check here uses floating point, makeobj uses integer tables: on a
++pixel right at the tolerance the two can disagree by one level. It is advice.
++"""
++
++from __future__ import annotations
++
++from dataclasses import dataclass
++from pathlib import Path
++
++from . import colors, png
++
++KEYS = tuple(colors.PLAYER_COLORS) + tuple(day for day, _night, _what in colors.LIGHTS)
++NAMES = (tuple("pc1-%d" % i for i in range(8)) + tuple("pc2-%d" % i for i in range(8)) + (
++    "window-dark", "window-light", "lamp-yellow", "lamp-red", "lamp-green",
++    "fixed-6b", "fixed-9b", "fixed-b3", "fixed-c9", "fixed-df",
++    "window-e3", "window-c1", "window-4d", "lamp-purple", "lamp-blue"))
++INDEX_OF_NAME = {n: i for i, n in enumerate(NAMES)}
++MAX_CONTRIBUTORS = 4
++AGREEMENT_TOLERANCE = 2
++
++ERROR, WARNING, NOTE = "error", "warning", "note"
++
++
++@dataclass(frozen=True)
++class Finding:
++    severity: str
++    code: str
++    detail: str
++
++
++def mask_path(sheet: Path, index: int) -> Path:
++    sheet = Path(sheet)
++    return sheet.with_name("%s.sem.%s.png" % (sheet.stem, NAMES[index]))
++
++
++def discover(sheet: Path):
++    """-> ({index: path}, [paths whose name is not a semantic])"""
++    sheet = Path(sheet)
++    prefix = sheet.stem + ".sem."
++    found, unknown = {}, []
++    if not sheet.parent.is_dir():
++        return found, unknown
++    for p in sorted(sheet.parent.iterdir()):
++        name = p.name
++        if not (name.lower().startswith(prefix.lower()) and name.lower().endswith(".png")):
++            continue
++        token = name[len(prefix):-4].lower()
++        if token in INDEX_OF_NAME:
++            found[INDEX_OF_NAME[token]] = p
++        else:
++            unknown.append(p)
++    return found, unknown
++
++
++def _lin(c):
++    c = c / 255.0
++    return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
++
++
++def _enc(x):
++    x = min(1.0, max(0.0, x))
++    s = x * 12.92 if x <= 0.0031308 else 1.055 * x ** (1 / 2.4) - 0.055
++    return int(s * 255 + 0.5)
++
++
++def check(sheet: Path) -> list:
++    """Every finding for the masks of one sheet; [] when there are none to find."""
++    sheet = Path(sheet)
++    found, unknown = discover(sheet)
++    out = [Finding(WARNING, "semantic-name", "%s is not a semantic mask name; makeobj will ignore it" % p.name)
++           for p in unknown]
++    if not found:
++        return out
++    width, height, has_alpha, base = png.read_png(sheet)
++    masks = {}
++    for index, path in found.items():
++        w, h, m_alpha, pixels = png.read_png(path)
++        if (w, h) != (width, height):
++            out.append(Finding(ERROR, "semantic-size", "%s is %dx%d, its sheet is %dx%d" % (path.name, w, h, width, height)))
++            continue
++        values = bytearray(w * h)
++        bad = None
++        for i, px in enumerate(pixels):
++            if not (px[0] == px[1] == px[2]):
++                bad = i
++                break
++            v = px[0]
++            if m_alpha and len(px) > 3:
++                v = (v * px[3] + 127) // 255
++            values[i] = v
++        if bad is not None:
++            out.append(Finding(ERROR, "semantic-grey", "%s is not grey at (%d,%d)" % (path.name, bad % w, bad // w)))
++            continue
++        masks[index] = values
++    if any(f.severity == ERROR for f in out):
++        return out          # makeobj stops at the first of these; pixel checks would only add noise
++    holes = crowded = over = disagree = undeclared = 0
++    keyset = set(KEYS)
++    for i in range(width * height):
++        here = [(k, m[i]) for k, m in masks.items() if m[i]]
++        r, g, b = base[i][:3]
++        a = base[i][3] if has_alpha and len(base[i]) > 3 else 255
++        if a <= 7 or (r, g, b) == colors.TRANSPARENT:
++            holes += bool(here)
++            continue
++        if not here:
++            undeclared += (r, g, b) in keyset
++            continue
++        if len(here) > MAX_CONTRIBUTORS:
++            crowded += 1
++            continue
++        total = sum(c for _k, c in here)
++        if total > 255 + len(here) - 1:
++            over += 1
++            continue
++        total = min(total, 255)
++        worst = 0
++        if total < 255:
++            for ch in range(3):
++                num = _lin((r, g, b)[ch]) * 255 - sum(c * _lin(KEYS[k][ch]) for k, c in here)
++                u = min(1.0, max(0.0, num / (255 - total)))
++                back = _enc((sum(c * _lin(KEYS[k][ch]) for k, c in here) + (255 - total) * u) / 255)
++                worst = max(worst, abs(back - (r, g, b)[ch]))
++        else:
++            worst = max(abs(_enc(sum(c * _lin(KEYS[k][ch]) for k, c in here) / 255) - (r, g, b)[ch]) for ch in range(3))
++        disagree += worst > AGREEMENT_TOLERANCE
++    if crowded:
++        out.append(Finding(ERROR, "semantic-crowded", "%d pixel(s) carry more than %d semantics" % (crowded, MAX_CONTRIBUTORS)))
++    if over:
++        out.append(Finding(ERROR, "semantic-over-full", "%d pixel(s) whose masks sum to more than full" % over))
++    if disagree:
++        out.append(Finding(WARNING, "semantic-disagree",
++                           "%d pixel(s) where the sheet is not the mix its masks describe" % disagree))
++    if undeclared:
++        out.append(Finding(WARNING, "semantic-undeclared-key",
++                           "%d pixel(s) are exactly a special colour but no mask declares them: "
++                           "ordinary in XR32, still special in the legacy image" % undeclared))
++    if holes:
++        out.append(Finding(NOTE, "semantic-holes", "%d transparent pixel(s) carry mask coverage; it is ignored" % holes))
++    return out
+diff --git a/tests/test_semantic_masks.py b/tests/test_semantic_masks.py
+new file mode 100644
+index 0000000..16c9a4b
+--- /dev/null
++++ b/tests/test_semantic_masks.py
+@@ -0,0 +1,139 @@
++"""Semantic masks: discovery, makeobj's acceptance rules, and the `.dat` opt-in."""
++
++import tempfile
++import unittest
++from dataclasses import replace
++from pathlib import Path
++
++from simutrans_object_studio.core.objects import Graphics
++from simutrans_object_studio.dat import emit
++from simutrans_object_studio.graphics import png, semantic
++
++YELLOW = (0xFF, 0xFF, 0x53)
++GREY = (120, 110, 100)
++
++
++def write_grey(path, w, h, values):
++    png.write_png(str(path), w, h, [(v, v, v) for v in values], has_alpha=False)
++
++
++class Scene:
++    """A 16x8 sheet: grey body, a yellow lamp, one half-yellow edge column."""
++
++    W, H = 16, 8
++
++    def __init__(self, root):
++        self.root = Path(root)
++        self.sheet = self.root / "x.png"
++        px = []
++        for y in range(self.H):
++            for x in range(self.W):
++                if not (2 <= y < 6 and 1 <= x < 15):
++                    px.append((0, 0, 0, 0))
++                elif 4 <= x < 7:
++                    px.append(YELLOW + (255,))
++                elif x == 7:
++                    px.append((195, 191, 169, 255))   # 50 % yellow over the grey, mixed in linear light
++                else:
++                    px.append(GREY + (255,))
++        png.write_png(str(self.sheet), self.W, self.H, px, has_alpha=True)
++
++    def lamp(self):
++        return [255 if (2 <= y < 6 and 4 <= x < 7) else 128 if (2 <= y < 6 and x == 7) else 0
++                for y in range(self.H) for x in range(self.W)]
++
++
++class TestSemanticMasks(unittest.TestCase):
++
++    def setUp(self):
++        self.tmp = tempfile.TemporaryDirectory()
++        self.s = Scene(self.tmp.name)
++
++    def tearDown(self):
++        self.tmp.cleanup()
++
++    def codes(self):
++        return sorted(f.code for f in semantic.check(self.s.sheet))
++
++    def test_vocabulary_matches_makeobj(self):
++        self.assertEqual(len(semantic.NAMES), 31)
++        self.assertEqual(semantic.NAMES[3], "pc1-3")
++        self.assertEqual(semantic.KEYS[18], YELLOW)
++        self.assertEqual(semantic.KEYS[29], (0xFF, 0x01, 0x7F))     # authoring key, not the display colour
++
++    def test_no_masks_no_findings(self):
++        self.assertEqual(semantic.check(self.s.sheet), [])
++
++    def test_valid_mask_is_clean(self):
++        write_grey(semantic.mask_path(self.s.sheet, 18), Scene.W, Scene.H, self.s.lamp())
++        self.assertEqual(semantic.discover(self.s.sheet)[0].keys(), {18})
++        self.assertEqual(self.codes(), [])
++
++    def test_wrong_size(self):
++        write_grey(semantic.mask_path(self.s.sheet, 18), 4, 4, [0] * 16)
++        self.assertEqual(self.codes(), ["semantic-size"])
++
++    def test_colour_mask(self):
++        p = semantic.mask_path(self.s.sheet, 18)
++        png.write_png(str(p), Scene.W, Scene.H, [(255, 0, 0)] * (Scene.W * Scene.H), has_alpha=False)
++        self.assertEqual(self.codes(), ["semantic-grey"])
++
++    def test_five_contributors(self):
++        for k in range(5):
++            v = [0] * (Scene.W * Scene.H); v[3 * Scene.W + 2] = 50
++            write_grey(semantic.mask_path(self.s.sheet, k), Scene.W, Scene.H, v)
++        self.assertIn("semantic-crowded", self.codes())
++
++    def test_over_full(self):
++        for k in (0, 19):
++            v = [0] * (Scene.W * Scene.H); v[3 * Scene.W + 2] = 255
++            write_grey(semantic.mask_path(self.s.sheet, k), Scene.W, Scene.H, v)
++        self.assertIn("semantic-over-full", self.codes())
++
++    def test_disagreement(self):
++        v = self.s.lamp(); v[3 * Scene.W + 12] = 128            # half lamp where the sheet is plain grey
++        write_grey(semantic.mask_path(self.s.sheet, 18), Scene.W, Scene.H, v)
++        self.assertEqual(self.codes(), ["semantic-disagree"])
++
++    def test_holes_noted(self):
++        v = self.s.lamp(); v[0] = 255
++        write_grey(semantic.mask_path(self.s.sheet, 18), Scene.W, Scene.H, v)
++        self.assertEqual(self.codes(), ["semantic-holes"])
++
++    def test_undeclared_exact_key(self):
++        # masks exist, but the solid lamp is left out of them: the lamp is ordinary in XR32
++        v = [0] * (Scene.W * Scene.H); v[3 * Scene.W + 12] = 0
++        v[2 * Scene.W + 2] = 0
++        write_grey(semantic.mask_path(self.s.sheet, 0), Scene.W, Scene.H, [255 if i == 2 * Scene.W + 13 else 0 for i in range(Scene.W * Scene.H)])
++        self.assertIn("semantic-undeclared-key", self.codes())
++
++    def test_unknown_name(self):
++        write_grey(self.s.root / "x.sem.lamp-orange.png", Scene.W, Scene.H, self.s.lamp())
++        self.assertEqual(self.codes(), ["semantic-name"])
++
++    def test_graphics_round_trip(self):
++        g = Graphics.from_json({"sheet": "x.png", "semantic_masks": True})
++        self.assertTrue(g.semantic_masks)
++        self.assertEqual(g.as_dict(), {"sheet": "x.png", "semantic_masks": True})
++        self.assertEqual(Graphics.from_json({"sheet": "x.png"}).as_dict(), {"sheet": "x.png"})
++
++
++class TestDatOptIn(unittest.TestCase):
++
++    def definition(self, masks):
++        class D:
++            name = "Thing"
++            author = "someone"
++            graphics = Graphics(sheet="x.png", semantic_masks=masks)
++        return D()
++
++    def test_header_without_opt_in_is_unchanged(self):
++        self.assertEqual(emit.header("vehicle", self.definition(False)),
++                         [emit.BANNER, "", "obj=vehicle", "name=Thing", "copyright=someone"])
++
++    def test_header_with_opt_in(self):
++        self.assertEqual(emit.header("vehicle", self.definition(True))[-1], "semantic_masks=1")
++
++
++if __name__ == "__main__":
++    unittest.main()

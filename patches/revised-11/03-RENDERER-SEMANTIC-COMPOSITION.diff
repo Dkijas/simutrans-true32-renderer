@@ -1,0 +1,204 @@
+diff --git a/src/simutrans/display/stlab_xr32.cc b/src/simutrans/display/stlab_xr32.cc
+index 01489c1..97f8f64 100644
+--- a/src/simutrans/display/stlab_xr32.cc
++++ b/src/simutrans/display/stlab_xr32.cc
+@@ -10,12 +10,14 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <zlib.h>
++#include <algorithm>
++#include <vector>
+ 
+ #include "../simdebug.h"
+ #include "stlab_xr32_linear.h"
+ 
+ static const uint8 XR32_MAGIC[4] = { 'X', 'R', '3', '2' };
+-static const uint8 XR32_SUPPORTED_VERSION = 1;   ///< raised to 2 by the v2 composition (layer 03)
++static const uint8 XR32_SUPPORTED_VERSION = 2;   ///< XR32-SEMANTIC-MASK-PIPELINE-01: v2 = explicit masks
+ static const uint8 XR32_HEADER_LEN = 32;
+ static const uint8 XR32_FLAG_BASE_DEFLATED = 0x01;
+ static const uint8 XR32_FLAG_CRC32 = 0x02;           ///< body ends in a CRC-32 of everything before it
+@@ -314,6 +316,58 @@ void stlab_xr32_resolve(const stlab_xr32_image_t *img, sint8 player_nr, uint32 *
+ 	}
+ 
+ 
++	// 2v2. XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT. Explicit contributors, composed
++	//    in LINEAR light over the darkened under plane, integer tables only:
++	//        out = enc( SUM c_i * L(S_i) + (255 - SUM c_i) * L(night(U)) )
++	//    S_i is the live palette colour (player and night already inside it). The work is
++	//    proportional to the contributors, never to the image area: one entry per contributor,
++	//    sorted by pixel, summed per pixel (integer sums, so the order cannot change a byte).
++	if(  img->version == 2  ) {
++		struct contrib_t { uint32 idx, r, g, b, c; };
++		size_t total = 0;
++		for(  uint32 r = 0;  r < img->run_count;  r++  ) {
++			total += img->runs[r].length;
++		}
++		if(  total == 0  ) {
++			return;
++		}
++		std::vector<contrib_t> v;
++		v.reserve(total);
++		for(  uint32 r = 0;  r < img->run_count;  r++  ) {
++			const stlab_xr32_run_t &run = img->runs[r];
++			const uint32 fg = run.cls == XR32_CLASS_LIGHT ? stlab_light_colour_argb(run.param)
++			                                              : stlab_player_colour_argb(player_nr, run.cls, run.param);
++			const uint32 c = run.coverage;
++			contrib_t e;
++			e.r = c * stlab_lin16[(fg >> 16) & 0xFF];
++			e.g = c * stlab_lin16[(fg >> 8) & 0xFF];
++			e.b = c * stlab_lin16[fg & 0xFF];
++			e.c = c;
++			for(  uint32 k = 0;  k < run.length;  k++  ) {
++				e.idx = run.start + k;           // bounds proven by the parser
++				v.push_back(e);
++			}
++		}
++		std::sort(v.begin(), v.end(), [](const contrib_t &a, const contrib_t &b) { return a.idx < b.idx; });
++		for(  size_t i = 0;  i < v.size();  ) {
++			const uint32 idx = v[i].idx;
++			uint32 ar = 0, ag = 0, ab = 0, cs = 0;
++			for(  ;  i < v.size()  &&  v[i].idx == idx;  i++  ) {
++				ar += v[i].r; ag += v[i].g; ab += v[i].b; cs += v[i].c;
++			}
++			const uint32 u = out_argb[idx];       // night(U), already in the raster
++			if(  u == 0  ) {
++				continue;                         // a hole stays a hole
++			}
++			const uint32 rest = 255u - cs;        // cs <= 255, proven by the parser
++			const uint8 r = stlab_lin_encode(ar + rest * stlab_lin16[(u >> 16) & 0xFF]);
++			const uint8 g = stlab_lin_encode(ag + rest * stlab_lin16[(u >> 8) & 0xFF]);
++			const uint8 b = stlab_lin_encode(ab + rest * stlab_lin16[u & 0xFF]);
++			out_argb[idx] = (stlab_pack_argb(r, g, b) & 0x00FFFFFFu) | (u & 0xFF000000u);
++		}
++		return;
++	}
++
+ 	// 2. the semantic runs, resolved against the live palette. Night is already inside the
+ 	//    palette entry, so it is applied once here too.
+ 	for(  uint32 r = 0;  r < img->run_count;  r++  ) {
+diff --git a/src/simutrans/display/stlab_xr32_zoom.cci b/src/simutrans/display/stlab_xr32_zoom.cci
+index e196ecb..7bcbe6b 100644
+--- a/src/simutrans/display/stlab_xr32_zoom.cci
++++ b/src/simutrans/display/stlab_xr32_zoom.cci
+@@ -18,6 +18,8 @@
+  * one-key case of the general form.
+  * ==========================================================================*/
+ 
++#include "stlab_xr32_linear.h"   // XR32-SEMANTIC-MASK-PIPELINE-01: v2 zoom composes in linear light
++
+ /// mirrors XR32_CLASS_LIGHT in stlab_xr32.cc, which is private to that unit
+ #define STLAB_ZOOM_CLASS_LIGHT (3)
+ 
+@@ -61,6 +63,7 @@ struct stlab_xr32_zoom_t {
+ 	stlab_zoom_sem_t *sem = NULL;             ///< ascending by dest
+ 	uint32 sem_count = 0;
+ 	uint32 rich_count = 0;                    ///< of those, with two or more keys
++	bool   linear = false;                    ///< XR32 v2: compose in linear light
+ 
+ 	~stlab_xr32_zoom_t()
+ 	{
+@@ -156,6 +159,10 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	z->y = (sint16)(((sint32)img->y * num) / den);
+ 	z->num = num;
+ 	z->den = den;
++	// XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT: v2 sources carry up to four
++	// contributors per pixel and the plane IS the under-colour
++	const bool v2 = img->version == 2;
++	z->linear = v2;
+ 
+ 	// numerators over the denominator 255 * count, so nothing is divided early
+ 	uint32 *acc_r = MALLOCN( uint32, nd );
+@@ -181,7 +188,7 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	// still has at most one contributor, so the list is bounded by the destination
+ 	const bool enlarge = num > den;
+ 	if(  enlarge  &&  sem_src  ) {
+-		sem_src = nd;
++		sem_src = v2 ? nd * 4 : nd;
+ 	}
+ 	uint32 *hit_d = sem_src ? MALLOCN( uint32, sem_src ) : NULL;
+ 	uint8  *hit_k = sem_src ? MALLOCN( uint8, sem_src ) : NULL;
+@@ -198,7 +205,27 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	uint8 *sub  = MALLOCN( uint8, w * h );
+ 	MEMZERON( skey, w * h );  MEMZERON( scov, w * h );  MEMZERON( sufb, w * h );
+ 	MEMZERON( sur, w * h );   MEMZERON( sug, w * h );   MEMZERON( sub, w * h );
+-	for(  uint32 r = 0;  r < img->run_count;  r++  ) {
++	uint8 *v2n = NULL, *v2k = NULL, *v2c = NULL;
++	if(  v2  ) {
++		v2n = MALLOCN( uint8, w * h );
++		v2k = MALLOCN( uint8, w * h * 4 );
++		v2c = MALLOCN( uint8, w * h * 4 );
++		MEMZERON( v2n, w * h );
++		for(  uint32 r = 0;  r < img->run_count;  r++  ) {
++			const stlab_xr32_run_t &run = img->runs[r];
++			const uint8 k = stlab_zoom_key_of( run.cls, run.param );
++			for(  uint32 i = 0;  i < run.length;  i++  ) {
++				const uint32 idx = run.start + i;
++				if(  idx >= w * h  ||  v2n[idx] >= 4  ) {
++					break;                          // the parser forbids both
++				}
++				v2k[idx * 4 + v2n[idx]] = k;
++				v2c[idx * 4 + v2n[idx]] = run.coverage;
++				v2n[idx]++;
++			}
++		}
++	}
++	for(  uint32 r = 0;  !v2  &&  r < img->run_count;  r++  ) {
+ 		const stlab_xr32_run_t &run = img->runs[r];
+ 		const uint8 k = stlab_zoom_key_of( run.cls, run.param );
+ 		for(  uint32 i = 0;  i < run.length;  i++  ) {
+@@ -244,6 +271,23 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 			}
+ 			opq[d]++;
+ 			alp[d] += a;
++			if(  v2  &&  v2n[si]  ) {
++				// every contributor is a hit; the plane pixel is the under-colour of the rest
++				uint32 csum = 0;
++				for(  uint8 j = 0;  j < v2n[si];  j++  ) {
++					if(  hits < sem_src  ) {
++						hit_d[hits] = d;  hit_k[hits] = v2k[si * 4 + j];  hit_c[hits] = v2c[si * 4 + j];
++						hits++;
++					}
++					csum += v2c[si * 4 + j];
++				}
++				const uint32 rest = csum >= 255 ? 0u : 255u - csum;
++				acc_r[d] += (uint32)p[0] * rest;
++				acc_g[d] += (uint32)p[1] * rest;
++				acc_b[d] += (uint32)p[2] * rest;
++				acc_w[d] += rest;
++				continue;
++			}
+ 			const uint8 k = skey[si];
+ 			if(  k == 0  ) {
+ 				// a normal pixel: its colour is weighted by its alpha (straight alpha,
+@@ -394,6 +438,7 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	free( bucket ); free( order );
+ 	free( skey );   free( scov );   free( sufb );
+ 	free( sur );    free( sug );    free( sub );
++	free( v2n );    free( v2k );    free( v2c );
+ 	return z;
+ }
+ 
+@@ -548,6 +593,22 @@ static bool stlab_xr32_zoom_resolve(const stlab_xr32_zoom_t *z, sint8 player_nr,
+ 			tot = 255;                          // the box cannot be more than full
+ 		}
+ 		const int rest = 255 - tot;
++		if(  z->linear  ) {
++			// XR32 v2: the same weights, composed in linear light (stlab_xr32_linear.h)
++			uint32 lr = (uint32)rest * stlab_lin16[base_r];
++			uint32 lg = (uint32)rest * stlab_lin16[base_g];
++			uint32 lbb = (uint32)rest * stlab_lin16[base_b];
++			for(  uint8 j = 0;  j < s.n;  j++  ) {
++				const uint32 c = stlab_zoom_key_colour( s.key[j], player_nr );
++				lr += (uint32)s.cov[j] * stlab_lin16[(c >> 16) & 0xFF];
++				lg += (uint32)s.cov[j] * stlab_lin16[(c >> 8) & 0xFF];
++				lbb += (uint32)s.cov[j] * stlab_lin16[c & 0xFF];
++			}
++			out_argb[s.dest] = (stlab_pack_argb( stlab_lin_encode( lr ), stlab_lin_encode( lg ),
++			                                     stlab_lin_encode( lbb ) ) & 0x00FFFFFFu)
++			                   | ((uint32)p[3] << 24);
++			continue;
++		}
+ 		out_argb[s.dest] = (stlab_pack_argb( (ar + base_r * rest + 127) / 255,
+ 		                                     (ag + base_g * rest + 127) / 255,
+ 		                                     (ab + base_b * rest + 127) / 255 ) & 0x00FFFFFFu)

@@ -1,0 +1,419 @@
+diff --git a/addon/rig.py b/addon/rig.py
+index 9fe23e0..8a2229f 100644
+--- a/addon/rig.py
++++ b/addon/rig.py
+@@ -573,6 +573,94 @@ def make_livery_material(bpy, image, mask, name=None, roughness=0.62):
+     return mat
+ 
+ 
++# --- the semantic pass -------------------------------------------------------
++#
++# Which pixels are player colour or lights is known HERE, at the material, long
++# before any pixel exists. The semantic pass renders that knowledge: every lit
++# shader is replaced by black emission, every emission is left alone. A declared
++# player-colour patch or a livery's lit window then arrives with its exact
++# authoring colour, and nothing that a sun shone on can come out as a reserved
++# colour by accident. core.semantic turns this pass into the X.sem.<name>.png masks.
++
++def _is_lit_shader(node):
++    return node.type.startswith("BSDF_") or node.type in ("SUBSURFACE_SCATTERING", "PRINCIPLED_VOLUME",
++                                                           "EEVEE_SPECULAR")
++
++
++def _semantic_variant(bpy, mat, black):
++    if not mat.use_nodes or mat.node_tree is None:
++        return black
++    var = mat.copy()
++    var.name = "SEMANTIC_" + mat.name
++    nt = var.node_tree
++    for node in [n for n in nt.nodes if _is_lit_shader(n)]:
++        emit = nt.nodes.new("ShaderNodeEmission")
++        emit.inputs["Color"].default_value = (0.0, 0.0, 0.0, 1.0)
++        emit.inputs["Strength"].default_value = 1.0
++        # Principled carries its own emission: a lamp painted that way is a declared
++        # light, so keep that term (colour and strength, linked or not) and drop the rest
++        for src, dst in (("Emission Color", "Color"), ("Emission Strength", "Strength")):
++            if node.type == "BSDF_PRINCIPLED" and src in node.inputs:
++                sock = node.inputs[src]
++                if sock.is_linked:
++                    nt.links.new(sock.links[0].from_socket, emit.inputs[dst])
++                else:
++                    emit.inputs[dst].default_value = sock.default_value
++        for out in node.outputs:
++            for link in list(out.links):
++                nt.links.new(emit.outputs["Emission"], link.to_socket)
++        nt.nodes.remove(node)
++    return var
++
++
++class semantic_pass:
++    """Context manager: while active, renders show the semantic pass.
++
++        with rig.semantic_pass(bpy):
++            bpy.ops.render.render(write_still=True)
++
++    Nothing is changed for good: material slots get copies and get their own
++    materials back on exit, and the copies are deleted.
++    """
++
++    def __init__(self, bpy):
++        self.bpy = bpy
++
++    def __enter__(self):
++        bpy = self.bpy
++        self.black = bpy.data.materials.new("SEMANTIC_BLACK")
++        self.black.use_nodes = True
++        nt = self.black.node_tree
++        nt.nodes.clear()
++        emit = nt.nodes.new("ShaderNodeEmission")
++        emit.inputs["Color"].default_value = (0.0, 0.0, 0.0, 1.0)
++        out = nt.nodes.new("ShaderNodeOutputMaterial")
++        nt.links.new(emit.outputs["Emission"], out.inputs["Surface"])
++        self.variants = {}
++        self.swapped = []
++        for ob in bpy.data.objects:
++            for slot in getattr(ob, "material_slots", ()):
++                mat = slot.material
++                if mat is None:
++                    continue
++                var = self.variants.get(mat.name)
++                if var is None:
++                    var = self.variants[mat.name] = _semantic_variant(bpy, mat, self.black)
++                self.swapped.append((slot, mat))
++                slot.material = var
++        return self
++
++    def __exit__(self, *exc):
++        bpy = self.bpy
++        for slot, mat in reversed(self.swapped):
++            slot.material = mat
++        for var in self.variants.values():
++            if var is not self.black:
++                bpy.data.materials.remove(var)
++        bpy.data.materials.remove(self.black)
++        return False
++
++
+ def _set_if_present(node, socket, value):
+     if socket in node.inputs:
+         node.inputs[socket].default_value = value
+diff --git a/core/datgen.py b/core/datgen.py
+index 7ebf019..317ceea 100644
+--- a/core/datgen.py
++++ b/core/datgen.py
+@@ -143,7 +143,7 @@ def vehicle_dat(name, images, waytype="track", author="", freight="None",
+                 payload=0, speed=100, power=0, gear=100, weight=20, length=8,
+                 cost=1000000, runningcost=100, intro_year=1900, retire_year=2999,
+                 engine_type="diesel", constraint_prev=(),
+-                constraint_next=(), freight_types=()) -> str:
++                constraint_next=(), freight_types=(), semantic_masks=False) -> str:
+     """A complete, compilable vehicle .dat with the image block filled in.
+ 
+     freight_types: the goods, in index order, that the freightimage[i][dir] blocks
+@@ -152,8 +152,11 @@ def vehicle_dat(name, images, waytype="track", author="", freight="None",
+     Give it goods and it emits the matching freightimagetype[i] lines the engine
+     requires - see freightimagetype_block. The caller is responsible for putting
+     the same number of freightimage[i] blocks into `images`, in the same order.
++
++    semantic_masks: the sheet comes with X.sem.<name>.png masks (core.semantic);
++    adds `semantic_masks=1` so makeobj packages them. False changes nothing.
+     """
+-    return _VEHICLE_SKELETON.format(
++    text = _VEHICLE_SKELETON.format(
+         name=name, author=author, waytype=waytype, cost=cost,
+         runningcost=runningcost, intro_year=intro_year, retire_year=retire_year,
+         engine_type=engine_type, speed=speed, power=power, gear=gear,
+@@ -162,3 +165,6 @@ def vehicle_dat(name, images, waytype="track", author="", freight="None",
+         coupling=_coupling_block(constraint_prev, constraint_next),
+         images=images,
+     )
++    if semantic_masks:
++        text = text.replace("copyright=%s\n" % author, "copyright=%s\nsemantic_masks=1\n" % author, 1)
++    return text
+diff --git a/core/semantic.py b/core/semantic.py
+new file mode 100644
+index 0000000..b24281d
+--- /dev/null
++++ b/core/semantic.py
+@@ -0,0 +1,139 @@
++"""
++Semantic masks: say which pixels are player colour and which are lights,
++instead of leaving the game to guess it from the colour.
++
++Why
++---
++A sprite reduced from a supersampled render has soft edges. Where a player-colour
++patch meets the paint around it, the edge pixels are a MIX of the two, and a mix
++is not a reserved colour any more: the game cannot recolour it, so every player
++sees the default blue fringe; and at night a lamp edge stays day-coloured. Trying
++to recover the mix from the final colour is guesswork, and it guesses wrong.
++
++The exporter knows the answer before the picture exists: it knows which surface
++each sample came from. This module writes that knowledge next to the sheet:
++
++    X.png                    the ordinary sprite sheet, unchanged
++    X.sem.<name>.png         one grey image per semantic: 255 = fully that
++                             semantic, 128 = half, 0 = none
++
++makeobj (with `semantic_masks=1` in the .dat) reads them, checks that they agree
++with X.png, and stores them for the game, which then mixes the player's own
++colour or the night-time light in at exactly the right strength.
++
++Names (stable; the file name is the contract):
++
++    pc1-0 .. pc1-7          player colour 1, darkest to lightest
++    pc2-0 .. pc2-7          player colour 2, darkest to lightest
++    window-dark window-light lamp-yellow lamp-red lamp-green
++    fixed-6b fixed-9b fixed-b3 fixed-c9 fixed-df
++    window-e3 window-c1 window-4d lamp-purple lamp-blue
++
++Pure Python on purpose: it runs inside Blender and in the test suites alike.
++"""
++
++import struct
++import zlib
++
++from . import colors
++
++#: authoring colour of every semantic, in makeobj's special-colour order
++KEYS = tuple(colors.PLAYER_COLORS) + tuple(day for day, _night, _what in colors.LIGHTS)
++NAMES = (tuple("pc1-%d" % i for i in range(8)) + tuple("pc2-%d" % i for i in range(8)) + (
++    "window-dark", "window-light", "lamp-yellow", "lamp-red", "lamp-green",
++    "fixed-6b", "fixed-9b", "fixed-b3", "fixed-c9", "fixed-df",
++    "window-e3", "window-c1", "window-4d", "lamp-purple", "lamp-blue"))
++INDEX_OF_KEY = {rgb: i for i, rgb in enumerate(KEYS)}
++
++assert len(KEYS) == len(NAMES) == 31
++
++
++def mask_path(sheet_png, index):
++    """X.png -> X.sem.<name>.png"""
++    stem = sheet_png[:-4] if sheet_png.lower().endswith(".png") else sheet_png
++    return "%s.sem.%s.png" % (stem, NAMES[index])
++
++
++def _srgb_to_linear(c):
++    c = c / 255.0
++    return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
++
++
++_LIN = [_srgb_to_linear(v) for v in range(256)]
++
++
++def _linear_to_srgb8(x):
++    x = 0.0 if x < 0.0 else 1.0 if x > 1.0 else x
++    s = x * 12.92 if x <= 0.0031308 else 1.055 * x ** (1 / 2.4) - 0.055
++    return int(s * 255 + 0.5)
++
++
++def reduce(beauty, ids, width, height, factor):
++    """Reduce a supersampled beauty render and its semantic pass to sprite size.
++
++    beauty  flat list of (r, g, b, a), (width*factor) x (height*factor), anti-aliasing OFF
++    ids     flat list of (r, g, b[, a]) of the semantic pass, same size: a declared
++            semantic surface shows its exact authoring colour, everything else black
++    returns (base, masks): base a flat list of (r, g, b, a) at width x height, the
++            alpha-weighted average in LINEAR light; masks {index: bytearray(width*height)}
++            with the alpha-weighted share of that semantic in each pixel, 0..255.
++    """
++    fw = width * factor
++    base = [(0, 0, 0, 0)] * (width * height)
++    masks = {}
++    n = factor * factor
++    for y in range(height):
++        for x in range(width):
++            sr = sg = sb = sa = 0.0
++            share = {}
++            for dy in range(factor):
++                row = (y * factor + dy) * fw + x * factor
++                for dx in range(factor):
++                    r, g, b, a = beauty[row + dx]
++                    if a == 0:
++                        continue
++                    w = a / 255.0
++                    sr += _LIN[r] * w
++                    sg += _LIN[g] * w
++                    sb += _LIN[b] * w
++                    sa += w
++                    k = INDEX_OF_KEY.get(tuple(ids[row + dx][:3]))
++                    if k is not None:
++                        share[k] = share.get(k, 0.0) + w
++            i = y * width + x
++            if sa > 0.0:
++                base[i] = (_linear_to_srgb8(sr / sa), _linear_to_srgb8(sg / sa), _linear_to_srgb8(sb / sa),
++                           int(sa / n * 255 + 0.5))
++            for k, s in share.items():
++                v = int(s / sa * 255 + 0.5)
++                if v:
++                    masks.setdefault(k, bytearray(width * height))[i] = v
++    return base, masks
++
++
++def write_grey_png(path, width, height, values):
++    """values: bytes-like, width*height grey levels."""
++    raw = bytearray()
++    for y in range(height):
++        raw.append(0)
++        raw.extend(values[y * width:(y + 1) * width])
++
++    def chunk(tag, body):
++        out = struct.pack(">I", len(body)) + tag + body
++        return out + struct.pack(">I", zlib.crc32(tag + body) & 0xFFFFFFFF)
++
++    with open(path, "wb") as f:
++        f.write(b"\x89PNG\r\n\x1a\n")
++        f.write(chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 0, 0, 0, 0)))
++        f.write(chunk(b"IDAT", zlib.compress(bytes(raw), 9)))
++        f.write(chunk(b"IEND", b""))
++
++
++def write_masks(sheet_png, width, height, masks):
++    """Write one X.sem.<name>.png per semantic present; return the paths written."""
++    out = []
++    for k in sorted(masks):
++        p = mask_path(sheet_png, k)
++        write_grey_png(p, width, height, masks[k])
++        out.append(p)
++    return out
+diff --git a/tests/test_semantic.py b/tests/test_semantic.py
+new file mode 100644
+index 0000000..26053db
+--- /dev/null
++++ b/tests/test_semantic.py
+@@ -0,0 +1,101 @@
++"""Semantic masks: the vocabulary is makeobj's, the reduction is in linear light,
++coverage is the share of the visible samples, and the files read back.
++
++Pure Python; no Blender. Run: python tests/test_semantic.py
++"""
++import os
++import sys
++import tempfile
++
++sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
++from core import colors, semantic, sheet  # noqa: E402
++
++FAILED = []
++
++
++def check(what, ok, detail=""):
++    print("  %s %s%s" % ("ok  " if ok else "FAIL", what, (" (%s)" % detail) if detail and not ok else ""))
++    if not ok:
++        FAILED.append(what)
++
++
++def test_vocabulary_is_makeobjs_special_order():
++    check("31 semantics", len(semantic.KEYS) == len(semantic.NAMES) == 31)
++    check("pc1-0 is the darkest blue", semantic.KEYS[0] == colors.PLAYER_RAMP_BLUE[0])
++    check("pc2-7 is the lightest gold", semantic.KEYS[15] == colors.PLAYER_RAMP_GOLD[7])
++    check("index 16 is the dark window", semantic.NAMES[16] == "window-dark" and semantic.KEYS[16] == colors.WINDOW_DARK)
++    check("purple is painted FF017F", semantic.KEYS[29] == colors.LAMP_PURPLE == (0xFF, 0x01, 0x7F))
++    check("every key is a reserved colour", all(k in colors.RESERVED for k in semantic.KEYS))
++
++
++def test_mask_path():
++    check("X.png -> X.sem.<name>.png", semantic.mask_path("a/b/x.png", 18) == "a/b/x.sem.lamp-yellow.png")
++
++
++def test_reduce_coverage_and_linear_mix():
++    # one output pixel from a 2x2 block: two yellow-lamp samples, two grey ones
++    y = (0xFF, 0xFF, 0x53, 255)
++    g = (120, 110, 100, 255)
++    beauty = [y, g, y, g]
++    ids = [(0xFF, 0xFF, 0x53), (0, 0, 0), (0xFF, 0xFF, 0x53), (0, 0, 0)]
++    base, masks = semantic.reduce(beauty, ids, 1, 1, 2)
++    check("half the samples -> coverage 128", masks == {18: bytearray([128])}, masks)
++    lin = lambda c: semantic._LIN[c]
++    want = tuple(semantic._linear_to_srgb8((lin(a) + lin(b)) / 2) for a, b in zip(y[:3], g[:3]))
++    check("colour is the LINEAR mean, not the sRGB mean", base[0][:3] == want and base[0][:3] != (188, 183, 142), base[0])
++    check("alpha is the mean alpha", base[0][3] == 255)
++
++
++def test_reduce_ignores_lit_key_colour():
++    # a sample that LOOKS like a lamp but the semantic pass says is paint: not a semantic
++    y = (0xFF, 0xFF, 0x53, 255)
++    base, masks = semantic.reduce([y] * 4, [(0, 0, 0)] * 4, 1, 1, 2)
++    check("identity comes from the semantic pass, never the beauty colour", masks == {})
++
++
++def test_reduce_coverage_is_share_of_visible_samples():
++    y = (0xFF, 0xFF, 0x53, 255)
++    hole = (0, 0, 0, 0)
++    base, masks = semantic.reduce([y, hole, hole, hole], [(0xFF, 0xFF, 0x53)] + [(0, 0, 0)] * 3, 1, 1, 2)
++    check("a lamp sample beside holes is 100 % of what is visible", masks == {18: bytearray([255])}, masks)
++    check("and the pixel is a quarter opaque", base[0][3] == 64, base[0])
++
++
++def test_two_semantics_in_one_pixel():
++    r, y = (0xFF, 0x21, 0x1D, 255), (0xFF, 0xFF, 0x53, 255)
++    base, masks = semantic.reduce([r, y, r, y], [r[:3], y[:3], r[:3], y[:3]], 1, 1, 2)
++    check("two lights share a pixel", masks == {18: bytearray([128]), 19: bytearray([128])}, masks)
++
++
++def test_grey_png_round_trip():
++    with tempfile.TemporaryDirectory() as d:
++        p = os.path.join(d, "m.png")
++        semantic.write_grey_png(p, 3, 2, bytes([0, 64, 128, 192, 255, 7]))
++        w, h, _a, px = sheet.read_png(p)
++        check("grey mask reads back exactly", (w, h) == (3, 2) and [q[0] for q in px] == [0, 64, 128, 192, 255, 7], px)
++
++
++def test_dat_opt_in():
++    from core import datgen
++    plain = datgen.vehicle_dat("X", "EmptyImage[s]=x.0.0", author="a")
++    opted = datgen.vehicle_dat("X", "EmptyImage[s]=x.0.0", author="a", semantic_masks=True)
++    check("without masks the .dat is unchanged", "semantic_masks" not in plain)
++    check("with masks the .dat opts in", opted == plain.replace("copyright=a\n", "copyright=a\nsemantic_masks=1\n", 1), opted[:80])
++
++
++def main():
++    for name, fn in sorted(globals().items()):
++        if name.startswith("test_") and callable(fn):
++            print("\n%s" % name)
++            fn()
++    print()
++    if FAILED:
++        print("SEMANTIC_TESTS_FAILED: %d" % len(FAILED))
++        for f in FAILED:
++            print("  - %s" % f)
++        sys.exit(1)
++    print("SEMANTIC_TESTS_OK")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tools/run_tests.py b/tools/run_tests.py
+index e886ce4..33aef9c 100644
+--- a/tools/run_tests.py
++++ b/tools/run_tests.py
+@@ -193,6 +193,13 @@ def suite_spritemetrics():
+                 120, "spritemetrics")
+ 
+ 
++def suite_semantic():
++    """Semantic masks: makeobj's vocabulary, linear reduction, coverage, round trip."""
++    return _run([sys.executable, os.path.join("tests", "test_semantic.py")], ROOT,
++                "SEMANTIC_TESTS_OK", ("SEMANTIC_TESTS_FAILED", "Traceback"),
++                120, "semantic")
++
++
+ def suite_directioncheck():
+     """The after-render per-direction check: every rule, tripped and not, plus real art."""
+     return _run([sys.executable, os.path.join("tests", "test_directioncheck.py")], ROOT,
+@@ -604,6 +611,7 @@ SUITES = {
+     "templates": suite_templates,
+     "scenecheck": suite_scenecheck,
+     "spritemetrics": suite_spritemetrics,
++    "semantic": suite_semantic,
+     "directioncheck": suite_directioncheck,
+     "colorcheck": suite_colorcheck,
+     "consistcheck": suite_consistcheck,
+@@ -655,7 +663,7 @@ SUITES = {
+ }
+ # Producers first, then the .pak they feed, then the game. The order IS the loop:
+ # nothing downstream of "paks" can pass on art that this run did not render.
+-ORDER = ("core", "templates", "scenecheck", "spritemetrics", "directioncheck",
++ORDER = ("core", "templates", "scenecheck", "spritemetrics", "semantic", "directioncheck",
+          "colorcheck", "consistcheck", "qualitygate", "variants", "package",
+          "components", "consists", "schema", "colours", "profile",
+          # producers: the art and the .dat. "template" leads them - it is what
