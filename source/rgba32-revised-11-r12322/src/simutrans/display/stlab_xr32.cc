@@ -10,12 +10,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <zlib.h>
+#include <algorithm>
+#include <vector>
 
 #include "../simdebug.h"
 #include "stlab_xr32_linear.h"
 
 static const uint8 XR32_MAGIC[4] = { 'X', 'R', '3', '2' };
-static const uint8 XR32_SUPPORTED_VERSION = 1;   ///< raised to 2 by the v2 composition (layer 03)
+static const uint8 XR32_SUPPORTED_VERSION = 2;   ///< XR32-SEMANTIC-MASK-PIPELINE-01: v2 = explicit masks
 static const uint8 XR32_HEADER_LEN = 32;
 static const uint8 XR32_FLAG_BASE_DEFLATED = 0x01;
 static const uint8 XR32_FLAG_CRC32 = 0x02;           ///< body ends in a CRC-32 of everything before it
@@ -313,6 +315,58 @@ void stlab_xr32_resolve(const stlab_xr32_image_t *img, sint8 player_nr, uint32 *
 		                                | (uint32)lb[p[2]];
 	}
 
+
+	// 2v2. XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT. Explicit contributors, composed
+	//    in LINEAR light over the darkened under plane, integer tables only:
+	//        out = enc( SUM c_i * L(S_i) + (255 - SUM c_i) * L(night(U)) )
+	//    S_i is the live palette colour (player and night already inside it). The work is
+	//    proportional to the contributors, never to the image area: one entry per contributor,
+	//    sorted by pixel, summed per pixel (integer sums, so the order cannot change a byte).
+	if(  img->version == 2  ) {
+		struct contrib_t { uint32 idx, r, g, b, c; };
+		size_t total = 0;
+		for(  uint32 r = 0;  r < img->run_count;  r++  ) {
+			total += img->runs[r].length;
+		}
+		if(  total == 0  ) {
+			return;
+		}
+		std::vector<contrib_t> v;
+		v.reserve(total);
+		for(  uint32 r = 0;  r < img->run_count;  r++  ) {
+			const stlab_xr32_run_t &run = img->runs[r];
+			const uint32 fg = run.cls == XR32_CLASS_LIGHT ? stlab_light_colour_argb(run.param)
+			                                              : stlab_player_colour_argb(player_nr, run.cls, run.param);
+			const uint32 c = run.coverage;
+			contrib_t e;
+			e.r = c * stlab_lin16[(fg >> 16) & 0xFF];
+			e.g = c * stlab_lin16[(fg >> 8) & 0xFF];
+			e.b = c * stlab_lin16[fg & 0xFF];
+			e.c = c;
+			for(  uint32 k = 0;  k < run.length;  k++  ) {
+				e.idx = run.start + k;           // bounds proven by the parser
+				v.push_back(e);
+			}
+		}
+		std::sort(v.begin(), v.end(), [](const contrib_t &a, const contrib_t &b) { return a.idx < b.idx; });
+		for(  size_t i = 0;  i < v.size();  ) {
+			const uint32 idx = v[i].idx;
+			uint32 ar = 0, ag = 0, ab = 0, cs = 0;
+			for(  ;  i < v.size()  &&  v[i].idx == idx;  i++  ) {
+				ar += v[i].r; ag += v[i].g; ab += v[i].b; cs += v[i].c;
+			}
+			const uint32 u = out_argb[idx];       // night(U), already in the raster
+			if(  u == 0  ) {
+				continue;                         // a hole stays a hole
+			}
+			const uint32 rest = 255u - cs;        // cs <= 255, proven by the parser
+			const uint8 r = stlab_lin_encode(ar + rest * stlab_lin16[(u >> 16) & 0xFF]);
+			const uint8 g = stlab_lin_encode(ag + rest * stlab_lin16[(u >> 8) & 0xFF]);
+			const uint8 b = stlab_lin_encode(ab + rest * stlab_lin16[u & 0xFF]);
+			out_argb[idx] = (stlab_pack_argb(r, g, b) & 0x00FFFFFFu) | (u & 0xFF000000u);
+		}
+		return;
+	}
 
 	// 2. the semantic runs, resolved against the live palette. Night is already inside the
 	//    palette entry, so it is applied once here too.
