@@ -23,6 +23,7 @@ class obj_node_t;
 struct stlab_pending_node_t {
 	uint16 img_index;
 	std::vector<uint8> body;
+	bool night = false;    ///< XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: an XNEX node, not an XR32 one
 };
 
 
@@ -39,6 +40,24 @@ public:
 	const char *get_type_name() const OVERRIDE { return "xr32"; }
 };
 
+
+/// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 -- EXPERIMENT: the night node's writer (4CC XNEX, not a format)
+class stlab_xnex_writer_t : public obj_writer_t
+{
+private:
+	static stlab_xnex_writer_t the_instance;
+	stlab_xnex_writer_t() { register_writer(false); }
+
+public:
+	static stlab_xnex_writer_t *instance() { return &the_instance; }
+
+	obj_type get_type() const OVERRIDE { return (obj_type)C4ID('X', 'N', 'E', 'X'); }
+	const char *get_type_name() const OVERRIDE { return "xnex"; }
+};
+
+/// build one XNEX body: the night under plane of one image (layout in display/stlab_xr32.h)
+void stlab_xnex_build_body(const uint8 *night_under, int w, int h, sint16 x, sint16 y, uint16 img_index,
+                           std::vector<uint8> &body);
 
 /// should the base plane be deflated? (env STLAB_XR32_DEFLATE, default yes)
 bool stlab_xr32_deflate_enabled();

@@ -32,8 +32,10 @@
 #include <zlib.h>
 
 #include "obj_node.h"
+#include "../../simdebug.h"
 
 stlab_xr32_writer_t stlab_xr32_writer_t::the_instance;
+stlab_xnex_writer_t stlab_xnex_writer_t::the_instance;
 
 static const uint8 XR32_VERSION        = 1;
 static const uint8 XR32_CLASS_REGISTRY = 1;
@@ -187,7 +189,9 @@ void stlab_xr32_flush(FILE *fp, obj_node_t &parent)
 	for(  size_t i = 0;  i < pending.size();  i++  ) {
 		// creating the node bumps parent->nchildren, which is the only bookkeeping needed;
 		// the parent's own body still reports the IMG count, so get_image() is untouched
-		obj_node_t node(stlab_xr32_writer_t::instance(), (uint32)pending[i].body.size(), &parent);
+		obj_writer_t *w = pending[i].night ? (obj_writer_t *)stlab_xnex_writer_t::instance()
+		                                   : (obj_writer_t *)stlab_xr32_writer_t::instance();
+		obj_node_t node(w, (uint32)pending[i].body.size(), &parent);
 		node.write_bytes(fp, (uint32)pending[i].body.size(), &pending[i].body[0]);
 		node.check_and_write_header(fp);
 		stlab_semantic_counters.xr32_nodes_written++;
@@ -301,4 +305,37 @@ void stlab_xr32_build_body_v2(const uint8 *under, int w, int h, sint16 x, sint16
 	stlab_semantic_counters.rgba_raw_bytes += plane_len;
 	stlab_semantic_counters.rgba_compressed_bytes += plane.size();
 	stlab_semantic_counters.semantic_bytes += runs.size();
+}
+
+
+/* ==========================================================================
+ * XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 -- EXPERIMENTAL night node XNEX (NOT A FORMAT).
+ * Layout in display/stlab_xr32.h; the reader is written from that comment, not from this code.
+ * ==========================================================================*/
+void stlab_xnex_build_body(const uint8 *night_under, int w, int h, sint16 x, sint16 y, uint16 img_index,
+                           std::vector<uint8> &body)
+{
+	const size_t plane_len = (size_t)w * h * 4;
+	uLongf cap = compressBound((uLong)plane_len);
+	std::vector<uint8> plane(cap);
+	if(  compress2(&plane[0], &cap, night_under, (uLong)plane_len, 9) != Z_OK  ) {
+		dbg->fatal("stlab_xnex", "cannot compress a night plane");
+	}
+	plane.resize(cap);
+	body.assign(24, 0);
+	body[0] = 'X'; body[1] = 'N'; body[2] = 'E'; body[3] = 'X';
+	body[4] = 1;          // version
+	body[5] = 0x03;       // deflated + CRC-32
+	body[6] = 0;          // transition model 'abc'
+	put16(body, 8, (uint16)w);
+	put16(body, 10, (uint16)h);
+	put16(body, 12, (uint16)x);
+	put16(body, 14, (uint16)y);
+	put16(body, 16, img_index);
+	put32(body, 20, (uint32)plane.size());
+	body.insert(body.end(), plane.begin(), plane.end());
+	const uint32 crc = (uint32)crc32( crc32(0L, Z_NULL, 0), &body[0], (uInt)body.size() );
+	const size_t at = body.size();
+	body.resize(at + 4);
+	put32(body, at, crc);
 }

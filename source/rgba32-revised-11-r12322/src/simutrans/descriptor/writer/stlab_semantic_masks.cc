@@ -14,6 +14,7 @@
  */
 #include "stlab_semantic_masks.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -151,6 +152,65 @@ bool stlab_semantic_masks_solve(const std::string &sheet_png, const uint8 *rgba,
 			}
 		}
 	}
+	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: prissi's single image per player-colour channel
+	for(  int ch = 0;  ch < 2;  ch++  ) {
+		const std::string f = stem + (ch == 0 ? ".pc1.png" : ".pc2.png");
+		FILE *probe = fopen(f.c_str(), "rb");
+		if(  probe == NULL  ) continue;
+		fclose(probe);
+		for(  int k = 0;  k < 8;  k++  ) {
+			if(  !masks[ch * 8 + k].empty()  ) {
+				dbg->fatal("stlab_semantic_masks", "'%s' and '%s.sem.%s.png' both describe player colour %d: use one or the other",
+				           f.c_str(), stem.c_str(), stlab_sem_vocab[ch * 8 + k].name, ch + 1);
+			}
+		}
+		raw_image_t img;
+		if(  !img.read_from_file(f.c_str())  ) {
+			dbg->fatal("stlab_semantic_masks", "cannot read player-colour image '%s'", f.c_str());
+		}
+		if(  (int)img.get_width() != w  ||  (int)img.get_height() != h  ) {
+			dbg->fatal("stlab_semantic_masks", "player-colour image '%s' is %ux%u, its sheet is %dx%d",
+			           f.c_str(), img.get_width(), img.get_height(), w, h);
+		}
+		for(  int k = 0;  k < 8;  k++  ) masks[ch * 8 + k].assign((size_t)w * h, 0);
+		for(  int y = 0;  y < h;  y++  ) {
+			for(  int x = 0;  x < w;  x++  ) {
+				const uint8 *p = img.access_pixel(x, y);
+				uint8 grey = 0, cov = 255;
+				switch(  img.get_format()  ) {
+					case raw_image_t::FMT_GRAY8:
+						grey = p[0];
+						break;
+					case raw_image_t::FMT_RGB888:
+					case raw_image_t::FMT_RGBA8888:
+						if(  img.get_format() == raw_image_t::FMT_RGBA8888  ) cov = p[3];
+						if(  cov  &&  (p[0] != p[1]  ||  p[1] != p[2])  ) {
+							dbg->fatal("stlab_semantic_masks", "player-colour image '%s' is not grey at (%d,%d): the grey "
+							           "says which shade, the alpha how much", f.c_str(), x, y);
+						}
+						grey = p[0];
+						break;
+					default:
+						dbg->fatal("stlab_semantic_masks", "player-colour image '%s' has an unsupported format", f.c_str());
+				}
+				if(  cov == 0  ||  grey == 0  ) continue;          // black or transparent: no player colour
+				int best = 0, bd = 256;
+				for(  int k = 0;  k < 8;  k++  ) {
+					const int code = (int)floor(255.0 * (0.15 + k * 0.65 / 7.0) + 0.5);
+					const int d = abs((int)grey - code);
+					if(  d < bd  ) { bd = d; best = k; }
+				}
+				if(  bd > 11  ) {
+					dbg->fatal("stlab_semantic_masks", "player-colour image '%s' (%d,%d): grey %u is not a shade code "
+					           "(PC0..PC7 = 38, 62, 86, 109, 133, 157, 180, 204)", f.c_str(), x, y, grey);
+				}
+				masks[ch * 8 + best][(size_t)y * w + x] = cov;
+				stlab_night_counters.pc_image_pixels++;
+			}
+		}
+		any = true;
+		stlab_sem_counters.masks_loaded++;
+	}
 	if(  !any  ) {
 		dbg->warning("stlab_semantic_masks", "semantic_masks=1 but no mask was found for '%s' "
 		             "(expected %s.sem.<name>.png)", sheet_png.c_str(), stem.c_str());
@@ -280,10 +340,110 @@ bool stlab_semantic_masks_solve(const std::string &sheet_png, const uint8 *rgba,
 }
 
 
+/* ------------------------------------------- XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: night sheets */
+
+stlab_night_counters_t stlab_night_counters;
+static bool night_requested = false;
+
+void stlab_night_images_set_requested(bool on) { night_requested = on; }
+bool stlab_night_images_requested() { return night_requested; }
+
+
+const uint8 *stlab_night_sheet(const std::string &sheet_png, int w, int h)
+{
+	static std::string cached_for;
+	static std::vector<uint8> cached;
+	static bool cached_present = false;
+	if(  cached_for == sheet_png  ) {
+		return cached_present ? &cached[0] : NULL;
+	}
+	cached_for = sheet_png;
+	cached_present = false;
+	cached.clear();
+	const size_t dot = sheet_png.rfind(".png");
+	const std::string f = ((dot == std::string::npos) ? sheet_png : sheet_png.substr(0, dot)) + ".night.png";
+	FILE *probe = fopen(f.c_str(), "rb");
+	if(  probe == NULL  ) {
+		return NULL;
+	}
+	fclose(probe);
+	raw_image_t img;
+	if(  !img.read_from_file(f.c_str())  ) {
+		dbg->fatal("stlab_night", "cannot read night image '%s'", f.c_str());
+	}
+	if(  (int)img.get_width() != w  ||  (int)img.get_height() != h  ) {
+		dbg->fatal("stlab_night", "night image '%s' is %ux%u, its day sheet is %dx%d: a night image must have the "
+		           "day sheet's size and layout", f.c_str(), img.get_width(), img.get_height(), w, h);
+	}
+	cached.assign((size_t)w * h * 4, 0);
+	for(  int y = 0;  y < h;  y++  ) {
+		for(  int x = 0;  x < w;  x++  ) {
+			const uint8 *p = img.access_pixel(x, y);
+			uint8 *o = &cached[((size_t)y * w + x) * 4];
+			switch(  img.get_format()  ) {
+				case raw_image_t::FMT_RGBA8888: o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; o[3] = p[3]; break;
+				case raw_image_t::FMT_RGB888:   o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; o[3] = 255;  break;
+				case raw_image_t::FMT_GRAY8:    o[0] = o[1] = o[2] = p[0]; o[3] = 255;              break;
+				default: dbg->fatal("stlab_night", "night image '%s' has an unsupported format", f.c_str());
+			}
+		}
+	}
+	cached_present = true;
+	stlab_night_counters.sheets_with_night++;
+	static bool report_registered = false;
+	if(  !report_registered  ) {
+		report_registered = true;
+		const char *e = getenv("STLAB_SEM_REPORT");
+		if(  e != NULL  &&  e[0] == '1'  &&  stlab_sem_counters.sheets_opted_in == 0  ) {
+			atexit(stlab_semantic_masks_report);
+		}
+	}
+	return &cached[0];
+}
+
+
+void stlab_night_under(const std::string &sheet_png, const uint8 *day_rgba, const uint8 *night_rgba, int w, int h,
+                       const std::vector<uint8> &day_under, const std::vector<stlab_sem_contrib_t> &contribs,
+                       std::vector<uint8> &night_under)
+{
+	night_under.assign(night_rgba, night_rgba + (size_t)w * h * 4);
+	std::vector<uint16> csum((size_t)w * h, 0);
+	for(  size_t i = 0;  i < contribs.size();  i++  ) {
+		if(  contribs[i].id >= 16  ) {
+			const int x = (int)(contribs[i].position % (uint32)w), y = (int)(contribs[i].position / (uint32)w);
+			dbg->fatal("stlab_night", "'%s' (%d,%d): a light mask (%s) and a night image on the same sheet would "
+			           "light the pixel twice; paint the light into the night image instead",
+			           sheet_png.c_str(), x, y, stlab_sem_vocab[contribs[i].id].name);
+		}
+		csum[contribs[i].position] += contribs[i].coverage;
+	}
+	for(  size_t i = 0;  i < (size_t)w * h;  i++  ) {
+		const uint8 *dp = day_rgba + i * 4, *np = night_rgba + i * 4;
+		const bool day_hole = dp[3] <= 7  ||  (((uint32)dp[0] << 16 | (uint32)dp[1] << 8 | dp[2]) == SPECIAL_TRANSPARENT);
+		const bool night_hole = np[3] <= 7  ||  (((uint32)np[0] << 16 | (uint32)np[1] << 8 | np[2]) == SPECIAL_TRANSPARENT);
+		if(  day_hole  &&  !night_hole  ) stlab_night_counters.night_only_pixels++;
+		if(  !day_hole  &&  night_hole  ) stlab_night_counters.day_only_pixels++;
+		if(  day_hole  ||  night_hole  ||  csum[i] == 0  ||  csum[i] >= 255  ) {
+			continue;                      // no player colour to take out, or nothing left under it
+		}
+		uint8 *o = &night_under[i * 4];
+		const uint8 *ud = &day_under[i * 4];
+		for(  int ch = 0;  ch < 3;  ch++  ) {
+			const uint32 ld = stlab_lin16[dp[ch]];
+			if(  ld == 0  ) continue;      // no day light to take a ratio from: keep the night pixel
+			uint64 acc = (uint64)stlab_lin16[np[ch]] * stlab_lin16[ud[ch]] * 255u / ld;
+			if(  acc > 65535u * 255u  ) acc = 65535u * 255u;
+			o[ch] = stlab_lin_encode((uint32)acc);
+		}
+		if(  o[0] == 0xE7  &&  o[1] == 0xFF  &&  o[2] == 0xFF  ) o[2] = 0xFE;
+	}
+}
+
+
 void stlab_semantic_masks_report()
 {
 	const stlab_sem_counters_t &c = stlab_sem_counters;
-	if(  c.sheets_opted_in == 0  ) {
+	if(  c.sheets_opted_in == 0  &&  stlab_night_counters.sheets_with_night == 0  ) {
 		return;
 	}
 	printf("semantic masks: sheets opted-in %u, with masks %u, masks %u, contributors %u, multi %u, "
@@ -291,4 +451,7 @@ void stlab_semantic_masks_report()
 	       c.sheets_opted_in, c.sheets_with_masks, c.masks_loaded, c.contributors, c.multi_pixels,
 	       c.undeclared_key_pixels, c.dropped_on_holes, c.trimmed_pixels, c.mismatch_pixels, c.mismatch_max,
 	       c.key_nudged, c.unknown_mask_names, c.v2_nodes);
+	const stlab_night_counters_t &n = stlab_night_counters;
+	printf("night images: sheets %u, nodes %u, night-only px %u, day-only px %u, boxes grown %u, pc-image px %u\n",
+	       n.sheets_with_night, n.nodes, n.night_only_pixels, n.day_only_pixels, n.bbox_grown, n.pc_image_pixels);
 }

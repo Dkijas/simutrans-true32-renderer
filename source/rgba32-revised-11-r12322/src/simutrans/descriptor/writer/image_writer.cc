@@ -58,6 +58,9 @@ static bool stlab_masks_present = false;
 static std::vector<uint8> stlab_masks_under;
 static std::vector<stlab_sem_contrib_t> stlab_masks_contribs;
 static int stlab_masks_w = 0, stlab_masks_h = 0;
+/* XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 -- EXPERIMENT. The night under plane of the current sheet. */
+static bool stlab_night_present = false;
+static std::vector<uint8> stlab_night_plane;
 
 
 uint32 image_writer_t::block_getpix(int x, int y)
@@ -503,7 +506,36 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
 				image_data[x + y * img_size] = block_getpix(x + col, y + row);
 			}
 		}
-		init_dim(image_data, &dim, img_size);
+		// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: a night image may light pixels that are transparent by
+		// day (a glow). The box of the tile is the union of both, so the night node never needs to
+		// crop; the legacy IMG then only carries transparent margins, which draw nothing.
+		if(  stlab_writer_enabled()  &&  stlab_night_images_requested()  ) {
+			const uint8 *ns = stlab_night_sheet( last_img_file, input_img.get_width(), input_img.get_height() );
+			if(  ns != NULL  ) {
+				dimension day_dim;
+				init_dim(image_data, &day_dim, img_size);
+				for (int x = 0; x < img_size; x++) {
+					for (int y = 0; y < img_size; y++) {
+						if(  !is_transparent(image_data[x + y * img_size])  ) continue;
+						const uint8 *q = ns + ((size_t)(y + row) * input_img.get_width() + (x + col)) * 4;
+						const uint32 rgb = ((uint32)q[0] << 16) | ((uint32)q[1] << 8) | q[2];
+						if(  q[3] > 7  &&  rgb != SPECIAL_TRANSPARENT  ) {
+							image_data[x + y * img_size] = 0;     // stands for "drawn at night" in the box test only
+						}
+					}
+				}
+				init_dim(image_data, &dim, img_size);
+				if(  dim.xmin != day_dim.xmin  ||  dim.xmax != day_dim.xmax  ||  dim.ymin != day_dim.ymin  ||  dim.ymax != day_dim.ymax  ) {
+					stlab_night_counters.bbox_grown++;
+				}
+			}
+			else {
+				init_dim(image_data, &dim, img_size);
+			}
+		}
+		else {
+			init_dim(image_data, &dim, img_size);
+		}
 		delete [] image_data;
 
 		stlab_x0 = col + dim.xmin;
@@ -608,16 +640,45 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
 	/* XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT. An object that opted in with
 	 * semantic_masks=1 and whose sheet has masks gets a v2 node built from the masks; the
 	 * heuristic extractor is not run for it. Everything else takes the v1 path unchanged. */
-	if(  stlab_writer_enabled()  &&  stlab_semantic_masks_requested()  &&  stlab_have_region
+	const bool stlab_want_masks = stlab_semantic_masks_requested();
+	const bool stlab_want_night = stlab_night_images_requested();   // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01
+	if(  stlab_writer_enabled()  &&  (stlab_want_masks  ||  stlab_want_night)  &&  stlab_have_region
 	     &&  image.h > 0  &&  image.w > 0  ) {
 		if(  stlab_masks_file != last_img_file  ) {
 			std::vector<uint8> base;
 			stlab_rgba_from_input(base, stlab_masks_w, stlab_masks_h);
-			stlab_masks_present = stlab_semantic_masks_solve(last_img_file, &base[0], stlab_masks_w, stlab_masks_h,
-			                                                 stlab_masks_under, stlab_masks_contribs);
+			stlab_masks_present = stlab_want_masks
+			                      &&  stlab_semantic_masks_solve(last_img_file, &base[0], stlab_masks_w, stlab_masks_h,
+			                                                     stlab_masks_under, stlab_masks_contribs);
+			const uint8 *ns = stlab_want_night ? stlab_night_sheet(last_img_file, stlab_masks_w, stlab_masks_h) : NULL;
+			stlab_night_present = ns != NULL;
+			if(  !stlab_masks_present  ) {
+				// night image without player-colour semantics: the day image is the under plane, and an
+				// exact special colour in it is ordinary paint (semantics are never inferred from RGB)
+				stlab_masks_under = base;
+				stlab_masks_contribs.clear();
+				if(  stlab_night_present  ) {
+					uint32 keys = 0;
+					for(  size_t i = 0;  i < base.size();  i += 4  ) {
+						const uint32 rgb = ((uint32)base[i] << 16) | ((uint32)base[i + 1] << 8) | base[i + 2];
+						for(  int k = 0;  k < SPECIAL  &&  base[i + 3] > 7;  k++  ) {
+							if(  (image_t::rgbtab[k] & 0x00FFFFFFu) == rgb  ) { keys++; break; }
+						}
+					}
+					if(  keys  ) {
+						dbg->warning("stlab_night", "'%s': %u pixels are exact special colours but no player-colour image "
+						             "or mask declares them: ordinary paint in XR32, still special in the legacy image",
+						             last_img_file.c_str(), keys);
+					}
+				}
+			}
+			if(  stlab_night_present  ) {
+				stlab_night_under(last_img_file, &base[0], ns, stlab_masks_w, stlab_masks_h,
+				                  stlab_masks_under, stlab_masks_contribs, stlab_night_plane);
+			}
 			stlab_masks_file = last_img_file;
 		}
-		if(  stlab_masks_present  ) {
+		if(  stlab_masks_present  ||  stlab_night_present  ) {
 			const int x0 = stlab_x0, y0 = stlab_y0, rw = image.w, rh = image.h;
 			std::vector<uint8> region((size_t)rw * rh * 4);
 			for(  int yy = 0;  yy < rh;  yy++  ) {
@@ -640,6 +701,18 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
 			                         image.zoomable, (uint16)index, local, pn.body);
 			stlab_sem_counters.v2_nodes++;
 			stlab_pending_nodes().push_back(pn);
+			if(  stlab_night_present  ) {
+				for(  int yy = 0;  yy < rh;  yy++  ) {
+					memcpy(&region[(size_t)yy * rw * 4],
+					       &stlab_night_plane[((size_t)(y0 + yy) * stlab_masks_w + x0) * 4], (size_t)rw * 4);
+				}
+				stlab_pending_node_t nn;
+				nn.img_index = (uint16)index;
+				nn.night = true;
+				stlab_xnex_build_body(&region[0], rw, rh, (sint16)image.x, (sint16)image.y, (uint16)index, nn.body);
+				stlab_night_counters.nodes++;
+				stlab_pending_nodes().push_back(nn);
+			}
 			return;
 		}
 	}

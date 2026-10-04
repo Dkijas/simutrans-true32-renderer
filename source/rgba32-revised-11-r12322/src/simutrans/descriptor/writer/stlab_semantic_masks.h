@@ -82,4 +82,41 @@ bool stlab_semantic_masks_solve(const std::string &sheet_png, const uint8 *rgba,
 /// print the counters (makeobj verbose / STLAB_SEM_REPORT)
 void stlab_semantic_masks_report();
 
+
+/* --- XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 (EXPERIMENT, NOT A FORMAT) -------------------------
+ *
+ *   X.night.png   the full-night appearance of the sheet X.png, same size and layout; used when
+ *                 the object opts in with   night_images=1   (no special night colours needed)
+ *   X.pc1.png     prissi's single player-colour image for channel 1 (X.pc2.png: channel 2):
+ *                 grey = WHICH shade (code_k = round(255 * (0.15 + k * 0.65 / 7)), k = 0..7,
+ *                 decoded to the nearest code, +-11 levels), alpha = HOW MUCH (coverage).
+ *                 Compiles to exactly the contributors the 8 masks X.sem.pcN-k.png would give.
+ */
+void stlab_night_images_set_requested(bool on);
+bool stlab_night_images_requested();
+
+/// the straight RGBA8888 night sheet of @p sheet_png, or NULL if X.night.png does not exist.
+/// Cached per sheet. A night sheet of another size is fatal.
+const uint8 *stlab_night_sheet(const std::string &sheet_png, int w, int h);
+
+/**
+ * The night UNDER plane of one sheet: where a pixel carries player-colour contributors the night
+ * image is unmixed with the day's own ratio, L(Un) = L(N) * L(Ud) / L(D) per channel (the night
+ * lighting is taken as uniform inside one pixel); elsewhere it is the night pixel itself.
+ * Light contributors together with a night image are fatal (the light would be applied twice).
+ */
+void stlab_night_under(const std::string &sheet_png, const uint8 *day_rgba, const uint8 *night_rgba, int w, int h,
+                       const std::vector<uint8> &day_under, const std::vector<stlab_sem_contrib_t> &contribs,
+                       std::vector<uint8> &night_under);
+
+struct stlab_night_counters_t {
+	uint32 sheets_with_night = 0;
+	uint32 nodes = 0;
+	uint32 night_only_pixels = 0;     ///< opaque at night, transparent by day (glow)
+	uint32 day_only_pixels = 0;       ///< opaque by day, transparent at night
+	uint32 bbox_grown = 0;            ///< tiles whose IMG box grew to hold night-only pixels
+	uint32 pc_image_pixels = 0;       ///< contributors that came from X.pc1/X.pc2.png
+};
+extern stlab_night_counters_t stlab_night_counters;
+
 #endif

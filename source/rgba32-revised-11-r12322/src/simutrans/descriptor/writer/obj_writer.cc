@@ -54,6 +54,8 @@ void obj_writer_t::write(FILE* fp, obj_node_t& parent, tabfileobj_t& obj)
 	image_writer_t::set_img_size(obj.get_int("cell_size",default_image_size));
 	// XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT: per-object opt-in to explicit semantic masks
 	stlab_semantic_masks_set_requested(obj.get_int("semantic_masks", 0) != 0);
+	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 -- EXPERIMENT: per-object opt-in to X.night.png sheets
+	stlab_night_images_set_requested(obj.get_int("night_images", 0) != 0);
 
 	last_name = name;
 
