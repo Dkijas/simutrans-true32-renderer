@@ -116,6 +116,8 @@ struct stlab_night_counters_t {
 	uint32 day_only_pixels = 0;       ///< opaque by day, transparent at night
 	uint32 bbox_grown = 0;            ///< tiles whose IMG box grew to hold night-only pixels
 	uint32 pc_image_pixels = 0;       ///< contributors that came from X.pc1/X.pc2.png
+	uint32 local_key_pixels = 0;      ///< night under-colours unmixed with the local night key
+	uint32 ratio_pixels = 0;          ///< ... with the day ratio (fallback, or STLAB_NIGHT_UNMIX=ratio)
 };
 extern stlab_night_counters_t stlab_night_counters;
 

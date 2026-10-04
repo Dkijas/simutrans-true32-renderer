@@ -402,12 +402,81 @@ const uint8 *stlab_night_sheet(const std::string &sheet_png, int w, int h)
 }
 
 
+/// STLAB_NIGHT_UNMIX=ratio selects the first prototype's ratio unmix (kept for the measured comparison)
+static bool stlab_night_unmix_ratio()
+{
+	const char *e = getenv("STLAB_NIGHT_UNMIX");
+	return e != NULL  &&  strcmp(e, "ratio") == 0;
+}
+
+/* local night key: per player shade id 0..15, the linear night colour of every pixel it covers FULLY
+ * (coverage 255, the only contributor), so a partly covered pixel can read the artist's own night colour
+ * of that shade from its neighbourhood. Integer throughout (sums of stlab_lin16 values). */
+static const int STLAB_LOCAL_KEY_RADIUS = 4;
+static int lk_w = 0, lk_h = 0;
+static std::vector<sint32> lk_full[16];          ///< per id: -1 or the pixel's own night colour packed
+static const uint8 *lk_night = NULL;
+static uint64 lk_global_sum[16][3];
+static uint32 lk_global_n[16];
+
+static void stlab_night_local_key_setup(const uint8 *night_rgba, int w, int h, const std::vector<stlab_sem_contrib_t> &contribs)
+{
+	lk_w = w; lk_h = h; lk_night = night_rgba;
+	std::vector<uint8> count((size_t)w * h, 0);
+	for(  size_t i = 0;  i < contribs.size();  i++  ) count[contribs[i].position]++;
+	for(  int k = 0;  k < 16;  k++  ) {
+		lk_full[k].assign((size_t)w * h, 0);
+		lk_global_sum[k][0] = lk_global_sum[k][1] = lk_global_sum[k][2] = 0;
+		lk_global_n[k] = 0;
+	}
+	for(  size_t i = 0;  i < contribs.size();  i++  ) {
+		const stlab_sem_contrib_t &c = contribs[i];
+		if(  c.id >= 16  ||  c.coverage != 255  ||  count[c.position] != 1  ) continue;
+		const uint8 *q = night_rgba + (size_t)c.position * 4;
+		if(  q[3] <= 7  ) continue;
+		lk_full[c.id][c.position] = 1;
+		for(  int ch = 0;  ch < 3;  ch++  ) lk_global_sum[c.id][ch] += stlab_lin16[q[ch]];
+		lk_global_n[c.id]++;
+	}
+}
+
+/// the night colour (linear, 0..65535 per channel) of shade @p id near (x, y); false if the shade has no full pixel
+static bool stlab_night_local_key(uint8 id, int x, int y, uint32 out[3])
+{
+	if(  id >= 16  ||  lk_global_n[id] == 0  ) return false;
+	uint64 s[3] = { 0, 0, 0 };
+	uint32 n = 0;
+	for(  int dy = -STLAB_LOCAL_KEY_RADIUS;  dy <= STLAB_LOCAL_KEY_RADIUS;  dy++  ) {
+		const int yy = y + dy;
+		if(  yy < 0  ||  yy >= lk_h  ) continue;
+		for(  int dx = -STLAB_LOCAL_KEY_RADIUS;  dx <= STLAB_LOCAL_KEY_RADIUS;  dx++  ) {
+			const int xx = x + dx;
+			if(  xx < 0  ||  xx >= lk_w  ||  !lk_full[id][(size_t)yy * lk_w + xx]  ) continue;
+			const uint8 *q = lk_night + ((size_t)yy * lk_w + xx) * 4;
+			for(  int ch = 0;  ch < 3;  ch++  ) s[ch] += stlab_lin16[q[ch]];
+			n++;
+		}
+	}
+	if(  n == 0  ) {                       // nothing near: the shade's mean over the sheet
+		for(  int ch = 0;  ch < 3;  ch++  ) s[ch] = lk_global_sum[id][ch];
+		n = lk_global_n[id];
+	}
+	for(  int ch = 0;  ch < 3;  ch++  ) out[ch] = (uint32)((s[ch] + n / 2) / n);
+	return true;
+}
+
+
 void stlab_night_under(const std::string &sheet_png, const uint8 *day_rgba, const uint8 *night_rgba, int w, int h,
                        const std::vector<uint8> &day_under, const std::vector<stlab_sem_contrib_t> &contribs,
                        std::vector<uint8> &night_under)
 {
 	night_under.assign(night_rgba, night_rgba + (size_t)w * h * 4);
 	std::vector<uint16> csum((size_t)w * h, 0);
+	// first contributor of every pixel (contribs are sorted by position then id)
+	std::vector<size_t> pix_first((size_t)w * h, contribs.size());
+	for(  size_t i = contribs.size();  i-- > 0;  ) pix_first[contribs[i].position] = i;
+	// where each player shade covers a pixel FULLY: the night colour the artist gave that shade
+	stlab_night_local_key_setup(night_rgba, w, h, contribs);
 	for(  size_t i = 0;  i < contribs.size();  i++  ) {
 		if(  contribs[i].id >= 16  ) {
 			const int x = (int)(contribs[i].position % (uint32)w), y = (int)(contribs[i].position / (uint32)w);
@@ -428,13 +497,40 @@ void stlab_night_under(const std::string &sheet_png, const uint8 *day_rgba, cons
 		}
 		uint8 *o = &night_under[i * 4];
 		const uint8 *ud = &day_under[i * 4];
-		for(  int ch = 0;  ch < 3;  ch++  ) {
+		// LOCAL KEY (default): what the artist painted for this player shade AT NIGHT, read from the
+		// nearest pixels the shade covers fully, is taken out algebraically - exactly as the day solver
+		// takes out the day key. Falls back to the ratio method when the shade has no full pixel at all.
+		bool solved = false;
+		if(  !stlab_night_unmix_ratio()  ) {
+			uint32 kn[STLAB_SEM_MAX_CONTRIB][3];
+			uint8 cv[STLAB_SEM_MAX_CONTRIB];
+			int nk = 0;
+			bool ok = true;
+			for(  size_t c = pix_first[i];  c < contribs.size()  &&  contribs[c].position == i  &&  nk < STLAB_SEM_MAX_CONTRIB;  c++  ) {
+				ok = ok  &&  stlab_night_local_key(contribs[c].id, (int)(i % (size_t)w), (int)(i / (size_t)w), kn[nk]);
+				cv[nk++] = contribs[c].coverage;
+			}
+			if(  ok  &&  nk  ) {
+				const sint64 den = 255 - (sint64)csum[i];
+				for(  int ch = 0;  ch < 3;  ch++  ) {
+					sint64 num = 255 * (sint64)stlab_lin16[np[ch]];
+					for(  int j = 0;  j < nk;  j++  ) num -= (sint64)cv[j] * kn[j][ch];
+					sint64 acc = num <= 0 ? 0 : (num * 255 + den / 2) / den;
+					if(  acc > 65535 * 255  ) acc = 65535 * 255;
+					o[ch] = stlab_lin_encode((uint32)acc);
+				}
+				solved = true;
+				stlab_night_counters.local_key_pixels++;
+			}
+		}
+		for(  int ch = 0;  !solved  &&  ch < 3;  ch++  ) {
 			const uint32 ld = stlab_lin16[dp[ch]];
 			if(  ld == 0  ) continue;      // no day light to take a ratio from: keep the night pixel
 			uint64 acc = (uint64)stlab_lin16[np[ch]] * stlab_lin16[ud[ch]] * 255u / ld;
 			if(  acc > 65535u * 255u  ) acc = 65535u * 255u;
 			o[ch] = stlab_lin_encode((uint32)acc);
 		}
+		if(  !solved  ) stlab_night_counters.ratio_pixels++;
 		if(  o[0] == 0xE7  &&  o[1] == 0xFF  &&  o[2] == 0xFF  ) o[2] = 0xFE;
 	}
 }
@@ -452,6 +548,6 @@ void stlab_semantic_masks_report()
 	       c.undeclared_key_pixels, c.dropped_on_holes, c.trimmed_pixels, c.mismatch_pixels, c.mismatch_max,
 	       c.key_nudged, c.unknown_mask_names, c.v2_nodes);
 	const stlab_night_counters_t &n = stlab_night_counters;
-	printf("night images: sheets %u, nodes %u, night-only px %u, day-only px %u, boxes grown %u, pc-image px %u\n",
-	       n.sheets_with_night, n.nodes, n.night_only_pixels, n.day_only_pixels, n.bbox_grown, n.pc_image_pixels);
+	printf("night images: sheets %u, nodes %u, night-only px %u, day-only px %u, boxes grown %u, pc-image px %u, unmix local-key %u ratio %u\n",
+	       n.sheets_with_night, n.nodes, n.night_only_pixels, n.day_only_pixels, n.bbox_grown, n.pc_image_pixels, n.local_key_pixels, n.ratio_pixels);
 }
