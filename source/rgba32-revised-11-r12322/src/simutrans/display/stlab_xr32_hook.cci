@@ -11,6 +11,8 @@
  * did -- but for these images those runs were never STORED_PIXVAL.
  * ==========================================================================*/
 
+#include <chrono>
+
 /* --- what the semantic layer needs from the renderer ------------------------ */
 
 uint32 stlab_pack_argb(int r, int g, int b)
@@ -172,6 +174,7 @@ bool stlab_xnex_attach(image_id id, stlab_xnex_t *night)
  */
 static uint32 stlab_nightgen_images = 0;
 static uint64 stlab_nightgen_bytes = 0;
+static uint64 stlab_nightgen_us = 0;     ///< wall time spent generating, microseconds (measurement only)
 
 static void stlab_nightgen_register(image_id id)
 {
@@ -183,6 +186,7 @@ static void stlab_nightgen_register(image_id id)
 		return;
 	}
 	const uint32 w = (uint32)d.base_w, h = (uint32)d.base_h, npx = w * h;
+	const std::chrono::steady_clock::time_point t_start = std::chrono::steady_clock::now();
 	uint8 *day = (uint8 *)calloc( npx, 4 );
 	uint8 *nig = (uint8 *)calloc( npx, 4 );
 	uint8 *pcid = (uint8 *)malloc( npx );
@@ -272,6 +276,8 @@ static void stlab_nightgen_register(image_id id)
 	}
 	stlab_slot( id, false )->generated = true;
 	stlab_nightgen_images++;
+	stlab_nightgen_us += (uint64)std::chrono::duration_cast<std::chrono::microseconds>(
+		std::chrono::steady_clock::now() - t_start ).count();
 	stlab_nightgen_bytes += (uint64)npx * 8 + (uint64)img->run_count * sizeof(stlab_xr32_run_t);
 }
 
@@ -430,6 +436,9 @@ static bool stlab_xr32_hires_prepare(image_id n)
 		return false;             // a legacy-only counterpart: the 1x candidate is zoomed natively
 	}
 	const stlab_xr32_image_t *hi_img = hs->img;
+	if(  (hi_img->night != NULL) != (s->img->night != NULL)  ) {
+		return false;             // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: never swap the night away when zooming
+	}
 	if(  (sint32)hi_img->height < images[n].base_h * 2 - 2
 	     ||  (sint32)hi_img->height > images[n].base_h * 2 + 2
 	     ||  (sint32)hi_img->width < images[n].base_w * 2 - 2

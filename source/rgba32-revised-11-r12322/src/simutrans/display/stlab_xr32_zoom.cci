@@ -276,24 +276,6 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
 			const uint8 *p = img->rgba + (size_t)si * 4;
 			cnt[d]++;
 			const uint8 a = p[3];
-			if(  nac  ) {
-				const uint8 *q = img->night + (size_t)si * 4;
-				if(  !(q[3] <= 7  ||  (q[0] == 0xE7 && q[1] == 0xFF && q[2] == 0xFF))  ) {
-					nop[d]++;
-					nal[d] += q[3];
-					uint32 wgt = q[3];
-					const bool day_hole = a <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF);
-					if(  v2  &&  !day_hole  &&  v2n[si]  ) {
-						uint32 cs = 0;
-						for(  uint8 j = 0;  j < v2n[si];  j++  ) cs += v2c[si * 4 + j];
-						wgt = cs >= 255 ? 0u : 255u - cs;   // the same share as the day under-colour
-					}
-					nac[(size_t)d * 4 + 0] += (uint32)q[0] * wgt;
-					nac[(size_t)d * 4 + 1] += (uint32)q[1] * wgt;
-					nac[(size_t)d * 4 + 2] += (uint32)q[2] * wgt;
-					nac[(size_t)d * 4 + 3] += wgt;
-				}
-			}
 			if(  a <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF)  ) {
 				continue;                       // a hole contributes nothing
 			}
@@ -367,6 +349,41 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
 		o[3] = coverage <= 7 ? (uint8)coverage : (uint8)((alp[d] + opq[d] / 2) / opq[d]);
 	}
 
+	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the night plane is reduced in its own pass, so an image without
+	// one runs exactly the day loop above (measured: inside that loop it cost ~25 % at 1/2 even unused)
+	for(  uint32 step = 0;  nac  &&  step < n_steps;  step++  ) {
+		uint32 si, d;
+		if(  enlarge  ) {
+			d = step;
+			const uint32 sx = (uint32)(((sint64)(d % dw) * den) / num);
+			const uint32 sy = (uint32)(((sint64)(d / dw) * den) / num);
+			si = ((sy < h) ? sy : h - 1) * w + ((sx < w) ? sx : w - 1);
+		}
+		else {
+			si = step;
+			const uint32 dy = (uint32)(((sint64)(si / w) * num) / den);
+			const uint32 dx = (uint32)(((sint64)(si % w) * num) / den);
+			d = ((dy < dh) ? dy : dh - 1) * dw + ((dx < dw) ? dx : dw - 1);
+		}
+		const uint8 *p = img->rgba + (size_t)si * 4;
+		const uint8 *q = img->night + (size_t)si * 4;
+		if(  q[3] <= 7  ||  (q[0] == 0xE7 && q[1] == 0xFF && q[2] == 0xFF)  ) {
+			continue;
+		}
+		nop[d]++;
+		nal[d] += q[3];
+		uint32 wgt = q[3];
+		const bool day_hole = p[3] <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF);
+		if(  v2  &&  !day_hole  &&  v2n[si]  ) {
+			uint32 cs = 0;
+			for(  uint8 j = 0;  j < v2n[si];  j++  ) cs += v2c[si * 4 + j];
+			wgt = cs >= 255 ? 0u : 255u - cs;   // the same share as the day under-colour
+		}
+		nac[(size_t)d * 4 + 0] += (uint32)q[0] * wgt;
+		nac[(size_t)d * 4 + 1] += (uint32)q[1] * wgt;
+		nac[(size_t)d * 4 + 2] += (uint32)q[2] * wgt;
+		nac[(size_t)d * 4 + 3] += wgt;
+	}
 	if(  nac  ) {
 		z->night = MALLOCN( uint8, (size_t)nd * 4 );
 		for(  uint32 d = 0;  d < nd;  d++  ) {
