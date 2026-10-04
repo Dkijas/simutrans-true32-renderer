@@ -64,11 +64,13 @@ struct stlab_xr32_zoom_t {
 	uint32 sem_count = 0;
 	uint32 rich_count = 0;                    ///< of those, with two or more keys
 	bool   linear = false;                    ///< XR32 v2: compose in linear light
+	uint8 *night = NULL;                      ///< XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: zoomed night plane
 
 	~stlab_xr32_zoom_t()
 	{
 		free( rgba );
 		free( sem );
+		free( night );
 	}
 };
 
@@ -175,6 +177,14 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
 	MEMZERON( acc_r, nd );  MEMZERON( acc_g, nd );  MEMZERON( acc_b, nd );
 	MEMZERON( acc_w, nd );  MEMZERON( cnt, nd );    MEMZERON( opq, nd );
 	MEMZERON( alp, nd );
+	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the night plane is reduced with the same weights
+	uint32 *nac = NULL;                      ///< r,g,b,w per destination
+	uint32 *nop = NULL, *nal = NULL;
+	if(  img->night  ) {
+		nac = MALLOCN( uint32, (size_t)nd * 4 );  MEMZERON( nac, (size_t)nd * 4 );
+		nop = MALLOCN( uint32, nd );  MEMZERON( nop, nd );
+		nal = MALLOCN( uint32, nd );  MEMZERON( nal, nd );
+	}
 
 	// The semantic side is sparse: only opaque semantic source pixels contribute,
 	// and there are far fewer of those than nd * 32. They are appended to a flat
@@ -266,6 +276,24 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
 			const uint8 *p = img->rgba + (size_t)si * 4;
 			cnt[d]++;
 			const uint8 a = p[3];
+			if(  nac  ) {
+				const uint8 *q = img->night + (size_t)si * 4;
+				if(  !(q[3] <= 7  ||  (q[0] == 0xE7 && q[1] == 0xFF && q[2] == 0xFF))  ) {
+					nop[d]++;
+					nal[d] += q[3];
+					uint32 wgt = q[3];
+					const bool day_hole = a <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF);
+					if(  v2  &&  !day_hole  &&  v2n[si]  ) {
+						uint32 cs = 0;
+						for(  uint8 j = 0;  j < v2n[si];  j++  ) cs += v2c[si * 4 + j];
+						wgt = cs >= 255 ? 0u : 255u - cs;   // the same share as the day under-colour
+					}
+					nac[(size_t)d * 4 + 0] += (uint32)q[0] * wgt;
+					nac[(size_t)d * 4 + 1] += (uint32)q[1] * wgt;
+					nac[(size_t)d * 4 + 2] += (uint32)q[2] * wgt;
+					nac[(size_t)d * 4 + 3] += wgt;
+				}
+			}
 			if(  a <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF)  ) {
 				continue;                       // a hole contributes nothing
 			}
@@ -337,6 +365,21 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
 		const uint32 c = cnt[d] ? cnt[d] : 1;
 		const uint32 coverage = (opq[d] * 255u + c / 2) / c;
 		o[3] = coverage <= 7 ? (uint8)coverage : (uint8)((alp[d] + opq[d] / 2) / opq[d]);
+	}
+
+	if(  nac  ) {
+		z->night = MALLOCN( uint8, (size_t)nd * 4 );
+		for(  uint32 d = 0;  d < nd;  d++  ) {
+			uint8 *o = z->night + (size_t)d * 4;
+			const uint32 den_w = nac[(size_t)d * 4 + 3];
+			for(  int ch = 0;  ch < 3;  ch++  ) {
+				o[ch] = den_w ? (uint8)((nac[(size_t)d * 4 + ch] + den_w / 2) / den_w) : 0;
+			}
+			const uint32 c = cnt[d] ? cnt[d] : 1;
+			const uint32 coverage = (nop[d] * 255u + c / 2) / c;
+			o[3] = coverage <= 7 ? (uint8)coverage : (uint8)((nal[d] + nop[d] / 2) / nop[d]);
+		}
+		free( nac );  free( nop );  free( nal );
 	}
 
 	// group the hits by destination with a counting sort, so the walk below still
@@ -560,7 +603,15 @@ static bool stlab_xr32_zoom_resolve(const stlab_xr32_zoom_t *z, sint8 player_nr,
 	const uint8 *lb  = stlab_zlut_b;
 
 	const uint32 npx = (uint32)z->width * z->height;
-	for(  uint32 i = 0;  i < npx;  i++  ) {
+	if(  z->night  ) {
+		// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the scaled DAY and NIGHT planes, 'abc' transition
+		const int lv = stlab_night_level();
+		const int n2 = lv < 4 ? lv : 4;
+		for(  uint32 i = 0;  i < npx;  i++  ) {
+			out_argb[i] = stlab_dn_pixel( z->rgba + (size_t)i * 4, z->night + (size_t)i * 4, n2, lrg, lb );
+		}
+	}
+	for(  uint32 i = 0;  z->night == NULL  &&  i < npx;  i++  ) {
 		const uint8 *p = z->rgba + (size_t)i * 4;
 		if(  p[3] <= 7  ) {
 			out_argb[i] = 0;                    // the box was (almost) all holes
@@ -578,8 +629,10 @@ static bool stlab_xr32_zoom_resolve(const stlab_xr32_zoom_t *z, sint8 player_nr,
 		if(  s.dest >= npx  ||  out_argb[s.dest] == 0  ) {
 			continue;
 		}
-		const uint8 *p = z->rgba + (size_t)s.dest * 4;
-		const int base_r = lrg[p[0]], base_g = lrg[p[1]], base_b = lb[p[2]];
+		// the under colour at this night, as the loop above left it (identical to lrg/lb of the
+		// day plane when there is no night plane); its alpha is the pixel's
+		const uint32 u = out_argb[s.dest];
+		const int base_r = (int)((u >> 16) & 0xFF), base_g = (int)((u >> 8) & 0xFF), base_b = (int)(u & 0xFF);
 		int tot = 0, ar = 0, ag = 0, ab = 0;
 		for(  uint8 j = 0;  j < s.n;  j++  ) {
 			const uint32 c = stlab_zoom_key_colour( s.key[j], player_nr );
@@ -606,13 +659,13 @@ static bool stlab_xr32_zoom_resolve(const stlab_xr32_zoom_t *z, sint8 player_nr,
 			}
 			out_argb[s.dest] = (stlab_pack_argb( stlab_lin_encode( lr ), stlab_lin_encode( lg ),
 			                                     stlab_lin_encode( lbb ) ) & 0x00FFFFFFu)
-			                   | ((uint32)p[3] << 24);
+			                   | (u & 0xFF000000u);
 			continue;
 		}
 		out_argb[s.dest] = (stlab_pack_argb( (ar + base_r * rest + 127) / 255,
 		                                     (ag + base_g * rest + 127) / 255,
 		                                     (ab + base_b * rest + 127) / 255 ) & 0x00FFFFFFu)
-		                   | ((uint32)p[3] << 24);    // semantics set the colour, the plane the alpha
+		                   | (u & 0xFF000000u);       // semantics set the colour, the plane the alpha
 	}
 	return true;
 }

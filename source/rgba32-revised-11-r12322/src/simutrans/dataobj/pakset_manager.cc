@@ -39,6 +39,7 @@
 static inline bool stlab_xr32_enabled() { return false; }
 static inline void stlab_xr32_pair_candidates(obj_desc_t **, int, const obj_type *) { }
 static inline bool stlab_xr32_read_candidate(FILE *, uint32) { return false; }
+static inline bool stlab_xnex_read_candidate(FILE *, uint32) { return false; }
 #endif
 
 
@@ -468,6 +469,10 @@ bool pakset_manager_t::read_nodes(FILE *fp, obj_desc_t *&data, int node_depth, u
 		bool stlab_consumed = false;
 		if(  stlab_xr32_enabled()  &&  memcmp(&node.type, "XR32", 4) == 0  ) {
 			stlab_consumed = stlab_xr32_read_candidate( fp, node.size );
+		}
+		// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the experimental night node, same seam
+		else if(  stlab_xr32_enabled()  &&  memcmp(&node.type, "XNEX", 4) == 0  ) {
+			stlab_consumed = stlab_xnex_read_candidate( fp, node.size );
 		}
 		if(  !stlab_consumed  ) {
 			dbg->warning("pakset_manager_t::read_nodes", "Skipping unknown %.4s-node\n", reinterpret_cast<const char *>(&node.type));

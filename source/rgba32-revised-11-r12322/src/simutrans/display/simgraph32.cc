@@ -30,6 +30,7 @@
 #include "stlab_xr32.h"   // the XR32 candidate consumer
 static bool stlab_xr32_zoom_prepare(image_id n);   // native zoom for candidate-backed images
 static bool stlab_xr32_hires_prepare(image_id n);  // MRES: an authored 2x candidate at exactly 2/1
+static void stlab_nightgen_register(image_id id);  // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: generated night (experiment)
 #include "simgraph_palette.h"
 
 #include "../macros.h"
@@ -2113,6 +2114,7 @@ static image_id simgraph32_register_image(const image_t *image)
 		d.data[p] = NULL;
 	}
 
+	stlab_nightgen_register( n );
 	return n;
 }
 

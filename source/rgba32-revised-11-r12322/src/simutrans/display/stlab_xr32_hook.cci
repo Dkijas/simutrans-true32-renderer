@@ -33,6 +33,12 @@ void stlab_night_multipliers(double *rg, double *b)
 }
 
 
+int stlab_night_level()
+{
+	return night_shift < 0 ? 0 : night_shift;
+}
+
+
 uint32 stlab_player_colour_argb(sint8 player_nr, uint8 channel, uint8 tone)
 {
 	const sint8 p = (player_nr >= 0 && player_nr < MAX_PLAYER_COUNT) ? player_nr : 0;
@@ -62,6 +68,7 @@ struct stlab_xr32_slot_t {
 	uint8 resolved_player = 0xFF;   ///< which player data[] currently holds
 	int   resolved_night = -999;
 	image_id hires_active = IMG_EMPTY; ///< MRES: the 2x counterpart shown now, if any
+	bool generated = false;          ///< XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: built by NIGHTGEN from a legacy IMG
 };
 
 static stlab_xr32_slot_t *stlab_slots = NULL;
@@ -107,6 +114,7 @@ bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
 		delete s->img;
 	}
 	s->img = img;
+	s->generated = false;
 	s->resolved_player = 0xFF;
 	s->resolved_night = -999;
 
@@ -126,9 +134,150 @@ bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
 }
 
 
+static void stlab_xr32_zoom_release(stlab_xr32_slot_t *s);
+
+/* --- XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 (EXPERIMENT) ----------------------------- */
+
+bool stlab_xnex_attach(image_id id, stlab_xnex_t *night)
+{
+	stlab_xr32_slot_t *s = stlab_slot(id, false);
+	if(  s == NULL  ||  s->img == NULL  ||  night == NULL  ||  night->rgba == NULL  ) {
+		return false;                      // a night image needs the image's DAY node
+	}
+	stlab_xr32_image_t *img = s->img;
+	if(  img->version != 2  ||  night->width != img->width  ||  night->height != img->height
+	     ||  night->x != img->x  ||  night->y != img->y  ) {
+		return false;                      // same geometry guard as XR32 itself
+	}
+	free( img->night );
+	img->night = night->rgba;
+	night->rgba = NULL;
+	stlab_xr32_zoom_release( s );
+	s->resolved_player = 0xFF;
+	s->resolved_night = -999;
+	images[id].player_flags = 0xFFFF;
+	images[id].recode_flags |= FLAG_REZOOM;
+	return true;
+}
+
+
+/**
+ * SIMUTRANS_XR32_NIGHTGEN=1: prissi's "night images generated on load time" for a LEGACY image.
+ * The stored words are decoded once, at registration, into
+ *   DAY plane   ordinary colour = the 555 value expanded exactly as the palette does; a light =
+ *               its day colour; a player pixel = a v2 contributor (coverage 255)
+ *   NIGHT plane ordinary colour = its legacy level-4 colour; a light = its night colour
+ * and the image is then served by the DAY+NIGHT path ('abc' transition). Semi-transparent
+ * pixels keep their class colour and get alpha (a32 * 255 + 16) / 32.
+ */
+static uint32 stlab_nightgen_images = 0;
+static uint64 stlab_nightgen_bytes = 0;
+
+static void stlab_nightgen_register(image_id id)
+{
+	if(  !stlab_xr32_enabled()  ||  !stlab_nightgen_enabled()  ) {
+		return;
+	}
+	const imd32 &d = images[id];
+	if(  d.base_h <= 0  ||  d.base_w <= 0  ||  d.base_data == NULL  ) {
+		return;
+	}
+	const uint32 w = (uint32)d.base_w, h = (uint32)d.base_h, npx = w * h;
+	uint8 *day = (uint8 *)calloc( npx, 4 );
+	uint8 *nig = (uint8 *)calloc( npx, 4 );
+	uint8 *pcid = (uint8 *)malloc( npx );
+	if(  day == NULL  ||  nig == NULL  ||  pcid == NULL  ) {
+		free( day ); free( nig ); free( pcid );
+		return;
+	}
+	memset( pcid, 0xFF, npx );
+	const double m4[2] = { pow(0.75, 4) * ((light_level + 8.0) / 8.0), pow(0.83, 4) * ((light_level + 8.0) / 8.0) };
+	uint32 n_pc = 0;
+	const STORED_PIXVAL *sp = d.base_data;
+	for(  uint32 y = 0;  y < h;  y++  ) {
+		uint32 x = 0;
+		uint16 runlen = *sp++;
+		do {
+			x += (runlen & ~TRANSPARENT_RUN);
+			runlen = *sp++;
+			const bool semi = (runlen & TRANSPARENT_RUN) != 0;
+			runlen &= (uint16)~TRANSPARENT_RUN;
+			for(  uint16 k = 0;  k < runlen;  k++  ) {
+				const uint32 px = x + k;
+				const STORED_PIXVAL v = sp[k];
+				if(  px >= w  ) continue;
+				const uint32 i = y * w + px;
+				uint8 *dp = day + i * 4, *np = nig + i * 4;
+				int cls = -1, alpha = 255;             // cls: 0..15 player, 16..30 light, 31+ rgb343, -1 rgb555
+				uint32 val = v;
+				if(  semi  ) {
+					const uint32 aux = (uint32)v - 0x8020u;
+					cls = (int)(aux / 31u);
+					alpha = (int)(((aux % 31u) + 1u) * 255u + 16u) / 32;
+				}
+				else if(  v >= 0x8000  ) {
+					cls = v - 0x8000;
+				}
+				if(  cls < 0  ) {
+					dp[0] = (uint8)((val & 0x7C00) >> 7); dp[1] = (uint8)((val & 0x03E0) >> 2); dp[2] = (uint8)((val & 0x001F) << 3);
+				}
+				else if(  cls < 16  ) {
+					pcid[i] = (uint8)cls;  n_pc++;
+					dp[0] = dp[1] = dp[2] = 0x80;          // never read: coverage 255
+				}
+				else if(  cls < 16 + LIGHT_COUNT  ) {
+					const rgb888_t dl = display_day_lights[cls - 16], nl = display_night_lights[cls - 16];
+					dp[0] = dl.r; dp[1] = dl.g; dp[2] = dl.b;
+					np[0] = nl.r; np[1] = nl.g; np[2] = nl.b;
+				}
+				else {
+					const uint32 c = (uint32)(cls - 31);
+					dp[0] = (uint8)((c & 0x0380) >> 2); dp[1] = (uint8)((c & 0x0078) << 1); dp[2] = (uint8)((c & 0x0007) << 5);
+				}
+				if(  cls < 16  ||  cls >= 16 + LIGHT_COUNT  ) {
+					np[0] = (uint8)(int)(dp[0] * m4[0]); np[1] = (uint8)(int)(dp[1] * m4[0]); np[2] = (uint8)(int)(dp[2] * m4[1]);
+				}
+				dp[3] = np[3] = (uint8)alpha;
+			}
+			x  += runlen;
+			sp += runlen;
+		} while(  (runlen = *sp++)  );
+	}
+	stlab_xr32_image_t *img = new stlab_xr32_image_t();
+	img->width = (uint16)w;  img->height = (uint16)h;
+	img->x = d.base_x;  img->y = d.base_y;
+	img->zoomable = (d.recode_flags & FLAG_ZOOMABLE) ? 1 : 0;
+	img->version = 2;
+	img->rgba = day;
+	img->night = nig;
+	// player pixels -> v2 contributor runs (coverage 255), ascending start then id
+	if(  n_pc  ) {
+		img->runs = (stlab_xr32_run_t *)calloc( n_pc, sizeof(stlab_xr32_run_t) );
+		uint32 r = 0;
+		for(  uint32 i = 0;  i < npx;  ) {
+			if(  pcid[i] == 0xFF  ) { i++; continue; }
+			uint32 j = i + 1;
+			while(  j < npx  &&  pcid[j] == pcid[i]  ) j++;
+			stlab_xr32_run_t &run = img->runs[r++];
+			run.start = i;  run.length = j - i;  run.coverage = 255;
+			run.cls = pcid[i] < 8 ? 1 : 2;  run.param = pcid[i] & 7;
+			i = j;
+		}
+		img->run_count = r;
+	}
+	free( pcid );
+	if(  !stlab_xr32_attach( id, img, img->x, img->y, (sint16)w, (sint16)h, img->zoomable )  ) {
+		delete img;
+		return;
+	}
+	stlab_slot( id, false )->generated = true;
+	stlab_nightgen_images++;
+	stlab_nightgen_bytes += (uint64)npx * 8 + (uint64)img->run_count * sizeof(stlab_xr32_run_t);
+}
+
+
 void stlab_xr32_scratch_release();
 struct stlab_xr32_slot_t;
-static void stlab_xr32_zoom_release(stlab_xr32_slot_t *s);
 
 void simgraph32_alpha_plane_release();
 

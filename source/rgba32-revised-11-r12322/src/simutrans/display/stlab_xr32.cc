@@ -7,6 +7,7 @@
  */
 #include "stlab_xr32.h"
 
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <zlib.h>
@@ -37,6 +38,24 @@ stlab_xr32_image_t::~stlab_xr32_image_t()
 {
 	free(rgba);
 	free(runs);
+	free(night);
+}
+
+
+stlab_xnex_t::~stlab_xnex_t()
+{
+	free(rgba);
+}
+
+
+bool stlab_nightgen_enabled()
+{
+	static int cached = -1;
+	if(  cached < 0  ) {
+		const char *e = getenv("SIMUTRANS_XR32_NIGHTGEN");
+		cached = (e != NULL  &&  e[0] == '1') ? 1 : 0;
+	}
+	return cached == 1;
 }
 
 
@@ -258,6 +277,109 @@ stlab_xr32_status_t stlab_xr32_parse(const uint8 *body, uint32 len, stlab_xr32_i
 }
 
 
+/* ------------------------------------------------- XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: XNEX */
+
+static const uint8 XNEX_HEADER_LEN = 24;
+
+stlab_xr32_status_t stlab_xnex_parse(const uint8 *body, uint32 len, stlab_xnex_t *&out, const char **why)
+{
+	out = NULL;
+	*why = "";
+	if(  len < (uint32)XNEX_HEADER_LEN + 4  ) { *why = "night node shorter than its header"; return STLAB_XR32_REJECTED; }
+	if(  memcmp(body, "XNEX", 4) != 0  ) { *why = "night node: bad magic"; return STLAB_XR32_REJECTED; }
+	if(  body[4] != 1  ) { *why = "night node: unknown version"; return STLAB_XR32_UNSUPPORTED; }
+	if(  body[5] != 0x03  ) { *why = "night node: flags must be deflated + CRC-32"; return STLAB_XR32_REJECTED; }
+	if(  body[6] != 0  ) { *why = "night node: unknown transition model"; return STLAB_XR32_UNSUPPORTED; }
+	if(  body[7] != 0  ||  body[18] != 0  ||  body[19] != 0  ) { *why = "night node: reserved byte not zero"; return STLAB_XR32_REJECTED; }
+	// integrity first: nothing is allocated or inflated before the trailer has been checked
+	len -= 4;
+	if(  rd32(body + len) != (uint32)crc32( crc32(0L, Z_NULL, 0), (const Bytef *)body, (uInt)len )  ) {
+		*why = "night node: checksum mismatch"; return STLAB_XR32_REJECTED;
+	}
+	const uint16 w = rd16(body + 8), h = rd16(body + 10);
+	const uint32 plane_bytes = rd32(body + 20);
+	if(  w == 0  ||  h == 0  ) { *why = "night node: zero dimension"; return STLAB_XR32_REJECTED; }
+	if(  (uint64)XNEX_HEADER_LEN + plane_bytes != (uint64)len  ) { *why = "night node: declared length does not match"; return STLAB_XR32_REJECTED; }
+	const uint64 want_plane = (uint64)w * h * 4u;
+	if(  want_plane > 0x40000000ull  ||  want_plane > (uint64)plane_bytes * 1032u + 1024u  ) {
+		*why = "night node: implausible plane size"; return STLAB_XR32_REJECTED;
+	}
+	uint8 *plane = (uint8 *)malloc((size_t)want_plane);
+	if(  plane == NULL  ) { *why = "night node: out of memory"; return STLAB_XR32_REJECTED; }
+	uLongf dst = (uLongf)want_plane;
+	if(  uncompress((Bytef *)plane, &dst, (const Bytef *)(body + XNEX_HEADER_LEN), (uLong)plane_bytes) != Z_OK
+	     ||  (uint64)dst != want_plane  ) {
+		free(plane);
+		*why = "night node: plane inflate failed";
+		return STLAB_XR32_REJECTED;
+	}
+	stlab_xnex_t *n = new stlab_xnex_t();
+	n->width = w; n->height = h; n->x = rds16(body + 12); n->y = rds16(body + 14);
+	n->img_index = rd16(body + 16);
+	n->rgba = plane;
+	out = n;
+	return STLAB_XR32_OK;
+}
+
+
+/* The 'abc' transition of a DAY (D) + NIGHT (N) under colour, per channel, at engine level n:
+ *   a = min(D, floor((D - N) / (1 - m4) + 0.5)) for D > N, else 0   the part that darkens like legacy
+ *   b = D - a                                                       day-only
+ *   c = N - (int)(a * m4)                                           night-only (signed)
+ *   out = (int)(a * m_n) + ((b * (4 - n2) + c * n2) >> 2)           clamped to 0..255
+ * f(0) = D and f(4) = N exactly; an ordinary pixel whose N is the legacy night of D gives the
+ * legacy value at every level, a legacy light (N >= D) gives the legacy light interpolation.
+ * m4 is the legacy multiplier of level 4, same expression as stlab_night_multipliers(). */
+static uint8  stlab_abc_lut4[2][256];      ///< (int)(v * m4): [0] R,G  [1] B
+static uint16 stlab_abc_a[2][256];          ///< a for D - N = 0..255, before the min with D
+static bool   stlab_abc_ready = false;
+
+static void stlab_abc_init()
+{
+	if(  stlab_abc_ready  ) return;
+	const double m4[2] = { pow(0.75, 4) * ((0 + 8.0) / 8.0), pow(0.83, 4) * ((0 + 8.0) / 8.0) };
+	for(  int k = 0;  k < 2;  k++  ) {
+		for(  int v = 0;  v < 256;  v++  ) {
+			stlab_abc_lut4[k][v] = (uint8)(int)(v * m4[k]);
+			const int a = v == 0 ? 0 : (int)floor(v / (1.0 - m4[k]) + 0.5);
+			stlab_abc_a[k][v] = (uint16)(a > 65535 ? 65535 : a);
+		}
+	}
+	stlab_abc_ready = true;
+}
+
+/// one channel; lut = the current level's (int)(v * m_n) table, k = 0 for R/G, 1 for B
+static inline uint8 stlab_abc(uint8 D, uint8 N, int n2, const uint8 *lut, int k)
+{
+	const int a = D > N ? (stlab_abc_a[k][D - N] < D ? stlab_abc_a[k][D - N] : D) : 0;
+	const int b = D - a;
+	const int c = (int)N - (int)stlab_abc_lut4[k][a];
+	const int v = (int)lut[a] + ((b * (4 - n2) + c * n2) >> 2);
+	return (uint8)(v < 0 ? 0 : v > 255 ? 255 : v);
+}
+
+
+uint32 stlab_dn_pixel(const uint8 *p, const uint8 *q, int n2, const uint8 *lut_rg, const uint8 *lut_b)
+{
+	stlab_abc_init();
+	const bool hd = p[3] <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF);
+	const bool hn = q[3] <= 7  ||  (q[0] == 0xE7 && q[1] == 0xFF && q[2] == 0xFF);
+	if(  hd  &&  hn  ) {
+		return 0;
+	}
+	// a hole in one plane only: the colour comes from the other plane, the alpha fades in quarters
+	const uint8 *dc = hd ? q : p, *nc = hn ? p : q;
+	const int ad = hd ? 0 : p[3], an = hn ? 0 : q[3];
+	const int a = (ad * (4 - n2) + an * n2) >> 2;
+	if(  a <= 7  ) {
+		return 0;
+	}
+	return ((uint32)a << 24) | ((uint32)stlab_abc(dc[0], nc[0], n2, lut_rg, 0) << 16)
+	                         | ((uint32)stlab_abc(dc[1], nc[1], n2, lut_rg, 0) << 8)
+	                         | (uint32)stlab_abc(dc[2], nc[2], n2, lut_b, 1);
+}
+
+
 /* ------------------------------------------------------------------ semantic resolution */
 
 /* CANDIDATE C2 -- the night transform of an 8-bit channel has 256 answers.
@@ -302,7 +424,18 @@ void stlab_xr32_resolve(const stlab_xr32_image_t *img, sint8 player_nr, uint32 *
 	const uint8 *lrg = stlab_lut_rg;
 	const uint8 *lb  = stlab_lut_b;
 	const uint8 *p = img->rgba;
-	for(  uint32 i = 0;  i < npx;  i++, p += 4  ) {
+	if(  img->night != NULL  ) {
+		// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the under colour comes from DAY + NIGHT through
+		// the 'abc' transition instead of the night LUT. A pixel that is a hole in one plane only
+		// takes its colour from the other plane and fades its alpha in quarters, like a light.
+		const int n2 = stlab_night_level() < 4 ? stlab_night_level() : 4;
+		const uint8 *q = img->night;
+		for(  uint32 i = 0;  i < npx;  i++, p += 4, q += 4  ) {
+			out_argb[i] = stlab_dn_pixel( p, q, n2, lrg, lb );
+		}
+		p = NULL;
+	}
+	for(  uint32 i = 0;  p != NULL  &&  i < npx;  i++, p += 4  ) {
 		const uint8 a = p[3];
 		if(  a <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF)  ) {
 			out_argb[i] = 0;                      // hole

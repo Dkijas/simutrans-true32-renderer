@@ -16,6 +16,32 @@
 #include "../display/stlab_xr32.h"
 
 static std::vector<stlab_xr32_image_t *> stlab_pending_candidates;
+static std::vector<stlab_xnex_t *> stlab_pending_nights;   ///< XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01
+
+
+/// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: read one experimental night node; true if consumed
+static bool stlab_xnex_read_candidate(FILE *fp, uint32 size)
+{
+	uint8 *buf = (uint8 *)malloc(size ? size : 1);
+	if(  buf == NULL  ) {
+		return false;
+	}
+	if(  size != 0  &&  fread(buf, size, 1, fp) != 1  ) {
+		free(buf);
+		return false;
+	}
+	stlab_xnex_t *n = NULL;
+	const char *why = "";
+	const stlab_xr32_status_t st = stlab_xnex_parse(buf, size, n, &why);
+	free(buf);
+	if(  st == STLAB_XR32_OK  ) {
+		stlab_pending_nights.push_back(n);
+	}
+	else {
+		dbg->warning("stlab_xr32", "night node ignored, the image keeps its day appearance: %s", why);
+	}
+	return true;
+}
 
 
 /// read and parse one candidate node body; true if the body was consumed from the stream
@@ -52,7 +78,7 @@ static bool stlab_xr32_read_candidate(FILE *fp, uint32 size)
 /// pair every candidate parsed while reading this node's children with its sibling IMG
 static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren, const obj_type *kinds)
 {
-	if(  stlab_pending_candidates.empty()  ) {
+	if(  stlab_pending_candidates.empty()  &&  stlab_pending_nights.empty()  ) {
 		return;
 	}
 	for(  size_t i = 0;  i < stlab_pending_candidates.size();  i++  ) {
@@ -75,4 +101,23 @@ static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren, con
 		}
 	}
 	stlab_pending_candidates.clear();
+
+	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: night planes attach after every day node of this parent
+	for(  size_t i = 0;  i < stlab_pending_nights.size();  i++  ) {
+		stlab_xnex_t *n = stlab_pending_nights[i];
+		bool attached = false;
+		if(  children != NULL  &&  n->img_index < (uint16)nchildren
+		     &&  kinds != NULL  &&  kinds[n->img_index] == obj_image  ) {
+			const image_t *im = static_cast<const image_t *>(children[n->img_index]);
+			if(  im != NULL  &&  im->get_id() != IMG_EMPTY  ) {
+				attached = stlab_xnex_attach(im->get_id(), n);
+			}
+		}
+		if(  !attached  ) {
+			dbg->warning("stlab_xr32", "night node could not be paired with a day node, the image keeps "
+			             "its day appearance");
+		}
+		delete n;
+	}
+	stlab_pending_nights.clear();
 }
