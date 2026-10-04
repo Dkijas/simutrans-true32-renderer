@@ -534,6 +534,9 @@ void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_i
 			}
 		}
 		else {
+			if(  stlab_writer_enabled()  ) {
+				stlab_night_unrequested_check( last_img_file );
+			}
 			init_dim(image_data, &dim, img_size);
 		}
 		delete [] image_data;

@@ -155,6 +155,7 @@ struct entry_t {
 	std::vector<uint16> path;
 	const pnode_t *img;
 	const pnode_t *companion;      ///< the XR32 sibling with img_index == this child, or NULL
+	const pnode_t *night;          ///< XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the XNEX sibling, or NULL
 };
 
 
@@ -174,7 +175,7 @@ void collect(const pak_t &pak, const pnode_t &node, const entry_t &proto, std::v
 	}
 	for(  size_t k = 0;  k < node.kids.size();  k++  ) {
 		const pnode_t &c = node.kids[k];
-		if(  is_type(c, "TEXT")  ||  is_type(c, "XREF")  ||  is_type(c, "XR32")  ) {
+		if(  is_type(c, "TEXT")  ||  is_type(c, "XREF")  ||  is_type(c, "XR32")  ||  is_type(c, "XNEX")  ) {
 			continue;
 		}
 		entry_t e = proto;
@@ -182,10 +183,15 @@ void collect(const pak_t &pak, const pnode_t &node, const entry_t &proto, std::v
 		if(  memcmp(c.type, "IMG", 4) == 0  ) {
 			e.img = &c;
 			e.companion = NULL;
+			e.night = NULL;
 			for(  size_t j = 0;  j < node.kids.size();  j++  ) {
 				const pnode_t &x = node.kids[j];
 				if(  is_type(x, "XR32")  &&  x.body_len >= 20  &&  rd16(pak.bytes, x.body + 18) == (uint16)k  ) {
 					e.companion = &x;
+				}
+				// XNEX: img_index at body offset 16 (layout in display/stlab_xr32.h)
+				if(  is_type(x, "XNEX")  &&  x.body_len >= 28  &&  rd16(pak.bytes, x.body + 16) == (uint16)k  ) {
+					e.night = &x;
 				}
 			}
 			out.push_back(e);
@@ -213,6 +219,7 @@ void catalogue(const pak_t &pak, std::vector<entry_t> &out)
 		proto.object_type = rd32(pak.bytes, obj.start);
 		proto.img = NULL;
 		proto.companion = NULL;
+		proto.night = NULL;
 		collect(pak, obj, proto, out);
 	}
 }
@@ -264,6 +271,7 @@ int stlab_mres_main(const char *out_name, const char *base_name, const char *hir
 	std::map<std::vector<uint8>, std::vector<uint8> > companion_of_img;   // ambiguity check
 	uint16 count = 0;
 	int skipped_version = 0, ambiguous = 0;
+	unsigned night_children = 0, night_mismatch = 0;   // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01
 
 	for(  size_t i = 0;  i < base_img.size();  i++  ) {
 		const entry_t &b = base_img[i];
@@ -291,6 +299,12 @@ int stlab_mres_main(const char *out_name, const char *base_name, const char *hir
 		}
 
 		// the child: the hires IMG, and its XR32 companion if there is one
+		if(  (b.night != NULL) != (h.night != NULL)  ) {
+			night_mismatch++;
+			fprintf(stderr, "mres: warning: '%s': the %s image has a night image and the %s one has not; the game "
+			        "will not use this 2x image (it would lose or gain its night when zooming)\n",
+			        b.name.c_str(), b.night ? "1x" : "2x", b.night ? "2x" : "1x");
+		}
 		std::vector<uint8> img_raw = slice(hires, *h.img);
 		std::vector<uint8> xr_raw;
 		if(  h.companion  ) {
@@ -306,6 +320,16 @@ int stlab_mres_main(const char *out_name, const char *base_name, const char *hir
 				std::fill(k2.end() - 4, k2.end(), 0);    // and so is the CRC trailer
 			}
 			key.insert(key.end(), k2.begin(), k2.end());
+		}
+		std::vector<uint8> nx_raw;
+		if(  h.night  ) {
+			nx_raw = slice(hires, *h.night);
+			std::vector<uint8> k3 = nx_raw;
+			const size_t nidx_at = (h.night->body - h.night->start) + 16;
+			k3[nidx_at] = k3[nidx_at + 1] = 0;
+			std::fill(k3.end() - 4, k3.end(), 0);
+			key.push_back(0x5A);
+			key.insert(key.end(), k3.begin(), k3.end());
 		}
 		uint16 child;
 		const std::map<std::vector<uint8>, uint16>::const_iterator ci = child_of.find(key);
@@ -342,6 +366,19 @@ int stlab_mres_main(const char *out_name, const char *base_name, const char *hir
 					}
 				}
 				xr_children.push_back(xr_raw);
+			}
+			if(  !nx_raw.empty()  ) {
+				// XNEX always ends in a CRC-32 of its body, which covers img_index
+				const size_t body_at = h.night->body - h.night->start;
+				nx_raw[body_at + 16] = (uint8)child;
+				nx_raw[body_at + 17] = (uint8)(child >> 8);
+				const size_t crc_at = nx_raw.size() - 4;
+				const uint32 crc = (uint32)crc32( crc32(0L, Z_NULL, 0), &nx_raw[body_at], (uInt)(crc_at - body_at) );
+				for(  int k = 0;  k < 4;  k++  ) {
+					nx_raw[crc_at + k] = (uint8)(crc >> (8 * k));
+				}
+				xr_children.push_back(nx_raw);
+				night_children++;
 			}
 		}
 
@@ -401,6 +438,7 @@ int stlab_mres_main(const char *out_name, const char *base_name, const char *hir
 		return 1;
 	}
 	fclose(f);
+	printf("mres: night companions %u, 1x/2x night mismatches %u\n", night_children, night_mismatch);
 	printf("mres: %u pairing(s), %u 2x image(s), %u XR32 companion(s), node %u bytes; %d skipped (IMG version), %d ambiguous\n",
 		(unsigned)count, (unsigned)img_children.size(), (unsigned)xr_children.size(),
 		(unsigned)(out.size() - base.bytes.size()), skipped_version, ambiguous);

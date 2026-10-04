@@ -364,6 +364,8 @@ const uint8 *stlab_night_sheet(const std::string &sheet_png, int w, int h)
 	const std::string f = ((dot == std::string::npos) ? sheet_png : sheet_png.substr(0, dot)) + ".night.png";
 	FILE *probe = fopen(f.c_str(), "rb");
 	if(  probe == NULL  ) {
+		dbg->warning("stlab_night", "night_images=1 but '%s' does not exist: this sheet keeps the ordinary "
+		             "(legacy) night darkening", f.c_str());
 		return NULL;
 	}
 	fclose(probe);
@@ -399,6 +401,22 @@ const uint8 *stlab_night_sheet(const std::string &sheet_png, int w, int h)
 		}
 	}
 	return &cached[0];
+}
+
+
+void stlab_night_unrequested_check(const std::string &sheet_png)
+{
+	static std::string checked;
+	if(  checked == sheet_png  ) return;
+	checked = sheet_png;
+	const size_t dot = sheet_png.rfind(".png");
+	const std::string f = ((dot == std::string::npos) ? sheet_png : sheet_png.substr(0, dot)) + ".night.png";
+	FILE *probe = fopen(f.c_str(), "rb");
+	if(  probe != NULL  ) {
+		fclose(probe);
+		dbg->warning("stlab_night", "'%s' exists but the object does not set night_images=1: the night image is "
+		             "NOT used", f.c_str());
+	}
 }
 
 
@@ -491,7 +509,13 @@ void stlab_night_under(const std::string &sheet_png, const uint8 *day_rgba, cons
 		const bool day_hole = dp[3] <= 7  ||  (((uint32)dp[0] << 16 | (uint32)dp[1] << 8 | dp[2]) == SPECIAL_TRANSPARENT);
 		const bool night_hole = np[3] <= 7  ||  (((uint32)np[0] << 16 | (uint32)np[1] << 8 | np[2]) == SPECIAL_TRANSPARENT);
 		if(  day_hole  &&  !night_hole  ) stlab_night_counters.night_only_pixels++;
-		if(  !day_hole  &&  night_hole  ) stlab_night_counters.day_only_pixels++;
+		if(  !day_hole  &&  night_hole  ) {
+			// the object vanishes at night here: almost always a night image that does not line up with the day
+			if(  stlab_night_counters.day_only_pixels++ < 4  ) {
+				dbg->warning("stlab_night", "'%s' (%d,%d) is drawn by day but transparent in the night image: is the "
+				             "night image shifted or cropped?", sheet_png.c_str(), (int)(i % (size_t)w), (int)(i / (size_t)w));
+			}
+		}
 		if(  day_hole  ||  night_hole  ||  csum[i] == 0  ||  csum[i] >= 255  ) {
 			continue;                      // no player colour to take out, or nothing left under it
 		}

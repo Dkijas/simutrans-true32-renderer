@@ -99,6 +99,9 @@ bool stlab_night_images_requested();
 /// Cached per sheet. A night sheet of another size is fatal.
 const uint8 *stlab_night_sheet(const std::string &sheet_png, int w, int h);
 
+/// warn (once per sheet) when X.night.png exists but the object did not opt in with night_images=1
+void stlab_night_unrequested_check(const std::string &sheet_png);
+
 /**
  * The night UNDER plane of one sheet: where a pixel carries player-colour contributors the night
  * image is unmixed with the day's own ratio, L(Un) = L(N) * L(Ud) / L(D) per channel (the night
