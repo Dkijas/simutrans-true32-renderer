@@ -140,16 +140,24 @@ static void stlab_xr32_zoom_release(stlab_xr32_slot_t *s);
 
 /* --- XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 (EXPERIMENT) ----------------------------- */
 
-bool stlab_xnex_attach(image_id id, stlab_xnex_t *night)
+const char *stlab_xnex_attach(image_id id, stlab_xnex_t *night)
 {
 	stlab_xr32_slot_t *s = stlab_slot(id, false);
-	if(  s == NULL  ||  s->img == NULL  ||  night == NULL  ||  night->rgba == NULL  ) {
-		return false;                      // a night image needs the image's DAY node
+	if(  night == NULL  ||  night->rgba == NULL  ) {
+		return "empty night node";
+	}
+	if(  s == NULL  ||  s->img == NULL  ||  s->generated  ) {
+		return "the image has no XR32 v2 day node";   // a night image needs the image's DAY node
 	}
 	stlab_xr32_image_t *img = s->img;
-	if(  img->version != 2  ||  night->width != img->width  ||  night->height != img->height
-	     ||  night->x != img->x  ||  night->y != img->y  ) {
-		return false;                      // same geometry guard as XR32 itself
+	if(  img->version != 2  ) {
+		return "the day node is not XR32 v2";
+	}
+	if(  night->width != img->width  ||  night->height != img->height  ||  night->x != img->x  ||  night->y != img->y  ) {
+		return "its geometry differs from the day node";   // same geometry guard as XR32 itself
+	}
+	if(  img->night != NULL  ) {
+		return "the image already has a night node (duplicate)";   // the first one stays
 	}
 	free( img->night );
 	img->night = night->rgba;
@@ -159,7 +167,7 @@ bool stlab_xnex_attach(image_id id, stlab_xnex_t *night)
 	s->resolved_night = -999;
 	images[id].player_flags = 0xFFFF;
 	images[id].recode_flags |= FLAG_REZOOM;
-	return true;
+	return NULL;
 }
 
 

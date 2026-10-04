@@ -105,17 +105,16 @@ static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren, con
 	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: night planes attach after every day node of this parent
 	for(  size_t i = 0;  i < stlab_pending_nights.size();  i++  ) {
 		stlab_xnex_t *n = stlab_pending_nights[i];
-		bool attached = false;
+		const char *why = "its img_index does not name an image";
 		if(  children != NULL  &&  n->img_index < (uint16)nchildren
 		     &&  kinds != NULL  &&  kinds[n->img_index] == obj_image  ) {
 			const image_t *im = static_cast<const image_t *>(children[n->img_index]);
 			if(  im != NULL  &&  im->get_id() != IMG_EMPTY  ) {
-				attached = stlab_xnex_attach(im->get_id(), n);
+				why = stlab_xnex_attach(im->get_id(), n);
 			}
 		}
-		if(  !attached  ) {
-			dbg->warning("stlab_xr32", "night node could not be paired with a day node, the image keeps "
-			             "its day appearance");
+		if(  why != NULL  ) {
+			dbg->warning("stlab_xr32", "night node not used (%s), the image keeps its day appearance", why);
 		}
 		delete n;
 	}

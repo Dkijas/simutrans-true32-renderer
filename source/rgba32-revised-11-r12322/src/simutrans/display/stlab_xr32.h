@@ -112,8 +112,9 @@ bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
 /// does this image carry a candidate node?
 bool stlab_xr32_has(image_id n);
 
-/// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: give image @p id (already carrying a node) its night plane
-bool stlab_xnex_attach(image_id id, stlab_xnex_t *night);
+/// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: give image @p id (already carrying a node) its night plane.
+/// Returns NULL on success, otherwise why the night node is not used.
+const char *stlab_xnex_attach(image_id id, stlab_xnex_t *night);
 
 /// replacement producer of the renderer's screen cache; true if it served the image
 bool stlab_xr32_recode(image_id n, sint8 player_nr);
