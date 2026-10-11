@@ -1,0 +1,76 @@
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index ef875ab..e9f377a 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -490,15 +490,28 @@ bool stlab_xr32_recode(image_id n, sint8 player_nr)
+ 	if(  s == NULL  ||  s->img == NULL  ) {
+ 		return false;
+ 	}
+-	// away from neutral the screen cache comes from the derived scaled cache; if
+-	// the image degenerates at this scale there is no cache to build and the
+-	// unscaled candidate below serves it. Never the STORED16 path.
++	// away from neutral the screen cache comes from the derived scaled cache. Never
++	// the STORED16 path.
+ 	// XR32-FIT-IMG-TO-WIDTH-01: an image fitted by fit_img_to_width() keeps the step chosen there, whatever the
+ 	// world zoom, exactly as a legacy image keeps the zoom_data that fit built
+ 	const bool fitted = s->fit_num != 0;
+-	if(  s->hires_active == IMG_EMPTY
+-	     &&  (fitted  ||  (zoom_factor32 != ZOOM_NEUTRAL  &&  (images[n].recode_flags & FLAG_ZOOMABLE) != 0))
+-	     &&  stlab_xr32_zoom_recode( n, player_nr )  ) {
++	const bool scaled = s->hires_active == IMG_EMPTY
++	                    &&  (fitted  ||  (zoom_factor32 != ZOOM_NEUTRAL  &&  (images[n].recode_flags & FLAG_ZOOMABLE) != 0));
++	if(  scaled  &&  stlab_xr32_zoom_recode( n, player_nr )  ) {
++		return true;
++	}
++	if(  scaled  &&  s->zoom == NULL  ) {
++		// the image degenerates at this scale: stlab_xr32_zoom_prepare() left h = 0, as
++		// the legacy resampler does, and there is nothing to draw. The unscaled
++		// candidate below would draw it at its 1:1 size and offsets.
++		imd32 &im = images[n];
++		if(  im.data[player_nr] == NULL  ) {
++			im.data[player_nr] = MALLOCN( PIXVAL, 1 );
++			im.data[player_nr][0] = 0;
++		}
++		im.h = 0;
++		s->resolved_player = (uint8)player_nr;
++		s->resolved_night = night_shift;
+ 		return true;
+ 	}
+ 	// back at neutral the scaled cache is dead weight
+diff --git a/src/simutrans/display/stlab_xr32_zoom.cci b/src/simutrans/display/stlab_xr32_zoom.cci
+index 605782d..785d3c4 100644
+--- a/src/simutrans/display/stlab_xr32_zoom.cci
++++ b/src/simutrans/display/stlab_xr32_zoom.cci
+@@ -570,13 +570,16 @@ static bool stlab_xr32_zoom_prepare(image_id n)
+ 		return true;
+ 	}
+ 	if(  !stlab_xr32_zoom_ensure( n, s )  ) {
+-		// the image degenerates at this scale: keep the base geometry and let the
+-		// unscaled candidate serve it, exactly as the legacy resampler leaves an
+-		// image alone when out.w or out.h is not positive
+-		images[n].x   = images[n].base_x;
+-		images[n].y   = images[n].base_y;
+-		images[n].w   = images[n].base_w;
+-		images[n].h   = images[n].base_h;
++		// the image degenerates at this scale (its width or height scales to 0): the
++		// legacy resampler then sets h = 0 and the image is not drawn. Do the same,
++		// with the same scaled x/y/w; the base geometry would draw it unscaled, at
++		// its 1:1 size and offsets, in a zoomed-out world.
++		const sint32 num = s->fit_num ? s->fit_num : g_simgraph32.zoom_num[zoom_factor32];
++		const sint32 den = s->fit_num ? s->fit_den : g_simgraph32.zoom_den[zoom_factor32];
++		images[n].x   = (sint16)((images[n].base_x * num) / den);
++		images[n].y   = (sint16)((images[n].base_y * num) / den);
++		images[n].w   = (sint16)((images[n].base_w * num) / den);
++		images[n].h   = 0;
+ 		images[n].player_flags = 0xFFFF;
+ 		for(  uint8 i = 0;  i < MAX_PLAYER_COUNT;  i++  ) {
+ 			if(  images[n].data[i] != NULL  ) {
+@@ -585,7 +588,7 @@ static bool stlab_xr32_zoom_prepare(image_id n)
+ 			}
+ 		}
+ 		images[n].recode_flags &= ~FLAG_REZOOM;
+-		return true;                          // handled, just not scaled
++		return true;                          // handled: nothing to draw at this scale
+ 	}
+ 	images[n].player_flags = 0xFFFF;
+ 	for(  uint8 i = 0;  i < MAX_PLAYER_COUNT;  i++  ) {

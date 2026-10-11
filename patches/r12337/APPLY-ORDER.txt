@@ -1,0 +1,22 @@
+Apply to a clean export of official Simutrans SVN trunk r12337, from the top of the exported tree:
+
+  svn export -r 12337 --native-eol LF svn://servers.simutrans.org/simutrans/trunk simutrans-r12337
+  cd simutrans-r12337
+
+EITHER the whole change in one step:
+
+  git -c core.autocrlf=false apply XR32-NIGHT-PROTOTYPE-FULL.r12337.diff
+
+OR the same change in four steps, in this order, each with  git -c core.autocrlf=false apply -pN <file>
+(the result is byte-identical):
+
+  1  01-XR32-DAYNIGHT-REBASE.r12337.diff  -p1  the XR32 DAY+NIGHT prototype on r12337, with the r12336 zoom table
+  2  02-TOOLBAR-40PX.diff                 -p3  40 px toolbar icons get 40 px buttons
+  3  03-FIT-IMG-TO-WIDTH-V2.diff          -p3  32-bit toolbar icons follow icon_scaling (fit_img_to_width v2)
+  4  04-THIN-IMAGE-MAX-ZOOM.diff          -p1  thin 32-bit images at strong zoom-out are left out, as the 16-bit
+                                               renderer does
+
+Steps 2 and 3 were made in this repository's layout (their paths start with source/rgba32-revised-11-r12322/),
+hence -p3. core.autocrlf=false keeps every line ending exactly as in the diffs; Git for Windows otherwise writes CRLF.
+
+The result equals source/xr32-r12337/ of this repository, file for file.

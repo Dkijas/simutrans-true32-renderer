@@ -1,0 +1,31 @@
+diff --git a/source/rgba32-revised-11-r12322/src/simutrans/display/simgraph32.cc b/source/rgba32-revised-11-r12322/src/simutrans/display/simgraph32.cc
+index 4b5a2d1..1610957 100644
+--- a/source/rgba32-revised-11-r12322/src/simutrans/display/simgraph32.cc
++++ b/source/rgba32-revised-11-r12322/src/simutrans/display/simgraph32.cc
+@@ -2370,8 +2370,25 @@ static void simgraph32_draw_color_img(const image_id n, scr_coord_val xp, scr_co
+ 	}
+ }
+ 
+-static scr_size simgraph32_get_best_matching_size(const image_id, sint16)
++/**
++ * The first zoom step whose size is not larger than zoom_percent of image n - exactly
++ * simgraph16_get_best_matching_size(). gui_theme_t sizes the toolbars (env_t::iconsize)
++ * from the pakset's first general tool icon with this, so a fixed answer here would force
++ * every pakset onto 32 px icons.
++ */
++static scr_size simgraph32_get_best_matching_size(const image_id n, sint16 zoom_percent)
+ {
++	if(  n < anz_images  &&  images[n].base_h > 0  ) {
++		const int new_w = (images[n].base_w * zoom_percent + 1) / 100;
++		for(  int i = 0;  i <= MAX_ZOOM_FACTOR;  i++  ) {
++			const int zoom_w = (images[n].base_w * g_simgraph32.zoom_num[i]) / g_simgraph32.zoom_den[i];
++			const int zoom_h = (images[n].base_h * g_simgraph32.zoom_num[i]) / g_simgraph32.zoom_den[i];
++			if(  zoom_w <= new_w  ) {
++				// first size smaller or equal to requested
++				return scr_size( zoom_w, zoom_h );
++			}
++		}
++	}
+ 	return scr_size(32, 32); // default size
+ }
+ 

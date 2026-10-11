@@ -1,0 +1,113 @@
+diff --git a/source/rgba32-revised-11-r12322/src/simutrans/display/simgraph32.cc b/source/rgba32-revised-11-r12322/src/simutrans/display/simgraph32.cc
+index 4b5a2d1..49191d3 100644
+--- a/source/rgba32-revised-11-r12322/src/simutrans/display/simgraph32.cc
++++ b/source/rgba32-revised-11-r12322/src/simutrans/display/simgraph32.cc
+@@ -2443,6 +2443,8 @@ static void simgraph32_fit_img_to_width( const image_id n, sint16 new_w)
+ 				const uint8 old_zoom_flag = images[n].recode_flags & FLAG_ZOOMABLE;
+ 				images[n].recode_flags |= FLAG_REZOOM | FLAG_ZOOMABLE;
+ 				zoom_factor32 = (uint32)i;
++				// an XR32 image produces its screen cache later, at draw time: it must remember this step
++				stlab_xr32_set_fit( n, g_simgraph32.zoom_num[i], g_simgraph32.zoom_den[i] );
+ 				rezoom_img32( n );
+ 				images[n].recode_flags &= ~FLAG_ZOOMABLE;
+ 				images[n].recode_flags |= old_zoom_flag;
+diff --git a/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32.h b/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32.h
+index 2e311e2..24d01c8 100644
+--- a/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32.h
++++ b/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32.h
+@@ -112,6 +112,10 @@ bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
+ /// does this image carry a candidate node?
+ bool stlab_xr32_has(image_id n);
+ 
++/// XR32-FIT-IMG-TO-WIDTH-01: fit_img_to_width() chose the zoom step num/den for image @p id; its screen cache
++/// must come from that step, not from the world zoom. 1/1 (or an image without a node) clears it.
++void stlab_xr32_set_fit(image_id id, sint32 num, sint32 den);
++
+ /// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: give image @p id (already carrying a node) its night plane.
+ /// Returns NULL on success, otherwise why the night node is not used.
+ const char *stlab_xnex_attach(image_id id, stlab_xnex_t *night);
+diff --git a/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32_hook.cci b/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32_hook.cci
+index e31c377..ef875ab 100644
+--- a/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32_hook.cci
++++ b/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32_hook.cci
+@@ -71,6 +71,7 @@ struct stlab_xr32_slot_t {
+ 	int   resolved_night = -999;
+ 	image_id hires_active = IMG_EMPTY; ///< MRES: the 2x counterpart shown now, if any
+ 	bool generated = false;          ///< XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: built by NIGHTGEN from a legacy IMG
++	sint32 fit_num = 0, fit_den = 0; ///< XR32-FIT-IMG-TO-WIDTH-01: the step fit_img_to_width() chose (0 = none)
+ };
+ 
+ static stlab_xr32_slot_t *stlab_slots = NULL;
+@@ -99,6 +100,18 @@ bool stlab_xr32_has(image_id n)
+ }
+ 
+ 
++void stlab_xr32_set_fit(image_id id, sint32 num, sint32 den)
++{
++	stlab_xr32_slot_t *s = stlab_slot(id, false);
++	if(  s == NULL  ||  s->img == NULL  ) {
++		return;
++	}
++	// 1/1 is the image itself: no scaled cache, the ordinary path serves it
++	s->fit_num = num == den ? 0 : num;
++	s->fit_den = num == den ? 0 : den;
++}
++
++
+ bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
+                        sint16 img_x, sint16 img_y, sint16 img_w, sint16 img_h, uint8 img_zoomable)
+ {
+@@ -480,19 +493,22 @@ bool stlab_xr32_recode(image_id n, sint8 player_nr)
+ 	// away from neutral the screen cache comes from the derived scaled cache; if
+ 	// the image degenerates at this scale there is no cache to build and the
+ 	// unscaled candidate below serves it. Never the STORED16 path.
+-	if(  zoom_factor32 != ZOOM_NEUTRAL
+-	     &&  s->hires_active == IMG_EMPTY
+-	     &&  (images[n].recode_flags & FLAG_ZOOMABLE) != 0
++	// XR32-FIT-IMG-TO-WIDTH-01: an image fitted by fit_img_to_width() keeps the step chosen there, whatever the
++	// world zoom, exactly as a legacy image keeps the zoom_data that fit built
++	const bool fitted = s->fit_num != 0;
++	if(  s->hires_active == IMG_EMPTY
++	     &&  (fitted  ||  (zoom_factor32 != ZOOM_NEUTRAL  &&  (images[n].recode_flags & FLAG_ZOOMABLE) != 0))
+ 	     &&  stlab_xr32_zoom_recode( n, player_nr )  ) {
+ 		return true;
+ 	}
+ 	// back at neutral the scaled cache is dead weight
+-	if(  zoom_factor32 == ZOOM_NEUTRAL  &&  s->zoom != NULL  ) {
++	if(  zoom_factor32 == ZOOM_NEUTRAL  &&  s->zoom != NULL  &&  !fitted  ) {
+ 		stlab_xr32_zoom_release( s );
+ 	}
+ 	const stlab_xr32_image_t *img = s->img;
+-	if(  s->hires_active != IMG_EMPTY  &&  zoom_factor32 != ZOOM_NEUTRAL  ) {
+-		// MRES: the authored 2x candidate, resolved at 1:1 (stlab_xr32_hires_prepare)
++	if(  s->hires_active != IMG_EMPTY  &&  (zoom_factor32 != ZOOM_NEUTRAL  ||  fitted)  ) {
++		// MRES: the authored 2x candidate, resolved at 1:1 (stlab_xr32_hires_prepare); fit_img_to_width() at
++		// exactly 2/1 chooses it too, as the legacy rezoom does
+ 		const stlab_xr32_slot_t *hs = stlab_slot( s->hires_active, false );
+ 		if(  hs != NULL  &&  hs->img != NULL  ) {
+ 			img = hs->img;
+diff --git a/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32_zoom.cci b/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32_zoom.cci
+index e8d6c5f..605782d 100644
+--- a/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32_zoom.cci
++++ b/source/rgba32-revised-11-r12322/src/simutrans/display/stlab_xr32_zoom.cci
+@@ -524,8 +524,9 @@ static bool stlab_xr32_zoom_ensure(image_id, stlab_xr32_slot_t *s)
+ 	if(  s == NULL  ||  s->img == NULL  ) {
+ 		return false;
+ 	}
+-	const sint32 num = g_simgraph32.zoom_num[zoom_factor32];
+-	const sint32 den = g_simgraph32.zoom_den[zoom_factor32];
++	// XR32-FIT-IMG-TO-WIDTH-01: a fitted image is scaled by the step fit_img_to_width() chose, not the world's
++	const sint32 num = s->fit_num ? s->fit_num : g_simgraph32.zoom_num[zoom_factor32];
++	const sint32 den = s->fit_num ? s->fit_den : g_simgraph32.zoom_den[zoom_factor32];
+ 	if(  s->zoom != NULL  &&  s->zoom->num == num  &&  s->zoom->den == den  ) {
+ 		return true;
+ 	}
+@@ -551,7 +552,7 @@ static bool stlab_xr32_zoom_prepare(image_id n)
+ 	if(  s == NULL  ||  s->img == NULL  ) {
+ 		return false;
+ 	}
+-	if(  zoom_factor32 == ZOOM_NEUTRAL  ) {
++	if(  zoom_factor32 == ZOOM_NEUTRAL  &&  s->fit_num == 0  ) {
+ 		// back at neutral the scaled cache is dead weight and the base geometry rules
+ 		stlab_xr32_zoom_release( s );
+ 		images[n].x   = images[n].base_x;
