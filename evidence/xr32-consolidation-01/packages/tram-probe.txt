@@ -1,0 +1,4 @@
+tram probe (pak64 + kit pixelart-tram-daynight.pak, empty16 -> 1.1, -debug 2, SDL dummy):
+  testing-2 certified sdl2 rgba32 45edf0ad XR32=1: night node not used 0, rc 0
+  testing-1 published sdl2 rgba32 f5db98c5 XR32=1: night node not used 6, rc 0 (CONTROL: the search finds the line)
+  testing-2 XR32 off: Skipping unknown XR32 8, XR32 on: 0

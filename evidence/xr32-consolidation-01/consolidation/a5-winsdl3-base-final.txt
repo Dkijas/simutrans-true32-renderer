@@ -1,0 +1,6 @@
+a5 winsdl3-base
+ui-day: daynight=false = day       FAIL  8 images x 2 players x 9 steps, 112 differ from level 0
+world-dark: night differs at 13    ok  16 of 16 (image, player) at level 13 differ from level 0
+toolbar xr1 mean brightness of rows 0..63: night 42.9, day 125.7, ratio 0.341
+toolbar xr0 mean brightness of rows 0..63: night 118.4, day 121.8, ratio 0.973
+failures: 1

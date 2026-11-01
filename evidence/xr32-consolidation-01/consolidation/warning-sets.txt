@@ -1,0 +1,7 @@
+windows pub-sdl2-32  testing-1  21  final  21  only in final 0  only in testing-1 0
+windows pub-sdl2-16  testing-1  21  final  21  only in final 0  only in testing-1 0
+windows pub-sdl3-32  testing-1  21  final  21  only in final 0  only in testing-1 0
+windows pub-sdl3-16  testing-1  21  final  21  only in final 0  only in testing-1 0
+windows pub-makeobj  testing-1   2  final   2  only in final 0  only in testing-1 0
+linux   m-sdl2-32 vs m-sdl2-16 (same tree) 16-bit  16  32-bit  16  only in 32-bit 0
+linux   m-sdl3-32 vs m-sdl3-16 (same tree) 16-bit  16  32-bit  16  only in 32-bit 0

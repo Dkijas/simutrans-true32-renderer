@@ -1,0 +1,18 @@
+identity winsdl3-cand
+sanity: XR32 off, 16-bit pictures equal (7 vehicles) ok
+B!=A by day (XR32 day differs)                   ok
+C==A day+night, same image ids                   ok  ids A [2197, 2198, 2199, 2200, 2201, 2202, 2203, 2204] C [2197, 2198, 2199, 2200, 2201, 2202, 2203, 2204]
+E!=D at night                                    ok
+E==D by day                                      ok
+F==D day+night, same image ids                   ok
+D!=A at night (night picture vs none)            ok
+D==A by day                                      ok
+H!=G for player 3 (coverage differs)             ok  16-bit images of G and H differ (not a sharing case)
+K: same 16-bit image as G (XR32 off identical)   ok
+K!=G for player 3 (player-colour runs differ)    ok
+L legacy: XR32 on draws as XR32 off              ok
+L legacy: not IdA's XR32 picture                 ok
+image ids (dir 0) XR32 on: IdA=2197 IdB=2173 IdC=2197 IdD=2165 IdE=2181 IdF=2165 IdG=2206 IdH=2189 IdK=2157 IdL=2213
+image ids (dir 0) XR32 off: IdA=2165 IdB=2165 IdC=2165 IdD=2165 IdE=2165 IdF=2165 IdG=2157 IdH=2173 IdK=2157 IdL=2165
+distinct image ids over the 80 slots: XR32 on 64, off 25
+failures: 0

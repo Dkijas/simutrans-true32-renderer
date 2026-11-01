@@ -1,0 +1,7 @@
+a5 winsdl2-cand
+ui-day: daynight=false = day       ok  8 images x 2 players x 9 steps, 0 differ from level 0
+world-dark: night differs at 13    ok  16 of 16 (image, player) at level 13 differ from level 0
+world: night.csv == base           ok  144 rows
+toolbar xr1 mean brightness of rows 0..63: night 122.1, day 125.4, ratio 0.973
+toolbar xr0 mean brightness of rows 0..63: night 118.4, day 121.8, ratio 0.973
+failures: 0

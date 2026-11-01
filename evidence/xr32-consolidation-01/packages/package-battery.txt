@@ -1,0 +1,66 @@
+Certification battery on the executables EXTRACTED FROM THE STAGED PACKAGES (hashes = certified build of 42c5d62)
+
+== Windows SDL2 / SDL3 (Windows 11)
+gates sdl2: 43 clean of 43
+gates sdl3: 43 clean of 43
+suite control-sdl2-32: FAIL (FAILED, last counter [1/310], tests listed 310)
+suite cand-sdl2-32: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-sdl2-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite official-sdl2-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-sdl3-32: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-sdl3-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite official-sdl3-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+sdl2 simutrans-rgba32.exe objects=pak-kitB8 xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=45edf0ad09dd101d
+sdl2 simutrans-rgba32.exe objects=pak-kitB8 xr32=1: rc=0 simu.log=yes skip_lines=0 fatal_or_error=0 exe_sha=45edf0ad09dd101d
+sdl2 simutrans-16bit.exe objects=pak-day xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=6a3a97421a5a6699
+sdl2 simutrans-16bit.exe objects=pak-kitB8 xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=6a3a97421a5a6699
+sdl2 simutrans-rgba32.exe objects=pak128.german-cat xr32=0: rc=0 simu.log=yes skip_lines=154 fatal_or_error=0 exe_sha=45edf0ad09dd101d
+sdl2 simutrans-rgba32.exe objects=pak128.german-cat xr32=1: rc=0 simu.log=yes skip_lines=0 fatal_or_error=0 exe_sha=45edf0ad09dd101d
+sdl2 simutrans-16bit.exe objects=pak128.german-cat xr32=0: rc=0 simu.log=yes skip_lines=154 fatal_or_error=0 exe_sha=6a3a97421a5a6699
+sdl3 simutrans-rgba32.exe objects=pak-kitB8 xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=30a86015bc27d4f5
+sdl3 simutrans-rgba32.exe objects=pak-kitB8 xr32=1: rc=0 simu.log=yes skip_lines=0 fatal_or_error=0 exe_sha=30a86015bc27d4f5
+sdl3 simutrans-16bit.exe objects=pak-day xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=a3b66376fba0ff49
+sdl3 simutrans-16bit.exe objects=pak-kitB8 xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=a3b66376fba0ff49
+sdl3 simutrans-rgba32.exe objects=pak128.german-cat xr32=0: rc=0 simu.log=yes skip_lines=154 fatal_or_error=0 exe_sha=30a86015bc27d4f5
+sdl3 simutrans-rgba32.exe objects=pak128.german-cat xr32=1: rc=0 simu.log=yes skip_lines=0 fatal_or_error=0 exe_sha=30a86015bc27d4f5
+sdl3 simutrans-16bit.exe objects=pak128.german-cat xr32=0: rc=0 simu.log=yes skip_lines=154 fatal_or_error=0 exe_sha=a3b66376fba0ff49
+new gates (identity, A5, N1; candidate and testing-1): 28 runs clean
+clean shutdown + memory: 27 of 27 PASS (shutdown-mem.txt)
+
+== Linux linux (Debian 13, WSL 2, SDL dummy video)
+pak linux d9d5ee9f2e96a3b5 windows d9d5ee9f2e96a3b5
+pak128.german-cat linux 03e7266ac882078e windows 03e7266ac882078e
+pak-kitB8 linux afb060efa7e3a9b5 windows afb060efa7e3a9b5
+pak64.german-mres1 linux abcad83790e23022 windows abcad83790e23022
+pak64.german-alpha1 linux cd32fd633544c8e4 windows cd32fd633544c8e4
+rgba32 fc04d444b24d1684 16bit 3e7cd80e112cf9d5
+suite control-linux-32: FAIL (FAILED, last counter [1/310], tests listed 310)
+suite cand-linux-32: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-linux-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+linux simutrans-rgba32 objects=pak-kitB8 xr32=0: rc=0 skip_lines=8 fatal_or_error=0
+linux simutrans-rgba32 objects=pak-kitB8 xr32=1: rc=0 skip_lines=0 fatal_or_error=0
+linux simutrans-16bit objects=pak-kitB8 xr32=0: rc=0 skip_lines=8 fatal_or_error=0
+linux simutrans-rgba32 objects=pak128.german-cat xr32=1: rc=0 skip_lines=0 fatal_or_error=0
+shutdown linux simutrans-rgba32 xr32=1: rc=0 wall_s=24 fatal_or_error=0 skipped_xr32=0 peak_rss_mb=523 -> PASS
+shutdown linux simutrans-rgba32 xr32=0: rc=0 wall_s=23 fatal_or_error=0 skipped_xr32=154 peak_rss_mb=520 -> PASS
+shutdown linux simutrans-16bit xr32=0: rc=0 wall_s=23 fatal_or_error=0 skipped_xr32=154 peak_rss_mb=516 -> PASS
+gates: 26 clean of 26
+
+== Linux linuxsdl3 (Debian 13, WSL 2, SDL dummy video)
+pak linux d9d5ee9f2e96a3b5 windows d9d5ee9f2e96a3b5
+pak128.german-cat linux 03e7266ac882078e windows 03e7266ac882078e
+pak-kitB8 linux afb060efa7e3a9b5 windows afb060efa7e3a9b5
+pak64.german-mres1 linux abcad83790e23022 windows abcad83790e23022
+pak64.german-alpha1 linux cd32fd633544c8e4 windows cd32fd633544c8e4
+rgba32 7d4b36d2cf2f4478 16bit 9822aee1d322a616
+suite control-linuxsdl3-32: FAIL (FAILED, last counter [1/310], tests listed 310)
+suite cand-linuxsdl3-32: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-linuxsdl3-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+linux simutrans-rgba32 objects=pak-kitB8 xr32=0: rc=0 skip_lines=8 fatal_or_error=0
+linux simutrans-rgba32 objects=pak-kitB8 xr32=1: rc=0 skip_lines=0 fatal_or_error=0
+linux simutrans-16bit objects=pak-kitB8 xr32=0: rc=0 skip_lines=8 fatal_or_error=0
+linux simutrans-rgba32 objects=pak128.german-cat xr32=1: rc=0 skip_lines=0 fatal_or_error=0
+shutdown linux simutrans-rgba32 xr32=1: rc=0 wall_s=24 fatal_or_error=0 skipped_xr32=0 peak_rss_mb=522 -> PASS
+shutdown linux simutrans-rgba32 xr32=0: rc=0 wall_s=23 fatal_or_error=0 skipped_xr32=154 peak_rss_mb=518 -> PASS
+shutdown linux simutrans-16bit xr32=0: rc=0 wall_s=24 fatal_or_error=0 skipped_xr32=154 peak_rss_mb=514 -> PASS
+gates: 26 clean of 26

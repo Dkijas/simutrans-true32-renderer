@@ -1,0 +1,12 @@
+sdl2: fitted 278 | best single cut T=9139 explains 278 of them
+   known-issue-1: image 4400 base 40x39 XR32 60x58 16-bit 60x60
+sdl2: parity with the cut: equal 277, known-issue-1 1, unexpected 0
+sdl3: fitted 278 | best single cut T=9139 explains 278 of them
+   known-issue-1: image 4400 base 40x39 XR32 60x58 16-bit 60x60
+sdl3: parity with the cut: equal 277, known-issue-1 1, unexpected 0
+linux: fitted 281 | best single cut T=1074 explains 281 of them
+   known-issue-1: image 3500 base 40x39 XR32 60x58 16-bit 60x60
+linux: parity with the cut: equal 280, known-issue-1 1, unexpected 0
+linuxsdl3: fitted 281 | best single cut T=1074 explains 281 of them
+   known-issue-1: image 3500 base 40x39 XR32 60x58 16-bit 60x60
+linuxsdl3: parity with the cut: equal 280, known-issue-1 1, unexpected 0

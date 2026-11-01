@@ -46,3 +46,11 @@ downloaded from their official locations; the exact files are identified in
   CMake objects, and the width guards; screenshots 14-16 are window
   captures of the MSVC-built executables (hand project 32 and 16, CMake
   Visual Studio generator 32).
+- `xr32-consolidation-01/` (XR32-CONSOLIDATION-01, r12377 testing-2) - `consolidation/`: the
+  gate summaries of the candidate (identity, A5, N1, A1/A2 geometry and lit box, A6 routes, fit
+  parity, DAY/NIGHT, MRES, alpha, thin images, warning sets, ASan, performance, memory, WSLg
+  shutdown), each next to the testing-1 control it was compared with, and the note on the void
+  performance runs; `packages/`: the certification of the published packages themselves (members
+  against testing-1, executables against the certified hashes, the three patch routes, the test
+  kit, the suite and gate battery on the extracted packages). Derived summaries only: no
+  binaries, no paksets, no raw logs.

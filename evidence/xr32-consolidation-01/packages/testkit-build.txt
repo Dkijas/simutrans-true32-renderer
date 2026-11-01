@@ -1,0 +1,19 @@
+makeobj e8d3bcf73da06632cc1163ab6414da8cf09b667325a2f6af1c25e5cb7383121c (certified Windows makeobj of 42c5d62)
+cards-64-A: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+cards-64-B: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+cards-64-B8: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+cards-64-L: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+cards-128-A: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+cards-128-B: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+cards-128-B8: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+cards-128-L: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+blender-A: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+blender-B: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+pixelart-tram-daynight: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+pixelart-tram-r11: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+zoom-thinpoles: testing-2 makeobj vs testing-1 expected/ SAME | rc=0
+CONTROL cards-64-B8 with STLAB_XR32_WRITE=0 vs expected/: DIFF (must be DIFF)
+expected/ rebuilt byte-identical: 13 of 13
+kit: 166 files (testing-1 kit: 166)
+Files work/kit-t1/xr32-night-prototype-r12377-testkit/README.txt and pkg/xr32-night-prototype-r12377-testing-2-testkit/README.txt differ
+Files work/kit-t1/xr32-night-prototype-r12377-testkit/SHA256SUMS.txt and pkg/xr32-night-prototype-r12377-testing-2-testkit/SHA256SUMS.txt differ

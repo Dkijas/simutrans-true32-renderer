@@ -1,0 +1,24 @@
+identity winsdl2-cand: failures: 0 | distinct image ids over the 80 slots: XR32 on 64, off 25
+identity winsdl2-base: failures: 6 | distinct image ids over the 80 slots: XR32 on 25, off 25
+identity winsdl3-cand: failures: 0 | distinct image ids over the 80 slots: XR32 on 64, off 25
+identity winsdl3-base: failures: 6 | distinct image ids over the 80 slots: XR32 on 25, off 25
+a5 winsdl2-cand: ui-day: daynight=false = day ok 8 images x 2 players x 9 steps, 0 differ from level 0|toolbar xr1 mean brightness of rows 0..63: night 122.1, day 125.4, ratio 0.973|failures: 0|
+a5 winsdl2-base: ui-day: daynight=false = day FAIL 8 images x 2 players x 9 steps, 112 differ from level 0|toolbar xr1 mean brightness of rows 0..63: night 42.9, day 125.7, ratio 0.341|failures: 1|
+a5 winsdl3-cand: ui-day: daynight=false = day ok 8 images x 2 players x 9 steps, 0 differ from level 0|toolbar xr1 mean brightness of rows 0..63: night 122.1, day 125.4, ratio 0.973|failures: 0|
+a5 winsdl3-base: ui-day: daynight=false = day FAIL 8 images x 2 players x 9 steps, 112 differ from level 0|toolbar xr1 mean brightness of rows 0..63: night 42.9, day 125.7, ratio 0.341|failures: 1|
+winsdl2-base  images 8 | at 3/8: == 16-bit picture 8, == its 1:1 XR32 picture 0
+winsdl2-cand  images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+winsdl3-base  images 8 | at 3/8: == 16-bit picture 8, == its 1:1 XR32 picture 0
+winsdl3-cand  images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+labels not fully XR32: 2 (testing-1 base labels are expected here)
+sdl2: parity with the cut: equal 278, known-issue-1 0, unexpected 0
+sdl3: parity with the cut: equal 278, known-issue-1 0, unexpected 0
+linux: parity with the cut: equal 281, known-issue-1 0, unexpected 0
+linuxsdl3: parity with the cut: equal 281, known-issue-1 0, unexpected 0
+failures 0
+compared 256 image x player series; failures 0
+mres-pksdl2-xr1-s200               cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %
+mres-pksdl3-xr1-s200               cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %
+mres-pklinux-xr1-s200              cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %
+mres-pklinuxsdl3-xr1-s200          cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %
+steps checked: 192 | failures (XR32 on): 0

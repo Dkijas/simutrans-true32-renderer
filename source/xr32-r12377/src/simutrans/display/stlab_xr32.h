@@ -112,6 +112,13 @@ bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
 /// does this image carry a candidate node?
 bool stlab_xr32_has(image_id n);
 
+/// XR32-IMAGE-IDENTITY-01: does image @p id carry an authored node (not NIGHTGEN data)?
+bool stlab_xr32_has_authored(image_id id);
+
+/// XR32-IMAGE-IDENTITY-01: would image @p id look exactly like @p day with night plane @p night?
+/// A NULL @p day means "no XR32 data" (NIGHTGEN data counts as none). Compares the whole node.
+bool stlab_xr32_shows(image_id id, const stlab_xr32_image_t *day, const uint8 *night);
+
 /// XR32-FIT-IMG-TO-WIDTH-01: fit_img_to_width() chose the zoom step num/den for image @p id; its screen cache
 /// must come from that step, not from the world zoom. 1/1 (or an image without a node) clears it.
 void stlab_xr32_set_fit(image_id id, sint32 num, sint32 den);

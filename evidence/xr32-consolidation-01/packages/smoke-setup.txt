@@ -1,0 +1,45 @@
+sdl2: 952 members extracted from staged simutrans-xr32-night-prototype-r12377-testing-2-win64-sdl2.zip (sha 81a31bdd3173a4bf)
+  simutrans-rgba32.exe sha256 45edf0ad09dd101d886a73277f65bb3e9fb6a69259ac79a4816fadc08d01775c = certified
+  simutrans-16bit.exe sha256 6a3a97421a5a6699f670762d33b636576d2e6f873b9b34eec2a201b61e28e238 = certified
+  + pak (903 files)
+  + pak-day (904 files)
+  + pak-identity3 (904 files)
+  + pak-kitB8 (904 files)
+  + pak-thinpoles (904 files)
+  + pak128.german (948 files)
+  + pak128.german-cat (948 files)
+  + pak128.german-makie (948 files)
+  + pak128.german-mutant (948 files)
+  + pak64.german (1543 files)
+  + pak64.german-alpha0 (1543 files)
+  + pak64.german-alpha1 (1543 files)
+  + pak64.german-mres0 (1543 files)
+  + pak64.german-mres1 (1543 files)
+  + save (2 files)
+  + themes/stlab-scale100.tab
+  + themes/stlab-scale125.tab
+  + themes/stlab-scale150.tab
+  + themes/stlab-scale200.tab
+sdl3: 952 members extracted from staged simutrans-xr32-night-prototype-r12377-testing-2-win64-sdl3.zip (sha 71c00c4f3cc76a57)
+  simutrans-rgba32.exe sha256 30a86015bc27d4f5f13bdad5aded340d356a3cea30fa6f5e8d1f1153a45af881 = certified
+  simutrans-16bit.exe sha256 a3b66376fba0ff49bc2c57256ec0ec4ddb67ff9d035f886e331c036660eaadc6 = certified
+  + pak (903 files)
+  + pak-day (904 files)
+  + pak-identity3 (904 files)
+  + pak-kitB8 (904 files)
+  + pak-thinpoles (904 files)
+  + pak128.german (948 files)
+  + pak128.german-cat (948 files)
+  + pak128.german-makie (948 files)
+  + pak128.german-mutant (948 files)
+  + pak64.german (1543 files)
+  + pak64.german-alpha0 (1543 files)
+  + pak64.german-alpha1 (1543 files)
+  + pak64.german-mres0 (1543 files)
+  + pak64.german-mres1 (1543 files)
+  + save (2 files)
+  + themes/stlab-scale100.tab
+  + themes/stlab-scale125.tab
+  + themes/stlab-scale150.tab
+  + themes/stlab-scale200.tab
+problems: 0

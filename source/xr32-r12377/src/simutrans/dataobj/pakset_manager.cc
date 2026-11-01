@@ -40,6 +40,7 @@ static inline bool stlab_xr32_enabled() { return false; }
 static inline void stlab_xr32_pair_candidates(obj_desc_t **, int, const obj_type *) { }
 static inline bool stlab_xr32_read_candidate(FILE *, uint32) { return false; }
 static inline bool stlab_xnex_read_candidate(FILE *, uint32) { return false; }
+static inline void stlab_xr32_identity_finish() { }
 #endif
 
 
@@ -268,6 +269,9 @@ bool pakset_manager_t::finish_loading()
 	resolve_xrefs();
 	// after the xrefs, so object replacement has settled
 	resolve_multires();
+	if(  stlab_xr32_enabled()  ) {
+		stlab_xr32_identity_finish();
+	}
 
 	for(auto const& elem : *registered_readers) {
 		PAKSET_INFO("pakset_manager_t::finish_loading", "Checking %s objects...", elem.value->get_type_name());

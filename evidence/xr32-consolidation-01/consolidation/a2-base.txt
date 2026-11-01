@@ -1,0 +1,6 @@
+A2 (base): XR32 catenary of pak128.german vs its legacy picture
+9/8   122 images | lit box = legacy 5 of 122 drawn by both | drawn by only one 0 | lit px XR32 68557 legacy 105601 | worst image 34859: 1400 vs 2318 px, box [34, 43, 106, 139] vs [34, 43, 107, 141]
+5/4   122 images | lit box = legacy 17 of 122 drawn by both | drawn by only one 0 | lit px XR32 82778 legacy 119096 | worst image 34859: 1728 vs 2682 px, box [38, 48, 118, 155] vs [38, 48, 119, 157]
+11/8  122 images | lit box = legacy 5 of 122 drawn by both | drawn by only one 0 | lit px XR32 98893 legacy 143811 | worst image 34859: 2080 vs 3254 px, box [42, 53, 130, 171] vs [42, 53, 131, 173]
+3/4   122 images | lit box = legacy 18 of 122 drawn by both | drawn by only one 0 | lit px XR32 40420 legacy 53540 | worst image 41273: 856 vs 1157 px, box [11, 35, 84, 88] vs [11, 35, 85, 88]
+3/8   122 images | lit box = legacy 7 of 117 drawn by both | drawn by only one 0 | lit px XR32 19845 legacy 22157 | worst image 28643: 308 vs 365 px, box [11, 15, 34, 45] vs [11, 15, 35, 47]

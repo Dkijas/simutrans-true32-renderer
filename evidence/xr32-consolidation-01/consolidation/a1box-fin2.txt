@@ -1,0 +1,19 @@
+A1 visible geometry (fin2): lit-pixel box, XR32 vs legacy (= 16-bit sizing), every 10th image of Frank's pak64.german
+3/2   1173 images with pixels | lit box identical 1164 (99.2 %) | lit pixels XR32 1727575, legacy 1725161
+      left   edge XR32-legacy: {-1: 2, 0: 1171}
+      top    edge XR32-legacy: {0: 1173}
+      right  edge XR32-legacy: {0: 1173}
+      bottom edge XR32-legacy: {0: 1165, 1: 8}
+      table box (dw, dh) XR32-legacy, most common: [((0, 0), 1173)]
+11/8  1173 images with pixels | lit box identical 1167 (99.5 %) | lit pixels XR32 1521251, legacy 1518614
+      left   edge XR32-legacy: {-2: 2, 0: 1171}
+      top    edge XR32-legacy: {0: 1173}
+      right  edge XR32-legacy: {0: 1173}
+      bottom edge XR32-legacy: {0: 1168, 1: 3, 2: 2}
+      table box (dw, dh) XR32-legacy, most common: [((0, 0), 1173)]
+3/8   1173 images with pixels | lit box identical 1167 (99.5 %) | lit pixels XR32 189757, legacy 189184
+      left   edge XR32-legacy: {-1: 2, 0: 1171}
+      top    edge XR32-legacy: {0: 1173}
+      right  edge XR32-legacy: {0: 1173}
+      bottom edge XR32-legacy: {0: 1168, 1: 5}
+      table box (dw, dh) XR32-legacy, most common: [((0, 0), 1173)]

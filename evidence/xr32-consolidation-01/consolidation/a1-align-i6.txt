@@ -1,0 +1,13 @@
+A1 geometry (i6), XR32 aligned to legacy by base size
+7/4   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+3/2   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+11/8  11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+4/3   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+5/4   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+9/8   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+3/4   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+5/8   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+1/2   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+3/8   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+1/4   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0
+1/8   11735 images | XR32 = legacy size 11735 (100.00 %), dw {}, x/y differ 0 | skipped (twins) 1 [1054], unmatched xr0 0

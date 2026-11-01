@@ -1,0 +1,1213 @@
+diff --git a/src/simutrans/dataobj/pakset_manager.cc b/src/simutrans/dataobj/pakset_manager.cc
+index ddd224c4fa9642ae630495e4ee861f9dc09fc7bd..f5a44321e81e447bdf549f0f9e984659d6b0a41c 100644
+--- a/src/simutrans/dataobj/pakset_manager.cc
++++ b/src/simutrans/dataobj/pakset_manager.cc
+@@ -40,6 +40,7 @@ static inline bool stlab_xr32_enabled() { return false; }
+ static inline void stlab_xr32_pair_candidates(obj_desc_t **, int, const obj_type *) { }
+ static inline bool stlab_xr32_read_candidate(FILE *, uint32) { return false; }
+ static inline bool stlab_xnex_read_candidate(FILE *, uint32) { return false; }
++static inline void stlab_xr32_identity_finish() { }
+ #endif
+ 
+ 
+@@ -268,6 +269,9 @@ bool pakset_manager_t::finish_loading()
+ 	resolve_xrefs();
+ 	// after the xrefs, so object replacement has settled
+ 	resolve_multires();
++	if(  stlab_xr32_enabled()  ) {
++		stlab_xr32_identity_finish();
++	}
+ 
+ 	for(auto const& elem : *registered_readers) {
+ 		PAKSET_INFO("pakset_manager_t::finish_loading", "Checking %s objects...", elem.value->get_type_name());
+diff --git a/src/simutrans/display/simgraph32.cc b/src/simutrans/display/simgraph32.cc
+index 59fc1971b077a88eb0db8ab12e5c50711d7d305c..37d8b7829f3c5188989987fd8c6c2fa332467721 100644
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -31,6 +31,10 @@
+ static bool stlab_xr32_zoom_prepare(image_id n);   // native zoom for candidate-backed images
+ static bool stlab_xr32_hires_prepare(image_id n);  // MRES: an authored 2x candidate at exactly 2/1
+ static void stlab_nightgen_register(image_id id);  // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: generated night (experiment)
++bool stlab_xr32_recode_daytime(image_id n, sint8 player_nr);   // XR32-UI-DAYTIME-01: daynight=false at night
++void stlab_xr32_forget_daytime();                              // XR32-UI-DAYTIME-01: the palette changed
++const PIXVAL *stlab_xr32_base_runs(image_id n, sint8 player_nr, bool daynight, scr_coord_val *x, scr_coord_val *y,
++                                   scr_coord_val *w, scr_coord_val *h);   // XR32-UI-BASE-01: 1:1 runs for the interface
+ #include "simgraph_palette.h"
+ 
+ #include "../macros.h"
+@@ -1219,6 +1223,7 @@ static void recode32()
+ 	for(  image_id n = 0;  n < anz_images;  n++  ) {
+ 		images[n].player_flags = 0xFFFF;   // recode all player colors
+ 	}
++	stlab_xr32_forget_daytime();
+ }
+ 
+ 
+@@ -1494,6 +1499,51 @@ static void simgraph32_draw_base_img_blend(const image_id n, scr_coord_val xp, s
+ 	if(  n >= anz_images  ) {
+ 		return;
+ 	}
++
++	const PIXVAL colour = get_flagged_colour( color_index );
++	const uint8  level  = get_transparency_level( color_index );
++
++	if(  stlab_xr32_has( n )  ) {
++		// XR32-UI-BASE-01: the 1:1 XR32 runs, blended exactly as the rezoomed form blends its screen cache
++		const sint8 p = (player_nr >= 0 && player_nr < MAX_PLAYER_COUNT) ? player_nr : 0;
++		scr_coord_val bx = 0, by = 0, bw = 0, bh = 0;
++#ifdef MULTI_THREAD
++		pthread_mutex_lock( &recode_img_mutex32 );
++#endif
++		const PIXVAL *runs = stlab_xr32_base_runs( n, p, daynight, &bx, &by, &bw, &bh );
++		// drawn under the lock: a palette change frees these runs (stlab_xr32_forget_daytime)
++		const bool served = runs != NULL;
++		xp += bx;
++		yp += by;
++		if(  served  &&  clip_rows32( runs, yp, bh   CLIP_NUM_PAR)  ) {
++			if(  dirty  ) {
++				simgraph32_mark_rect_dirty_wc( xp, yp, xp + bw - 1, yp + bh - 1 );
++			}
++			if(  has_outline_flag( color_index )  ) {
++				switch(  level  ) {
++					case 1: { PixelOps32Outline<blend_b25_argb, PIXVAL> o; o.colour = colour; display_img_blend_wc32( bh, xp, yp, runs, o   CLIP_NUM_PAR); break; }
++					case 2: { PixelOps32Outline<blend_b50_argb, PIXVAL> o; o.colour = colour; display_img_blend_wc32( bh, xp, yp, runs, o   CLIP_NUM_PAR); break; }
++					default:{ PixelOps32Outline<blend_b75_argb, PIXVAL> o; o.colour = colour; display_img_blend_wc32( bh, xp, yp, runs, o   CLIP_NUM_PAR); break; }
++				}
++			}
++			else {
++				switch(  level  ) {
++					case 1: display_img_blend_wc32( bh, xp, yp, runs, PixelOps32Blend<blend_b25_argb>()   CLIP_NUM_PAR); break;
++					case 2: display_img_blend_wc32( bh, xp, yp, runs, PixelOps32Blend<blend_b50_argb>()   CLIP_NUM_PAR); break;
++					default:display_img_blend_wc32( bh, xp, yp, runs, PixelOps32Blend<blend_b75_argb>()   CLIP_NUM_PAR); break;
++				}
++			}
++		}
++#ifdef MULTI_THREAD
++		pthread_mutex_unlock( &recode_img_mutex32 );
++#endif
++		if(  served  ) {
++			return;
++		}
++		xp -= bx;
++		yp -= by;
++	}
++
+ 	activate_player_color32( (player_nr >= 0 && player_nr < MAX_PLAYER_COUNT) ? player_nr : 0, daynight );
+ 
+ 	const STORED_PIXVAL *sp = images[n].base_data;
+@@ -1508,9 +1558,6 @@ static void simgraph32_draw_base_img_blend(const image_id n, scr_coord_val xp, s
+ 		simgraph32_mark_rect_dirty_wc( xp, yp, xp + images[n].base_w - 1, yp + h - 1 );
+ 	}
+ 
+-	const PIXVAL colour = get_flagged_colour( color_index );
+-	const uint8  level  = get_transparency_level( color_index );
+-
+ 	if(  has_outline_flag( color_index )  ) {
+ 		switch(  level  ) {
+ 			case 1: { PixelOps32Outline<blend_b25_argb, STORED_PIXVAL> o; o.colour = colour; display_img_blend_wc32( h, xp, yp, sp, o   CLIP_NUM_PAR); break; }
+@@ -1638,6 +1685,8 @@ static void simgraph32_draw_base_img_alpha(const image_id n, const image_id alph
+  * display_img_aux() in simgraph16.cc: polygon clip wins, otherwise the image
+  * is either fully inside the clip rectangle (nc) or straddles it (wc).
+  */
++static void display_runs32(const PIXVAL *sp, scr_coord_val xp, scr_coord_val yp, const scr_coord_val w, scr_coord_val h, const bool dirty  CLIP_NUM_DEF);
++
+ static void display_img_aux32(const image_id n, scr_coord_val xp, scr_coord_val yp, const sint8 player_nr_raw, const bool dirty  CLIP_NUM_DEF)
+ {
+ 	if(  n >= anz_images  ||  images[n].h == 0  ) {
+@@ -1648,11 +1697,16 @@ static void display_img_aux32(const image_id n, scr_coord_val xp, scr_coord_val
+ 		return;
+ 	}
+ 
+-	const PIXVAL *sp = images[n].data[player_nr];
++	display_runs32( images[n].data[player_nr], xp + images[n].x, yp + images[n].y, images[n].w, images[n].h, dirty  CLIP_NUM_PAR );
++}
+ 
+-	yp += images[n].y;
+-	scr_coord_val h = images[n].h;
+ 
++/**
++ * The blit of display_img_aux32(): screen runs @p sp of a @p w x @p h image whose top left corner is at xp, yp.
++ * XR32-UI-BASE-01: also the blit of an image's base-size runs, which are not images[n]'s screen cache.
++ */
++static void display_runs32(const PIXVAL *sp, scr_coord_val xp, scr_coord_val yp, const scr_coord_val w, scr_coord_val h, const bool dirty  CLIP_NUM_DEF)
++{
+ 	// vertical clipping first, exactly as the legacy renderer does
+ 	const scr_coord_val reduce_h = yp + h - CR32.clip_rect.yy;
+ 	if(  reduce_h > 0  ) {
+@@ -1678,9 +1732,6 @@ static void display_img_aux32(const image_id n, scr_coord_val xp, scr_coord_val
+ 		}
+ 	}
+ 
+-	const scr_coord_val w = images[n].w;
+-	xp += images[n].x;
+-
+ 	/* The dirty marks sit here, not in draw_img_aux, because THIS is the
+ 	 * function that picks the clipping branch - simgraph16_draw_img_aux
+ 	 * does both jobs and marks three times, once per branch. Order and
+@@ -2359,8 +2410,17 @@ static void simgraph32_draw_color_img(const image_id n, scr_coord_val xp, scr_co
+ 
+ 	if(  stlab_xr32_has( n )  ) {
+ 		// This family reads STORED_PIXVAL directly. For a candidate-backed image that
+-		// would be a legacy conversion, so serve it from the screen cache instead.
+-		if(  images[n].player_flags & (1 << player_nr)  ) {
++		// would be a legacy conversion, so serve it from the screen cache instead -
++		// XR32-UI-DAYTIME-01: resolved for the day, as daynight=false asks (the daytime
++		// family below draws a legacy image in its day colours at night too)
++#ifdef MULTI_THREAD
++		pthread_mutex_lock( &recode_img_mutex32 );
++#endif
++		const bool day = stlab_xr32_recode_daytime( n, player_nr );
++#ifdef MULTI_THREAD
++		pthread_mutex_unlock( &recode_img_mutex32 );
++#endif
++		if(  !day  &&  (images[n].player_flags & (1 << player_nr))  ) {
+ 			recode_img( n, player_nr );
+ 		}
+ 		display_img_aux32( n, xp, yp, player_nr, dirty   CLIP_NUM_PAR);
+@@ -2431,6 +2491,26 @@ static void simgraph32_draw_base_img(const image_id n, scr_coord_val xp, scr_coo
+ 		return;
+ 	}
+ 
++	if(  stlab_xr32_has( n )  ) {
++		// XR32-UI-BASE-01: base_data is a candidate-backed image's 16-bit picture; draw its 1:1 XR32 runs
++		const sint8 p = (player_nr >= 0 && player_nr < MAX_PLAYER_COUNT) ? player_nr : 0;
++		scr_coord_val bx = 0, by = 0, bw = 0, bh = 0;
++#ifdef MULTI_THREAD
++		pthread_mutex_lock( &recode_img_mutex32 );
++#endif
++		const PIXVAL *runs = stlab_xr32_base_runs( n, p, daynight, &bx, &by, &bw, &bh );
++		if(  runs  ) {
++			// drawn under the lock: a palette change frees these runs (stlab_xr32_forget_daytime)
++			display_runs32( runs, xp + bx, yp + by, bw, bh, dirty  CLIP_NUM_PAR );
++		}
++#ifdef MULTI_THREAD
++		pthread_mutex_unlock( &recode_img_mutex32 );
++#endif
++		if(  runs  ) {
++			return;
++		}
++	}
++
+ 	// the zoomed path: the BASE image is drawn unzoomed, from stored data, so
+ 	// this is where the colored family becomes production code
+ 	const scr_coord_val x = images[n].base_x + xp;
+diff --git a/src/simutrans/display/stlab_xr32.h b/src/simutrans/display/stlab_xr32.h
+index 24d01c8c5c3e1c363e78429311dd8a54d898e9f0..a6fc48cedd6911bb1cb1b9a510c97a9efd0290c0 100644
+--- a/src/simutrans/display/stlab_xr32.h
++++ b/src/simutrans/display/stlab_xr32.h
+@@ -112,6 +112,13 @@ bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
+ /// does this image carry a candidate node?
+ bool stlab_xr32_has(image_id n);
+ 
++/// XR32-IMAGE-IDENTITY-01: does image @p id carry an authored node (not NIGHTGEN data)?
++bool stlab_xr32_has_authored(image_id id);
++
++/// XR32-IMAGE-IDENTITY-01: would image @p id look exactly like @p day with night plane @p night?
++/// A NULL @p day means "no XR32 data" (NIGHTGEN data counts as none). Compares the whole node.
++bool stlab_xr32_shows(image_id id, const stlab_xr32_image_t *day, const uint8 *night);
++
+ /// XR32-FIT-IMG-TO-WIDTH-01: fit_img_to_width() chose the zoom step num/den for image @p id; its screen cache
+ /// must come from that step, not from the world zoom. 1/1 (or an image without a node) clears it.
+ void stlab_xr32_set_fit(image_id id, sint32 num, sint32 den);
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index af10923d2099b2bfc87d824d6eb042ea1e92e5ed..1e33b1c69c6829f55c85842959ff142a75ed649c 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -12,6 +12,7 @@
+  * ==========================================================================*/
+ 
+ #include <chrono>
++#include <map>
+ 
+ /* --- what the semantic layer needs from the renderer ------------------------ */
+ 
+@@ -27,8 +28,19 @@ uint32 stlab_pack_argb(int r, int g, int b)
+ }
+ 
+ 
++/* XR32-UI-DAYTIME-01: a draw with daynight=false asks for the day colours (the 16-bit renderer then draws
++ * through rgbmap_all_day / specialcolormap_all_day). While this is set, the semantics resolve an image
++ * against exactly those tables: night level 0 and the multipliers they were built with (1.0, at init).
++ * Per thread, so a display lane never sees another thread's request. */
++static thread_local bool stlab_daytime = false;
++
++
+ void stlab_night_multipliers(double *rg, double *b)
+ {
++	if(  stlab_daytime  ) {
++		*rg = *b = 1.0;
++		return;
++	}
+ 	const int night = night_shift < 0 ? 0 : night_shift;
+ 	*rg = pow(0.75, night) * ((light_level + 8.0) / 8.0);
+ 	*b  = pow(0.83, night) * ((light_level + 8.0) / 8.0);
+@@ -37,6 +49,9 @@ void stlab_night_multipliers(double *rg, double *b)
+ 
+ int stlab_night_level()
+ {
++	if(  stlab_daytime  ) {
++		return 0;
++	}
+ 	return night_shift < 0 ? 0 : night_shift;
+ }
+ 
+@@ -47,7 +62,7 @@ uint32 stlab_player_colour_argb(sint8 player_nr, uint8 channel, uint8 tone)
+ 	const uint8 off = player_offsets[p][channel == 2 ? 1 : 0];
+ 	// specialcolormap_day_night already carries the night multiplier, applied once
+ 	// when the palette was built. No 555 index is involved.
+-	return specialcolormap_day_night[(int)off + (tone & 7)];
++	return (stlab_daytime ? specialcolormap_all_day : specialcolormap_day_night)[(int)off + (tone & 7)];
+ }
+ 
+ 
+@@ -56,7 +71,7 @@ uint32 stlab_light_colour_argb(uint8 light_index)
+ 	if(  light_index >= LIGHT_COUNT  ) {
+ 		return 0xFF000000u;
+ 	}
+-	return rgbmap_day_night[0x8000 + MAX_PLAYER_COUNT + light_index];
++	return (stlab_daytime ? rgbmap_all_day : rgbmap_day_night)[0x8000 + MAX_PLAYER_COUNT + light_index];
+ }
+ 
+ 
+@@ -77,6 +92,8 @@ struct stlab_xr32_slot_t {
+ static stlab_xr32_slot_t *stlab_slots = NULL;
+ static image_id stlab_slots_alloc = 0;
+ 
++static void stlab_xr32_base_release();   // XR32-UI-BASE-01: the base-size runs of the interface (end of file)
++
+ 
+ static stlab_xr32_slot_t *stlab_slot(image_id n, bool create)
+ {
+@@ -151,6 +168,42 @@ bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
+ 
+ static void stlab_xr32_zoom_release(stlab_xr32_slot_t *s);
+ 
++
++bool stlab_xr32_has_authored(image_id id)
++{
++	const stlab_xr32_slot_t *s = stlab_slot( id, false );
++	return s != NULL  &&  s->img != NULL  &&  !s->generated;
++}
++
++
++bool stlab_xr32_shows(image_id id, const stlab_xr32_image_t *day, const uint8 *night)
++{
++	const stlab_xr32_slot_t *s = stlab_slot( id, false );
++	const stlab_xr32_image_t *have = (s != NULL  &&  !s->generated) ? s->img : NULL;
++	if(  have == NULL  ||  day == NULL  ) {
++		return have == NULL  &&  day == NULL;
++	}
++	if(  have->width != day->width  ||  have->height != day->height  ||  have->x != day->x  ||  have->y != day->y
++	     ||  have->zoomable != day->zoomable  ||  have->version != day->version  ||  have->run_count != day->run_count  ) {
++		return false;
++	}
++	const size_t bytes = (size_t)day->width * day->height * 4;
++	if(  (have->rgba == NULL) != (day->rgba == NULL)  ||  (day->rgba  &&  memcmp( have->rgba, day->rgba, bytes ) != 0)  ) {
++		return false;
++	}
++	for(  uint32 r = 0;  r < day->run_count;  r++  ) {
++		const stlab_xr32_run_t &a = have->runs[r], &b = day->runs[r];
++		if(  a.start != b.start  ||  a.length != b.length  ||  a.cls != b.cls  ||  a.param != b.param  ||  a.coverage != b.coverage
++		     ||  a.under_is_framebuffer != b.under_is_framebuffer  ||  a.under_r != b.under_r  ||  a.under_g != b.under_g  ||  a.under_b != b.under_b  ) {
++			return false;
++		}
++	}
++	if(  (have->night == NULL) != (night == NULL)  ) {
++		return false;
++	}
++	return night == NULL  ||  memcmp( have->night, night, bytes ) == 0;
++}
++
+ /* --- XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 (EXPERIMENT) ----------------------------- */
+ 
+ const char *stlab_xnex_attach(image_id id, stlab_xnex_t *night)
+@@ -310,6 +363,7 @@ void simgraph32_alpha_plane_release();
+ 
+ void stlab_xr32_release_all()
+ {
++	stlab_xr32_base_release();
+ 	simgraph32_alpha_plane_release();
+ 	stlab_xr32_scratch_release();
+ 	for(  image_id i = 0;  i < stlab_slots_alloc;  i++  ) {
+@@ -487,6 +541,50 @@ static bool stlab_xr32_hires_prepare(image_id n)
+ }
+ 
+ 
++/// resolved_night of a screen cache that holds the DAY resolution (XR32-UI-DAYTIME-01)
++static const int STLAB_RESOLVED_DAYTIME = -1000;
++
++bool stlab_xr32_recode(image_id n, sint8 player_nr);
++
++
++/**
++ * XR32-UI-DAYTIME-01: the screen cache of image @p n for @p player_nr, resolved for the day - what a draw with
++ * daynight=false needs at night. The cache is the one the world draws from, so it is marked stale for the world
++ * afterwards (player_flags); the world never asks for daynight=false (the interface does), and the interface is
++ * drawn after the world's display lanes, so the two never use it at the same time. Call under recode_img_mutex32.
++ */
++bool stlab_xr32_recode_daytime(image_id n, sint8 player_nr)
++{
++	stlab_xr32_slot_t *s = stlab_slot( n, false );
++	if(  s == NULL  ||  s->img == NULL  ) {
++		return false;
++	}
++	if(  images[n].data[player_nr] != NULL  &&  s->resolved_player == (uint8)player_nr  &&  s->resolved_night == STLAB_RESOLVED_DAYTIME  ) {
++		return true;
++	}
++	stlab_daytime = true;
++	const bool ok = stlab_xr32_recode( n, player_nr );
++	stlab_daytime = false;
++	if(  ok  ) {
++		s->resolved_night = STLAB_RESOLVED_DAYTIME;
++		images[n].player_flags |= (uint16)(1 << player_nr);
++	}
++	return ok;
++}
++
++
++/// XR32-UI-DAYTIME-01: the palette changed (recode32): a day resolution may no longer describe it either
++void stlab_xr32_forget_daytime()
++{
++	stlab_xr32_base_release();
++	for(  image_id i = 0;  i < stlab_slots_alloc;  i++  ) {
++		if(  stlab_slots[i].resolved_night == STLAB_RESOLVED_DAYTIME  ) {
++			stlab_slots[i].resolved_night = -999;
++		}
++	}
++}
++
++
+ bool stlab_xr32_recode(image_id n, sint8 player_nr)
+ {
+ 	stlab_xr32_slot_t *s = stlab_slot(n, false);
+@@ -556,3 +654,69 @@ bool stlab_xr32_recode(image_id n, sint8 player_nr)
+ 	s->resolved_night = night_shift;
+ 	return true;
+ }
++
++
++/* --- XR32-UI-BASE-01: an image at its BASE size, for the interface ------------------------------------
++ *
++ * simgraph32_draw_base_img() and its blend form draw an image at its unzoomed base size while the world is
++ * zoomed (the interface's images: gui_image, gui_image_list, the convoy and vehicle lists ...). For a legacy
++ * image they read base_data, which for a candidate-backed image is its 16-bit picture. These are the 1:1 XR32
++ * runs instead, kept apart from the world's screen cache (which holds the zoomed image), per image for one
++ * player and one context at a time (the night level, or STLAB_RESOLVED_DAYTIME for daynight=false).
++ */
++struct stlab_xr32_base_t {
++	PIXVAL *runs = NULL;
++	uint8 player = 0xFF;
++	int night = -999;
++};
++static std::map<image_id, stlab_xr32_base_t> stlab_base_runs;
++
++
++/// the 1:1 runs of image @p n for @p player_nr, and their geometry; NULL if it has no XR32 data. Call under
++/// recode_img_mutex32 (it uses the shared scratch buffers). The pointer stays valid until the next palette
++/// change (stlab_xr32_forget_daytime) or release.
++const PIXVAL *stlab_xr32_base_runs(image_id n, sint8 player_nr, bool daynight, scr_coord_val *x, scr_coord_val *y,
++                                   scr_coord_val *w, scr_coord_val *h)
++{
++	const stlab_xr32_slot_t *s = stlab_slot( n, false );
++	if(  s == NULL  ||  s->img == NULL  ) {
++		return NULL;
++	}
++	const stlab_xr32_image_t *img = s->img;
++	*x = img->x;
++	*y = img->y;
++	*w = img->width;
++	*h = img->height;
++	// daynight=true is the night level's resolution (the day_night tables, also at level 0), daynight=false the
++	// day context of XR32-UI-DAYTIME-01 (the all_day tables) - the two tables the 16-bit families read
++	const int key = daynight ? night_shift : STLAB_RESOLVED_DAYTIME;
++	stlab_xr32_base_t &b = stlab_base_runs[n];
++	if(  b.runs != NULL  &&  b.player == (uint8)player_nr  &&  b.night == key  ) {
++		return b.runs;
++	}
++	const uint32 npx = (uint32)img->width * img->height;
++	if(  npx == 0  ||  !stlab_scratch_reserve( npx, stlab_xr32_encode_cap( img->width, img->height ) )  ) {
++		return NULL;
++	}
++	stlab_daytime = key == STLAB_RESOLVED_DAYTIME;
++	stlab_xr32_resolve( img, player_nr, stlab_scratch_raster );
++	stlab_daytime = false;
++	PIXVAL *d = stlab_xr32_encode_rows( stlab_scratch_raster, img->width, img->height, stlab_scratch_out );
++	const size_t used = (size_t)(d - stlab_scratch_out);
++	free( b.runs );
++	b.runs = MALLOCN( PIXVAL, used );
++	memcpy( b.runs, stlab_scratch_out, used * sizeof(PIXVAL) );
++	b.player = (uint8)player_nr;
++	b.night = key;
++	return b.runs;
++}
++
++
++/// XR32-UI-BASE-01: drop every base-size run set (the palette changed, or the images go)
++static void stlab_xr32_base_release()
++{
++	for(  auto &b : stlab_base_runs  ) {
++		free( b.second.runs );
++	}
++	stlab_base_runs.clear();
++}
+diff --git a/src/simutrans/display/stlab_xr32_load.cci b/src/simutrans/display/stlab_xr32_load.cci
+index f8c6055fe30376d1b131a2a1a357572328340217..555e034c992823092c72ccc649651dafd05719f9 100644
+--- a/src/simutrans/display/stlab_xr32_load.cci
++++ b/src/simutrans/display/stlab_xr32_load.cci
+@@ -11,6 +11,7 @@
+  * the same parent, which is what the placement invariant already guarantees.
+  * ==========================================================================*/
+ 
++#include <map>
+ #include <vector>
+ #include "../descriptor/image.h"
+ #include "../display/stlab_xr32.h"
+@@ -75,48 +76,174 @@ static bool stlab_xr32_read_candidate(FILE *fp, uint32 size)
+ }
+ 
+ 
++/* XR32-IMAGE-IDENTITY-01: image identity.
++ *
++ * The image reader merges images whose 16-bit data is identical: the second one gets the first
++ * one's image_t, and so its image id. XR32 data is paired by image id afterwards, so two image
++ * slots with the same 16-bit picture but different XR32 data (or one with and one without) would
++ * show whichever XR32 data was paired last - an order the directory listing decides.
++ *
++ * So the pairing decides per image slot: a slot that shows the same as the image already shows
++ * (no XR32 data, or byte-identical XR32 data) keeps sharing it; the first slot of an image gives it
++ * its data; any other slot gets a twin - a copy of the 16-bit image with its own id and its own
++ * XR32 data - and twins with identical data are shared in turn. The pak format and the 16-bit
++ * merge are unchanged, and a pakset without XR32 data never makes a twin.
++ */
++static std::vector<uint16> stlab_image_users;                    ///< image slots paired so far, per image id
++static std::multimap<image_id, image_t *> stlab_image_twins;    ///< reader image id -> twins split off it
++static uint32 stlab_identity_shared = 0, stlab_identity_split = 0, stlab_identity_reused = 0;
++
++
++/// the geometry guard of stlab_xr32_attach(), asked before attaching
++static bool stlab_xr32_fits(const stlab_xr32_image_t *img, const image_t *im)
++{
++	return  img->width == (uint16)(sint16)im->w  &&  img->height == (uint16)(sint16)im->h
++	    &&  img->x == (sint16)im->x  &&  img->y == (sint16)im->y  &&  img->zoomable == im->zoomable;
++}
++
++
++/// give image @p id the day node @p day (may be NULL) and the night node @p night (may be NULL); both are consumed
++static void stlab_xr32_attach_pair(image_id id, const image_t *im, stlab_xr32_image_t *day, stlab_xnex_t *night)
++{
++	if(  day  &&  !stlab_xr32_attach( id, day, im->x, im->y, im->w, im->h, im->zoomable )  ) {
++		dbg->warning("stlab_xr32", "candidate node could not be paired with an image, using the legacy IMG");
++		delete day;
++	}
++	if(  night  ) {
++		const char *why = stlab_xnex_attach( id, night );
++		if(  why != NULL  ) {
++			dbg->warning("stlab_xr32", "night node not used (%s), the image keeps its day appearance", why);
++		}
++		delete night;
++	}
++}
++
++
+ /// pair every candidate parsed while reading this node's children with its sibling IMG
+ static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren, const obj_type *kinds)
+ {
+-	if(  stlab_pending_candidates.empty()  &&  stlab_pending_nights.empty()  ) {
++	if(  children == NULL  ||  kinds == NULL  ||  nchildren <= 0  ) {
++		for(  size_t i = 0;  i < stlab_pending_candidates.size();  i++  ) {
++			dbg->warning("stlab_xr32", "candidate node could not be paired with an image, using the legacy IMG");
++			delete stlab_pending_candidates[i];
++		}
++		for(  size_t i = 0;  i < stlab_pending_nights.size();  i++  ) {
++			dbg->warning("stlab_xr32", "night node not used (its img_index does not name an image), the image keeps its day appearance");
++			delete stlab_pending_nights[i];
++		}
++		stlab_pending_candidates.clear();
++		stlab_pending_nights.clear();
+ 		return;
+ 	}
+-	for(  size_t i = 0;  i < stlab_pending_candidates.size();  i++  ) {
+-		stlab_xr32_image_t *img = stlab_pending_candidates[i];
+-		bool attached = false;
+-		// only a child that was READ as an IMG node is an image: img_index may name any
+-		// child (a TEXT name, an XREF, a list), and casting that to image_t is undefined
+-		if(  children != NULL  &&  img->img_index < (uint16)nchildren
+-		     &&  kinds != NULL  &&  kinds[img->img_index] == obj_image  ) {
+-			const image_t *im = static_cast<const image_t *>(children[img->img_index]);
+-			if(  im != NULL  &&  im->get_id() != IMG_EMPTY  ) {
+-				attached = stlab_xr32_attach(im->get_id(), img,
+-				                             im->x, im->y, im->w, im->h, im->zoomable);
+-			}
+-		}
+-		if(  !attached  ) {
+-			dbg->warning("stlab_xr32", "candidate node could not be paired with an image, "
+-			             "using the legacy IMG");
++
++	// which XR32 data was authored for each image child. Only a child that was READ as an IMG node
++	// is an image: img_index may name any child (a TEXT name, an XREF, a list), and casting that
++	// to image_t is undefined
++	static std::vector<stlab_xr32_image_t *> day;
++	static std::vector<stlab_xnex_t *> night;
++	day.assign( nchildren, NULL );
++	night.assign( nchildren, NULL );
++	for(  size_t c = 0;  c < stlab_pending_candidates.size();  c++  ) {
++		stlab_xr32_image_t *img = stlab_pending_candidates[c];
++		const int k = img->img_index;
++		const image_t *im = (k < nchildren  &&  kinds[k] == obj_image) ? static_cast<const image_t *>(children[k]) : NULL;
++		if(  im == NULL  ||  im->get_id() == IMG_EMPTY  ||  !stlab_xr32_fits( img, im )  ) {
++			dbg->warning("stlab_xr32", "candidate node could not be paired with an image, using the legacy IMG");
+ 			delete img;
++			continue;
+ 		}
++		delete day[k];   // a later node for the same image replaces an earlier one, as before
++		day[k] = img;
+ 	}
+ 	stlab_pending_candidates.clear();
+ 
+-	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: night planes attach after every day node of this parent
+-	for(  size_t i = 0;  i < stlab_pending_nights.size();  i++  ) {
+-		stlab_xnex_t *n = stlab_pending_nights[i];
+-		const char *why = "its img_index does not name an image";
+-		if(  children != NULL  &&  n->img_index < (uint16)nchildren
+-		     &&  kinds != NULL  &&  kinds[n->img_index] == obj_image  ) {
+-			const image_t *im = static_cast<const image_t *>(children[n->img_index]);
+-			if(  im != NULL  &&  im->get_id() != IMG_EMPTY  ) {
+-				why = stlab_xnex_attach(im->get_id(), n);
+-			}
++	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: a night plane belongs to the v2 day node of its image
++	for(  size_t c = 0;  c < stlab_pending_nights.size();  c++  ) {
++		stlab_xnex_t *n = stlab_pending_nights[c];
++		const int k = n->img_index;
++		const image_t *im = (k < nchildren  &&  kinds[k] == obj_image) ? static_cast<const image_t *>(children[k]) : NULL;
++		const char *why = NULL;
++		if(  im == NULL  ||  im->get_id() == IMG_EMPTY  ) { why = "its img_index does not name an image"; }
++		else if(  n->rgba == NULL  ) { why = "empty night node"; }
++		else if(  day[k] == NULL  ) { why = "the image has no XR32 v2 day node"; }
++		else if(  day[k]->version != 2  ) { why = "the day node is not XR32 v2"; }
++		else if(  n->width != day[k]->width  ||  n->height != day[k]->height  ||  n->x != day[k]->x  ||  n->y != day[k]->y  ) {
++			why = "its geometry differs from the day node";
+ 		}
++		else if(  night[k] != NULL  ) { why = "the image already has a night node (duplicate)"; }   // the first one stays
+ 		if(  why != NULL  ) {
+ 			dbg->warning("stlab_xr32", "night node not used (%s), the image keeps its day appearance", why);
++			delete n;
++			continue;
+ 		}
+-		delete n;
++		night[k] = n;
+ 	}
+ 	stlab_pending_nights.clear();
++
++	// XR32-IMAGE-IDENTITY-01: every image slot shows its own data
++	for(  int k = 0;  k < nchildren;  k++  ) {
++		if(  kinds[k] != obj_image  ||  children[k] == NULL  ) {
++			continue;
++		}
++		image_t *im = static_cast<image_t *>(children[k]);
++		const image_id id = im->get_id();
++		if(  id == IMG_EMPTY  ) {
++			continue;
++		}
++		const uint8 *night_plane = night[k] ? night[k]->rgba : NULL;
++		if(  id >= stlab_image_users.size()  ) {
++			stlab_image_users.resize( id + 1, 0 );
++		}
++		const bool first = stlab_image_users[id] == 0;
++		if(  stlab_image_users[id] < 0xFFFF  ) {
++			stlab_image_users[id]++;
++		}
++
++		if(  stlab_xr32_shows( id, day[k], night_plane )  ) {
++			// the image already shows exactly this: no XR32 data, or the same XR32 data
++			if(  day[k]  ) {
++				stlab_identity_shared++;
++			}
++			delete day[k];
++			delete night[k];
++			continue;
++		}
++		if(  first  &&  !stlab_xr32_has_authored( id )  ) {
++			// the only slot of this image so far: it gets this slot's data
++			stlab_xr32_attach_pair( id, im, day[k], night[k] );
++			continue;
++		}
++		// another slot already shows this image with other XR32 data, or without: use a twin
++		image_t *twin = NULL;
++		for(  auto t = stlab_image_twins.equal_range( id );  t.first != t.second;  ++t.first  ) {
++			if(  stlab_xr32_shows( t.first->second->get_id(), day[k], night_plane )  ) {
++				twin = t.first->second;
++				break;
++			}
++		}
++		if(  twin  ) {
++			stlab_identity_reused++;
++			delete day[k];
++			delete night[k];
++		}
++		else {
++			twin = image_t::copy_image( *im );
++			twin->register_image();
++			stlab_xr32_attach_pair( twin->get_id(), twin, day[k], night[k] );
++			stlab_image_twins.insert( std::make_pair( id, twin ) );
++			stlab_identity_split++;
++		}
++		children[k] = twin;
++	}
++}
++
++
++/// XR32-IMAGE-IDENTITY-01: after loading: say what the identity pairing did, and drop its tables
++static void stlab_xr32_identity_finish()
++{
++	dbg->message("stlab_xr32", "image identity: %u image slots share an image with identical XR32 data; "
++	             "%u images split off for slots whose XR32 data differs (%u slots reuse one)",
++	             stlab_identity_shared, stlab_identity_split, stlab_identity_reused);
++	std::vector<uint16>().swap( stlab_image_users );
++	stlab_image_twins.clear();
+ }
+diff --git a/src/simutrans/display/stlab_xr32_zoom.cci b/src/simutrans/display/stlab_xr32_zoom.cci
+index 785d3c4427461cd0c2c587c7143a29a028c019a6..c9be43991c0b05c90ee3bb0c467a09e6b053fc7e 100644
+--- a/src/simutrans/display/stlab_xr32_zoom.cci
++++ b/src/simutrans/display/stlab_xr32_zoom.cci
+@@ -18,6 +18,7 @@
+  * one-key case of the general form.
+  * ==========================================================================*/
+ 
++#include <vector>
+ #include "stlab_xr32_linear.h"   // XR32-SEMANTIC-MASK-PIPELINE-01: v2 zoom composes in linear light
+ 
+ /// mirrors XR32_CLASS_LIGHT in stlab_xr32.cc, which is private to that unit
+@@ -137,21 +138,69 @@ static uint32 stlab_zoom_key_colour(uint8 key, sint8 player_nr)
+ /**
+  * Build the scaled cache for one node at one scale.
+  *
+- * Accumulation is integer throughout, over the fixed denominator 255*count, and
+- * there is no division until the plane is finalised: the contract forbids
+- * rounding per contributor. The traversal is a single ascending pass over the
+- * source pixels, so the result does not depend on any allocation or iteration
+- * order.
++ * XR32-ZOOM-GEOMETRY-01 (A1): the geometry and the sampling grid are those of the legacy resampler
++ * (zoom_core_rezoom in zoom_core.h), so an XR32 image covers the same screen pixels as its 16-bit
++ * picture at every zoom step:
++ *   - an image whose plain scaled size rounds to 0 is not drawn (NULL), as before;
++ *   - the box is the padded one, ceil(w/den)*num by ceil(h/den)*num, its origin trunc(x*num/den);
++ *   - destination column i samples the source columns (i*den + k - x_rem)/num, k = 0..den-1, with
++ *     x_rem = (x*num) % den, in C division as there, and the same for rows; a sample outside the
++ *     image is a hole.
++ * What is done with the den*den samples is XR32's own: their 8-bit colour, alpha and semantics are
++ * accumulated as before, each sample once (a source pixel counts as often as samples land on it).
++ * A destination pixel is drawn when one of its samples is not a hole - the legacy rule - with the
++ * mean alpha of those samples.
++ *
++ * Accumulation is integer throughout, and there is no division until the plane is finalised: the
++ * contract forbids rounding per contributor. Destinations are visited in ascending order, and so are
++ * their keys, so the result does not depend on any allocation or iteration order.
+  */
++
++/// one axis of the sampling grid: for every destination index, the source indices its den samples
++/// land on and how many land on each, ascending; samples outside the image are not listed (holes)
++struct stlab_zoom_axis_t {
++	std::vector<uint32> first;   ///< per destination index, its first entry; first[dn] is the end
++	std::vector<uint32> src;
++	std::vector<uint32> count;
++};
++
++
++static void stlab_zoom_axis(stlab_zoom_axis_t &a, uint32 n, uint32 dn, sint32 num, sint32 den, sint32 rem)
++{
++	a.first.assign( dn + 1, 0 );
++	a.src.clear();
++	a.count.clear();
++	for(  uint32 i = 0;  i < dn;  i++  ) {
++		a.first[i] = (uint32)a.src.size();
++		for(  sint32 k = 0;  k < den;  k++  ) {
++			const sint32 s = ((sint32)i * den + k - rem) / num;   // C division, as zoom_core_rezoom()
++			if(  s < 0  ||  (uint32)s >= n  ) {
++				continue;
++			}
++			if(  a.src.size() > a.first[i]  &&  a.src.back() == (uint32)s  ) {
++				a.count.back()++;
++			}
++			else {
++				a.src.push_back( (uint32)s );
++				a.count.push_back( 1 );
++			}
++		}
++	}
++	a.first[dn] = (uint32)a.src.size();
++}
++
++
+ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+                                                 sint32 num, sint32 den)
+ {
+ 	const uint32 w = img->width, h = img->height;
+-	const uint32 dw = (uint32)(((sint64)w * num) / den);
+-	const uint32 dh = (uint32)(((sint64)h * num) / den);
+-	if(  dw == 0  ||  dh == 0  ) {
++	if(  ((sint64)w * num) / den == 0  ||  ((sint64)h * num) / den == 0  ) {
+ 		return NULL;
+ 	}
++	const sint32 x_rem = ((sint32)img->x * num) % den;
++	const sint32 y_rem = ((sint32)img->y * num) % den;
++	const uint32 dw = ((w + (uint32)den - 1) / (uint32)den) * (uint32)num;
++	const uint32 dh = ((h + (uint32)den - 1) / (uint32)den) * (uint32)num;
+ 	const uint32 nd = dw * dh;
+ 
+ 	stlab_xr32_zoom_t *z = new stlab_xr32_zoom_t();
+@@ -166,18 +215,16 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	const bool v2 = img->version == 2;
+ 	z->linear = v2;
+ 
+-	// numerators over the denominator 255 * count, so nothing is divided early
++	// numerators over the denominator 255 * samples, so nothing is divided early
+ 	uint32 *acc_r = MALLOCN( uint32, nd );
+ 	uint32 *acc_g = MALLOCN( uint32, nd );
+ 	uint32 *acc_b = MALLOCN( uint32, nd );
+ 	uint32 *acc_w = MALLOCN( uint32, nd );   ///< non-semantic weight numerator, x255
+-	uint32 *cnt   = MALLOCN( uint32, nd );   ///< source pixels landing here
+-	uint32 *opq   = MALLOCN( uint32, nd );   ///< opaque source pixels landing here
++	uint32 *opq   = MALLOCN( uint32, nd );   ///< samples on an opaque source pixel
+ 	uint32 *alp   = MALLOCN( uint32, nd );   ///< sum of their straight alpha
+ 	MEMZERON( acc_r, nd );  MEMZERON( acc_g, nd );  MEMZERON( acc_b, nd );
+-	MEMZERON( acc_w, nd );  MEMZERON( cnt, nd );    MEMZERON( opq, nd );
+-	MEMZERON( alp, nd );
+-	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the night plane is reduced with the same weights
++	MEMZERON( acc_w, nd );  MEMZERON( opq, nd );    MEMZERON( alp, nd );
++	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the night plane is reduced with the same samples
+ 	uint32 *nac = NULL;                      ///< r,g,b,w per destination
+ 	uint32 *nop = NULL, *nal = NULL;
+ 	if(  img->night  ) {
+@@ -186,25 +233,6 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 		nal = MALLOCN( uint32, nd );  MEMZERON( nal, nd );
+ 	}
+ 
+-	// The semantic side is sparse: only opaque semantic source pixels contribute,
+-	// and there are far fewer of those than nd * 32. They are appended to a flat
+-	// list here and grouped by destination below, so nothing scales with the
+-	// number of keys and a node without records pays nothing at all.
+-	uint32 sem_src = 0;
+-	for(  uint32 r = 0;  r < img->run_count;  r++  ) {
+-		sem_src += img->runs[r].length;
+-	}
+-	// enlarging, one source pixel feeds several destination pixels; each destination
+-	// still has at most one contributor, so the list is bounded by the destination
+-	const bool enlarge = num > den;
+-	if(  enlarge  &&  sem_src  ) {
+-		sem_src = v2 ? nd * 4 : nd;
+-	}
+-	uint32 *hit_d = sem_src ? MALLOCN( uint32, sem_src ) : NULL;
+-	uint8  *hit_k = sem_src ? MALLOCN( uint8, sem_src ) : NULL;
+-	uint16 *hit_c = sem_src ? MALLOCN( uint16, sem_src ) : NULL;
+-	uint32 hits = 0;
+-
+ 	// the semantic key and coverage of every source pixel; records overwrite in
+ 	// order, exactly as stlab_xr32_resolve() applies them
+ 	uint8 *skey = MALLOCN( uint8, w * h );
+@@ -252,83 +280,165 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 		}
+ 	}
+ 
+-	// Every destination pixel gets its contributing source pixels. Reducing, that is the
+-	// box of source pixels mapping onto it, in one ascending pass over the source.
+-	// Enlarging, a source pixel covers several destination pixels, so the destination is
+-	// walked instead and each one takes the source pixel it lies in (nearest neighbour):
+-	// walking the source would leave every other destination pixel empty.
+-	const uint32 n_steps = enlarge ? nd : w * h;
+-	for(  uint32 step = 0;  step < n_steps;  step++  ) {
+-		uint32 si, d;
+-		if(  enlarge  ) {
+-			d = step;
+-			const uint32 sx = (uint32)(((sint64)(d % dw) * den) / num);
+-			const uint32 sy = (uint32)(((sint64)(d / dw) * den) / num);
+-			si = ((sy < h) ? sy : h - 1) * w + ((sx < w) ? sx : w - 1);
+-		}
+-		else {
+-			si = step;
+-			const uint32 dy = (uint32)(((sint64)(si / w) * num) / den);
+-			const uint32 dx = (uint32)(((sint64)(si % w) * num) / den);
+-			d = ((dy < dh) ? dy : dh - 1) * dw + ((dx < dw) ? dx : dw - 1);
+-		}
+-		{
+-			const uint8 *p = img->rgba + (size_t)si * 4;
+-			cnt[d]++;
+-			const uint8 a = p[3];
+-			if(  a <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF)  ) {
+-				continue;                       // a hole contributes nothing
++	// the semantic side: at most one entry per destination, written in ascending order
++	const bool has_sem = img->run_count > 0;
++	if(  has_sem  ) {
++		z->sem = MALLOCN( stlab_zoom_sem_t, nd );
++	}
++	uint32 w_sem = 0;
++
++	stlab_zoom_axis_t ax, ay;
++	stlab_zoom_axis( ax, w, dw, num, den, x_rem );
++	stlab_zoom_axis( ay, h, dh, num, den, y_rem );
++
++	for(  uint32 dy = 0;  dy < dh;  dy++  ) {
++		for(  uint32 dx = 0;  dx < dw;  dx++  ) {
++			const uint32 d = dy * dw + dx;
++			uint32 ka[STLAB_ZOOM_KEY_MAX];
++			bool any_key = false;
++			if(  has_sem  ) {
++				for(  uint32 t = 0;  t < STLAB_ZOOM_KEY_MAX;  t++  ) { ka[t] = 0; }
+ 			}
+-			opq[d]++;
+-			alp[d] += a;
+-			if(  v2  &&  v2n[si]  ) {
+-				// every contributor is a hit; the plane pixel is the under-colour of the rest
+-				uint32 csum = 0;
+-				for(  uint8 j = 0;  j < v2n[si];  j++  ) {
+-					if(  hits < sem_src  ) {
+-						hit_d[hits] = d;  hit_k[hits] = v2k[si * 4 + j];  hit_c[hits] = v2c[si * 4 + j];
+-						hits++;
++			for(  uint32 ey = ay.first[dy];  ey < ay.first[dy + 1];  ey++  ) {
++				const uint32 sy = ay.src[ey], cy = ay.count[ey];
++				for(  uint32 ex = ax.first[dx];  ex < ax.first[dx + 1];  ex++  ) {
++					const uint32 si = sy * w + ax.src[ex];
++					const uint32 wg = cy * ax.count[ex];     // samples landing on this source pixel
++					const uint8 *p = img->rgba + (size_t)si * 4;
++					const uint8 a = p[3];
++					const bool hole = a <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF);
++					if(  nac  ) {
++						const uint8 *q = img->night + (size_t)si * 4;
++						if(  !(q[3] <= 7  ||  (q[0] == 0xE7 && q[1] == 0xFF && q[2] == 0xFF))  ) {
++							nop[d] += wg;
++							nal[d] += (uint32)q[3] * wg;
++							uint32 wgt = q[3];
++							if(  v2  &&  !hole  &&  v2n[si]  ) {
++								uint32 cs = 0;
++								for(  uint8 j = 0;  j < v2n[si];  j++  ) cs += v2c[si * 4 + j];
++								wgt = cs >= 255 ? 0u : 255u - cs;   // the same share as the day under-colour
++							}
++							nac[(size_t)d * 4 + 0] += (uint32)q[0] * wgt * wg;
++							nac[(size_t)d * 4 + 1] += (uint32)q[1] * wgt * wg;
++							nac[(size_t)d * 4 + 2] += (uint32)q[2] * wgt * wg;
++							nac[(size_t)d * 4 + 3] += wgt * wg;
++						}
++					}
++					if(  hole  ) {
++						continue;                       // a hole contributes nothing
++					}
++					opq[d] += wg;
++					alp[d] += (uint32)a * wg;
++					if(  v2  &&  v2n[si]  ) {
++						// every contributor is a key; the plane pixel is the under-colour of the rest
++						uint32 csum = 0;
++						for(  uint8 j = 0;  j < v2n[si];  j++  ) {
++							ka[v2k[si * 4 + j]] += (uint32)v2c[si * 4 + j] * wg;
++							csum += v2c[si * 4 + j];
++						}
++						any_key = true;
++						const uint32 rest = csum >= 255 ? 0u : 255u - csum;
++						acc_r[d] += (uint32)p[0] * rest * wg;
++						acc_g[d] += (uint32)p[1] * rest * wg;
++						acc_b[d] += (uint32)p[2] * rest * wg;
++						acc_w[d] += rest * wg;
++						continue;
++					}
++					const uint8 k = skey[si];
++					if(  k == 0  ) {
++						// a normal pixel: its colour is weighted by its alpha (straight alpha,
++						// averaged as premultiplied), so a translucent pixel counts for less
++						acc_r[d] += (uint32)p[0] * a * wg;
++						acc_g[d] += (uint32)p[1] * a * wg;
++						acc_b[d] += (uint32)p[2] * a * wg;
++						acc_w[d] += (uint32)a * wg;
++					}
++					else {
++						// a framebuffer-under record is the whole pixel: the shipped
++						// resolve returns fg outright for it, so its weight is 1, not
++						// its coverage, and it leaves nothing for the day-colour term
++						const uint32 cov = sufb[si] ? 255u : scov[si];
++						ka[k] += cov * wg;
++						any_key = true;
++						if(  !sufb[si]  ) {
++							// the under-colour carries the rest of this pixel's weight
++							const uint32 rest = 255u - cov;
++							acc_r[d] += (uint32)sur[si] * rest * wg;
++							acc_g[d] += (uint32)sug[si] * rest * wg;
++							acc_b[d] += (uint32)sub[si] * rest * wg;
++							acc_w[d] += rest * wg;
++						}
+ 					}
+-					csum += v2c[si * 4 + j];
+ 				}
+-				const uint32 rest = csum >= 255 ? 0u : 255u - csum;
+-				acc_r[d] += (uint32)p[0] * rest;
+-				acc_g[d] += (uint32)p[1] * rest;
+-				acc_b[d] += (uint32)p[2] * rest;
+-				acc_w[d] += rest;
+-				continue;
+ 			}
+-			const uint8 k = skey[si];
+-			if(  k == 0  ) {
+-				// a normal pixel: its colour is weighted by its alpha (straight alpha,
+-				// averaged as premultiplied), so a translucent pixel counts for less
+-				acc_r[d] += (uint32)p[0] * a;
+-				acc_g[d] += (uint32)p[1] * a;
+-				acc_b[d] += (uint32)p[2] * a;
+-				acc_w[d] += a;
++			if(  !any_key  ) {
++				continue;
+ 			}
+-			else {
+-				// a framebuffer-under record is the whole pixel: the shipped
+-				// resolve returns fg outright for it, so its weight is 1, not
+-				// its coverage, and it leaves nothing for the day-colour term
+-				const uint32 cov = sufb[si] ? 255u : scov[si];
+-				if(  hits < sem_src  ) {
+-					hit_d[hits] = d;  hit_k[hits] = k;  hit_c[hits] = (uint16)cov;
+-					hits++;
++			// normalise over the OPAQUE samples, the same set the plane averages over, so that
++			// (255 - SUM cov) is exactly the plane's share. Dividing by every sample instead
++			// would darken every pixel whose box contains a hole.
++			const uint32 c = opq[d] ? opq[d] : 1;
++			stlab_zoom_sem_t e;
++			e.dest = d;
++			e.n = 0;
++			for(  uint32 k = 1;  k < STLAB_ZOOM_KEY_MAX;  k++  ) {   // ascending by key
++				if(  ka[k] == 0  ) {
++					continue;
++				}
++				// coverage = round(255 * SUM w_i * a_i / 255) with w_i = 1/samples
++				const uint32 cov = (ka[k] + c / 2) / c;
++				if(  cov == 0  ) {
++					continue;                       // rounds away to nothing
++				}
++				if(  e.n < STLAB_ZOOM_INLINE_KEYS  ) {
++					e.key[e.n] = (uint8)k;
++					e.cov[e.n] = (uint8)(cov > 255 ? 255 : cov);
++					e.n++;
++				}
++				else {
++					// never truncate silently: fold the smallest into the largest so
++					// the total semantic weight is preserved
++					uint32 sum = (uint32)e.cov[STLAB_ZOOM_INLINE_KEYS - 1] + cov;
++					e.cov[STLAB_ZOOM_INLINE_KEYS - 1] = (uint8)(sum > 255 ? 255 : sum);
+ 				}
+-				if(  !sufb[si]  ) {
+-					// the under-colour carries the rest of this pixel's weight
+-					const uint32 rest = 255u - cov;
+-					acc_r[d] += (uint32)sur[si] * rest;
+-					acc_g[d] += (uint32)sug[si] * rest;
+-					acc_b[d] += (uint32)sub[si] * rest;
+-					acc_w[d] += rest;
++			}
++			if(  e.n == 0  ) {
++				continue;
++			}
++			// the coverages are rounded independently, so their sum can land one or
++			// two above full. Trim the largest, lowest key first, so the total is
++			// exactly representable and no contributor is dropped.
++			uint32 tot = 0;
++			for(  uint8 j = 0;  j < e.n;  j++  ) { tot += e.cov[j]; }
++			while(  tot > 255  ) {
++				uint8 big = 0;
++				for(  uint8 j = 1;  j < e.n;  j++  ) {
++					if(  e.cov[j] > e.cov[big]  ) { big = j; }
+ 				}
++				if(  e.cov[big] == 0  ) { break; }
++				e.cov[big]--;
++				tot--;
++			}
++			z->sem[w_sem++] = e;
++			if(  e.n > 1  ) {
++				z->rich_count++;
+ 			}
+ 		}
+ 	}
++	z->sem_count = w_sem;
++	if(  z->sem != NULL  &&  w_sem == 0  ) {
++		free( z->sem );
++		z->sem = NULL;
++	}
++	else if(  z->sem != NULL  &&  w_sem < nd  ) {
++		stlab_zoom_sem_t *shrunk = (stlab_zoom_sem_t *)realloc( z->sem, w_sem * sizeof(stlab_zoom_sem_t) );
++		if(  shrunk  ) {
++			z->sem = shrunk;
++		}
++	}
+ 
+-	// finalise the plane: one division, half-up, and the alpha of the box
++	// finalise the plane: one division, half-up; a pixel is drawn when a sample landed on an opaque
++	// source pixel (the legacy rule), with the mean straight alpha of those samples
+ 	z->rgba = MALLOCN( uint8, (size_t)nd * 4 );
+ 	for(  uint32 d = 0;  d < nd;  d++  ) {
+ 		uint8 *o = z->rgba + (size_t)d * 4;
+@@ -341,49 +451,9 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 			o[1] = (uint8)((acc_g[d] + den_w / 2) / den_w);
+ 			o[2] = (uint8)((acc_b[d] + den_w / 2) / den_w);
+ 		}
+-		// whether the box is drawn at all is decided by how much of it is not a hole, as
+-		// before; how opaque it is drawn is the mean alpha of the pixels that are not holes
+-		// (255 when they are all opaque, so opaque art keeps its exact previous result)
+-		const uint32 c = cnt[d] ? cnt[d] : 1;
+-		const uint32 coverage = (opq[d] * 255u + c / 2) / c;
+-		o[3] = coverage <= 7 ? (uint8)coverage : (uint8)((alp[d] + opq[d] / 2) / opq[d]);
++		o[3] = opq[d] ? (uint8)((alp[d] + opq[d] / 2) / opq[d]) : 0;
+ 	}
+ 
+-	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the night plane is reduced in its own pass, so an image without
+-	// one runs exactly the day loop above (measured: inside that loop it cost ~25 % at 1/2 even unused)
+-	for(  uint32 step = 0;  nac  &&  step < n_steps;  step++  ) {
+-		uint32 si, d;
+-		if(  enlarge  ) {
+-			d = step;
+-			const uint32 sx = (uint32)(((sint64)(d % dw) * den) / num);
+-			const uint32 sy = (uint32)(((sint64)(d / dw) * den) / num);
+-			si = ((sy < h) ? sy : h - 1) * w + ((sx < w) ? sx : w - 1);
+-		}
+-		else {
+-			si = step;
+-			const uint32 dy = (uint32)(((sint64)(si / w) * num) / den);
+-			const uint32 dx = (uint32)(((sint64)(si % w) * num) / den);
+-			d = ((dy < dh) ? dy : dh - 1) * dw + ((dx < dw) ? dx : dw - 1);
+-		}
+-		const uint8 *p = img->rgba + (size_t)si * 4;
+-		const uint8 *q = img->night + (size_t)si * 4;
+-		if(  q[3] <= 7  ||  (q[0] == 0xE7 && q[1] == 0xFF && q[2] == 0xFF)  ) {
+-			continue;
+-		}
+-		nop[d]++;
+-		nal[d] += q[3];
+-		uint32 wgt = q[3];
+-		const bool day_hole = p[3] <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF);
+-		if(  v2  &&  !day_hole  &&  v2n[si]  ) {
+-			uint32 cs = 0;
+-			for(  uint8 j = 0;  j < v2n[si];  j++  ) cs += v2c[si * 4 + j];
+-			wgt = cs >= 255 ? 0u : 255u - cs;   // the same share as the day under-colour
+-		}
+-		nac[(size_t)d * 4 + 0] += (uint32)q[0] * wgt;
+-		nac[(size_t)d * 4 + 1] += (uint32)q[1] * wgt;
+-		nac[(size_t)d * 4 + 2] += (uint32)q[2] * wgt;
+-		nac[(size_t)d * 4 + 3] += wgt;
+-	}
+ 	if(  nac  ) {
+ 		z->night = MALLOCN( uint8, (size_t)nd * 4 );
+ 		for(  uint32 d = 0;  d < nd;  d++  ) {
+@@ -392,110 +462,13 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 			for(  int ch = 0;  ch < 3;  ch++  ) {
+ 				o[ch] = den_w ? (uint8)((nac[(size_t)d * 4 + ch] + den_w / 2) / den_w) : 0;
+ 			}
+-			const uint32 c = cnt[d] ? cnt[d] : 1;
+-			const uint32 coverage = (nop[d] * 255u + c / 2) / c;
+-			o[3] = coverage <= 7 ? (uint8)coverage : (uint8)((nal[d] + nop[d] / 2) / nop[d]);
++			o[3] = nop[d] ? (uint8)((nal[d] + nop[d] / 2) / nop[d]) : 0;
+ 		}
+ 		free( nac );  free( nop );  free( nal );
+ 	}
+ 
+-	// group the hits by destination with a counting sort, so the walk below still
+-	// visits destinations in ascending order and keys in ascending order within
+-	// each one - the determinism the contract requires - without ever touching a
+-	// dense per-key array.
+-	uint32 *bucket = NULL;
+-	uint32 *order = NULL;
+-	uint32 n_sem = 0;
+-	if(  hits  ) {
+-		bucket = MALLOCN( uint32, nd + 1 );
+-		MEMZERON( bucket, nd + 1 );
+-		for(  uint32 i = 0;  i < hits;  i++  ) {
+-			if(  bucket[hit_d[i]] == 0  ) { n_sem++; }
+-			bucket[hit_d[i]]++;
+-		}
+-		uint32 run = 0;
+-		for(  uint32 d = 0;  d < nd;  d++  ) {
+-			const uint32 c = bucket[d];
+-			bucket[d] = run;
+-			run += c;
+-		}
+-		bucket[nd] = run;
+-		order = MALLOCN( uint32, hits );
+-		uint32 *cursor = MALLOCN( uint32, nd );
+-		for(  uint32 d = 0;  d < nd;  d++  ) { cursor[d] = bucket[d]; }
+-		for(  uint32 i = 0;  i < hits;  i++  ) { order[cursor[hit_d[i]]++] = i; }
+-		free( cursor );
+-	}
+-	z->sem = n_sem ? MALLOCN( stlab_zoom_sem_t, n_sem ) : NULL;
+-	uint32 w_sem = 0;
+-	for(  uint32 g = 0;  g < hits;  /* advanced inside */  ) {
+-		const uint32 d = hit_d[order[g]];
+-		uint32 g_end = g;
+-		while(  g_end < hits  &&  hit_d[order[g_end]] == d  ) { g_end++; }
+-		// merge this destination's contributions per key, ascending by key
+-		uint32 ka[STLAB_ZOOM_KEY_MAX];
+-		for(  uint32 t = 0;  t < STLAB_ZOOM_KEY_MAX;  t++  ) { ka[t] = 0; }
+-		for(  uint32 i = g;  i < g_end;  i++  ) {
+-			ka[hit_k[order[i]]] += hit_c[order[i]];
+-		}
+-		g = g_end;
+-		// normalise over the OPAQUE contributors, the same set the plane averages
+-		// over, so that (255 - SUM cov) is exactly the plane's share. Dividing by
+-		// the whole box instead would darken every pixel whose box contains a hole.
+-		const uint32 c = opq[d] ? opq[d] : 1;
+-		stlab_zoom_sem_t e;
+-		e.dest = d;
+-		e.n = 0;
+-		for(  uint32 k = 1;  k < STLAB_ZOOM_KEY_MAX;  k++  ) {   // ascending by key
+-			if(  ka[k] == 0  ) {
+-				continue;
+-			}
+-			// coverage = round(255 * SUM w_i * a_i / 255) with w_i = 1/count
+-			const uint32 cov = (ka[k] + c / 2) / c;
+-			if(  cov == 0  ) {
+-				continue;                       // rounds away to nothing
+-			}
+-			if(  e.n < STLAB_ZOOM_INLINE_KEYS  ) {
+-				e.key[e.n] = (uint8)k;
+-				e.cov[e.n] = (uint8)(cov > 255 ? 255 : cov);
+-				e.n++;
+-			}
+-			else {
+-				// never truncate silently: fold the smallest into the largest so
+-				// the total semantic weight is preserved, and record that it
+-				// happened. The corpus says this cannot occur below five keys.
+-				uint32 sum = (uint32)e.cov[STLAB_ZOOM_INLINE_KEYS - 1] + cov;
+-				e.cov[STLAB_ZOOM_INLINE_KEYS - 1] = (uint8)(sum > 255 ? 255 : sum);
+-			}
+-		}
+-		if(  e.n == 0  ) {
+-			continue;
+-		}
+-		// the coverages are rounded independently, so their sum can land one or
+-		// two above full. Trim the largest, lowest key first, so the total is
+-		// exactly representable and no contributor is dropped.
+-		uint32 tot = 0;
+-		for(  uint8 j = 0;  j < e.n;  j++  ) { tot += e.cov[j]; }
+-		while(  tot > 255  ) {
+-			uint8 big = 0;
+-			for(  uint8 j = 1;  j < e.n;  j++  ) {
+-				if(  e.cov[j] > e.cov[big]  ) { big = j; }
+-			}
+-			if(  e.cov[big] == 0  ) { break; }
+-			e.cov[big]--;
+-			tot--;
+-		}
+-		z->sem[w_sem++] = e;
+-		if(  e.n > 1  ) {
+-			z->rich_count++;
+-		}
+-	}
+-	z->sem_count = w_sem;
+-
+ 	free( acc_r );  free( acc_g );  free( acc_b );  free( acc_w );
+-	free( cnt );    free( opq );    free( alp );
+-	free( hit_d );  free( hit_k );  free( hit_c );
+-	free( bucket ); free( order );
++	free( opq );    free( alp );
+ 	free( skey );   free( scov );   free( sufb );
+ 	free( sur );    free( sug );    free( sub );
+ 	free( v2n );    free( v2k );    free( v2c );
+@@ -552,7 +525,9 @@ static bool stlab_xr32_zoom_prepare(image_id n)
+ 	if(  s == NULL  ||  s->img == NULL  ) {
+ 		return false;
+ 	}
+-	if(  zoom_factor32 == ZOOM_NEUTRAL  &&  s->fit_num == 0  ) {
++	// XR32-NONZOOMABLE-01 (N5): an image that is not zoomable keeps its base geometry at every world zoom, exactly
++	// as the legacy branch of rezoom_img32() does; only a fit step (fit_img_to_width) scales it
++	if(  (zoom_factor32 == ZOOM_NEUTRAL  ||  (images[n].recode_flags & FLAG_ZOOMABLE) == 0)  &&  s->fit_num == 0  ) {
+ 		// back at neutral the scaled cache is dead weight and the base geometry rules
+ 		stlab_xr32_zoom_release( s );
+ 		images[n].x   = images[n].base_x;

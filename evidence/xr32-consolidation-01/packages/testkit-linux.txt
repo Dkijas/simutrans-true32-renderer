@@ -1,0 +1,15 @@
+linux makeobj 7646fe250ae82ca9e5eca2381422cd0ad9db6b83ae094c1ef9f75034f03363df
+cards-64-A: linux makeobj vs expected/ SAME rc=0
+cards-64-B: linux makeobj vs expected/ SAME rc=0
+cards-64-B8: linux makeobj vs expected/ SAME rc=0
+cards-64-L: linux makeobj vs expected/ SAME rc=0
+cards-128-A: linux makeobj vs expected/ SAME rc=0
+cards-128-B: linux makeobj vs expected/ SAME rc=0
+cards-128-B8: linux makeobj vs expected/ SAME rc=0
+cards-128-L: linux makeobj vs expected/ SAME rc=0
+blender-A: linux makeobj vs expected/ SAME rc=0
+blender-B: linux makeobj vs expected/ SAME rc=0
+pixelart-tram-daynight: linux makeobj vs expected/ SAME rc=0
+pixelart-tram-r11: linux makeobj vs expected/ SAME rc=0
+zoom-thinpoles: linux makeobj vs expected/ SAME rc=0
+linux expected/ byte-identical: 13 of 13

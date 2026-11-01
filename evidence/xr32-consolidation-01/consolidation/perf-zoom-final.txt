@@ -1,0 +1,20 @@
+Frame times in ms, default world of Frank's pak64.german, Linux SDL2 dummy video, -fps 500, median (min-max) of n=7 interleaved runs
+legacy = testing-1 XR32 off, base = testing-1 XR32 on, fin = final 42c5d62 (I1-I6) XR32 on; rebuild = first - redraw (medians)
+provenance: every row's exe sha256 prefix matches its label: base 5ca3357ca318eb39, fin fc04d444b24d1684, legacy 5ca3357ca318eb39
+7/4   | legacy first   12.5 ( 11.5- 17.9) redraw    7.0 (  6.2-  7.8) rebuild    5.5 | base   first   13.6 ( 12.1- 14.4) redraw    7.3 (  6.6-  7.6) rebuild    6.3 | fin    first   16.0 ( 14.0- 16.7) redraw    7.6 (  7.2-  8.5) rebuild    8.3
+3/2   | legacy first    8.3 (  7.2-  9.5) redraw    7.4 (  6.2-  7.8) rebuild    1.0 | base   first    9.5 (  8.8-  9.9) redraw    7.6 (  6.6-  8.0) rebuild    1.9 | fin    first   10.7 (  9.3- 14.1) redraw    7.5 (  6.6-  7.9) rebuild    3.2
+4/3   | legacy first    9.3 (  9.0-  9.6) redraw    7.5 (  6.2-  8.1) rebuild    1.8 | base   first   10.1 (  9.1- 12.2) redraw    7.5 (  5.3-  8.5) rebuild    2.6 | fin    first   11.8 ( 10.9- 13.2) redraw    7.8 (  7.3-  8.3) rebuild    3.9
+9/8   | legacy first   18.5 ( 16.7- 20.0) redraw    7.9 (  6.6-  8.1) rebuild   10.7 | base   first   14.0 ( 12.7- 15.2) redraw    7.5 (  6.4-  8.4) rebuild    6.5 | fin    first   15.2 ( 14.7- 16.7) redraw    7.6 (  6.6-  7.7) rebuild    7.7
+3/4   | legacy first    7.9 (  7.5-  8.9) redraw    7.6 (  6.6-  8.0) rebuild    0.4 | base   first    8.5 (  7.7- 10.7) redraw    7.4 (  6.8-  8.5) rebuild    1.1 | fin    first    9.1 (  8.4- 10.4) redraw    7.9 (  6.9-  8.4) rebuild    1.2
+1/2   | legacy first    6.2 (  5.7-  7.0) redraw    7.4 (  6.6-  7.9) rebuild   -1.3 | base   first    8.3 (  7.6-  9.0) redraw    7.0 (  6.5-  8.1) rebuild    1.3 | fin    first    8.5 (  7.4-  9.5) redraw    7.2 (  6.8-  7.8) rebuild    1.3
+3/8   | legacy first   12.6 ( 10.6- 14.5) redraw    7.5 (  7.1-  8.2) rebuild    5.1 | base   first   11.8 ( 10.8- 12.9) redraw    7.3 (  7.2-  8.2) rebuild    4.5 | fin    first   13.0 ( 12.5- 14.9) redraw    7.1 (  6.3-  7.4) rebuild    5.9
+1/8   | legacy first   12.3 ( 10.7- 14.5) redraw    7.2 (  6.3-  8.5) rebuild    5.0 | base   first   15.8 ( 14.7- 21.8) redraw    7.8 (  6.4-  8.3) rebuild    8.0 | fin    first   15.1 ( 13.8- 20.0) redraw    7.8 (  7.3-  8.3) rebuild    7.3
+1/1   | legacy first    3.4 (  3.0-  3.8) redraw    7.8 (  6.5-  8.5) rebuild   -4.3 | base   first    4.0 (  3.8-  4.4) redraw    7.6 (  7.3-  7.8) rebuild   -3.6 | fin    first    3.9 (  3.7-  6.1) redraw    7.4 (  4.4-  8.5) rebuild   -3.5
+walk total per run (sum of the 9 first frames), ms:
+  legacy median   91.0  min   89.3  max   98.3  runs 95 92 90 91 90 89 98
+  base   median   96.0  min   92.4  max  103.4  runs 95 96 97 93 103 92 103
+  fin    median  105.2  min   98.9  max  107.6  runs 105 99 105 102 106 107 108
+  paired fin - base per repetition: median +8.7 ms (+9.0 % of base), min +2.8, max +15.0, fin higher in 7 of 7
+  paired base - legacy per repetition: median +4.0 ms (+4.4 % of legacy), min +0.2, max +13.7, base higher in 7 of 7
+  paired fin - legacy per repetition: median +11.4 ms (+12.5 % of legacy), min +7.0, max +18.1, fin higher in 7 of 7
+forced full redraw, all steps pooled: legacy median 7.4 ms (min 6.2, max 8.5), base median 7.5 ms (min 5.3, max 8.5), fin median 7.5 ms (min 4.4, max 8.5)

@@ -12,6 +12,7 @@
  * ==========================================================================*/
 
 #include <chrono>
+#include <map>
 
 /* --- what the semantic layer needs from the renderer ------------------------ */
 
@@ -27,8 +28,19 @@ uint32 stlab_pack_argb(int r, int g, int b)
 }
 
 
+/* XR32-UI-DAYTIME-01: a draw with daynight=false asks for the day colours (the 16-bit renderer then draws
+ * through rgbmap_all_day / specialcolormap_all_day). While this is set, the semantics resolve an image
+ * against exactly those tables: night level 0 and the multipliers they were built with (1.0, at init).
+ * Per thread, so a display lane never sees another thread's request. */
+static thread_local bool stlab_daytime = false;
+
+
 void stlab_night_multipliers(double *rg, double *b)
 {
+	if(  stlab_daytime  ) {
+		*rg = *b = 1.0;
+		return;
+	}
 	const int night = night_shift < 0 ? 0 : night_shift;
 	*rg = pow(0.75, night) * ((light_level + 8.0) / 8.0);
 	*b  = pow(0.83, night) * ((light_level + 8.0) / 8.0);
@@ -37,6 +49,9 @@ void stlab_night_multipliers(double *rg, double *b)
 
 int stlab_night_level()
 {
+	if(  stlab_daytime  ) {
+		return 0;
+	}
 	return night_shift < 0 ? 0 : night_shift;
 }
 
@@ -47,7 +62,7 @@ uint32 stlab_player_colour_argb(sint8 player_nr, uint8 channel, uint8 tone)
 	const uint8 off = player_offsets[p][channel == 2 ? 1 : 0];
 	// specialcolormap_day_night already carries the night multiplier, applied once
 	// when the palette was built. No 555 index is involved.
-	return specialcolormap_day_night[(int)off + (tone & 7)];
+	return (stlab_daytime ? specialcolormap_all_day : specialcolormap_day_night)[(int)off + (tone & 7)];
 }
 
 
@@ -56,7 +71,7 @@ uint32 stlab_light_colour_argb(uint8 light_index)
 	if(  light_index >= LIGHT_COUNT  ) {
 		return 0xFF000000u;
 	}
-	return rgbmap_day_night[0x8000 + MAX_PLAYER_COUNT + light_index];
+	return (stlab_daytime ? rgbmap_all_day : rgbmap_day_night)[0x8000 + MAX_PLAYER_COUNT + light_index];
 }
 
 
@@ -76,6 +91,8 @@ struct stlab_xr32_slot_t {
 
 static stlab_xr32_slot_t *stlab_slots = NULL;
 static image_id stlab_slots_alloc = 0;
+
+static void stlab_xr32_base_release();   // XR32-UI-BASE-01: the base-size runs of the interface (end of file)
 
 
 static stlab_xr32_slot_t *stlab_slot(image_id n, bool create)
@@ -150,6 +167,42 @@ bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
 
 
 static void stlab_xr32_zoom_release(stlab_xr32_slot_t *s);
+
+
+bool stlab_xr32_has_authored(image_id id)
+{
+	const stlab_xr32_slot_t *s = stlab_slot( id, false );
+	return s != NULL  &&  s->img != NULL  &&  !s->generated;
+}
+
+
+bool stlab_xr32_shows(image_id id, const stlab_xr32_image_t *day, const uint8 *night)
+{
+	const stlab_xr32_slot_t *s = stlab_slot( id, false );
+	const stlab_xr32_image_t *have = (s != NULL  &&  !s->generated) ? s->img : NULL;
+	if(  have == NULL  ||  day == NULL  ) {
+		return have == NULL  &&  day == NULL;
+	}
+	if(  have->width != day->width  ||  have->height != day->height  ||  have->x != day->x  ||  have->y != day->y
+	     ||  have->zoomable != day->zoomable  ||  have->version != day->version  ||  have->run_count != day->run_count  ) {
+		return false;
+	}
+	const size_t bytes = (size_t)day->width * day->height * 4;
+	if(  (have->rgba == NULL) != (day->rgba == NULL)  ||  (day->rgba  &&  memcmp( have->rgba, day->rgba, bytes ) != 0)  ) {
+		return false;
+	}
+	for(  uint32 r = 0;  r < day->run_count;  r++  ) {
+		const stlab_xr32_run_t &a = have->runs[r], &b = day->runs[r];
+		if(  a.start != b.start  ||  a.length != b.length  ||  a.cls != b.cls  ||  a.param != b.param  ||  a.coverage != b.coverage
+		     ||  a.under_is_framebuffer != b.under_is_framebuffer  ||  a.under_r != b.under_r  ||  a.under_g != b.under_g  ||  a.under_b != b.under_b  ) {
+			return false;
+		}
+	}
+	if(  (have->night == NULL) != (night == NULL)  ) {
+		return false;
+	}
+	return night == NULL  ||  memcmp( have->night, night, bytes ) == 0;
+}
 
 /* --- XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 (EXPERIMENT) ----------------------------- */
 
@@ -310,6 +363,7 @@ void simgraph32_alpha_plane_release();
 
 void stlab_xr32_release_all()
 {
+	stlab_xr32_base_release();
 	simgraph32_alpha_plane_release();
 	stlab_xr32_scratch_release();
 	for(  image_id i = 0;  i < stlab_slots_alloc;  i++  ) {
@@ -487,6 +541,50 @@ static bool stlab_xr32_hires_prepare(image_id n)
 }
 
 
+/// resolved_night of a screen cache that holds the DAY resolution (XR32-UI-DAYTIME-01)
+static const int STLAB_RESOLVED_DAYTIME = -1000;
+
+bool stlab_xr32_recode(image_id n, sint8 player_nr);
+
+
+/**
+ * XR32-UI-DAYTIME-01: the screen cache of image @p n for @p player_nr, resolved for the day - what a draw with
+ * daynight=false needs at night. The cache is the one the world draws from, so it is marked stale for the world
+ * afterwards (player_flags); the world never asks for daynight=false (the interface does), and the interface is
+ * drawn after the world's display lanes, so the two never use it at the same time. Call under recode_img_mutex32.
+ */
+bool stlab_xr32_recode_daytime(image_id n, sint8 player_nr)
+{
+	stlab_xr32_slot_t *s = stlab_slot( n, false );
+	if(  s == NULL  ||  s->img == NULL  ) {
+		return false;
+	}
+	if(  images[n].data[player_nr] != NULL  &&  s->resolved_player == (uint8)player_nr  &&  s->resolved_night == STLAB_RESOLVED_DAYTIME  ) {
+		return true;
+	}
+	stlab_daytime = true;
+	const bool ok = stlab_xr32_recode( n, player_nr );
+	stlab_daytime = false;
+	if(  ok  ) {
+		s->resolved_night = STLAB_RESOLVED_DAYTIME;
+		images[n].player_flags |= (uint16)(1 << player_nr);
+	}
+	return ok;
+}
+
+
+/// XR32-UI-DAYTIME-01: the palette changed (recode32): a day resolution may no longer describe it either
+void stlab_xr32_forget_daytime()
+{
+	stlab_xr32_base_release();
+	for(  image_id i = 0;  i < stlab_slots_alloc;  i++  ) {
+		if(  stlab_slots[i].resolved_night == STLAB_RESOLVED_DAYTIME  ) {
+			stlab_slots[i].resolved_night = -999;
+		}
+	}
+}
+
+
 bool stlab_xr32_recode(image_id n, sint8 player_nr)
 {
 	stlab_xr32_slot_t *s = stlab_slot(n, false);
@@ -555,4 +653,70 @@ bool stlab_xr32_recode(image_id n, sint8 player_nr)
 	s->resolved_player = (uint8)player_nr;
 	s->resolved_night = night_shift;
 	return true;
+}
+
+
+/* --- XR32-UI-BASE-01: an image at its BASE size, for the interface ------------------------------------
+ *
+ * simgraph32_draw_base_img() and its blend form draw an image at its unzoomed base size while the world is
+ * zoomed (the interface's images: gui_image, gui_image_list, the convoy and vehicle lists ...). For a legacy
+ * image they read base_data, which for a candidate-backed image is its 16-bit picture. These are the 1:1 XR32
+ * runs instead, kept apart from the world's screen cache (which holds the zoomed image), per image for one
+ * player and one context at a time (the night level, or STLAB_RESOLVED_DAYTIME for daynight=false).
+ */
+struct stlab_xr32_base_t {
+	PIXVAL *runs = NULL;
+	uint8 player = 0xFF;
+	int night = -999;
+};
+static std::map<image_id, stlab_xr32_base_t> stlab_base_runs;
+
+
+/// the 1:1 runs of image @p n for @p player_nr, and their geometry; NULL if it has no XR32 data. Call under
+/// recode_img_mutex32 (it uses the shared scratch buffers). The pointer stays valid until the next palette
+/// change (stlab_xr32_forget_daytime) or release.
+const PIXVAL *stlab_xr32_base_runs(image_id n, sint8 player_nr, bool daynight, scr_coord_val *x, scr_coord_val *y,
+                                   scr_coord_val *w, scr_coord_val *h)
+{
+	const stlab_xr32_slot_t *s = stlab_slot( n, false );
+	if(  s == NULL  ||  s->img == NULL  ) {
+		return NULL;
+	}
+	const stlab_xr32_image_t *img = s->img;
+	*x = img->x;
+	*y = img->y;
+	*w = img->width;
+	*h = img->height;
+	// daynight=true is the night level's resolution (the day_night tables, also at level 0), daynight=false the
+	// day context of XR32-UI-DAYTIME-01 (the all_day tables) - the two tables the 16-bit families read
+	const int key = daynight ? night_shift : STLAB_RESOLVED_DAYTIME;
+	stlab_xr32_base_t &b = stlab_base_runs[n];
+	if(  b.runs != NULL  &&  b.player == (uint8)player_nr  &&  b.night == key  ) {
+		return b.runs;
+	}
+	const uint32 npx = (uint32)img->width * img->height;
+	if(  npx == 0  ||  !stlab_scratch_reserve( npx, stlab_xr32_encode_cap( img->width, img->height ) )  ) {
+		return NULL;
+	}
+	stlab_daytime = key == STLAB_RESOLVED_DAYTIME;
+	stlab_xr32_resolve( img, player_nr, stlab_scratch_raster );
+	stlab_daytime = false;
+	PIXVAL *d = stlab_xr32_encode_rows( stlab_scratch_raster, img->width, img->height, stlab_scratch_out );
+	const size_t used = (size_t)(d - stlab_scratch_out);
+	free( b.runs );
+	b.runs = MALLOCN( PIXVAL, used );
+	memcpy( b.runs, stlab_scratch_out, used * sizeof(PIXVAL) );
+	b.player = (uint8)player_nr;
+	b.night = key;
+	return b.runs;
+}
+
+
+/// XR32-UI-BASE-01: drop every base-size run set (the palette changed, or the images go)
+static void stlab_xr32_base_release()
+{
+	for(  auto &b : stlab_base_runs  ) {
+		free( b.second.runs );
+	}
+	stlab_base_runs.clear();
 }

@@ -31,6 +31,10 @@
 static bool stlab_xr32_zoom_prepare(image_id n);   // native zoom for candidate-backed images
 static bool stlab_xr32_hires_prepare(image_id n);  // MRES: an authored 2x candidate at exactly 2/1
 static void stlab_nightgen_register(image_id id);  // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: generated night (experiment)
+bool stlab_xr32_recode_daytime(image_id n, sint8 player_nr);   // XR32-UI-DAYTIME-01: daynight=false at night
+void stlab_xr32_forget_daytime();                              // XR32-UI-DAYTIME-01: the palette changed
+const PIXVAL *stlab_xr32_base_runs(image_id n, sint8 player_nr, bool daynight, scr_coord_val *x, scr_coord_val *y,
+                                   scr_coord_val *w, scr_coord_val *h);   // XR32-UI-BASE-01: 1:1 runs for the interface
 #include "simgraph_palette.h"
 
 #include "../macros.h"
@@ -1219,6 +1223,7 @@ static void recode32()
 	for(  image_id n = 0;  n < anz_images;  n++  ) {
 		images[n].player_flags = 0xFFFF;   // recode all player colors
 	}
+	stlab_xr32_forget_daytime();
 }
 
 
@@ -1494,6 +1499,51 @@ static void simgraph32_draw_base_img_blend(const image_id n, scr_coord_val xp, s
 	if(  n >= anz_images  ) {
 		return;
 	}
+
+	const PIXVAL colour = get_flagged_colour( color_index );
+	const uint8  level  = get_transparency_level( color_index );
+
+	if(  stlab_xr32_has( n )  ) {
+		// XR32-UI-BASE-01: the 1:1 XR32 runs, blended exactly as the rezoomed form blends its screen cache
+		const sint8 p = (player_nr >= 0 && player_nr < MAX_PLAYER_COUNT) ? player_nr : 0;
+		scr_coord_val bx = 0, by = 0, bw = 0, bh = 0;
+#ifdef MULTI_THREAD
+		pthread_mutex_lock( &recode_img_mutex32 );
+#endif
+		const PIXVAL *runs = stlab_xr32_base_runs( n, p, daynight, &bx, &by, &bw, &bh );
+		// drawn under the lock: a palette change frees these runs (stlab_xr32_forget_daytime)
+		const bool served = runs != NULL;
+		xp += bx;
+		yp += by;
+		if(  served  &&  clip_rows32( runs, yp, bh   CLIP_NUM_PAR)  ) {
+			if(  dirty  ) {
+				simgraph32_mark_rect_dirty_wc( xp, yp, xp + bw - 1, yp + bh - 1 );
+			}
+			if(  has_outline_flag( color_index )  ) {
+				switch(  level  ) {
+					case 1: { PixelOps32Outline<blend_b25_argb, PIXVAL> o; o.colour = colour; display_img_blend_wc32( bh, xp, yp, runs, o   CLIP_NUM_PAR); break; }
+					case 2: { PixelOps32Outline<blend_b50_argb, PIXVAL> o; o.colour = colour; display_img_blend_wc32( bh, xp, yp, runs, o   CLIP_NUM_PAR); break; }
+					default:{ PixelOps32Outline<blend_b75_argb, PIXVAL> o; o.colour = colour; display_img_blend_wc32( bh, xp, yp, runs, o   CLIP_NUM_PAR); break; }
+				}
+			}
+			else {
+				switch(  level  ) {
+					case 1: display_img_blend_wc32( bh, xp, yp, runs, PixelOps32Blend<blend_b25_argb>()   CLIP_NUM_PAR); break;
+					case 2: display_img_blend_wc32( bh, xp, yp, runs, PixelOps32Blend<blend_b50_argb>()   CLIP_NUM_PAR); break;
+					default:display_img_blend_wc32( bh, xp, yp, runs, PixelOps32Blend<blend_b75_argb>()   CLIP_NUM_PAR); break;
+				}
+			}
+		}
+#ifdef MULTI_THREAD
+		pthread_mutex_unlock( &recode_img_mutex32 );
+#endif
+		if(  served  ) {
+			return;
+		}
+		xp -= bx;
+		yp -= by;
+	}
+
 	activate_player_color32( (player_nr >= 0 && player_nr < MAX_PLAYER_COUNT) ? player_nr : 0, daynight );
 
 	const STORED_PIXVAL *sp = images[n].base_data;
@@ -1507,9 +1557,6 @@ static void simgraph32_draw_base_img_blend(const image_id n, scr_coord_val xp, s
 	if(  dirty  ) {
 		simgraph32_mark_rect_dirty_wc( xp, yp, xp + images[n].base_w - 1, yp + h - 1 );
 	}
-
-	const PIXVAL colour = get_flagged_colour( color_index );
-	const uint8  level  = get_transparency_level( color_index );
 
 	if(  has_outline_flag( color_index )  ) {
 		switch(  level  ) {
@@ -1638,6 +1685,8 @@ static void simgraph32_draw_base_img_alpha(const image_id n, const image_id alph
  * display_img_aux() in simgraph16.cc: polygon clip wins, otherwise the image
  * is either fully inside the clip rectangle (nc) or straddles it (wc).
  */
+static void display_runs32(const PIXVAL *sp, scr_coord_val xp, scr_coord_val yp, const scr_coord_val w, scr_coord_val h, const bool dirty  CLIP_NUM_DEF);
+
 static void display_img_aux32(const image_id n, scr_coord_val xp, scr_coord_val yp, const sint8 player_nr_raw, const bool dirty  CLIP_NUM_DEF)
 {
 	if(  n >= anz_images  ||  images[n].h == 0  ) {
@@ -1648,11 +1697,16 @@ static void display_img_aux32(const image_id n, scr_coord_val xp, scr_coord_val 
 		return;
 	}
 
-	const PIXVAL *sp = images[n].data[player_nr];
+	display_runs32( images[n].data[player_nr], xp + images[n].x, yp + images[n].y, images[n].w, images[n].h, dirty  CLIP_NUM_PAR );
+}
 
-	yp += images[n].y;
-	scr_coord_val h = images[n].h;
 
+/**
+ * The blit of display_img_aux32(): screen runs @p sp of a @p w x @p h image whose top left corner is at xp, yp.
+ * XR32-UI-BASE-01: also the blit of an image's base-size runs, which are not images[n]'s screen cache.
+ */
+static void display_runs32(const PIXVAL *sp, scr_coord_val xp, scr_coord_val yp, const scr_coord_val w, scr_coord_val h, const bool dirty  CLIP_NUM_DEF)
+{
 	// vertical clipping first, exactly as the legacy renderer does
 	const scr_coord_val reduce_h = yp + h - CR32.clip_rect.yy;
 	if(  reduce_h > 0  ) {
@@ -1677,9 +1731,6 @@ static void display_img_aux32(const image_id n, scr_coord_val xp, scr_coord_val 
 			sp++;
 		}
 	}
-
-	const scr_coord_val w = images[n].w;
-	xp += images[n].x;
 
 	/* The dirty marks sit here, not in draw_img_aux, because THIS is the
 	 * function that picks the clipping branch - simgraph16_draw_img_aux
@@ -2359,8 +2410,17 @@ static void simgraph32_draw_color_img(const image_id n, scr_coord_val xp, scr_co
 
 	if(  stlab_xr32_has( n )  ) {
 		// This family reads STORED_PIXVAL directly. For a candidate-backed image that
-		// would be a legacy conversion, so serve it from the screen cache instead.
-		if(  images[n].player_flags & (1 << player_nr)  ) {
+		// would be a legacy conversion, so serve it from the screen cache instead -
+		// XR32-UI-DAYTIME-01: resolved for the day, as daynight=false asks (the daytime
+		// family below draws a legacy image in its day colours at night too)
+#ifdef MULTI_THREAD
+		pthread_mutex_lock( &recode_img_mutex32 );
+#endif
+		const bool day = stlab_xr32_recode_daytime( n, player_nr );
+#ifdef MULTI_THREAD
+		pthread_mutex_unlock( &recode_img_mutex32 );
+#endif
+		if(  !day  &&  (images[n].player_flags & (1 << player_nr))  ) {
 			recode_img( n, player_nr );
 		}
 		display_img_aux32( n, xp, yp, player_nr, dirty   CLIP_NUM_PAR);
@@ -2429,6 +2489,26 @@ static void simgraph32_draw_base_img(const image_id n, scr_coord_val xp, scr_coo
 	}
 	if(  n >= anz_images  ) {
 		return;
+	}
+
+	if(  stlab_xr32_has( n )  ) {
+		// XR32-UI-BASE-01: base_data is a candidate-backed image's 16-bit picture; draw its 1:1 XR32 runs
+		const sint8 p = (player_nr >= 0 && player_nr < MAX_PLAYER_COUNT) ? player_nr : 0;
+		scr_coord_val bx = 0, by = 0, bw = 0, bh = 0;
+#ifdef MULTI_THREAD
+		pthread_mutex_lock( &recode_img_mutex32 );
+#endif
+		const PIXVAL *runs = stlab_xr32_base_runs( n, p, daynight, &bx, &by, &bw, &bh );
+		if(  runs  ) {
+			// drawn under the lock: a palette change frees these runs (stlab_xr32_forget_daytime)
+			display_runs32( runs, xp + bx, yp + by, bw, bh, dirty  CLIP_NUM_PAR );
+		}
+#ifdef MULTI_THREAD
+		pthread_mutex_unlock( &recode_img_mutex32 );
+#endif
+		if(  runs  ) {
+			return;
+		}
 	}
 
 	// the zoomed path: the BASE image is drawn unzoomed, from stored data, so

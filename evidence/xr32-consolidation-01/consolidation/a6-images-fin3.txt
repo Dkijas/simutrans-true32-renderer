@@ -1,0 +1,4 @@
+A6 (fin3)
+pak128.german-cat    images   122 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 117 differ
+pak-kitB8            images     8 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 8 differ
+pak64.german-mres1   images 10895 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 10412 differ

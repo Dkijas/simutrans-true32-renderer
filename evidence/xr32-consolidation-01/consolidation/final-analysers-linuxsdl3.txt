@@ -1,0 +1,20 @@
+## analyze linuxsdl3
+frank150   iconsize [60, 60] fitted 281 ['3/2', '7/4'] | parity with 16-bit: equal 131, known-issue-1 0, unexpected 2, base-mismatch 148
+barzoom    xr1 toolbar band (rows 0..80-1) vs world zoom 1/1: z0:0 z11:0 z7back:0 | hires used [1, 1, 1, 1] -> ok
+barzoom    xr0 toolbar band (rows 0..80-1) vs world zoom 1/1: z0:0 z11:6400 z7back:6400 | hires used [0, 0, 0, 0] -> reported
+seadraw    xr32 slots 55 | images 55 | colour 201,7,133 px: XR32 on 0, off 0 | on vs off identical pictures 0 of 55 -> ok
+mutantdraw xr32 slots 55 | images 55 | colour 201,7,133 px: XR32 on 225280, off 0 | on vs off identical pictures 0 of 55 -> ok
+failures 152
+## parity cut
+linuxsdl3: fitted 281 | best single cut T=1074 explains 281 of them
+linuxsdl3: parity with the cut: equal 281, known-issue-1 0, unexpected 0
+## thin
+linuxsdl3      catdraw   rows   732 | legacy-hidden   21 | drawn where legacy hides   0 [z10:0/0 z11:0/5 z12:0/6 z13:0/10 z7:0/0 z7back:0/0] | back to 1/1: 0 of 122 differ -> ok
+linuxsdl3      thinpoles rows    30 | legacy-hidden    3 | drawn where legacy hides   0 [z10:0/0 z11:0/1 z12:0/1 z13:0/1 z7:0/0 z7back:0/0] | back to 1/1: 0 of 5 differ -> ok
+failures 0
+## night
+linuxsdl3 day vs night cards xr0: level 0 differ 0 of 16 | level 13 differ 0 of 16 | per level 0:0 1:0 2:0 3:0 4:0 5:0 8:0 13:0 0:0 -> CONTROL: night-used finds nothing -> the check FAILS as it must
+compared 64 image x player series; failures 0
+## mres
+mres-pklinuxsdl3-xr0-s200          cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 8): 6400 / 6400 = 100.0 %
+mres-pklinuxsdl3-xr1-s200          cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %

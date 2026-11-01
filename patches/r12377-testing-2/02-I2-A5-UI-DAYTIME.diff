@@ -1,0 +1,143 @@
+diff --git a/src/simutrans/display/simgraph32.cc b/src/simutrans/display/simgraph32.cc
+index 59fc1971b077a88eb0db8ab12e5c50711d7d305c..dbbc913191130edaa629470ab01875eb8e775165 100644
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -31,6 +31,8 @@
+ static bool stlab_xr32_zoom_prepare(image_id n);   // native zoom for candidate-backed images
+ static bool stlab_xr32_hires_prepare(image_id n);  // MRES: an authored 2x candidate at exactly 2/1
+ static void stlab_nightgen_register(image_id id);  // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: generated night (experiment)
++bool stlab_xr32_recode_daytime(image_id n, sint8 player_nr);   // XR32-UI-DAYTIME-01: daynight=false at night
++void stlab_xr32_forget_daytime();                              // XR32-UI-DAYTIME-01: the palette changed
+ #include "simgraph_palette.h"
+ 
+ #include "../macros.h"
+@@ -1219,6 +1221,7 @@ static void recode32()
+ 	for(  image_id n = 0;  n < anz_images;  n++  ) {
+ 		images[n].player_flags = 0xFFFF;   // recode all player colors
+ 	}
++	stlab_xr32_forget_daytime();
+ }
+ 
+ 
+@@ -2359,8 +2362,17 @@ static void simgraph32_draw_color_img(const image_id n, scr_coord_val xp, scr_co
+ 
+ 	if(  stlab_xr32_has( n )  ) {
+ 		// This family reads STORED_PIXVAL directly. For a candidate-backed image that
+-		// would be a legacy conversion, so serve it from the screen cache instead.
+-		if(  images[n].player_flags & (1 << player_nr)  ) {
++		// would be a legacy conversion, so serve it from the screen cache instead -
++		// XR32-UI-DAYTIME-01: resolved for the day, as daynight=false asks (the daytime
++		// family below draws a legacy image in its day colours at night too)
++#ifdef MULTI_THREAD
++		pthread_mutex_lock( &recode_img_mutex32 );
++#endif
++		const bool day = stlab_xr32_recode_daytime( n, player_nr );
++#ifdef MULTI_THREAD
++		pthread_mutex_unlock( &recode_img_mutex32 );
++#endif
++		if(  !day  &&  (images[n].player_flags & (1 << player_nr))  ) {
+ 			recode_img( n, player_nr );
+ 		}
+ 		display_img_aux32( n, xp, yp, player_nr, dirty   CLIP_NUM_PAR);
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index 9a05b79f6d0d2927e0f125c94d1d5ee3a5d5f4e7..306c29ea8bc7a92d65056bb03c354c2657c53cec 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -27,8 +27,19 @@ uint32 stlab_pack_argb(int r, int g, int b)
+ }
+ 
+ 
++/* XR32-UI-DAYTIME-01: a draw with daynight=false asks for the day colours (the 16-bit renderer then draws
++ * through rgbmap_all_day / specialcolormap_all_day). While this is set, the semantics resolve an image
++ * against exactly those tables: night level 0 and the multipliers they were built with (1.0, at init).
++ * Per thread, so a display lane never sees another thread's request. */
++static thread_local bool stlab_daytime = false;
++
++
+ void stlab_night_multipliers(double *rg, double *b)
+ {
++	if(  stlab_daytime  ) {
++		*rg = *b = 1.0;
++		return;
++	}
+ 	const int night = night_shift < 0 ? 0 : night_shift;
+ 	*rg = pow(0.75, night) * ((light_level + 8.0) / 8.0);
+ 	*b  = pow(0.83, night) * ((light_level + 8.0) / 8.0);
+@@ -37,6 +48,9 @@ void stlab_night_multipliers(double *rg, double *b)
+ 
+ int stlab_night_level()
+ {
++	if(  stlab_daytime  ) {
++		return 0;
++	}
+ 	return night_shift < 0 ? 0 : night_shift;
+ }
+ 
+@@ -47,7 +61,7 @@ uint32 stlab_player_colour_argb(sint8 player_nr, uint8 channel, uint8 tone)
+ 	const uint8 off = player_offsets[p][channel == 2 ? 1 : 0];
+ 	// specialcolormap_day_night already carries the night multiplier, applied once
+ 	// when the palette was built. No 555 index is involved.
+-	return specialcolormap_day_night[(int)off + (tone & 7)];
++	return (stlab_daytime ? specialcolormap_all_day : specialcolormap_day_night)[(int)off + (tone & 7)];
+ }
+ 
+ 
+@@ -56,7 +70,7 @@ uint32 stlab_light_colour_argb(uint8 light_index)
+ 	if(  light_index >= LIGHT_COUNT  ) {
+ 		return 0xFF000000u;
+ 	}
+-	return rgbmap_day_night[0x8000 + MAX_PLAYER_COUNT + light_index];
++	return (stlab_daytime ? rgbmap_all_day : rgbmap_day_night)[0x8000 + MAX_PLAYER_COUNT + light_index];
+ }
+ 
+ 
+@@ -523,6 +537,49 @@ static bool stlab_xr32_hires_prepare(image_id n)
+ }
+ 
+ 
++/// resolved_night of a screen cache that holds the DAY resolution (XR32-UI-DAYTIME-01)
++static const int STLAB_RESOLVED_DAYTIME = -1000;
++
++bool stlab_xr32_recode(image_id n, sint8 player_nr);
++
++
++/**
++ * XR32-UI-DAYTIME-01: the screen cache of image @p n for @p player_nr, resolved for the day - what a draw with
++ * daynight=false needs at night. The cache is the one the world draws from, so it is marked stale for the world
++ * afterwards (player_flags); the world never asks for daynight=false (the interface does), and the interface is
++ * drawn after the world's display lanes, so the two never use it at the same time. Call under recode_img_mutex32.
++ */
++bool stlab_xr32_recode_daytime(image_id n, sint8 player_nr)
++{
++	stlab_xr32_slot_t *s = stlab_slot( n, false );
++	if(  s == NULL  ||  s->img == NULL  ) {
++		return false;
++	}
++	if(  images[n].data[player_nr] != NULL  &&  s->resolved_player == (uint8)player_nr  &&  s->resolved_night == STLAB_RESOLVED_DAYTIME  ) {
++		return true;
++	}
++	stlab_daytime = true;
++	const bool ok = stlab_xr32_recode( n, player_nr );
++	stlab_daytime = false;
++	if(  ok  ) {
++		s->resolved_night = STLAB_RESOLVED_DAYTIME;
++		images[n].player_flags |= (uint16)(1 << player_nr);
++	}
++	return ok;
++}
++
++
++/// XR32-UI-DAYTIME-01: the palette changed (recode32): a day resolution may no longer describe it either
++void stlab_xr32_forget_daytime()
++{
++	for(  image_id i = 0;  i < stlab_slots_alloc;  i++  ) {
++		if(  stlab_slots[i].resolved_night == STLAB_RESOLVED_DAYTIME  ) {
++			stlab_slots[i].resolved_night = -999;
++		}
++	}
++}
++
++
+ bool stlab_xr32_recode(image_id n, sint8 player_nr)
+ {
+ 	stlab_xr32_slot_t *s = stlab_slot(n, false);

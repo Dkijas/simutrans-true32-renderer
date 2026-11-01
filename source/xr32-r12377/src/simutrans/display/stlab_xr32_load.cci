@@ -11,6 +11,7 @@
  * the same parent, which is what the placement invariant already guarantees.
  * ==========================================================================*/
 
+#include <map>
 #include <vector>
 #include "../descriptor/image.h"
 #include "../display/stlab_xr32.h"
@@ -75,48 +76,174 @@ static bool stlab_xr32_read_candidate(FILE *fp, uint32 size)
 }
 
 
-/// pair every candidate parsed while reading this node's children with its sibling IMG
-static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren, const obj_type *kinds)
-{
-	if(  stlab_pending_candidates.empty()  &&  stlab_pending_nights.empty()  ) {
-		return;
-	}
-	for(  size_t i = 0;  i < stlab_pending_candidates.size();  i++  ) {
-		stlab_xr32_image_t *img = stlab_pending_candidates[i];
-		bool attached = false;
-		// only a child that was READ as an IMG node is an image: img_index may name any
-		// child (a TEXT name, an XREF, a list), and casting that to image_t is undefined
-		if(  children != NULL  &&  img->img_index < (uint16)nchildren
-		     &&  kinds != NULL  &&  kinds[img->img_index] == obj_image  ) {
-			const image_t *im = static_cast<const image_t *>(children[img->img_index]);
-			if(  im != NULL  &&  im->get_id() != IMG_EMPTY  ) {
-				attached = stlab_xr32_attach(im->get_id(), img,
-				                             im->x, im->y, im->w, im->h, im->zoomable);
-			}
-		}
-		if(  !attached  ) {
-			dbg->warning("stlab_xr32", "candidate node could not be paired with an image, "
-			             "using the legacy IMG");
-			delete img;
-		}
-	}
-	stlab_pending_candidates.clear();
+/* XR32-IMAGE-IDENTITY-01: image identity.
+ *
+ * The image reader merges images whose 16-bit data is identical: the second one gets the first
+ * one's image_t, and so its image id. XR32 data is paired by image id afterwards, so two image
+ * slots with the same 16-bit picture but different XR32 data (or one with and one without) would
+ * show whichever XR32 data was paired last - an order the directory listing decides.
+ *
+ * So the pairing decides per image slot: a slot that shows the same as the image already shows
+ * (no XR32 data, or byte-identical XR32 data) keeps sharing it; the first slot of an image gives it
+ * its data; any other slot gets a twin - a copy of the 16-bit image with its own id and its own
+ * XR32 data - and twins with identical data are shared in turn. The pak format and the 16-bit
+ * merge are unchanged, and a pakset without XR32 data never makes a twin.
+ */
+static std::vector<uint16> stlab_image_users;                    ///< image slots paired so far, per image id
+static std::multimap<image_id, image_t *> stlab_image_twins;    ///< reader image id -> twins split off it
+static uint32 stlab_identity_shared = 0, stlab_identity_split = 0, stlab_identity_reused = 0;
 
-	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: night planes attach after every day node of this parent
-	for(  size_t i = 0;  i < stlab_pending_nights.size();  i++  ) {
-		stlab_xnex_t *n = stlab_pending_nights[i];
-		const char *why = "its img_index does not name an image";
-		if(  children != NULL  &&  n->img_index < (uint16)nchildren
-		     &&  kinds != NULL  &&  kinds[n->img_index] == obj_image  ) {
-			const image_t *im = static_cast<const image_t *>(children[n->img_index]);
-			if(  im != NULL  &&  im->get_id() != IMG_EMPTY  ) {
-				why = stlab_xnex_attach(im->get_id(), n);
-			}
-		}
+
+/// the geometry guard of stlab_xr32_attach(), asked before attaching
+static bool stlab_xr32_fits(const stlab_xr32_image_t *img, const image_t *im)
+{
+	return  img->width == (uint16)(sint16)im->w  &&  img->height == (uint16)(sint16)im->h
+	    &&  img->x == (sint16)im->x  &&  img->y == (sint16)im->y  &&  img->zoomable == im->zoomable;
+}
+
+
+/// give image @p id the day node @p day (may be NULL) and the night node @p night (may be NULL); both are consumed
+static void stlab_xr32_attach_pair(image_id id, const image_t *im, stlab_xr32_image_t *day, stlab_xnex_t *night)
+{
+	if(  day  &&  !stlab_xr32_attach( id, day, im->x, im->y, im->w, im->h, im->zoomable )  ) {
+		dbg->warning("stlab_xr32", "candidate node could not be paired with an image, using the legacy IMG");
+		delete day;
+	}
+	if(  night  ) {
+		const char *why = stlab_xnex_attach( id, night );
 		if(  why != NULL  ) {
 			dbg->warning("stlab_xr32", "night node not used (%s), the image keeps its day appearance", why);
 		}
-		delete n;
+		delete night;
+	}
+}
+
+
+/// pair every candidate parsed while reading this node's children with its sibling IMG
+static void stlab_xr32_pair_candidates(obj_desc_t **children, int nchildren, const obj_type *kinds)
+{
+	if(  children == NULL  ||  kinds == NULL  ||  nchildren <= 0  ) {
+		for(  size_t i = 0;  i < stlab_pending_candidates.size();  i++  ) {
+			dbg->warning("stlab_xr32", "candidate node could not be paired with an image, using the legacy IMG");
+			delete stlab_pending_candidates[i];
+		}
+		for(  size_t i = 0;  i < stlab_pending_nights.size();  i++  ) {
+			dbg->warning("stlab_xr32", "night node not used (its img_index does not name an image), the image keeps its day appearance");
+			delete stlab_pending_nights[i];
+		}
+		stlab_pending_candidates.clear();
+		stlab_pending_nights.clear();
+		return;
+	}
+
+	// which XR32 data was authored for each image child. Only a child that was READ as an IMG node
+	// is an image: img_index may name any child (a TEXT name, an XREF, a list), and casting that
+	// to image_t is undefined
+	static std::vector<stlab_xr32_image_t *> day;
+	static std::vector<stlab_xnex_t *> night;
+	day.assign( nchildren, NULL );
+	night.assign( nchildren, NULL );
+	for(  size_t c = 0;  c < stlab_pending_candidates.size();  c++  ) {
+		stlab_xr32_image_t *img = stlab_pending_candidates[c];
+		const int k = img->img_index;
+		const image_t *im = (k < nchildren  &&  kinds[k] == obj_image) ? static_cast<const image_t *>(children[k]) : NULL;
+		if(  im == NULL  ||  im->get_id() == IMG_EMPTY  ||  !stlab_xr32_fits( img, im )  ) {
+			dbg->warning("stlab_xr32", "candidate node could not be paired with an image, using the legacy IMG");
+			delete img;
+			continue;
+		}
+		delete day[k];   // a later node for the same image replaces an earlier one, as before
+		day[k] = img;
+	}
+	stlab_pending_candidates.clear();
+
+	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: a night plane belongs to the v2 day node of its image
+	for(  size_t c = 0;  c < stlab_pending_nights.size();  c++  ) {
+		stlab_xnex_t *n = stlab_pending_nights[c];
+		const int k = n->img_index;
+		const image_t *im = (k < nchildren  &&  kinds[k] == obj_image) ? static_cast<const image_t *>(children[k]) : NULL;
+		const char *why = NULL;
+		if(  im == NULL  ||  im->get_id() == IMG_EMPTY  ) { why = "its img_index does not name an image"; }
+		else if(  n->rgba == NULL  ) { why = "empty night node"; }
+		else if(  day[k] == NULL  ) { why = "the image has no XR32 v2 day node"; }
+		else if(  day[k]->version != 2  ) { why = "the day node is not XR32 v2"; }
+		else if(  n->width != day[k]->width  ||  n->height != day[k]->height  ||  n->x != day[k]->x  ||  n->y != day[k]->y  ) {
+			why = "its geometry differs from the day node";
+		}
+		else if(  night[k] != NULL  ) { why = "the image already has a night node (duplicate)"; }   // the first one stays
+		if(  why != NULL  ) {
+			dbg->warning("stlab_xr32", "night node not used (%s), the image keeps its day appearance", why);
+			delete n;
+			continue;
+		}
+		night[k] = n;
 	}
 	stlab_pending_nights.clear();
+
+	// XR32-IMAGE-IDENTITY-01: every image slot shows its own data
+	for(  int k = 0;  k < nchildren;  k++  ) {
+		if(  kinds[k] != obj_image  ||  children[k] == NULL  ) {
+			continue;
+		}
+		image_t *im = static_cast<image_t *>(children[k]);
+		const image_id id = im->get_id();
+		if(  id == IMG_EMPTY  ) {
+			continue;
+		}
+		const uint8 *night_plane = night[k] ? night[k]->rgba : NULL;
+		if(  id >= stlab_image_users.size()  ) {
+			stlab_image_users.resize( id + 1, 0 );
+		}
+		const bool first = stlab_image_users[id] == 0;
+		if(  stlab_image_users[id] < 0xFFFF  ) {
+			stlab_image_users[id]++;
+		}
+
+		if(  stlab_xr32_shows( id, day[k], night_plane )  ) {
+			// the image already shows exactly this: no XR32 data, or the same XR32 data
+			if(  day[k]  ) {
+				stlab_identity_shared++;
+			}
+			delete day[k];
+			delete night[k];
+			continue;
+		}
+		if(  first  &&  !stlab_xr32_has_authored( id )  ) {
+			// the only slot of this image so far: it gets this slot's data
+			stlab_xr32_attach_pair( id, im, day[k], night[k] );
+			continue;
+		}
+		// another slot already shows this image with other XR32 data, or without: use a twin
+		image_t *twin = NULL;
+		for(  auto t = stlab_image_twins.equal_range( id );  t.first != t.second;  ++t.first  ) {
+			if(  stlab_xr32_shows( t.first->second->get_id(), day[k], night_plane )  ) {
+				twin = t.first->second;
+				break;
+			}
+		}
+		if(  twin  ) {
+			stlab_identity_reused++;
+			delete day[k];
+			delete night[k];
+		}
+		else {
+			twin = image_t::copy_image( *im );
+			twin->register_image();
+			stlab_xr32_attach_pair( twin->get_id(), twin, day[k], night[k] );
+			stlab_image_twins.insert( std::make_pair( id, twin ) );
+			stlab_identity_split++;
+		}
+		children[k] = twin;
+	}
+}
+
+
+/// XR32-IMAGE-IDENTITY-01: after loading: say what the identity pairing did, and drop its tables
+static void stlab_xr32_identity_finish()
+{
+	dbg->message("stlab_xr32", "image identity: %u image slots share an image with identical XR32 data; "
+	             "%u images split off for slots whose XR32 data differs (%u slots reuse one)",
+	             stlab_identity_shared, stlab_identity_split, stlab_identity_reused);
+	std::vector<uint16>().swap( stlab_image_users );
+	stlab_image_twins.clear();
 }

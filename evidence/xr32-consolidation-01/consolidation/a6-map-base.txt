@@ -1,0 +1,2 @@
+xr32=1  A1 vs A2:    161 px | B1 vs B2:      0 px | A1 vs B1:      0 px | A2 vs B2:    161 px
+xr32=0  A1 vs A2:     29 px | B1 vs B2:      0 px | A1 vs B1:    132 px | A2 vs B2:    161 px

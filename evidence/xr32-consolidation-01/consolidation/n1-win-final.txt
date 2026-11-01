@@ -1,0 +1,5 @@
+winsdl2-base  images 8 | at 3/8: == 16-bit picture 8, == its 1:1 XR32 picture 0
+winsdl2-cand  images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+winsdl3-base  images 8 | at 3/8: == 16-bit picture 8, == its 1:1 XR32 picture 0
+winsdl3-cand  images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+labels not fully XR32: 2 (testing-1 base labels are expected here)

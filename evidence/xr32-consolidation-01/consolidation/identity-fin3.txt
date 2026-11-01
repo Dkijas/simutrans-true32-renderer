@@ -1,0 +1,17 @@
+identity fin3
+sanity: XR32 off, 16-bit pictures equal (7 vehicles) ok
+B!=A by day (XR32 day differs)                   ok
+C==A day+night, same image ids                   ok  ids A [3523, 3524, 3525, 3526, 3527, 3528, 3529, 3530] C [3523, 3524, 3525, 3526, 3527, 3528, 3529, 3530]
+E!=D at night                                    ok
+E==D by day                                      ok
+F==D day+night, same image ids                   ok
+D!=A at night (night picture vs none)            ok
+D==A by day                                      ok
+H!=G for player 3 (coverage differs)             ok  16-bit images of G and H differ (not a sharing case)
+K: same 16-bit image as G (XR32 off identical)   ok
+K!=G for player 3 (player-colour runs differ)    ok
+L legacy: XR32 on draws as XR32 off              ok
+L legacy: not IdA's XR32 picture                 ok
+image ids (dir 0) XR32 on: IdA=3523 IdB=3499 IdC=3523 IdD=3491 IdE=3507 IdF=3491 IdG=3531 IdH=3515 IdK=3483 IdL=3539
+image ids (dir 0) XR32 off: IdA=3491 IdB=3491 IdC=3491 IdD=3491 IdE=3491 IdF=3491 IdG=3483 IdH=3499 IdK=3483 IdL=3491
+distinct image ids over the 80 slots: XR32 on 64, off 24

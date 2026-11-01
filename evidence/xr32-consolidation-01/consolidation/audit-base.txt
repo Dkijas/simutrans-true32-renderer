@@ -1,0 +1,4 @@
+base-audit pak-kitall xr32=1: STLAB_IDENTITY_AUDIT image_slots=9005 xr32_slots=81 wrong_xr32=2 wrong_legacy=3 images=6992 rc=0
+base-audit pak128.german-kit xr32=1: STLAB_IDENTITY_AUDIT image_slots=64707 xr32_slots=194 wrong_xr32=0 wrong_legacy=0 images=48883 rc=0
+base-audit pak64.german-mres1 xr32=1: STLAB_IDENTITY_AUDIT image_slots=16133 xr32_slots=12771 wrong_xr32=2 wrong_legacy=0 images=10975 rc=0
+base-audit pak xr32=1: STLAB_IDENTITY_AUDIT image_slots=8883 xr32_slots=0 wrong_xr32=0 wrong_legacy=0 images=6956 rc=0

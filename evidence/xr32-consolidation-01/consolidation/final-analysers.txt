@@ -1,0 +1,38 @@
+## thin
+sdl2           catdraw   rows   726 | legacy-hidden   21 | drawn where legacy hides   0 [z10:0/0 z11:0/5 z12:0/6 z13:0/10 z7:0/0 z7back:0/0] | back to 1/1: 0 of 121 differ -> ok
+sdl2           thinpoles rows    30 | legacy-hidden    3 | drawn where legacy hides   0 [z10:0/0 z11:0/1 z12:0/1 z13:0/1 z7:0/0 z7back:0/0] | back to 1/1: 0 of 5 differ -> ok
+sdl3           catdraw   rows   726 | legacy-hidden   21 | drawn where legacy hides   0 [z10:0/0 z11:0/5 z12:0/6 z13:0/10 z7:0/0 z7back:0/0] | back to 1/1: 0 of 121 differ -> ok
+sdl3           thinpoles rows    30 | legacy-hidden    3 | drawn where legacy hides   0 [z10:0/0 z11:0/1 z12:0/1 z13:0/1 z7:0/0 z7back:0/0] | back to 1/1: 0 of 5 differ -> ok
+linux          catdraw   rows   732 | legacy-hidden   21 | drawn where legacy hides   0 [z10:0/0 z11:0/5 z12:0/6 z13:0/10 z7:0/0 z7back:0/0] | back to 1/1: 0 of 122 differ -> ok
+linux          thinpoles rows    30 | legacy-hidden    3 | drawn where legacy hides   0 [z10:0/0 z11:0/1 z12:0/1 z13:0/1 z7:0/0 z7back:0/0] | back to 1/1: 0 of 5 differ -> ok
+failures 0
+## night
+sdl3   day vs night cards xr0: level 0 differ 0 of 16 | level 13 differ 0 of 16 | per level 0:0 1:0 2:0 3:0 4:0 5:0 8:0 13:0 0:0 -> CONTROL: night-used finds nothing -> the check FAILS as it must
+linux  nightday   xr1: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> ok
+linux  nightkit   xr1: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> ok
+linux  day vs night cards xr1: level 0 differ 0 of 16 | level 13 differ 16 of 16 | per level 0:0 1:16 2:16 3:16 4:16 5:16 8:16 13:16 0:0 -> ok
+linux  nightday   xr0: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> reported
+linux  nightkit   xr0: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> reported
+linux  day vs night cards xr0: level 0 differ 0 of 16 | level 13 differ 0 of 16 | per level 0:0 1:0 2:0 3:0 4:0 5:0 8:0 13:0 0:0 -> CONTROL: night-used finds nothing -> the check FAILS as it must
+compared 192 image x player series; failures 0
+## (mres_check first called with the wrong tags sdl2/sdl3/linux -> no folder matched; rerun below with pksdl2/pksdl3/pklinux)
+## alpha
+   w40->40x40 c83828/187890/706010/183410 | w50->50x50 c83828/187890/706010/183410 | w60->60x60 c83828/187890/706010/183410 | w70->70x70 c83828/187890/706010/183410 | w80->80x80 c83828/187890/706010/183410 | w45->45x45 c83828/187890/706010/183410 | w55->55x55 c83828/187890/706010/183410 | w30->30x30 c83828/187890/706010/183410 | w25->25x25 c83828/187890/706010/183410 | w40->40x40 c83828/187890/706010/183410 | w60->60x60 c83828/187890/706010/183410 | w50->50x50 c83828/187890/706010/183410
+alpha-pksdl3-xr0-stlab-scale125    PASS | w40 repeated: identical; w60 repeated: identical; w50 repeated: identical
+   w40->40x40 c83828/187890/706010/183410 | w50->50x50 c83828/187890/706010/183410 | w60->60x60 c83828/187890/706010/183410 | w70->70x70 c83828/187890/706010/183410 | w80->80x80 c83828/187890/706010/183410 | w45->45x45 c83828/187890/706010/183410 | w55->55x55 c83828/187890/706010/183410 | w30->30x30 c83828/187890/706010/183410 | w25->25x25 c83828/187890/706010/183410 | w40->40x40 c83828/187890/706010/183410 | w60->60x60 c83828/187890/706010/183410 | w50->50x50 c83828/187890/706010/183410
+alpha-pksdl3-xr1-stlab-scale100    PASS | w40 repeated: identical; w60 repeated: identical; w50 repeated: identical
+   w40->40x40 c83c28/1e78a5/736414/1e3714 | w50->50x50 c83c28/1e78a5/736414/1e3714 | w60->60x60 c83c28/1e78a5/736414/1e3714 | w70->70x70 c83c28/1e78a5/736414/1e3714 | w80->80x80 c83c28/1e78a5/736414/1e3714 | w45->45x45 c83c28/1e78a5/736414/1e3714 | w55->55x55 c83c28/1e78a5/736414/1e3714 | w30->30x30 c83c28/1e78a5/736414/1e3714 | w25->25x25 c83c28/1e78a5/736414/1e3714 | w40->40x40 c83c28/1e78a5/736414/1e3714 | w60->60x60 c83c28/1e78a5/736414/1e3714 | w50->50x50 c83c28/1e78a5/736414/1e3714
+alpha-pksdl3-xr1-stlab-scale125    PASS | w40 repeated: identical; w60 repeated: identical; w50 repeated: identical
+   w40->40x40 c83c28/1e78a5/736414/1e3714 | w50->50x50 c83c28/1e78a5/736414/1e3714 | w60->60x60 c83c28/1e78a5/736414/1e3714 | w70->70x70 c83c28/1e78a5/736414/1e3714 | w80->80x80 c83c28/1e78a5/736414/1e3714 | w45->45x45 c83c28/1e78a5/736414/1e3714 | w55->55x55 c83c28/1e78a5/736414/1e3714 | w30->30x30 c83c28/1e78a5/736414/1e3714 | w25->25x25 c83c28/1e78a5/736414/1e3714 | w40->40x40 c83c28/1e78a5/736414/1e3714 | w60->60x60 c83c28/1e78a5/736414/1e3714 | w50->50x50 c83c28/1e78a5/736414/1e3714
+steps checked: 240 | failures (XR32 on): 0
+## mres pksdl2
+mres-pksdl2-xr1-s100               cell 40x40 drawn 40x40 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl2-xr1-s150               cell 60x60 drawn 60x60 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl2-xr1-s200               cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %
+## mres pksdl3
+mres-pksdl3-xr1-s100               cell 40x40 drawn 40x40 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl3-xr1-s150               cell 60x60 drawn 60x60 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl3-xr1-s200               cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %
+## mres pklinux
+mres-pklinux-xr0-s200              cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 8): 6400 / 6400 = 100.0 %
+mres-pklinux-xr1-s200              cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %

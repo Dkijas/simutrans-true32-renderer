@@ -1,0 +1,16 @@
+XR32 r12377 testing-2 - patches, -p1, LF; apply with: git -c core.autocrlf=false apply <file>
+
+Complete change against official trunk r12377 (svn export -r 12377 --native-eol LF svn://servers.simutrans.org/simutrans/trunk):
+  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-2.diff
+
+The same as steps on top of testing-1 (source/xr32-r12377/ at tag xr32-prissi-night-image-prototype-01-r12377-testing-1):
+  01-I1-A3-XR32-IMAGE-IDENTITY.diff      shared images: a slot whose 32-bit data differs gets its own image (A3)
+  02-I2-A5-UI-DAYTIME.diff               interface images keep their day colours at night (A5)
+  03-I3-N1-UI-BASE-SIZE.diff             interface images drawn at base size use their 32-bit art while the map is zoomed (N1)
+  04-I5-A1-A2-ZOOM-GEOMETRY.diff         32-bit zoom uses the 16-bit scaler's geometry and sampling grid (A1, A2)
+  05-I6-N5-NONZOOMABLE.diff              a non-zoomable 32-bit image keeps its base position (N5)
+or in one:
+  CONSOLIDATION-ON-TESTING-1.diff        01..05 together
+
+All three routes give the same tree, byte for byte: source/xr32-r12377/ of testing-2.
+The Windows build fix that is NOT part of XR32 is unchanged: ../r12377/upstream-build-fix/H-r12362-cmake-ole32.diff

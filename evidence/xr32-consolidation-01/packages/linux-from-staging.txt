@@ -1,0 +1,12 @@
+sdl2: staged simutrans-xr32-night-prototype-r12377-testing-2-linux-x86_64-sdl2.tar.gz sha b3f6512c194366c0
+  rgba32 fc04d444b24d1684651e39cd988d957b90786a17b1b1cf643c88ede9a2d38e50 = certified
+  16bit 3e7cd80e112cf9d52107c2b9f5e8729a1f9bc9897aef69c52eb711ae7d3100e3 = certified
+  game data vs final-src simutrans/: 945 files, differing 0
+  exec bits: 755 <wsl-release-lab>/pkgx/simutrans-xr32-night-prototype-r12377-testing-2-linux-x86_64-sdl2/simutrans-rgba32 755 <wsl-release-lab>/pkgx/simutrans-xr32-night-prototype-r12377-testing-2-linux-x86_64-sdl2/simutrans-16bit 
+sdl3: staged simutrans-xr32-night-prototype-r12377-testing-2-linux-x86_64-sdl3.tar.gz sha dc2b7584a24a61c2
+  rgba32 7d4b36d2cf2f4478653092f486b3757815c1ff448bf0b58ef2c5eadc83afcf83 = certified
+  16bit 9822aee1d322a61606d80e5e6f61bd365365e9273f21012400d33f5f68bbd638 = certified
+  game data vs final-src simutrans/: 945 files, differing 0
+  exec bits: 755 <wsl-release-lab>/pkgx/simutrans-xr32-night-prototype-r12377-testing-2-linux-x86_64-sdl3/simutrans-rgba32 755 <wsl-release-lab>/pkgx/simutrans-xr32-night-prototype-r12377-testing-2-linux-x86_64-sdl3/simutrans-16bit 
+  makeobj 7646fe250ae82ca9e5eca2381422cd0ad9db6b83ae094c1ef9f75034f03363df = certified
+problems: 0

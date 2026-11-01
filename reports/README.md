@@ -75,3 +75,15 @@ for review. They can be provided on request.
   shrinks the DIB height so the bottom third stops being painted (forum topic 23805). Certified
   one-hunk fix on top of the resize-event patch, with the contract oracle, the visible 150 %
   runs, the negative control, SDL2, 302 / 302 and the three-way composition with TRUE32 v2.
+
+## XR32 DAY+NIGHT, r12377 testing-2
+
+- **XR32-CONSOLIDATION-01.md** - the consolidation of the r12377 testing-1 build that became
+  testing-2: five defects of the 32-bit renderer reproduced, fixed and certified against
+  testing-1 on Windows SDL2/SDL3 and Linux SDL2/SDL3, each with a control that fails (shared
+  images A3, interface images at night A5, zoom geometry A1/A2, base-size interface draw N1,
+  non-zoomable placement N5), A6 not reproduced, Linux SDL3 in a WSLg session, the performance
+  and memory comparison, and the architecture review. A dated publication note on top records
+  the certification of the published packages themselves.
+- **XR32-CONSOLIDATION-01-INCIDENT-MATRIX.md** - the incident matrix (A1-A8, N1-N5) with
+  status, root cause, fix and evidence.

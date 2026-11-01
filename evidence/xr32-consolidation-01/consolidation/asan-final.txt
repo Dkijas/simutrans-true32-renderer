@@ -1,0 +1,8 @@
+asan asan-fin suite: rc=124 AddressSanitizer errors 0, LeakSanitizer reports 1, report files 1
+[309/309]
+asan asan-fin kitzoom: rc=0 AddressSanitizer errors 0, LeakSanitizer reports 0, report files 0
+asan asan-fin identity: rc=0 AddressSanitizer errors 0, LeakSanitizer reports 1, report files 1
+asan asan-fin zoomwalk-pak64.german-mres1: rc=0 AddressSanitizer errors 0, LeakSanitizer reports 0, report files 0
+asan asan-fin zoomwalk-pak128.german-cat: rc=0 AddressSanitizer errors 0, LeakSanitizer reports 0, report files 0
+asan asan-fin world: rc=0 AddressSanitizer errors 0, LeakSanitizer reports 1, report files 1
+ASAN_RUNS_DONE

@@ -1,0 +1,34 @@
+a5 base: ui-day: daynight=false = day FAIL 8 images x 2 players x 9 steps, 112 differ from level 0|toolbar xr1 mean brightness of rows 0..63: night 42.9, day 125.7, ratio 0.341|failures: 1|
+a5 fin2: ui-day: daynight=false = day ok 8 images x 2 players x 9 steps, 0 differ from level 0|world: night.csv == base ok 144 rows|toolbar xr1 mean brightness of rows 0..63: night 122.1, day 125.4, ratio 0.973|failures: 0|
+a5 fin3: ui-day: daynight=false = day ok 8 images x 2 players x 9 steps, 0 differ from level 0|world: night.csv == base ok 144 rows|toolbar xr1 mean brightness of rows 0..63: night 122.1, day 125.4, ratio 0.973|failures: 0|
+base          images 8 | at 3/8: == 16-bit picture 8, == its 1:1 XR32 picture 0
+fin2          images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+fin3          images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+labels not fully XR32: 1 (testing-1 base labels are expected here)
+pak128.german-cat    images   122 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 117 differ
+pak-kitB8            images     8 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 8 differ
+pak64.german-mres1   images 10894 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 10411 differ
+pak128.german-cat    images   122 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 117 differ
+pak-kitB8            images     8 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 8 differ
+pak64.german-mres1   images 10895 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 10412 differ
+pak128.german-cat    images   122 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 117 differ
+pak-kitB8            images     8 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 8 differ
+pak64.german-mres1   images 10895 | route A vs B: 3/2 0 differ, 5/4 0 differ | CONTROL 3/2 vs 5/4 (route A): 10412 differ
+A2 (base): XR32 catenary of pak128.german vs its legacy picture
+9/8   122 images | lit box = legacy 5 of 122 drawn by both | drawn by only one 0 | lit px XR32 68557 legacy 105601 | worst image 34859: 1400 vs 2318 px, box [34, 43, 106, 139] vs [34, 43, 107, 141]
+A2 (fin2): XR32 catenary of pak128.german vs its legacy picture
+9/8   122 images | lit box = legacy 122 of 122 drawn by both | drawn by only one 0 | lit px XR32 105607 legacy 105601 | worst image 41298: 949 vs 946 px, box [49, 55, 84, 98] vs [49, 55, 84, 98]
+A2 (fin3): XR32 catenary of pak128.german vs its legacy picture
+9/8   122 images | lit box = legacy 122 of 122 drawn by both | drawn by only one 0 | lit px XR32 105607 legacy 105601 | worst image 41298: 949 vs 946 px, box [49, 55, 84, 98] vs [49, 55, 84, 98]
+a1box base 3/2   1173 images with pixels | lit box identical 472 (40.2 %) | lit pixels XR32 1663920, legacy 1725161
+a1box base 11/8  1173 images with pixels | lit box identical 197 (16.8 %) | lit pixels XR32 1408752, legacy 1518614
+a1box base 3/8   1173 images with pixels | lit box identical 190 (16.2 %) | lit pixels XR32 178398, legacy 189184
+a1box fin2 3/2   1173 images with pixels | lit box identical 1164 (99.2 %) | lit pixels XR32 1727575, legacy 1725161
+a1box fin2 11/8  1173 images with pixels | lit box identical 1167 (99.5 %) | lit pixels XR32 1521251, legacy 1518614
+a1box fin2 3/8   1173 images with pixels | lit box identical 1167 (99.5 %) | lit pixels XR32 189757, legacy 189184
+a1box fin3 3/2   1173 images with pixels | lit box identical 1164 (99.2 %) | lit pixels XR32 1727575, legacy 1725161
+a1box fin3 11/8  1173 images with pixels | lit box identical 1167 (99.5 %) | lit pixels XR32 1521251, legacy 1518614
+a1box fin3 3/8   1173 images with pixels | lit box identical 1167 (99.5 %) | lit pixels XR32 189757, legacy 189184
+identity base: failures: 6 | 6 FAIL lines | distinct image ids over the 80 slots: XR32 on 24, off 24
+identity fin2: failures: 0 | 0 FAIL lines | distinct image ids over the 80 slots: XR32 on 64, off 24
+identity fin3: failures: 0 | 0 FAIL lines | distinct image ids over the 80 slots: XR32 on 64, off 24

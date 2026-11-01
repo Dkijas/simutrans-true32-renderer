@@ -1,0 +1,8 @@
+Load + quit, Linux SDL2 dummy video, XR32 on, n=5 interleaved repetitions; base = testing-1 5ca3357ca318eb39, cand = final fc04d444b24d1684
+provenance: all 30 rows carry their label's hash and exit 0
+pak64.german       wall     | base median   0.268 (  0.267-  0.321) s | cand median   0.320 (  0.267-  0.321) s | paired cand-base median +0.052 (min -0.053, max +0.054), cand higher in 3 of 5
+pak64.german       peak RSS | base median  96.000 ( 94.000-108.000) MB | cand median 103.000 ( 95.000-108.000) MB | paired cand-base median +9.000 (min -13.000, max +14.000), cand higher in 3 of 5
+pak128.german-cat  wall     | base median   0.697 (  0.694-  1.539) s | cand median   0.747 (  0.694-  0.800) s | paired cand-base median -0.002 (min -0.792, max +0.106), cand higher in 2 of 5
+pak128.german-cat  peak RSS | base median 463.000 (461.000-468.000) MB | cand median 463.000 (461.000-467.000) MB | paired cand-base median +0.000 (min -1.000, max +3.000), cand higher in 2 of 5
+pak                wall     | base median   0.160 (  0.107-  0.370) s | cand median   0.160 (  0.107-  0.162) s | paired cand-base median -0.002 (min -0.208, max +0.054), cand higher in 1 of 5
+pak                peak RSS | base median  41.000 ( 33.000- 52.000) MB | cand median  52.000 ( 34.000- 52.000) MB | paired cand-base median +0.000 (min -17.000, max +19.000), cand higher in 2 of 5

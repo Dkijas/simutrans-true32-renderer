@@ -1,0 +1,6 @@
+sdl2: fitted 278 | best single cut T=9139 explains 278 of them
+sdl2: parity with the cut: equal 278, known-issue-1 0, unexpected 0
+sdl3: fitted 278 | best single cut T=9139 explains 278 of them
+sdl3: parity with the cut: equal 278, known-issue-1 0, unexpected 0
+linux: fitted 281 | best single cut T=1074 explains 281 of them
+linux: parity with the cut: equal 281, known-issue-1 0, unexpected 0

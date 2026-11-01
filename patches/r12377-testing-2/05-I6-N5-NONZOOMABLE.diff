@@ -1,0 +1,15 @@
+diff --git a/src/simutrans/display/stlab_xr32_zoom.cci b/src/simutrans/display/stlab_xr32_zoom.cci
+index 3b923cab88450df1fb4fd89ae5a48cd78bbb3361..c9be43991c0b05c90ee3bb0c467a09e6b053fc7e 100644
+--- a/src/simutrans/display/stlab_xr32_zoom.cci
++++ b/src/simutrans/display/stlab_xr32_zoom.cci
+@@ -525,7 +525,9 @@ static bool stlab_xr32_zoom_prepare(image_id n)
+ 	if(  s == NULL  ||  s->img == NULL  ) {
+ 		return false;
+ 	}
+-	if(  zoom_factor32 == ZOOM_NEUTRAL  &&  s->fit_num == 0  ) {
++	// XR32-NONZOOMABLE-01 (N5): an image that is not zoomable keeps its base geometry at every world zoom, exactly
++	// as the legacy branch of rezoom_img32() does; only a fit step (fit_img_to_width) scales it
++	if(  (zoom_factor32 == ZOOM_NEUTRAL  ||  (images[n].recode_flags & FLAG_ZOOMABLE) == 0)  &&  s->fit_num == 0  ) {
+ 		// back at neutral the scaled cache is dead weight and the base geometry rules
+ 		stlab_xr32_zoom_release( s );
+ 		images[n].x   = images[n].base_x;

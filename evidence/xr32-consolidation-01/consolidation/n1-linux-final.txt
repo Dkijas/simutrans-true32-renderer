@@ -1,0 +1,4 @@
+base          images 8 | at 3/8: == 16-bit picture 8, == its 1:1 XR32 picture 0
+fin2          images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+fin3          images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+labels not fully XR32: 1 (testing-1 base labels are expected here)

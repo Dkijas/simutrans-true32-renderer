@@ -1,0 +1,25 @@
+A1 base: image geometry, Frank's pak64.german
+7/4   11735 images | XR32 vs 16-bit: equal size 2674 (22.8 %), dw {-6: 1743, -4: 2328, -2: 2061}, dh {-6: 2424, -4: 2247, -2: 2839}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 112 px: widths XR32 {64: 44, 112: 2575}, 16-bit {64: 44, 112: 2575} | narrower than the raster: XR32 44, 16-bit 44
+3/2   11735 images | XR32 vs 16-bit: equal size 4622 (39.4 %), dw {-2: 3804}, dh {-2: 5263}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 96 px: widths XR32 {64: 44, 96: 2575}, 16-bit {64: 44, 96: 2575} | narrower than the raster: XR32 44, 16-bit 44
+11/8  11735 images | XR32 vs 16-bit: equal size 1976 (16.8 %), dw {-10: 860, -9: 1138, -7: 655, -6: 1200, -5: 883, -3: 1190, -2: 1406}, dh {-10: 1228, -9: 1190, -7: 1338, -6: 1170, -5: 1196, -3: 1057, -2: 1501}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 88 px: widths XR32 {64: 44, 88: 2575}, 16-bit {64: 44, 88: 2575} | narrower than the raster: XR32 44, 16-bit 44
+4/3   11735 images | XR32 vs 16-bit: equal size 2204 (18.8 %), dw {-3: 4860, -2: 2897}, dh {-3: 3889, -2: 3331}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 85 px: widths XR32 {64: 44, 85: 2004, 88: 571}, 16-bit {64: 44, 88: 2575} | narrower than the raster: XR32 44, 16-bit 44
+5/4   11735 images | XR32 vs 16-bit: equal size 2674 (22.8 %), dw {-4: 1743, -3: 2328, -2: 2061}, dh {-4: 2424, -3: 2247, -2: 2839}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 80 px: widths XR32 {64: 44, 80: 2575}, 16-bit {64: 44, 80: 2575} | narrower than the raster: XR32 44, 16-bit 44
+9/8   11735 images | XR32 vs 16-bit: equal size 1976 (16.8 %), dw {-8: 860, -7: 1138, -6: 655, -5: 1200, -4: 883, -3: 1190, -2: 1406}, dh {-8: 1228, -7: 1190, -6: 1338, -5: 1170, -4: 1196, -3: 1057, -2: 1501}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 72 px: widths XR32 {64: 44, 72: 2575}, 16-bit {64: 44, 72: 2575} | narrower than the raster: XR32 44, 16-bit 44
+3/4   11735 images | XR32 vs 16-bit: equal size 2721 (23.2 %), dw {-3: 1710, -2: 2326, -1: 2059}, dh {-3: 2388, -2: 2245, -1: 2834}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 48 px: widths XR32 {48: 2575, 64: 44}, 16-bit {48: 2575, 64: 44} | narrower than the raster: XR32 0, 16-bit 0
+5/8   11735 images | XR32 vs 16-bit: equal size 2023 (17.2 %), dw {-5: 829, -4: 1790, -3: 1197, -2: 2071, -1: 1405}, dh {-5: 1200, -4: 2527, -3: 1166, -2: 2244, -1: 1496}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 40 px: widths XR32 {40: 2575, 64: 44}, 16-bit {40: 2575, 64: 44} | narrower than the raster: XR32 0, 16-bit 0
+1/2   11735 images | XR32 vs 16-bit: equal size 4669 (39.8 %), dw {-1: 3769}, dh {-1: 5222}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 32 px: widths XR32 {32: 2575, 64: 44}, 16-bit {32: 2575, 64: 44} | narrower than the raster: XR32 0, 16-bit 0
+3/8   11735 images | XR32 vs 16-bit: equal size 2040 (17.4 %), dw {-3: 1955, -2: 2730, -1: 2592}, dh {-3: 2380, -2: 3688, -1: 2548}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 24 px: widths XR32 {24: 2575, 64: 44}, 16-bit {24: 2575, 64: 44} | narrower than the raster: XR32 0, 16-bit 0
+1/4   11735 images | XR32 vs 16-bit: equal size 2772 (23.6 %), dw {-1: 6057}, dh {-1: 7420}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 16 px: widths XR32 {16: 2575, 64: 44}, 16-bit {16: 2575, 64: 44} | narrower than the raster: XR32 0, 16-bit 0
+1/8   11735 images | XR32 vs 16-bit: equal size 3072 (26.2 %), dw {-1: 6279}, dh {-1: 7696}, x/y differ 25 | CONTROL legacy-32 vs 16-bit: equal 11735, x/y differ 0
+      full-width images 2619, tile raster 8 px: widths XR32 {8: 2575, 64: 44}, 16-bit {8: 2575, 64: 44} | narrower than the raster: XR32 0, 16-bit 0
