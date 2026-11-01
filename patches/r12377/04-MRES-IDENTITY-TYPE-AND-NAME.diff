@@ -1,0 +1,91 @@
+diff --git a/src/simutrans/dataobj/pakset_manager.cc b/src/simutrans/dataobj/pakset_manager.cc
+index 6b8be52bb25e7141e12916ca7ae1df17fa074e55..ddd224c4fa9642ae630495e4ee861f9dc09fc7bd 100644
+--- a/src/simutrans/dataobj/pakset_manager.cc
++++ b/src/simutrans/dataobj/pakset_manager.cc
+@@ -448,7 +448,7 @@ bool pakset_manager_t::read_nodes(FILE *fp, obj_desc_t *&data, int node_depth, u
+ 		// first child, and this is where the object and that child are both
+ 		// in hand.
+ 		if(  node_depth == 1  &&  node.nchildren > 0  &&  first_child == obj_text  &&  data->children  ) {
+-			multires_note_object( static_cast<const text_desc_t *>(data->children[0])->get_text(), data );
++			multires_note_object( static_cast<const text_desc_t *>(data->children[0])->get_text(), static_cast<obj_type>(node.type), data );
+ 		}
+ 
+ 		multires_note_children( data, child_kinds );
+@@ -532,7 +532,9 @@ bool pakset_manager_t::skip_nodes(FILE *fp,uint32 version)
+  */
+ 
+ static std::vector<mres_pair_t> *multires_pending = NULL;
+-static stringhashtable_tpl<obj_desc_t *> *multires_objects = NULL;
++// by node type, then name, like `loaded`: pak64.german has a cursor AND a menu called GeneralTools, and with
++// name alone the pairing found whichever of the two the directory listed last
++static inthashtable_tpl<obj_type, stringhashtable_tpl<obj_desc_t *> > *multires_objects = NULL;
+ 
+ 
+ void pakset_manager_t::multires_add(const mres_pair_t &pair)
+@@ -563,16 +565,21 @@ void pakset_manager_t::multires_bind_images(obj_desc_t *mres)
+ }
+ 
+ 
+-void pakset_manager_t::multires_note_object(const char *name, obj_desc_t *desc)
++void pakset_manager_t::multires_note_object(const char *name, obj_type type, obj_desc_t *desc)
+ {
+ 	if(  name == NULL  ||  *name == 0  ) {
+ 		return;
+ 	}
+ 	if(  multires_objects == NULL  ) {
+-		multires_objects = new stringhashtable_tpl<obj_desc_t *>();
++		multires_objects = new inthashtable_tpl<obj_type, stringhashtable_tpl<obj_desc_t *> >();
+ 	}
+-	// last one wins, which is how a duplicate object name resolves anyway
+-	multires_objects->set( name, desc );
++	stringhashtable_tpl<obj_desc_t *> *of_type = multires_objects->access( type );
++	if(  of_type == NULL  ) {
++		multires_objects->put( type );
++		of_type = multires_objects->access( type );
++	}
++	// last one of this type wins, which is how a duplicate object name resolves anyway
++	of_type->set( name, desc );
+ }
+ 
+ 
+@@ -594,7 +601,8 @@ void pakset_manager_t::resolve_multires()
+ 		if(  !pair.bound  ||  pair.hires == IMG_EMPTY  ) {
+ 			continue;
+ 		}
+-		obj_desc_t *obj = multires_objects ? multires_objects->get( pair.base_object.c_str() ) : NULL;
++		const stringhashtable_tpl<obj_desc_t *> *of_type = multires_objects ? multires_objects->access( pair.object_type ) : NULL;
++		obj_desc_t *obj = of_type ? of_type->get( pair.base_object.c_str() ) : NULL;
+ 		if(  obj == NULL  ) {
+ 			dbg->warning( "pakset_manager_t::resolve_multires", "'%s' is not in this pakset; its high-resolution image is unused", pair.base_object.c_str() );
+ 			continue;
+diff --git a/src/simutrans/dataobj/pakset_manager.h b/src/simutrans/dataobj/pakset_manager.h
+index a887926483f197ca888e660b66cca9c8790fb47e..87731b0a03c144632e3210a626af628f5d58afe3 100644
+--- a/src/simutrans/dataobj/pakset_manager.h
++++ b/src/simutrans/dataobj/pakset_manager.h
+@@ -61,8 +61,9 @@ public:
+ 	static void multires_add(const mres_pair_t &pair);
+ 	/// Turn carried child indices into the images they were registered as.
+ 	static void multires_bind_images(obj_desc_t *mres);
+-	/// Remember a top-level object by name, so a pairing can find it.
+-	static void multires_note_object(const char *name, obj_desc_t *desc);
++	/// Remember a top-level object by node type and name, so a pairing can find it
++	/// (a cursor and a menu, say, may share one name).
++	static void multires_note_object(const char *name, obj_type type, obj_desc_t *desc);
+ 	/// Attach counterparts, once every pak and add-on has been read.
+ 	static void resolve_multires();
+ 
+diff --git a/src/simutrans/descriptor/writer/stlab_mres_writer.cc b/src/simutrans/descriptor/writer/stlab_mres_writer.cc
+index 9c0ac144d0ccf2c5b544d569fae4c6bc3556c583..c16ab699ad97807cfa2bb7ebc45a1709d662dd50 100644
+--- a/src/simutrans/descriptor/writer/stlab_mres_writer.cc
++++ b/src/simutrans/descriptor/writer/stlab_mres_writer.cc
+@@ -15,8 +15,8 @@
+  *   body, then the children depth first                  (obj_node.cc)
+  *
+  * Identity is the loader's (pakset_manager_t::multires_note_object): a top-level
+- * object whose first child is its TEXT name, plus the child indices from that
+- * object down to the IMG node. No image id is written anywhere.
++ * object, by its node type and its first child's TEXT name, plus the child
++ * indices from that object down to the IMG node. No image id is written anywhere.
+  */
+ 
+ #include <stdio.h>

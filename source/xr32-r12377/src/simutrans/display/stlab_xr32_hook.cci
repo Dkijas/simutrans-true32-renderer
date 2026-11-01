@@ -1,0 +1,558 @@
+/* ==========================================================================
+ * XR32 candidate nodes: the renderer-side seam.
+ *
+ * Included at the end of simgraph32.cc so it sees the renderer's own state
+ * (images[], the palette tables, night_shift). It replaces the PRODUCER of
+ * imd32::data[player] for images that carry a candidate node; the CONSUMER
+ * (display_img_aux32 and the blit cores) is untouched and never learns that
+ * XR32 exists.
+ *
+ * The renderer therefore receives ARGB8888 screen runs, exactly as it already
+ * did -- but for these images those runs were never STORED_PIXVAL.
+ * ==========================================================================*/
+
+#include <chrono>
+
+/* --- what the semantic layer needs from the renderer ------------------------ */
+
+uint32 stlab_pack_argb(int r, int g, int b)
+{
+	if(  r < 0  ) { r = 0; }
+	if(  r > 255  ) { r = 255; }
+	if(  g < 0  ) { g = 0; }
+	if(  g > 255  ) { g = 255; }
+	if(  b < 0  ) { b = 0; }
+	if(  b > 255  ) { b = 255; }
+	return 0xFF000000u | ((uint32)r << 16) | ((uint32)g << 8) | (uint32)b;
+}
+
+
+void stlab_night_multipliers(double *rg, double *b)
+{
+	const int night = night_shift < 0 ? 0 : night_shift;
+	*rg = pow(0.75, night) * ((light_level + 8.0) / 8.0);
+	*b  = pow(0.83, night) * ((light_level + 8.0) / 8.0);
+}
+
+
+int stlab_night_level()
+{
+	return night_shift < 0 ? 0 : night_shift;
+}
+
+
+uint32 stlab_player_colour_argb(sint8 player_nr, uint8 channel, uint8 tone)
+{
+	const sint8 p = (player_nr >= 0 && player_nr < MAX_PLAYER_COUNT) ? player_nr : 0;
+	const uint8 off = player_offsets[p][channel == 2 ? 1 : 0];
+	// specialcolormap_day_night already carries the night multiplier, applied once
+	// when the palette was built. No 555 index is involved.
+	return specialcolormap_day_night[(int)off + (tone & 7)];
+}
+
+
+uint32 stlab_light_colour_argb(uint8 light_index)
+{
+	if(  light_index >= LIGHT_COUNT  ) {
+		return 0xFF000000u;
+	}
+	return rgbmap_day_night[0x8000 + MAX_PLAYER_COUNT + light_index];
+}
+
+
+/* --- per-image candidate storage -------------------------------------------- */
+
+struct stlab_xr32_zoom_t;                 // the derived per-scale cache
+
+struct stlab_xr32_slot_t {
+	stlab_xr32_zoom_t *zoom = NULL;       ///< native zoom cache, one scale at a time
+	stlab_xr32_image_t *img = NULL;
+	uint8 resolved_player = 0xFF;   ///< which player data[] currently holds
+	int   resolved_night = -999;
+	image_id hires_active = IMG_EMPTY; ///< MRES: the 2x counterpart shown now, if any
+	bool generated = false;          ///< XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: built by NIGHTGEN from a legacy IMG
+	sint32 fit_num = 0, fit_den = 0; ///< XR32-FIT-IMG-TO-WIDTH-01: the step fit_img_to_width() chose (0 = none)
+};
+
+static stlab_xr32_slot_t *stlab_slots = NULL;
+static image_id stlab_slots_alloc = 0;
+
+
+static stlab_xr32_slot_t *stlab_slot(image_id n, bool create)
+{
+	if(  n >= stlab_slots_alloc  ) {
+		if(  !create  ) return NULL;
+		const image_id want = n + 128;
+		stlab_xr32_slot_t *grown = new stlab_xr32_slot_t[want];
+		for(  image_id i = 0;  i < stlab_slots_alloc;  i++  ) grown[i] = stlab_slots[i];
+		delete [] stlab_slots;
+		stlab_slots = grown;
+		stlab_slots_alloc = want;
+	}
+	return &stlab_slots[n];
+}
+
+
+bool stlab_xr32_has(image_id n)
+{
+	stlab_xr32_slot_t *s = stlab_slot(n, false);
+	return s != NULL  &&  s->img != NULL;
+}
+
+
+void stlab_xr32_set_fit(image_id id, sint32 num, sint32 den)
+{
+	stlab_xr32_slot_t *s = stlab_slot(id, false);
+	if(  s == NULL  ||  s->img == NULL  ) {
+		return;
+	}
+	// 1/1 is the image itself: no scaled cache, the ordinary path serves it
+	s->fit_num = num == den ? 0 : num;
+	s->fit_den = num == den ? 0 : den;
+}
+
+
+bool stlab_xr32_attach(image_id id, stlab_xr32_image_t *img,
+                       sint16 img_x, sint16 img_y, sint16 img_w, sint16 img_h, uint8 img_zoomable)
+{
+	if(  id >= anz_images  ||  img == NULL  ) {
+		return false;
+	}
+	// geometry guard of FORMAT CANDIDATE v1: a mismatch means the node does not
+	// belong to this image, and the legacy IMG must be used instead.
+	if(  img->width != (uint16)img_w  ||  img->height != (uint16)img_h
+	     ||  img->x != img_x  ||  img->y != img_y  ||  img->zoomable != img_zoomable  ) {
+		return false;
+	}
+	stlab_xr32_slot_t *s = stlab_slot(id, true);
+	if(  s->img != NULL  ) {
+		delete s->img;
+	}
+	s->img = img;
+	s->generated = false;
+	s->resolved_player = 0xFF;
+	s->resolved_night = -999;
+
+	// The image keeps the zoom eligibility registration gave it: a candidate-backed
+	// image now has a native scaled representation, so it takes the ordinary zoom
+	// path and rezoom_img32() routes it to stlab_xr32_zoom_*() instead of to the
+	// STORED16 resampler. FLAG_REZOOM is left set so the first draw builds it.
+	images[id].player_flags = 0xFFFF;
+	// a candidate that carries player runs must route through the player cache
+	for(  uint32 r = 0;  r < img->run_count;  r++  ) {
+		if(  img->runs[r].cls == 1  ||  img->runs[r].cls == 2  ) {
+			images[id].recode_flags |= FLAG_HAS_PLAYER_COLOR;
+			break;
+		}
+	}
+	return true;
+}
+
+
+static void stlab_xr32_zoom_release(stlab_xr32_slot_t *s);
+
+/* --- XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 (EXPERIMENT) ----------------------------- */
+
+const char *stlab_xnex_attach(image_id id, stlab_xnex_t *night)
+{
+	stlab_xr32_slot_t *s = stlab_slot(id, false);
+	if(  night == NULL  ||  night->rgba == NULL  ) {
+		return "empty night node";
+	}
+	if(  s == NULL  ||  s->img == NULL  ||  s->generated  ) {
+		return "the image has no XR32 v2 day node";   // a night image needs the image's DAY node
+	}
+	stlab_xr32_image_t *img = s->img;
+	if(  img->version != 2  ) {
+		return "the day node is not XR32 v2";
+	}
+	if(  night->width != img->width  ||  night->height != img->height  ||  night->x != img->x  ||  night->y != img->y  ) {
+		return "its geometry differs from the day node";   // same geometry guard as XR32 itself
+	}
+	if(  img->night != NULL  ) {
+		return "the image already has a night node (duplicate)";   // the first one stays
+	}
+	free( img->night );
+	img->night = night->rgba;
+	night->rgba = NULL;
+	stlab_xr32_zoom_release( s );
+	s->resolved_player = 0xFF;
+	s->resolved_night = -999;
+	images[id].player_flags = 0xFFFF;
+	images[id].recode_flags |= FLAG_REZOOM;
+	return NULL;
+}
+
+
+/**
+ * SIMUTRANS_XR32_NIGHTGEN=1: prissi's "night images generated on load time" for a LEGACY image.
+ * The stored words are decoded once, at registration, into
+ *   DAY plane   ordinary colour = the 555 value expanded exactly as the palette does; a light =
+ *               its day colour; a player pixel = a v2 contributor (coverage 255)
+ *   NIGHT plane ordinary colour = its legacy level-4 colour; a light = its night colour
+ * and the image is then served by the DAY+NIGHT path ('abc' transition). Semi-transparent
+ * pixels keep their class colour and get alpha (a32 * 255 + 16) / 32.
+ */
+static uint32 stlab_nightgen_images = 0;
+static uint64 stlab_nightgen_bytes = 0;
+static uint64 stlab_nightgen_us = 0;     ///< wall time spent generating, microseconds (measurement only)
+
+static void stlab_nightgen_register(image_id id)
+{
+	if(  !stlab_xr32_enabled()  ||  !stlab_nightgen_enabled()  ) {
+		return;
+	}
+	const imd32 &d = images[id];
+	if(  d.base_h <= 0  ||  d.base_w <= 0  ||  d.base_data == NULL  ) {
+		return;
+	}
+	const uint32 w = (uint32)d.base_w, h = (uint32)d.base_h, npx = w * h;
+	const std::chrono::steady_clock::time_point t_start = std::chrono::steady_clock::now();
+	uint8 *day = (uint8 *)calloc( npx, 4 );
+	uint8 *nig = (uint8 *)calloc( npx, 4 );
+	uint8 *pcid = (uint8 *)malloc( npx );
+	if(  day == NULL  ||  nig == NULL  ||  pcid == NULL  ) {
+		free( day ); free( nig ); free( pcid );
+		return;
+	}
+	memset( pcid, 0xFF, npx );
+	const double m4[2] = { pow(0.75, 4) * ((light_level + 8.0) / 8.0), pow(0.83, 4) * ((light_level + 8.0) / 8.0) };
+	uint32 n_pc = 0;
+	const STORED_PIXVAL *sp = d.base_data;
+	for(  uint32 y = 0;  y < h;  y++  ) {
+		uint32 x = 0;
+		uint16 runlen = *sp++;
+		do {
+			x += (runlen & ~TRANSPARENT_RUN);
+			runlen = *sp++;
+			const bool semi = (runlen & TRANSPARENT_RUN) != 0;
+			runlen &= (uint16)~TRANSPARENT_RUN;
+			for(  uint16 k = 0;  k < runlen;  k++  ) {
+				const uint32 px = x + k;
+				const STORED_PIXVAL v = sp[k];
+				if(  px >= w  ) continue;
+				const uint32 i = y * w + px;
+				uint8 *dp = day + i * 4, *np = nig + i * 4;
+				int cls = -1, alpha = 255;             // cls: 0..15 player, 16..30 light, 31+ rgb343, -1 rgb555
+				uint32 val = v;
+				if(  semi  ) {
+					const uint32 aux = (uint32)v - 0x8020u;
+					cls = (int)(aux / 31u);
+					alpha = (int)(((aux % 31u) + 1u) * 255u + 16u) / 32;
+				}
+				else if(  v >= 0x8000  ) {
+					cls = v - 0x8000;
+				}
+				if(  cls < 0  ) {
+					dp[0] = (uint8)((val & 0x7C00) >> 7); dp[1] = (uint8)((val & 0x03E0) >> 2); dp[2] = (uint8)((val & 0x001F) << 3);
+				}
+				else if(  cls < 16  ) {
+					pcid[i] = (uint8)cls;  n_pc++;
+					dp[0] = dp[1] = dp[2] = 0x80;          // never read: coverage 255
+				}
+				else if(  cls < 16 + LIGHT_COUNT  ) {
+					const rgb888_t dl = display_day_lights[cls - 16], nl = display_night_lights[cls - 16];
+					dp[0] = dl.r; dp[1] = dl.g; dp[2] = dl.b;
+					np[0] = nl.r; np[1] = nl.g; np[2] = nl.b;
+				}
+				else {
+					const uint32 c = (uint32)(cls - 31);
+					dp[0] = (uint8)((c & 0x0380) >> 2); dp[1] = (uint8)((c & 0x0078) << 1); dp[2] = (uint8)((c & 0x0007) << 5);
+				}
+				if(  cls < 16  ||  cls >= 16 + LIGHT_COUNT  ) {
+					np[0] = (uint8)(int)(dp[0] * m4[0]); np[1] = (uint8)(int)(dp[1] * m4[0]); np[2] = (uint8)(int)(dp[2] * m4[1]);
+				}
+				dp[3] = np[3] = (uint8)alpha;
+			}
+			x  += runlen;
+			sp += runlen;
+		} while(  (runlen = *sp++)  );
+	}
+	stlab_xr32_image_t *img = new stlab_xr32_image_t();
+	img->width = (uint16)w;  img->height = (uint16)h;
+	img->x = d.base_x;  img->y = d.base_y;
+	img->zoomable = (d.recode_flags & FLAG_ZOOMABLE) ? 1 : 0;
+	img->version = 2;
+	img->rgba = day;
+	img->night = nig;
+	// player pixels -> v2 contributor runs (coverage 255), ascending start then id
+	if(  n_pc  ) {
+		img->runs = (stlab_xr32_run_t *)calloc( n_pc, sizeof(stlab_xr32_run_t) );
+		uint32 r = 0;
+		for(  uint32 i = 0;  i < npx;  ) {
+			if(  pcid[i] == 0xFF  ) { i++; continue; }
+			uint32 j = i + 1;
+			while(  j < npx  &&  pcid[j] == pcid[i]  ) j++;
+			stlab_xr32_run_t &run = img->runs[r++];
+			run.start = i;  run.length = j - i;  run.coverage = 255;
+			run.cls = pcid[i] < 8 ? 1 : 2;  run.param = pcid[i] & 7;
+			i = j;
+		}
+		img->run_count = r;
+	}
+	free( pcid );
+	if(  !stlab_xr32_attach( id, img, img->x, img->y, (sint16)w, (sint16)h, img->zoomable )  ) {
+		delete img;
+		return;
+	}
+	stlab_slot( id, false )->generated = true;
+	stlab_nightgen_images++;
+	stlab_nightgen_us += (uint64)std::chrono::duration_cast<std::chrono::microseconds>(
+		std::chrono::steady_clock::now() - t_start ).count();
+	stlab_nightgen_bytes += (uint64)npx * 8 + (uint64)img->run_count * sizeof(stlab_xr32_run_t);
+}
+
+
+void stlab_xr32_scratch_release();
+struct stlab_xr32_slot_t;
+
+void simgraph32_alpha_plane_release();
+
+void stlab_xr32_release_all()
+{
+	simgraph32_alpha_plane_release();
+	stlab_xr32_scratch_release();
+	for(  image_id i = 0;  i < stlab_slots_alloc;  i++  ) {
+		stlab_xr32_zoom_release( &stlab_slots[i] );
+		delete stlab_slots[i].img;
+		stlab_slots[i].img = NULL;
+	}
+	delete [] stlab_slots;
+	stlab_slots = NULL;
+	stlab_slots_alloc = 0;
+}
+
+
+/* --- the replacement producer of data[player] -------------------------------- */
+
+/* CANDIDATE C1 -- scratch buffers reused across images.
+ *
+ * The producer used to malloc and free two buffers per image: a dense w*h*4
+ * RGBA raster, and a run-stream buffer sized for the worst case. Both are
+ * strictly internal to one call, so neither has to be a fresh allocation, and
+ * the worst-case one must not become the screen cache: at pakset scale that
+ * kept 53.2 MB where the exact length needs 15.7 MB.
+ *
+ * recode_img() holds recode_img_mutex32 across this call under MULTI_THREAD.
+ */
+static uint32 *stlab_scratch_raster = NULL;
+static size_t  stlab_scratch_raster_px = 0;
+static PIXVAL *stlab_scratch_out = NULL;
+static size_t  stlab_scratch_out_len = 0;
+
+
+static bool stlab_scratch_reserve(size_t want_px, size_t want_out)
+{
+	if(  want_px > stlab_scratch_raster_px  ) {
+		free( stlab_scratch_raster );
+		stlab_scratch_raster = MALLOCN( uint32, want_px );
+		if(  stlab_scratch_raster == NULL  ) {
+			stlab_scratch_raster_px = 0;
+			return false;
+		}
+		stlab_scratch_raster_px = want_px;
+	}
+	if(  want_out > stlab_scratch_out_len  ) {
+		free( stlab_scratch_out );
+		stlab_scratch_out = MALLOCN( PIXVAL, want_out );
+		if(  stlab_scratch_out == NULL  ) {
+			stlab_scratch_out_len = 0;
+			return false;
+		}
+		stlab_scratch_out_len = want_out;
+	}
+	return true;
+}
+
+
+void stlab_xr32_scratch_release()
+{
+	free( stlab_scratch_raster );  stlab_scratch_raster = NULL;  stlab_scratch_raster_px = 0;
+	free( stlab_scratch_out );     stlab_scratch_out = NULL;     stlab_scratch_out_len = 0;
+}
+
+
+/// worst case of stlab_xr32_encode_rows(): per row a leading clear, then per pixel a
+/// separator + count + the pixel (alternating opaque and translucent), and the terminator
+static inline size_t stlab_xr32_encode_cap(uint32 w, uint32 h)
+{
+	return (size_t)h * (3 + 3 * (size_t)w) + 8;
+}
+
+
+/**
+ * Encode a resolved raster as the screen run stream: [clear][count][pixels...]...[0] per
+ * row. A raster pixel is 0 (hole), 0xFFrrggbb (opaque) or 0xAArrggbb with 8 <= AA <= 254
+ * (straight alpha). Opaque and translucent pixels go into separate runs; a translucent run
+ * carries TRANSPARENT_RUN and keeps the full ARGB word, which the screen-space blitters
+ * tell apart from the legacy class+alpha codes (all below 0x10000) by the top byte. Two
+ * adjacent runs are separated by TRANSPARENT_RUN as a zero-length clear run, the separator
+ * the legacy encoder uses, because a clear run of 0 ends the row.
+ */
+static PIXVAL *stlab_xr32_encode_rows(const uint32 *raster, uint32 w, uint32 h, PIXVAL *d)
+{
+	for(  uint32 y = 0;  y < h;  y++  ) {
+		const uint32 *row = raster + (size_t)y * w;
+		uint32 x = 0;
+		bool first = true;
+		while(  x < w  ) {
+			uint32 clear = 0;
+			while(  x < w  &&  row[x] == 0  ) { clear++; x++; }
+			if(  x >= w  ) {
+				if(  first  ) { *d++ = 0; *d++ = 0; }   // an entirely empty row
+				break;
+			}
+			*d++ = first  ||  clear  ?  (PIXVAL)clear  :  (PIXVAL)TRANSPARENT_RUN;
+			const bool opaque = (row[x] >> 24) == 0xFFu;
+			const uint32 start = x;
+			while(  x < w  &&  row[x] != 0  &&  ((row[x] >> 24) == 0xFFu) == opaque  ) { x++; }
+			const uint32 count = x - start;
+			*d++ = opaque  ?  (PIXVAL)count  :  (PIXVAL)(count | TRANSPARENT_RUN);
+			for(  uint32 k = 0;  k < count;  k++  ) {
+				*d++ = (PIXVAL)row[start + k];
+			}
+			first = false;
+		}
+		if(  first  &&  w == 0  ) { *d++ = 0; *d++ = 0; }
+		*d++ = 0;                                        // end of row
+	}
+	return d;
+}
+
+
+/**
+ * Resolve the candidate node for one player and encode the result as the screen run
+ * stream the blitters already consume: [clear][count][pixels...]...[0] per row.
+ *
+ * No STORED_PIXVAL is read or written anywhere in here.
+ */
+#include "stlab_xr32_zoom.cci"       // native zoom, section 39 of the design report
+
+
+/**
+ * MRES (MRES-V2-SPEC.md, section 5). At exactly 2/1, a candidate-backed image whose
+ * authored 2x counterpart ALSO carries a candidate shows that counterpart, resolved
+ * at 1:1, instead of its own native enlargement. Returns false - and clears any
+ * previous choice - whenever that does not apply, so the native zoom takes over.
+ * A fitted image (fit_num != 0) is at its fit step, not at the map's zoom, exactly
+ * as stlab_xr32_zoom_prepare() sizes it: otherwise a map zoom change dropped a
+ * toolbar icon's 2x art for its 1x art at 2/1 until the next refit.
+ * Called under rezoom_img_mutex32, like stlab_xr32_zoom_prepare().
+ */
+static bool stlab_xr32_hires_prepare(image_id n)
+{
+	stlab_xr32_slot_t *s = stlab_slot( n, false );
+	if(  s == NULL  ||  s->img == NULL  ) {
+		return false;
+	}
+	s->hires_active = IMG_EMPTY;
+	const sint32 num = s->fit_num ? s->fit_num : g_simgraph32.zoom_num[zoom_factor32];
+	const sint32 den = s->fit_num ? s->fit_den : g_simgraph32.zoom_den[zoom_factor32];
+	if(  (images[n].recode_flags & FLAG_ZOOMABLE) == 0  ||  num != 2  ||  den != 1  ) {
+		return false;
+	}
+	const image_id hi = simgraph_get_hires( n );
+	if(  hi == IMG_EMPTY  ||  hi >= anz_images  ) {
+		return false;
+	}
+	const stlab_xr32_slot_t *hs = stlab_slot( hi, false );
+	if(  hs == NULL  ||  hs->img == NULL  ) {
+		return false;             // a legacy-only counterpart: the 1x candidate is zoomed natively
+	}
+	const stlab_xr32_image_t *hi_img = hs->img;
+	if(  (hi_img->night != NULL) != (s->img->night != NULL)  ) {
+		return false;             // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: never swap the night away when zooming
+	}
+	if(  (sint32)hi_img->height < images[n].base_h * 2 - 2
+	     ||  (sint32)hi_img->height > images[n].base_h * 2 + 2
+	     ||  (sint32)hi_img->width < images[n].base_w * 2 - 2
+	     ||  (sint32)hi_img->width > images[n].base_w * 2 + 2  ) {
+		return false;
+	}
+	stlab_xr32_zoom_release( s );
+	images[n].player_flags = 0xFFFF;
+	for(  uint8 i = 0;  i < MAX_PLAYER_COUNT;  i++  ) {
+		if(  images[n].data[i] != NULL  ) {
+			free( images[n].data[i] );
+			images[n].data[i] = NULL;
+		}
+	}
+	images[n].x = hi_img->x;
+	images[n].y = hi_img->y;
+	images[n].w = (sint16)hi_img->width;
+	images[n].h = (sint16)hi_img->height;
+	s->hires_active = hi;
+	images[n].recode_flags &= ~FLAG_REZOOM;
+	return true;
+}
+
+
+bool stlab_xr32_recode(image_id n, sint8 player_nr)
+{
+	stlab_xr32_slot_t *s = stlab_slot(n, false);
+	if(  s == NULL  ||  s->img == NULL  ) {
+		return false;
+	}
+	// away from neutral the screen cache comes from the derived scaled cache. Never
+	// the STORED16 path.
+	// XR32-FIT-IMG-TO-WIDTH-01: an image fitted by fit_img_to_width() keeps the step chosen there, whatever the
+	// world zoom, exactly as a legacy image keeps the zoom_data that fit built
+	const bool fitted = s->fit_num != 0;
+	const bool scaled = s->hires_active == IMG_EMPTY
+	                    &&  (fitted  ||  (zoom_factor32 != ZOOM_NEUTRAL  &&  (images[n].recode_flags & FLAG_ZOOMABLE) != 0));
+	if(  scaled  &&  stlab_xr32_zoom_recode( n, player_nr )  ) {
+		return true;
+	}
+	if(  scaled  &&  s->zoom == NULL  ) {
+		// the image degenerates at this scale: stlab_xr32_zoom_prepare() left h = 0, as
+		// the legacy resampler does, and there is nothing to draw. The unscaled
+		// candidate below would draw it at its 1:1 size and offsets.
+		imd32 &im = images[n];
+		if(  im.data[player_nr] == NULL  ) {
+			im.data[player_nr] = MALLOCN( PIXVAL, 1 );
+			im.data[player_nr][0] = 0;
+		}
+		im.h = 0;
+		s->resolved_player = (uint8)player_nr;
+		s->resolved_night = night_shift;
+		return true;
+	}
+	// back at neutral the scaled cache is dead weight
+	if(  zoom_factor32 == ZOOM_NEUTRAL  &&  s->zoom != NULL  &&  !fitted  ) {
+		stlab_xr32_zoom_release( s );
+	}
+	const stlab_xr32_image_t *img = s->img;
+	if(  s->hires_active != IMG_EMPTY  &&  (zoom_factor32 != ZOOM_NEUTRAL  ||  fitted)  ) {
+		// MRES: the authored 2x candidate, resolved at 1:1 (stlab_xr32_hires_prepare); fit_img_to_width() at
+		// exactly 2/1 chooses it too, as the legacy rezoom does
+		const stlab_xr32_slot_t *hs = stlab_slot( s->hires_active, false );
+		if(  hs != NULL  &&  hs->img != NULL  ) {
+			img = hs->img;
+		}
+	}
+	const uint32 w = img->width, h = img->height;
+	const uint32 npx = w * h;
+
+	if(  !stlab_scratch_reserve( npx, stlab_xr32_encode_cap( w, h ) )  ) {
+		return false;
+	}
+	uint32 *raster = stlab_scratch_raster;
+	stlab_xr32_resolve( img, player_nr, raster );
+
+	PIXVAL *out = stlab_scratch_out;
+	PIXVAL *d = stlab_xr32_encode_rows( raster, w, h, out );
+	imd32 &im = images[n];
+	const size_t used = (size_t)(d - out);
+	if(  im.data[player_nr] != NULL  ) {
+		free( im.data[player_nr] );
+	}
+	PIXVAL *cache = MALLOCN( PIXVAL, used );
+	memcpy( cache, out, used * sizeof(PIXVAL) );
+	im.data[player_nr] = cache;
+	im.len = (uint32)used;
+	im.w = (sint16)w;
+	im.h = (sint16)h;
+	s->resolved_player = (uint8)player_nr;
+	s->resolved_night = night_shift;
+	return true;
+}

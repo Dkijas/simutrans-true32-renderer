@@ -1,0 +1,26 @@
+Apply to a clean export of official Simutrans SVN trunk r12377, from the top of the exported tree:
+
+  svn export -r 12377 --native-eol LF svn://servers.simutrans.org/simutrans/trunk simutrans-r12377
+  cd simutrans-r12377
+
+EITHER the whole change in one step:
+
+  git -c core.autocrlf=false apply XR32-NIGHT-PROTOTYPE-FULL.r12377.diff
+
+OR the same change in five steps, in this order, each with  git -c core.autocrlf=false apply <file>
+(-p1; the result is byte-identical):
+
+  1  01-XR32-DAYNIGHT-r12337-CANDIDATE-ON-r12377.diff  the r12337 test build (40 px toolbar, fit_img_to_width v2,
+                                                       thin images) merged onto r12377; the merge had no conflict
+  2  02-SET-TEXTURE-PTR-r12371.diff                    simgraph32 implements the renderer function r12371 added
+  3  03-NEWLINE-AS-SPACE-r12342.diff                   r12342's line break as space in single-line text, for simgraph32
+  4  04-MRES-IDENTITY-TYPE-AND-NAME.diff               MRES finds its base object by node type and name (fix)
+  5  05-MRES-HIRES-FOLLOWS-FIT-STEP.diff               MRES 2x art of a fitted icon follows its fit step (fix)
+
+core.autocrlf=false keeps every line ending exactly as in the diffs; Git for Windows otherwise writes CRLF.
+The result equals source/xr32-r12377/ of this repository, file for file.
+
+NOT part of XR32 - upstream-build-fix/H-r12362-cmake-ole32.diff:
+Official r12377's CMakeLists.txt links "old32" (a typo for ole32, since r12362), so no Windows CMake build of r12377
+links. The Windows executables of this release were built with this one-word fix applied to the build copy only
+(apply with -p0). Linux needs nothing. The fix is not in the full diff above and not in source/.

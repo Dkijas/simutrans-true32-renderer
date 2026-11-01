@@ -1,0 +1,755 @@
+/*
+ * This file is part of the Simutrans project under the Artistic License.
+ * (see LICENSE.txt)
+ */
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <string>
+#include "image_writer.h"
+
+/* STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT */
+#include "stlab_semantic.h"
+#include "stlab_xr32_writer.h"
+#include "stlab_semantic_masks.h"
+#include "root_writer.h"
+#include "obj_node.h"
+#include "obj_pak_exception.h"
+#include "../image.h"
+#include "../../macros.h"
+#include "../../utils/simstring.h"
+#include "../../simdebug.h"
+#include "../../io/raw_image.h"
+
+#ifndef _WIN32
+#include <dirent.h>
+#include <sys/types.h>
+#endif
+
+
+#define IMG_VERSION 3
+
+
+struct dimension
+{
+	int xmin;
+	int xmax;
+	int ymin;
+	int ymax;
+};
+
+
+std::string image_writer_t::last_img_file;
+
+raw_image_t image_writer_t::input_img;
+int image_writer_t::img_size = 64;
+
+/* STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
+ * One extraction per source PNG, reused by every tile cut from it. */
+static std::string stlab_cached_file;
+static std::vector<uint8> stlab_cached_rgba;
+static std::vector<stlab_semantic_record_t> stlab_cached_records;
+static int stlab_cached_w = 0, stlab_cached_h = 0;
+
+/* XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT. One mask solve per source PNG. */
+static std::string stlab_masks_file;
+static bool stlab_masks_present = false;
+static std::vector<uint8> stlab_masks_under;
+static std::vector<stlab_sem_contrib_t> stlab_masks_contribs;
+static int stlab_masks_w = 0, stlab_masks_h = 0;
+/* XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01 -- EXPERIMENT. The night under plane of the current sheet. */
+static bool stlab_night_present = false;
+static std::vector<uint8> stlab_night_plane;
+
+
+uint32 image_writer_t::block_getpix(int x, int y)
+{
+	const uint8 *pixel_data = input_img.access_pixel(x, y);
+
+	switch (input_img.get_format()) {
+		case raw_image_t::FMT_GRAY8: {
+			const uint8 gray_level = pixel_data[0];
+			return
+				gray_level <<  0 |
+				gray_level <<  8 |
+				gray_level << 16;
+		}
+		case raw_image_t::FMT_RGBA8888: {
+			const uint32 pixel =
+				(pixel_data[2] <<  0) + // B
+				(pixel_data[1] <<  8) + // G
+				(pixel_data[0] << 16) + // R
+				(pixel_data[3] << 24);  // A
+
+			// invert alpha channel, we want 0 == opaque
+			return pixel ^ 0xFF000000;
+		}
+		case raw_image_t::FMT_RGB888: {
+			return
+				(pixel_data[2] <<  0) | // B
+				(pixel_data[1] <<  8) | // G
+				(pixel_data[0] << 16);  // R
+		}
+		default:
+			dbg->fatal("image_writer_t::block_getpix", "Unsupported input image format");
+	}
+}
+
+
+/* ==========================================================================
+ * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
+ *
+ * A straight RGBA8888 view of the loaded image, built from block_getpix() so the
+ * semantic extractor and the legacy encoder see the same pixels.
+ *
+ * block_getpix() returns 0xAARRGGBB with the alpha channel INVERTED (0 == opaque) for
+ * FMT_RGBA8888, and a zero top byte for the two formats that carry no alpha. XOR with
+ * 0xFF therefore recovers the source alpha in all three cases: an RGB or grayscale
+ * source becomes fully opaque, which is what it is.
+ * ==========================================================================*/
+void image_writer_t::stlab_rgba_from_input(std::vector<uint8> &rgba, int &w, int &h)
+{
+	w = (int)input_img.get_width();
+	h = (int)input_img.get_height();
+	rgba.assign((size_t)w * h * 4, 0);
+	for(  int y = 0;  y < h;  y++  ) {
+		for(  int x = 0;  x < w;  x++  ) {
+			const uint32 pix = block_getpix(x, y);
+			uint8 *o = &rgba[((size_t)y * w + x) * 4];
+			o[0] = (uint8)((pix >> 16) & 0xFF);
+			o[1] = (uint8)((pix >>  8) & 0xFF);
+			o[2] = (uint8)( pix        & 0xFF);
+			o[3] = (uint8)(((pix >> 24) & 0xFF) ^ 0xFF);
+		}
+	}
+}
+
+
+bool image_writer_t::stlab_load_rgba(const char *fname, std::vector<uint8> &rgba, int &w, int &h)
+{
+	if(  !the_instance.block_load(fname)  ) {
+		return false;
+	}
+	stlab_rgba_from_input(rgba, w, h);
+	return true;
+}
+
+
+// colors with higher alpha are considered transparent
+#define ALPHA_THRESHOLD (0xF8000000u)
+
+
+/**
+ * Encodes image data into the internal representation,
+ * considers special colors.
+ */
+static uint16 pixrgb_to_pixval(uint32 rgb)
+{
+	uint16 pix;
+
+	// first: find about alpha
+	assert(  rgb < ALPHA_THRESHOLD  );
+
+	if(  rgb > 0x07FFFFFF  ) { // transparencies smaller than this are considered opaque
+		sint16 alpha = (((255 - (rgb >> 24)) * 33) / 255) - 1; // alpha = 31 would be transparent -1 opaque
+
+		// first see if this is a transparent special color (like player color)
+		for (int i = 0; i < SPECIAL; i++) {
+			if (image_t::rgbtab[i] == (uint32)(rgb & 0x00FFFFFFu)) {
+				// player or light color
+				pix = 0x8020 +  i*31 + alpha;
+				return endian(pix);
+			}
+		}
+		// else store color as 3 red, 4, green, 3 red
+		pix = ((rgb >> 14) & 0x0380) | ((rgb >>  9) & 0x0078) | ((rgb >> 5) & 0x07);
+		pix = 0x8020 + 31*31 + pix*31 + alpha;
+		return pix;
+	}
+
+	// force non-transparent pixel
+	rgb &= 0x00FFFFFF;
+	for (int i = 0; i < SPECIAL; i++) {
+		if (image_t::rgbtab[i] == (uint32)rgb) {
+			pix = 0x8000 + i;
+			return pix;
+		}
+	}
+
+	const int r = (rgb >> 16);
+	const int g = (rgb >>  8) & 0xFF;
+	const int b = (rgb >>  0) & 0xFF;
+
+	// RGB 555
+	pix = ((r & 0xF8) << 7) | ((g & 0xF8) << 2) | ((b & 0xF8) >> 3);
+	return pix;
+}
+
+
+// true if transparent
+inline bool is_transparent( const uint32 pix )
+{
+	return (pix & 0x00FFFFFF) == SPECIAL_TRANSPARENT  ||  (pix >= ALPHA_THRESHOLD);
+}
+
+
+static void init_dim(uint32 *image, dimension *dim, int img_size)
+{
+	int x,y;
+	bool found = false;
+
+	dim->ymin = dim->xmin = img_size;
+	dim->ymax = dim->xmax = 0;
+
+	for (y = 0; y < img_size; y++) {
+		for (x = 0; x < img_size; x++) {
+			if(  !is_transparent(image[x + y * img_size])  ) {
+				if (x < dim->xmin) dim->xmin = x;
+				if (y < dim->ymin) dim->ymin = y;
+				if (x > dim->xmax) dim->xmax = x;
+				if (y > dim->ymax) dim->ymax = y;
+				found = true;
+			}
+		}
+	}
+	if (!found) {
+		// Negative values not usable
+		dim->xmin = 1;
+		dim->ymin = 1;
+	}
+}
+
+
+/**
+ * Encodes an image into a sprite data structure, considers
+ * special colors.
+ */
+uint16 *image_writer_t::encode_image(int x, int y, dimension* dim, int* len)
+{
+	int line;
+	uint16 *dest;
+	uint16 *dest_base = new uint16[img_size * img_size * 2];
+	uint16 *colored_run_counter;
+
+	dest = dest_base;
+
+	x += dim->xmin;
+	y += dim->ymin;
+
+	const int img_width  = dim->xmax - dim->xmin + 1;
+	const int img_height = dim->ymax - dim->ymin + 1;
+
+	for(  line = 0;  line < img_height;  line++  ) {
+		int row_px_count = 0; // index of the currently handled pixel
+		uint16 clear_colored_run_pair_count = 0;
+
+		uint32 pix = block_getpix( x + row_px_count, y + line );
+		row_px_count++;
+
+		do { // read one row
+			uint16 count = 0;
+
+			// read transparent pixels
+			while(  is_transparent(pix)  ) {
+				count ++;
+				if (row_px_count >= img_width) { // end of line ?
+					break;
+				}
+				pix = block_getpix( x + row_px_count, y + line );
+				row_px_count++;
+			}
+			// write number of transparent pixels
+			*dest++ = endian(count);
+
+			// position to write number of colored pixels to
+			colored_run_counter = dest++;
+			count = 0;
+
+			PIXVAL has_transparent = 0;
+			while(  !is_transparent(pix)  ) {
+				// write the colored pixel
+				PIXVAL pixval = pixrgb_to_pixval(pix);
+				if(  pixval >= 0x8020  &&  !has_transparent  ) {
+					if(  count  ) {
+						*colored_run_counter = endian(uint16(count));
+						*dest++ = endian(uint16(0x8000));
+						colored_run_counter = dest++;
+						count = 0;
+					}
+					has_transparent = 0x8000;
+				}
+				else if(  pixval < 0x8020  &&  has_transparent  ) {
+					if(  count  ) {
+						*colored_run_counter = endian(uint16(count+has_transparent));
+						*dest++ = endian(uint16(0x8000));
+						colored_run_counter = dest++;
+						count = 0;
+					}
+					has_transparent = 0;
+				}
+				*dest++ = endian(uint16(pixval));
+				count++;
+				if (row_px_count >= img_width) { // end of line ?
+					break;
+				}
+				pix = block_getpix( x + row_px_count, y + line );
+				row_px_count++;
+			}
+
+			/*
+			 * If it is not the first clear-colored-run pair and its colored run is empty
+			 * --> it is superfluous and can be removed by rolling back the pointer
+			 */
+			if(  clear_colored_run_pair_count > 0  &&  count == 0  ) {
+				dest -= 2;
+				// this only happens at the end of a line, so no need to increment clear_colored_run_pair_count
+			}
+			else {
+				*colored_run_counter = endian(uint16(count + has_transparent));
+				clear_colored_run_pair_count++;
+			}
+		} while(  row_px_count < img_width  );
+
+		*dest++ = 0;
+	}
+
+	*len = dest - dest_base;
+
+	return dest_base;
+}
+
+
+bool image_writer_t::block_load(const char *fname)
+{
+	// The last image file is cached
+	// Note that this method accepts any file name if the content has a supported format,
+	// even though makeobj only supports image file names with a ".png" suffix.
+	// See image_writer_t::write_obj for details.
+	if(  last_img_file == fname  ) {
+		return true;
+	}
+	else if (load_image_from_file(fname)) {
+		if ((input_img.get_width()%img_size != 0) || (input_img.get_height()%img_size != 0)) {
+			dbg->error("image_writer_t::block_load", "Cannot load image file '%s': "
+				"Size not divisible by %d.", fname, img_size);
+			last_img_file = "";
+			return false;
+		}
+
+		last_img_file = fname;
+		return true;
+	}
+
+	// error message is handled by image_writer_t::write_obj
+	last_img_file = "";
+	return false;
+}
+
+
+bool image_writer_t::load_image_from_file(const char* fname)
+{
+	if (input_img.read_from_file(fname)) {
+		return true;
+	}
+
+	// Not an exact match, try to case-insensitive search.
+#ifndef _WIN32
+	std::string actual_path;
+	size_t len = strlen(fname);
+	actual_path.reserve(len);
+	const char * sep_beg = fname;
+	const char * sep_end = sep_beg + strspn(sep_beg, "/");
+	if (sep_end == sep_beg) {
+		// relative
+		actual_path = "./";
+	}
+
+	char const * end = fname + len;
+
+	std::string name;
+	while (true) {
+		actual_path.insert(actual_path.end(), sep_beg, sep_end);
+		sep_beg = sep_end + strcspn(sep_end, "/");
+		if (sep_beg == sep_end) {
+			break;
+		}
+		name.assign(sep_end, sep_beg);
+		DIR * dir = opendir(actual_path.c_str());
+		if (!dir) {
+			break;
+		}
+		struct dirent * ent = NULL;
+		while ((ent = readdir(dir)) != NULL) {
+			if (!STRICMP(ent->d_name, name.c_str())) {
+				actual_path += ent->d_name;
+				break;
+			}
+		}
+		closedir(dir);
+		if (!ent) {
+			break;
+		}
+
+		if (sep_beg == end) {
+			return input_img.read_from_file(actual_path.c_str());
+		}
+		sep_end = sep_beg + strspn(sep_beg, "/");
+	}
+#endif
+
+	return false;
+}
+
+
+/* the syntax for image the string is
+ *   "-" empty image
+ * [> ]imagefilename_without_extension[[[[.row].col],xoffset],yoffset]
+ *  leading "> " set the flag for a non-zoomable image
+ *  after the dots also spaces and comments are allowed
+ */
+void image_writer_t::write_obj(FILE* outfp, obj_node_t& parent, std::string an_imagekey, uint32 index)
+{
+	// Only the values that go into the node are needed here, and the encoded
+	// pixels are held in pixdata: image_t is the runtime image and carries
+	// neither data[] nor these fields when built at COLOUR_DEPTH 0.
+	struct {
+		scr_coord_val x = 0;
+		scr_coord_val y = 0;
+		scr_coord_val w = 0;
+		scr_coord_val h = 0;
+		size_t len = 0;
+		uint8 zoomable = 0;
+	} image;
+	dimension dim;
+	uint16 *pixdata = NULL;
+	// STLAB probe: the region origin in the source image, captured where col/row live
+	int stlab_x0 = 0, stlab_y0 = 0;
+	bool stlab_have_region = false;
+
+	// if first char is a '>' then this image is not zoomable
+	if(  an_imagekey[0] == '>'  ) {
+		an_imagekey = an_imagekey.substr(1);
+		image.zoomable = false;
+	}
+	else {
+		image.zoomable = true;
+	}
+	std::string imagekey = trim(an_imagekey);
+
+	if(  imagekey != "-"  &&  imagekey != ""  ) {
+
+		// divide key in filename and image number
+		int row = -1, col = -1;
+		std::string numkey;
+
+		int j = imagekey.rfind('/');
+		if(  j == -1  ) {
+			numkey = imagekey;
+		}
+		else {
+			numkey = imagekey.substr(j + 1, std::string::npos);
+		}
+
+		int i = numkey.find('.');
+		if(  i == -1  ) {
+			char reason[1024];
+			sprintf(reason, "no image number in %s", imagekey.c_str() );
+			throw obj_pak_exception_t("image_writer_t", reason);
+		}
+		numkey = numkey.substr( i+1, std::string::npos );
+
+		imagekey = root_writer_t::get_inpath() + imagekey.substr( 0, imagekey.size()-numkey.size() - 1 ) + ".png";
+
+		row = atoi(numkey.c_str());
+
+		i = numkey.find('.');
+		if(i != -1) {
+			col = atoi( numkey.c_str()+i+1 );
+
+			// add image offsets
+			int comma_pos = numkey.find(',');
+			if(comma_pos != -1) {
+				numkey = numkey.substr( comma_pos+1, std::string::npos);
+				image.x = atoi( numkey.c_str() );
+				comma_pos = numkey.find(',');
+				if(comma_pos != -1) {
+					image.y = atoi(numkey.substr( comma_pos + 1, std::string::npos).c_str());
+				}
+			}
+		}
+
+		// Load complete file
+		if (!block_load(imagekey.c_str())) {
+			char reason[1024];
+			sprintf(reason, "cannot open %s", imagekey .c_str());
+			throw obj_pak_exception_t("image_writer_t", reason);
+		}
+
+		if (col == -1) {
+			col = row % (input_img.get_width()  / img_size);
+			row = row / (input_img.get_height() / img_size);
+		}
+		if (col >= (int)(input_img.get_width() / img_size) || row >= (int)(input_img.get_height() / img_size)) {
+			char reason[1024];
+			sprintf(reason, "invalid image number in %s.%s", imagekey.c_str(), numkey.c_str());
+			throw obj_pak_exception_t("image_writer_t", reason);
+		}
+		row *= img_size;
+		col *= img_size;
+
+		// Temp. read image and determine drawing area.
+		uint32 *image_data = new uint32[img_size * img_size];
+		for (int x = 0; x < img_size; x++) {
+			for (int y = 0; y < img_size; y++) {
+				image_data[x + y * img_size] = block_getpix(x + col, y + row);
+			}
+		}
+		// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: a night image may light pixels that are transparent by
+		// day (a glow). The box of the tile is the union of both, so the night node never needs to
+		// crop; the legacy IMG then only carries transparent margins, which draw nothing.
+		if(  stlab_writer_enabled()  &&  stlab_night_images_requested()  ) {
+			const uint8 *ns = stlab_night_sheet( last_img_file, input_img.get_width(), input_img.get_height() );
+			if(  ns != NULL  ) {
+				dimension day_dim;
+				init_dim(image_data, &day_dim, img_size);
+				for (int x = 0; x < img_size; x++) {
+					for (int y = 0; y < img_size; y++) {
+						if(  !is_transparent(image_data[x + y * img_size])  ) continue;
+						const uint8 *q = ns + ((size_t)(y + row) * input_img.get_width() + (x + col)) * 4;
+						const uint32 rgb = ((uint32)q[0] << 16) | ((uint32)q[1] << 8) | q[2];
+						if(  q[3] > 7  &&  rgb != SPECIAL_TRANSPARENT  ) {
+							image_data[x + y * img_size] = 0;     // stands for "drawn at night" in the box test only
+						}
+					}
+				}
+				init_dim(image_data, &dim, img_size);
+				if(  dim.xmin != day_dim.xmin  ||  dim.xmax != day_dim.xmax  ||  dim.ymin != day_dim.ymin  ||  dim.ymax != day_dim.ymax  ) {
+					stlab_night_counters.bbox_grown++;
+				}
+			}
+			else {
+				init_dim(image_data, &dim, img_size);
+			}
+		}
+		else {
+			if(  stlab_writer_enabled()  ) {
+				stlab_night_unrequested_check( last_img_file );
+			}
+			init_dim(image_data, &dim, img_size);
+		}
+		delete [] image_data;
+
+		stlab_x0 = col + dim.xmin;
+		stlab_y0 = row + dim.ymin;
+		stlab_have_region = true;
+		image.x += dim.xmin;
+		image.y += dim.ymin;
+		image.w = dim.xmax - dim.xmin + 1;
+		image.h = dim.ymax - dim.ymin + 1;
+		image.len = 0;
+
+		if (image.h > 0) {
+			int len;
+			pixdata = encode_image(col, row, &dim, &len);
+			image.len = len;
+		}
+
+		dbg->debug( "", "image[%3u] =%-30s %-20s %5u %5u %5u %5u %5u %6u %4s", index, an_imagekey.c_str(), imagekey.c_str(), col, row, image.x, image.y, image.w, image.h, (image.zoomable) ? "yes" : "no" );
+	}
+	else {
+		dbg->debug( "", "image[%3u] =%-30s %-20s %5u %5u %5u %5u %5u %6u %4s", index, an_imagekey.c_str(), imagekey.c_str(), 0, 0, image.x, image.y, image.w, image.h, (image.zoomable) ? "yes" : "no" );
+	}
+
+#if IMG_VERSION == 0
+	obj_node_t node(this, 12 + (image.len * sizeof(uint16)), &parent);
+
+	// to avoid any problems due to structure changes, we write the data manually
+	node.write_uint8 (outfp, image.x);
+	node.write_uint8 (outfp, image.w);
+	node.write_uint8 (outfp, image.y);
+	node.write_uint8 (outfp, image.h);
+	node.write_uint32(outfp, image.len);
+	node.write_uint16(outfp, 0);
+	node.write_uint8 (outfp, image.zoomable);
+	node.write_uint8 (outfp, 0);
+
+	if (image.len) {
+		// only called if there is something to store
+		node.write_bytes(outfp, image.len * sizeof(PIXVAL), pixdata);
+		delete [] pixdata;
+	}
+#elif IMG_VERSION == 1 || IMG_VERSION == 2
+	// version 1 or 2
+	obj_node_t node(this, 10 + (image.len * sizeof(uint16)), &parent);
+
+	// to avoid any problems due to structure changes, we write the data manually
+	node.write_uint16(outfp, image.x);
+	node.write_uint16(outfp, image.y);
+	node.write_uint8 (outfp, image.w);
+	node.write_uint8 (outfp, image.h);
+	node.write_uint8 (outfp, IMG_VERSION);
+	node.write_uint16(outfp, image.len);
+	node.write_uint8 (outfp, image.zoomable);
+
+	if (image.len) {
+		// only called if there is something to store
+		node.write_bytes(outfp, image.len * sizeof(PIXVAL), pixdata);
+		delete [] pixdata;
+	}
+#elif IMG_VERSION == 3
+	obj_node_t node(this, 10 + (image.len * sizeof(uint16)), &parent);
+
+	// to avoid any problems due to structure changes, we write the data manually
+	node.write_uint16(outfp, image.x);
+	node.write_uint16(outfp, image.y);
+	node.write_uint16(outfp, image.w);
+	node.write_uint8 (outfp, IMG_VERSION);
+	node.write_uint16(outfp, image.h);
+	// no need to write len, it is now calculated automatically
+	node.write_uint8 (outfp, image.zoomable);
+
+	if (image.len) {
+		// only called, if there is something to store
+		node.write_bytes(outfp, image.len * sizeof(uint16), pixdata);
+		delete [] pixdata;
+	}
+#else
+#  error "Unknown image version"
+#endif
+
+	node.check_and_write_header(outfp);
+
+	/* ----------------------------------------------------------------------
+	 * STLAB-RGBA32-END-TO-END-MAKEOBJ-RUNTIME-01 -- NOT FOR COMMIT.
+	 *
+	 * The legacy IMG above is finished and untouched. Beside it, and from the same
+	 * pixels, build the candidate node body. It is only queued here: the node itself
+	 * is emitted by the parent, after every IMG, so the placement invariant holds by
+	 * construction.
+	 *
+	 * The extractor runs over the WHOLE source image, once per file, and the tile then
+	 * takes the records that fall inside it. Running it per tile would clip the
+	 * 8-neighbourhood at the tile border and change the result.
+	 * ---------------------------------------------------------------------- */
+	if(  stlab_semantic_masks_requested()  &&  !stlab_writer_enabled()  ) {
+		static bool told = false;
+		if(  !told  ) {
+			dbg->warning("stlab_semantic_masks", "semantic_masks=1 is ignored: the XR32 writer is off (STLAB_XR32_WRITE=1)");
+			told = true;
+		}
+	}
+	/* XR32-SEMANTIC-MASK-PIPELINE-01 -- NOT FOR COMMIT. An object that opted in with
+	 * semantic_masks=1 and whose sheet has masks gets a v2 node built from the masks; the
+	 * heuristic extractor is not run for it. Everything else takes the v1 path unchanged. */
+	const bool stlab_want_masks = stlab_semantic_masks_requested();
+	const bool stlab_want_night = stlab_night_images_requested();   // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01
+	if(  stlab_writer_enabled()  &&  (stlab_want_masks  ||  stlab_want_night)  &&  stlab_have_region
+	     &&  image.h > 0  &&  image.w > 0  ) {
+		if(  stlab_masks_file != last_img_file  ) {
+			std::vector<uint8> base;
+			stlab_rgba_from_input(base, stlab_masks_w, stlab_masks_h);
+			stlab_masks_present = stlab_want_masks
+			                      &&  stlab_semantic_masks_solve(last_img_file, &base[0], stlab_masks_w, stlab_masks_h,
+			                                                     stlab_masks_under, stlab_masks_contribs);
+			const uint8 *ns = stlab_want_night ? stlab_night_sheet(last_img_file, stlab_masks_w, stlab_masks_h) : NULL;
+			stlab_night_present = ns != NULL;
+			if(  !stlab_masks_present  ) {
+				// night image without player-colour semantics: the day image is the under plane, and an
+				// exact special colour in it is ordinary paint (semantics are never inferred from RGB)
+				stlab_masks_under = base;
+				stlab_masks_contribs.clear();
+				if(  stlab_night_present  ) {
+					uint32 keys = 0;
+					for(  size_t i = 0;  i < base.size();  i += 4  ) {
+						const uint32 rgb = ((uint32)base[i] << 16) | ((uint32)base[i + 1] << 8) | base[i + 2];
+						for(  int k = 0;  k < SPECIAL  &&  base[i + 3] > 7;  k++  ) {
+							if(  (image_t::rgbtab[k] & 0x00FFFFFFu) == rgb  ) { keys++; break; }
+						}
+					}
+					if(  keys  ) {
+						dbg->warning("stlab_night", "'%s': %u pixels are exact special colours but no player-colour image "
+						             "or mask declares them: ordinary paint in XR32, still special in the legacy image",
+						             last_img_file.c_str(), keys);
+					}
+				}
+			}
+			if(  stlab_night_present  ) {
+				stlab_night_under(last_img_file, &base[0], ns, stlab_masks_w, stlab_masks_h,
+				                  stlab_masks_under, stlab_masks_contribs, stlab_night_plane);
+			}
+			stlab_masks_file = last_img_file;
+		}
+		if(  stlab_masks_present  ||  stlab_night_present  ) {
+			const int x0 = stlab_x0, y0 = stlab_y0, rw = image.w, rh = image.h;
+			std::vector<uint8> region((size_t)rw * rh * 4);
+			for(  int yy = 0;  yy < rh;  yy++  ) {
+				memcpy(&region[(size_t)yy * rw * 4],
+				       &stlab_masks_under[((size_t)(y0 + yy) * stlab_masks_w + x0) * 4], (size_t)rw * 4);
+			}
+			std::vector<stlab_sem_contrib_t> local;
+			for(  size_t i = 0;  i < stlab_masks_contribs.size();  i++  ) {
+				const stlab_sem_contrib_t &c = stlab_masks_contribs[i];
+				const int sy = (int)(c.position / (uint32)stlab_masks_w);
+				const int sx = (int)(c.position % (uint32)stlab_masks_w);
+				if(  sy < y0  ||  sy >= y0 + rh  ||  sx < x0  ||  sx >= x0 + rw  ) continue;
+				stlab_sem_contrib_t l = c;
+				l.position = (uint32)((sy - y0) * rw + (sx - x0));
+				local.push_back(l);
+			}
+			stlab_pending_node_t pn;
+			pn.img_index = (uint16)index;
+			stlab_xr32_build_body_v2(&region[0], rw, rh, (sint16)image.x, (sint16)image.y,
+			                         image.zoomable, (uint16)index, local, pn.body);
+			stlab_sem_counters.v2_nodes++;
+			stlab_pending_nodes().push_back(pn);
+			if(  stlab_night_present  ) {
+				for(  int yy = 0;  yy < rh;  yy++  ) {
+					memcpy(&region[(size_t)yy * rw * 4],
+					       &stlab_night_plane[((size_t)(y0 + yy) * stlab_masks_w + x0) * 4], (size_t)rw * 4);
+				}
+				stlab_pending_node_t nn;
+				nn.img_index = (uint16)index;
+				nn.night = true;
+				stlab_xnex_build_body(&region[0], rw, rh, (sint16)image.x, (sint16)image.y, (uint16)index, nn.body);
+				stlab_night_counters.nodes++;
+				stlab_pending_nodes().push_back(nn);
+			}
+			return;
+		}
+	}
+	if(  stlab_writer_enabled()  &&  stlab_have_region  &&  image.h > 0  &&  image.w > 0  ) {
+		if(  stlab_cached_file != last_img_file  ) {
+			stlab_rgba_from_input(stlab_cached_rgba, stlab_cached_w, stlab_cached_h);
+			stlab_extract_semantics(&stlab_cached_rgba[0], stlab_cached_w, stlab_cached_h,
+			                        stlab_cached_records, NULL);
+			stlab_cached_file = last_img_file;
+		}
+		const int x0 = stlab_x0;
+		const int y0 = stlab_y0;
+		const int rw = image.w, rh = image.h;
+
+		std::vector<uint8> region((size_t)rw * rh * 4);
+		for(  int yy = 0;  yy < rh;  yy++  ) {
+			const uint8 *src = &stlab_cached_rgba[((size_t)(y0 + yy) * stlab_cached_w + x0) * 4];
+			memcpy(&region[(size_t)yy * rw * 4], src, (size_t)rw * 4);
+		}
+
+		std::vector<stlab_semantic_record_t> local;
+		for(  size_t i = 0;  i < stlab_cached_records.size();  i++  ) {
+			const stlab_semantic_record_t &r = stlab_cached_records[i];
+			const int sy = (int)(r.position / (uint32)stlab_cached_w);
+			const int sx = (int)(r.position % (uint32)stlab_cached_w);
+			if(  sy < y0  ||  sy >= y0 + rh  ||  sx < x0  ||  sx >= x0 + rw  ) continue;
+			stlab_semantic_record_t l = r;
+			l.position = (uint32)((sy - y0) * rw + (sx - x0));
+			local.push_back(l);
+		}
+
+		stlab_pending_node_t pn;
+		pn.img_index = (uint16)index;
+		stlab_xr32_build_body(&region[0], rw, rh, (sint16)image.x, (sint16)image.y,
+		                      image.zoomable, (uint16)index, local, pn.body);
+		stlab_pending_nodes().push_back(pn);
+	}
+}

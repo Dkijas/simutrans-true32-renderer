@@ -1,0 +1,48 @@
+diff --git a/src/simutrans/display/simgraph32.cc b/src/simutrans/display/simgraph32.cc
+index 12c5b0714c98525efdeba61a896d5961d79e0a80..3bc2835715be0d6d46f8646fcbe5f2f59f3ba9b1 100644
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -1737,6 +1737,7 @@ static void            simgraph32_mark_rect_dirty_wc         (scr_coord_val x1,
+ static void            simgraph32_mark_rect_dirty_clip       (scr_coord_val x1, scr_coord_val y1, scr_coord_val x2, scr_coord_val y2  CLIP_NUM_DEF);
+ static void            simgraph32_mark_screen_dirty          ();
+ static scr_size        simgraph32_get_screen_size            ();
++static void            simgraph32_set_texture_ptr            (void *);
+ static void            simgraph32_set_screen_actual_width    (scr_coord_val w);
+ static void            simgraph32_set_screen_height          (scr_coord_val const h);
+ static scr_size        simgraph32_get_best_matching_size     (const image_id n, sint16 zoom_percent);
+@@ -1848,6 +1849,7 @@ simgraph_t g_simgraph32 = {
+ 	/*.mark_rect_dirty_clip        =*/ simgraph32_mark_rect_dirty_clip,
+ 	/*.mark_screen_dirty           =*/ simgraph32_mark_screen_dirty,
+ 	/*.get_screen_size             =*/ simgraph32_get_screen_size,
++	/*.set_texture_ptr             =*/ simgraph32_set_texture_ptr,
+ 	/*.set_screen_height           =*/ simgraph32_set_screen_height,
+ 	/*.set_screen_actual_width     =*/ simgraph32_set_screen_actual_width,
+ 	/*.get_best_matching_size      =*/ simgraph32_get_best_matching_size,
+@@ -2011,6 +2013,27 @@ static scr_size simgraph32_get_screen_size()
+ 	return scr_size{ disp_actual_width, disp_height };
+ }
+ 
++/*
++ * Replace the framebuffer pointer (simgraph_t::set_texture_ptr, r12371).
++ * Same contract as simgraph16_set_texture_ptr(): the new buffer must have
++ * exactly the size, the pitch (disp_width pixels) and the pixel format
++ * (ARGB8888) of the old one. The interface carries no pitch, so the caller
++ * has to check that before calling. At r12377 the only caller is
++ * dr_flush_new() in simsys_s2.cc, which nothing calls.
++ */
++static void simgraph32_set_texture_ptr(void *new_texture)
++{
++	if(  new_texture == NULL  ) {
++		dbg->fatal( "simgraph32_set_texture_ptr", "NULL framebuffer" );
++	}
++	if(  textur == NULL  ) {
++		// "same size as the old one" needs an old one
++		dbg->fatal( "simgraph32_set_texture_ptr", "called before the display was initialised" );
++	}
++	assert( (reinterpret_cast<uintptr_t>(new_texture) % sizeof(PIXVAL)) == 0 );
++	textur = (PIXVAL *)new_texture;
++}
++
+ static void simgraph32_set_screen_height(scr_coord_val h)
+ {
+ 	disp_height = h;

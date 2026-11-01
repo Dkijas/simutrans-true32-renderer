@@ -1,0 +1,27 @@
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index e9f377ad457e0fb804ecc7593ea9dd9fee90c006..af10923d2099b2bfc87d824d6eb042ea1e92e5ed 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -434,6 +434,9 @@ static PIXVAL *stlab_xr32_encode_rows(const uint32 *raster, uint32 w, uint32 h,
+  * authored 2x counterpart ALSO carries a candidate shows that counterpart, resolved
+  * at 1:1, instead of its own native enlargement. Returns false - and clears any
+  * previous choice - whenever that does not apply, so the native zoom takes over.
++ * A fitted image (fit_num != 0) is at its fit step, not at the map's zoom, exactly
++ * as stlab_xr32_zoom_prepare() sizes it: otherwise a map zoom change dropped a
++ * toolbar icon's 2x art for its 1x art at 2/1 until the next refit.
+  * Called under rezoom_img_mutex32, like stlab_xr32_zoom_prepare().
+  */
+ static bool stlab_xr32_hires_prepare(image_id n)
+@@ -443,9 +446,9 @@ static bool stlab_xr32_hires_prepare(image_id n)
+ 		return false;
+ 	}
+ 	s->hires_active = IMG_EMPTY;
+-	if(  (images[n].recode_flags & FLAG_ZOOMABLE) == 0
+-	     ||  g_simgraph32.zoom_num[zoom_factor32] != 2
+-	     ||  g_simgraph32.zoom_den[zoom_factor32] != 1  ) {
++	const sint32 num = s->fit_num ? s->fit_num : g_simgraph32.zoom_num[zoom_factor32];
++	const sint32 den = s->fit_num ? s->fit_den : g_simgraph32.zoom_den[zoom_factor32];
++	if(  (images[n].recode_flags & FLAG_ZOOMABLE) == 0  ||  num != 2  ||  den != 1  ) {
+ 		return false;
+ 	}
+ 	const image_id hi = simgraph_get_hires( n );

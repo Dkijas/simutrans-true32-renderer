@@ -1,0 +1,276 @@
+/*
+ * This file is part of the Simutrans project under the Artistic License.
+ * (see LICENSE.txt)
+ */
+
+#ifndef BUILDER_WEGBAUER_H
+#define BUILDER_WEGBAUER_H
+
+
+#include "../simtypes.h"
+#include "../dataobj/koord3d.h"
+#include "../tpl/vector_tpl.h"
+
+
+class way_desc_t;
+class bridge_desc_t;
+class tunnel_desc_t;
+class karte_ptr_t;
+class player_t;
+class grund_t;
+class tool_selector_t;
+
+
+/**
+ * way building class with its own route finding
+ */
+class way_builder_t
+{
+	static karte_ptr_t welt;
+
+public:
+	static const way_desc_t *leitung_desc;
+
+	static bool register_desc(way_desc_t *desc);
+	static bool successfully_loaded();
+
+	// generates timeline message
+	static void new_month();
+
+	/**
+	 * Finds a way with a given speed limit for a given waytype
+	 */
+	static const way_desc_t *weg_search(const waytype_t wtyp,const sint32 speed_limit, const uint16 time, const systemtype_t system_type);
+
+	static const way_desc_t *get_desc(const char *way_name,const uint16 time=0);
+
+	static const way_desc_t *get_earliest_way(const waytype_t wtyp);
+
+	static const way_desc_t *get_latest_way(const waytype_t wtyp);
+
+	static bool waytype_available( const waytype_t wtyp, uint16 time );
+
+	static const vector_tpl<const way_desc_t *>&  get_way_list(waytype_t, systemtype_t);
+
+	/**
+	 * Fill menu with icons of given waytype
+	 */
+	static void fill_menu(tool_selector_t *tool_selector, const waytype_t wtyp, const systemtype_t styp, sint16 ok_sound);
+
+	enum bautyp_t {
+		strasse        = road_wt,
+		schiene        = track_wt,
+		schiene_tram   = tram_wt,
+		monorail       = monorail_wt,
+		maglev         = maglev_wt,
+		wasser         = water_wt,
+		luft           = air_wt,
+		narrowgauge    = narrowgauge_wt,
+		leitung        = powerline_wt,
+		river          = 0x7F,
+		bautyp_mask    = 0xFF,
+
+		bot_flag       = 1 << 8,  ///< do not connect to other ways
+		elevated_flag  = 1 << 9,  ///< elevated structure
+		terraform_flag = 1 << 10,
+		tunnel_flag    = 1 << 11, ///< underground structure
+	};
+
+private:
+	/// flags used in intern_calc_route, saved in the otherwise unused route_t::ANode->count
+	enum build_type_t
+	{
+		build_straight      = 1 << 0, ///< next step has to be straight
+		terraform           = 1 << 1, ///< terraform this tile
+		build_tunnel_bridge = 1 << 2, ///< bridge/tunnel ends here
+		is_upperlayer       = 1 << 3, ///< only used when elevated  true:upperlayer
+		must_build_bridge   = 1 << 4  ///< this slope is not usuable but for start of bridge
+	};
+
+	struct next_gr_t
+	{
+		next_gr_t() {}
+		next_gr_t(grund_t* gr_, sint32 cost_, uint8 flag_=0) : gr(gr_), cost(cost_), flag(flag_) {}
+
+		grund_t* gr;
+		sint32   cost;
+		uint8    flag;
+	};
+	vector_tpl<next_gr_t> next_gr;
+
+	player_t *player_builder;
+
+	/// Type of building operation
+	bautyp_t bautyp;
+
+	/// Which way to build
+	const way_desc_t *desc;
+
+	/// Type of bridge to build (null => no bridges)
+	const bridge_desc_t *bridge_desc;
+
+	/// Type of tunnel to build (null => no bridges)
+	const tunnel_desc_t *tunnel_desc;
+
+	/**
+	 * If a way is built on top of another way, should the type
+	 * of the former way be kept or replaced (true == keep)
+	 */
+	bool keep_existing_ways;
+	bool keep_existing_faster_ways;
+	bool keep_existing_city_roads;
+
+	// try to keep a way close to existing ways
+	bool prefer_parallel;
+
+	bool build_sidewalk;
+
+	sint32 maximum;    // highest cost
+
+	koord3d_vector_t route;
+
+	// index in route with terraformed tiles
+	vector_tpl<uint32> terraform_index;
+
+	// has a warning message, why the route may have failed (could be wrong!)
+	const char *warn_fail;
+
+public:
+	enum step_failure_t {
+		STEP_UNDEF = 0,
+		STEP_OK = 1,
+		STEP_SLOPE,     // wrong slopes
+		STEP_DOUBLE_SLOPE, // double slopes with single way
+		STEP_CROSSING,  // not crossing possible
+		STEP_FORBIDDEN, // rules forbid this step
+		STEP_CLEARANCE, // low bridge or slope on top
+		STEP_OBSTACLE,  // non-removable thing in the way
+		STEP_GENERAL    // all other reasons
+	};
+
+	/**
+	 * This is the core routine for the way search
+	 * it will check
+	 * A) allowed step
+	 * B) if allowed, calculate the cost for the step from @p from to @p to
+	 * if terraform is 2, needs to cehck again
+	 */
+	step_failure_t is_allowed_step(const grund_t *from, const grund_t *to, sint32 *costs, int terraform, bool is_upperlayer = false );
+
+	/**
+	 * Height in tiles between a base ground and the elevated way surface built above it:
+	 * the configured way_height_clearance/height_offset plus, on a bridge ramp connection
+	 * built on sloped terrain, the extra height reported by base->get_bridge_slope_extra_height().
+	 * Common conversion used to keep route search, cost estimation and elevated-way
+	 * construction consistent with each other. 'base' may be NULL (assumes no extra height).
+	 */
+	sint8 get_way_height_offset(const grund_t *base) const;
+
+	/**
+	 * Inverse of get_way_height_offset(): given the position of an already-built elevated
+	 * way tile, finds the base ground it was built above (or NULL if none is found).
+	 */
+	grund_t *find_base_for_elevated(const koord3d &upper_pos) const;
+
+private:
+	bool has_neighbour_with_way(koord3d pos, waytype_t wt) const;
+
+	// checks, if we can build a bridge here ...
+	// may modify next_gr array!
+	bool check_for_bridge(const grund_t* from, const koord zv, const vector_tpl<koord3d>& ziel, const uint32 max_length);
+
+	sint32 intern_calc_route(const vector_tpl<koord3d> &start, const vector_tpl<koord3d> &ziel);
+	void intern_calc_straight_route(const koord3d start, const koord3d ziel);
+
+	sint32 intern_calc_route_elevated(const koord3d start, const koord3d ziel);
+
+	// runways need to meet some special conditions enforced here
+	bool intern_calc_route_runways(koord3d start, const koord3d ziel);
+
+	void build_tunnel_and_bridges();
+
+	// adds the ground before underground construction (always called before the following construction routines)
+	bool build_tunnel_tile();
+
+	// adds the grounds for elevated tracks
+	void build_elevated();
+
+	void build_road();
+	void build_track();
+	void build_powerline();
+	void build_river();
+
+
+	/**
+	 * This function calculates the distance of pos to the cuboid
+	 * spanned up by mini and maxi.
+	 * The result is already weighted according to
+	 * welt->get_settings().get_way_count_{straight,slope}().
+	 */
+	uint32 calc_distance( const koord3d &pos, const koord3d &mini, const koord3d &maxi );
+
+public:
+	const koord3d_vector_t &get_route() const { return route; }
+
+	uint32 get_count() const { return route.get_count(); }
+
+	void set_prefer_parallel(bool yesno) {
+		prefer_parallel = yesno;
+	}
+
+	/**
+	 * If a way is built on top of another way, should the type
+	 * of the former way be kept or replaced (true == keep)
+	 */
+	void set_keep_existing_ways(bool yesno);
+
+	/**
+	 * If a way is built on top of another way, should the type
+	 * of the former way be kept or replaced, if the current way is faster (true == keep)
+	 */
+	void set_keep_existing_faster_ways(bool yesno);
+
+	/**
+	 * Always keep city roads (for AI)
+	 */
+	void set_keep_city_roads(bool yesno) { keep_existing_city_roads = yesno; }
+
+	void set_build_sidewalk(bool yesno) { build_sidewalk = yesno; }
+
+	void init_builder(bautyp_t wt, const way_desc_t * desc, const tunnel_desc_t *tunnel_desc=NULL, const bridge_desc_t *bridge_desc=NULL);
+
+	bautyp_t get_bautyp() const { return bautyp; }
+
+	void set_maximum(uint32 n) { maximum = n; }
+
+	way_builder_t(player_t *player);
+
+	const char *calc_straight_route(const koord3d start, const koord3d ziel);
+	const char *calc_route(const koord3d &start3d, const koord3d &ziel);
+	const char *calc_route(const vector_tpl<koord3d> &start3d, const vector_tpl<koord3d> &ziel);
+
+	/// returns the amount needed to build this way
+	sint64 calc_costs();
+
+	bool check_crossing(const koord zv, const grund_t *bd, const way_desc_t *desc, const player_t *player) const;
+	bool check_powerline(const koord zv, const grund_t *bd) const;
+	// allowed owner?
+	bool check_owner( const player_t *player1, const player_t *player2 ) const;
+	// checks whether buildings on the tile allow to leave in direction dir
+	bool check_building( const grund_t *to, const koord dir ) const;
+	// allowed slope?
+	bool check_slope(const grund_t* from, const grund_t* to);
+	bool check_slope_double(const grund_t* from, const grund_t* to);
+
+	bool check_terraforming( const grund_t *from, const grund_t *to, uint8* new_from_slope=NULL, uint8* new_to_slope=NULL) const;
+	bool check_terraforming( const grund_t *from, const grund_t *to, slope_t::type from_slope, sint8 from_hgt, slope_t::type to_slope, sint8 to_hgt, uint8* new_from_slope, uint8* new_to_slope) const;
+	/// Replays the whole terraform sequence without touching the world.
+	bool terraforming_leaves_way_slopes() const;
+	void do_terraforming();
+
+	void build();
+};
+
+ENUM_BITSET(way_builder_t::bautyp_t);
+
+#endif
