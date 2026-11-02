@@ -58,3 +58,7 @@ downloaded from their official locations; the exact files are identified in
   their controls, the theme-switch references against official r12377 16-bit, every run's manifest with executable
   hashes, the benchmark analyses, the regression battery compared with testing-2's evidence, sanitizer and warning
   sets, and the package derivation. Raw per-frame outputs are not included.
+- `xr32-a4/` (XR32-COAST-RENDERING-01 and XR32-A4-PHASE-CACHE-OPTIMIZATION-01, testing-4) - the composition and
+  presentation oracles with their controls, the byte-identity gate between the two A4 candidates, rebuild-cost and
+  frame-time analyses, the regression battery, sanitizer and warning sets, memory, the zoom 2/1 sand-gap finding, and
+  the derivation of the testing-4 packages from testing-3's published archives. Raw per-frame outputs are not included.

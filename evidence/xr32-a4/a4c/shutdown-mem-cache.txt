@@ -1,0 +1,47 @@
+Windows clean shutdown + peak working set, SDL dummy video, n=3 interleaved: PUBLISHED testing-3 (t3), A4 frozen 84b3225 (a4), cache candidate (ca)
+  cat   = pak128.german-cat, oepnv1950 -> 1951.3 (no XR32 water)
+  coast = pak128.german-mutant (XR32 sea: 2,080 derived coast tiles in a4 and ca), coastworld 5/1930 -> 1930.7
+rows 72
+cat   a4-s2  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  559.0 MB ( 559.0- 559.1) | wall median 23 s
+cat   a4-s2  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  563.1 MB ( 563.0- 573.0) | wall median 23 s
+cat   a4-s3  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  534.0 MB ( 533.9- 534.2) | wall median 23 s
+cat   a4-s3  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  538.2 MB ( 537.9- 549.3) | wall median 23 s
+cat   ca-s2  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  559.1 MB ( 559.0- 559.2) | wall median 23 s
+cat   ca-s2  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  563.0 MB ( 562.6- 572.7) | wall median 23 s
+cat   ca-s3  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  534.0 MB ( 534.0- 534.0) | wall median 24 s
+cat   ca-s3  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  538.0 MB ( 537.9- 549.4) | wall median 23 s
+cat   t3-s2  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  559.1 MB ( 559.1- 559.2) | wall median 23 s
+cat   t3-s2  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  563.2 MB ( 563.2- 571.1) | wall median 23 s
+cat   t3-s3  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  534.1 MB ( 534.1- 534.1) | wall median 23 s
+cat   t3-s3  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  537.9 MB ( 537.7- 549.3) | wall median 23 s
+coast a4-s2  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  518.3 MB ( 518.2- 518.3) | wall median 42 s
+coast a4-s2  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  522.4 MB ( 522.3- 522.6) | wall median 41 s
+coast a4-s3  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  493.1 MB ( 493.0- 493.2) | wall median 43 s
+coast a4-s3  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  497.2 MB ( 497.1- 497.3) | wall median 43 s
+coast ca-s2  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  518.3 MB ( 518.2- 518.4) | wall median 42 s
+coast ca-s2  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  522.0 MB ( 521.9- 522.3) | wall median 44 s
+coast ca-s3  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  493.1 MB ( 493.0- 493.3) | wall median 43 s
+coast ca-s3  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  497.1 MB ( 497.1- 497.2) | wall median 43 s
+coast t3-s2  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  518.5 MB ( 518.3- 518.5) | wall median 42 s
+coast t3-s2  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  521.4 MB ( 521.4- 521.5) | wall median 42 s
+coast t3-s3  XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  493.0 MB ( 492.9- 493.1) | wall median 44 s
+coast t3-s3  XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  496.2 MB ( 496.1- 496.3) | wall median 45 s
+paired cat   S2 XR32 1 cache - t3: peak WS median -0.2 MB (min -0.6, max +1.6), cache higher in 1 of 3
+paired cat   S2 XR32 1 cache - a4: peak WS median -0.3 MB (min -0.5, max +0.0), cache higher in 0 of 3
+paired cat   S2 XR32 0 cache - t3: peak WS median -0.1 MB (min -0.1, max +0.1), cache higher in 1 of 3
+paired cat   S2 XR32 0 cache - a4: peak WS median +0.1 MB (min -0.1, max +0.2), cache higher in 2 of 3
+paired cat   S3 XR32 1 cache - t3: peak WS median +0.1 MB (min +0.1, max +0.2), cache higher in 3 of 3
+paired cat   S3 XR32 1 cache - a4: peak WS median +0.1 MB (min -0.3, max +0.1), cache higher in 2 of 3
+paired cat   S3 XR32 0 cache - t3: peak WS median -0.1 MB (min -0.1, max -0.1), cache higher in 0 of 3
+paired cat   S3 XR32 0 cache - a4: peak WS median +0.0 MB (min -0.2, max +0.1), cache higher in 1 of 3
+paired coast S2 XR32 1 cache - t3: peak WS median +0.6 MB (min +0.5, max +0.8), cache higher in 3 of 3
+paired coast S2 XR32 1 cache - a4: peak WS median -0.5 MB (min -0.6, max +0.0), cache higher in 0 of 3
+paired coast S2 XR32 0 cache - t3: peak WS median -0.2 MB (min -0.3, max +0.1), cache higher in 1 of 3
+paired coast S2 XR32 0 cache - a4: peak WS median +0.1 MB (min -0.1, max +0.1), cache higher in 2 of 3
+paired coast S3 XR32 1 cache - t3: peak WS median +0.9 MB (min +0.8, max +1.1), cache higher in 3 of 3
+paired coast S3 XR32 1 cache - a4: peak WS median -0.1 MB (min -0.1, max +0.0), cache higher in 0 of 3
+paired coast S3 XR32 0 cache - t3: peak WS median +0.1 MB (min +0.1, max +0.2), cache higher in 3 of 3
+paired coast S3 XR32 0 cache - a4: peak WS median +0.0 MB (min -0.2, max +0.3), cache higher in 1 of 3
+CONTROL injected FATAL line in a copy of out/km-coast-ca-s3-xr1-r1/run.err: classifier 0 -> 1 -> the check can fail
+CONTROL foreign hash on a copy of row 1: provenance failures 1 -> the check can fail
+failures: 0

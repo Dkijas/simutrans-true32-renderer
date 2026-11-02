@@ -1,4 +1,4 @@
-# Simutrans XR32 32-bit renderer — DAY+NIGHT test build on trunk r12377, testing-3
+# Simutrans XR32 32-bit renderer — DAY+NIGHT test build on trunk r12377, testing-4
 
 > **IMPORTANT: start the game with `SIMUTRANS_XR32=1`, or you will not see any 32-bit art.**
 >
@@ -39,6 +39,113 @@ To check that XR32 is really on, start once with `-log -debug 2` added to the co
 
 ## What this build is
 
+- **Simutrans trunk r12377**, the same trunk as testing-1 to testing-3.
+- **testing-3's XR32 renderer, plus 32-bit water on sloped coasts (A4).** The game makes the water of a sloped coast
+  itself, from the sea picture, when it starts. Until testing-3 it made it only from the 16-bit sea, so a pak with a
+  32-bit sea showed a 16-bit strip on every sloped coast. testing-4 makes it from the 32-bit sea (and its night
+  picture), with exactly the steps of the 16-bit version.
+- **Nothing else changes:**
+  - testing-3's screen update;
+  - the DAY + optional NIGHT prototype and its pak syntax;
+  - makeobj and the test kit (testing-2's files, byte for byte);
+  - `simutrans-16bit` (testing-3's file, byte for byte).
+
+  Paks whose sea has no 32-bit data draw exactly as in testing-3.
+- **Cost, on a map with many sloped coasts and 32-bit water:**
+  - the typical frame shows no measurable difference;
+  - the slowest 1 % of frames is +0.0 to +0.75 ms at 1920×1080, and up to +2.45 ms when zooming at 2560×1440 on
+    SDL3;
+  - peak memory is +0.6 / +0.9 MB.
+
+  See the release notes.
+- **New known issue, accepted for this test build:** at zoom 2/1 a few single sand-coloured pixels can show in the
+  water next to sloped coasts. See the release notes and `docs/KNOWN-ISSUES-r12377-testing-4.md`, A11.
+
+## Downloads
+
+Releases of this repository contain:
+
+- Windows (SDL2 and SDL3) and Linux (SDL2 and SDL3) builds, each with `simutrans-rgba32` (32-bit, XR32) and
+  `simutrans-16bit` (the normal renderer, for comparison);
+- the matching makeobj for Windows and Linux;
+- a test kit;
+- the full source diff against trunk r12377, and a source archive.
+
+No pakset is included.
+
+## Source
+
+- `source/xr32-r12377/` is the complete source tree of testing-4: official trunk r12377 plus this test build's
+  changes.
+- `patches/r12377-testing-4/` has the same changes in two forms:
+  - as one full diff against official r12377;
+  - as A4 on top of testing-3, in one diff or in three reviewable steps (`APPLY-ORDER.txt`).
+- The trees of testing-1 to testing-3 stay at their tags, and their patches in `patches/r12377/`,
+  `patches/r12377-testing-2/` and `patches/r12377-testing-3/`.
+- `patches/r12377/upstream-build-fix/` is **not** part of XR32. It is the one-word fix (`old32` → `ole32`) that
+  official r12377's `CMakeLists.txt` needs before any Windows CMake build links.
+
+## Known issues, certification and reports
+
+See:
+- `docs/KNOWN-ISSUES-r12377-testing-4.md`;
+- the release notes, `RELEASE-NOTES-r12377-testing-4.md`;
+- the certification reports in `reports/xr32-a4/`, with evidence in `evidence/xr32-a4/`.
+
+Report problems at <https://github.com/Dkijas/simutrans-true32-renderer/issues>. Please include:
+
+- the release tag;
+- your OS and package (Windows or Linux, SDL2 or SDL3);
+- the pakset;
+- whether `SIMUTRANS_XR32=1` was set;
+- a PNG screenshot.
+
+---
+
+*The section below describes the previous test build, testing-3 on trunk r12377. Its release and its tag stay
+unchanged; the section is kept here for history.*
+
+## Previous test build: testing-3 on trunk r12377
+
+> **IMPORTANT: start the game with `SIMUTRANS_XR32=1`, or you will not see any 32-bit art.**
+>
+> Windows (cmd):
+>
+>     set SIMUTRANS_XR32=1
+>     simutrans-rgba32.exe
+>
+> Windows (PowerShell):
+>
+>     $env:SIMUTRANS_XR32="1"
+>     .\simutrans-rgba32.exe
+>
+> Linux:
+>
+>     SIMUTRANS_XR32=1 ./simutrans-rgba32
+>
+> Without it, paks that contain 32-bit data still load and play normally, but the game deliberately draws their old
+> 16-bit images instead.
+
+**This is an experimental test build.** It is not an official Simutrans release, not merged into Simutrans and not a
+stable version. Use a separate folder and copies of your savegames.
+
+> **Warning, from the official trunk r12377 itself:** founding a city whose first road runs onto a road with a
+> private-way sign crashes the game, in both programs of this build. See `docs/KNOWN-ISSUES-r12377.md`, item B1.
+
+### Two switches, two programs
+
+| Switch | Program | What it does |
+| --- | --- | --- |
+| `STLAB_XR32_WRITE=1` | **makeobj** | writes 32-bit (XR32) image data into the paks it builds, next to the ordinary 16-bit images |
+| `SIMUTRANS_XR32=1` | **simutrans-rgba32** | reads and draws that 32-bit data |
+
+To check that XR32 is really on, start once with `-log -debug 2` added to the command line. If the variable is
+**not** set, the file `simu.log` in your Simutrans user folder lists
+`Warning: pakset_manager_t::read_nodes: Skipping unknown XR32-node` once for every 32-bit image. With
+`SIMUTRANS_XR32=1`, that line does not appear.
+
+### What this build is
+
 - **Simutrans trunk r12377**, the same trunk as testing-1 and testing-2.
 - **testing-2's XR32 renderer with a new screen update:** what the renderer draws is unchanged; how the finished
   picture reaches the window changes. No new graphics feature; the DAY + optional NIGHT prototype, its pak syntax and
@@ -56,7 +163,7 @@ To check that XR32 is really on, start once with `-log -debug 2` added to the co
   release notes for the measurements and the one small cost.
 - `simutrans-16bit`, makeobj and the test kit are testing-2's files, byte for byte.
 
-## Downloads
+### Downloads
 
 Releases of this repository contain:
 
@@ -68,7 +175,7 @@ Releases of this repository contain:
 
 No pakset is included.
 
-## Source
+### Source
 
 `source/xr32-r12377/` is the complete source tree of testing-3: official trunk r12377 plus this test build's changes.
 `patches/r12377-testing-3/` has the same changes as one full diff against official r12377, and as four steps on top
@@ -77,7 +184,7 @@ stay at their tags, and their patches in `patches/r12377/` and `patches/r12377-t
 `patches/r12377/upstream-build-fix/` is **not** part of XR32: it is the one-word fix (`old32` → `ole32`) that
 official r12377's `CMakeLists.txt` needs before any Windows CMake build links.
 
-## Known issues, certification and reports
+### Known issues, certification and reports
 
 See `docs/KNOWN-ISSUES-r12377-testing-3.md`, the release notes (`RELEASE-NOTES-r12377-testing-3.md`) and the
 certification report `reports/XR32-DIRTY-REGIONS-CERTIFICATION-01.md` (companion reports in

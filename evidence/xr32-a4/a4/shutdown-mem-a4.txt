@@ -1,0 +1,31 @@
+Windows clean shutdown + peak working set, SDL dummy video, n=3 interleaved; candidate product vs PUBLISHED testing-3
+  cat   = pak128.german-cat, oepnv1950 -> 1951.3 (no XR32 water)
+  coast = pak128.german-mutant (XR32 sea, 2,080 derived coast tiles in the candidate), coastworld 5/1930 -> 1930.7
+rows 48
+cat   cand-s2   XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  559.0 MB ( 558.9- 559.3) | wall median 27 s
+cat   cand-s2   XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  563.2 MB ( 563.2- 572.9) | wall median 26 s
+cat   cand-s3   XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  533.9 MB ( 533.9- 534.0) | wall median 24 s
+cat   cand-s3   XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  537.9 MB ( 537.9- 538.0) | wall median 24 s
+cat   t3-s2     XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  559.0 MB ( 558.9- 559.2) | wall median 26 s
+cat   t3-s2     XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  563.3 MB ( 563.2- 572.8) | wall median 25 s
+cat   t3-s3     XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 154 | peak WS median  534.0 MB ( 534.0- 534.0) | wall median 23 s
+cat   t3-s3     XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  538.0 MB ( 537.8- 549.3) | wall median 24 s
+coast cand-s2   XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  518.3 MB ( 518.2- 518.5) | wall median 47 s
+coast cand-s2   XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  522.3 MB ( 521.9- 522.5) | wall median 49 s
+coast cand-s3   XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  493.1 MB ( 493.0- 493.1) | wall median 43 s
+coast cand-s3   XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  497.3 MB ( 497.2- 497.4) | wall median 44 s
+coast t3-s2     XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  518.3 MB ( 518.2- 518.6) | wall median 47 s
+coast t3-s2     XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  521.4 MB ( 520.8- 521.5) | wall median 49 s
+coast t3-s3     XR32 0 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 192 | peak WS median  493.2 MB ( 493.1- 493.2) | wall median 43 s
+coast t3-s3     XR32 1 | PASS 3 of 3 | exit 0 | skipped XR32 nodes 0 | peak WS median  496.1 MB ( 496.1- 496.4) | wall median 43 s
+paired cat   S2 XR32 1 candidate - testing-3: peak WS median +0.0 MB (min -0.1, max +0.1), candidate higher in 1 of 3
+paired cat   S2 XR32 0 candidate - testing-3: peak WS median -0.1 MB (min -0.2, max +0.4), candidate higher in 1 of 3
+paired cat   S3 XR32 1 candidate - testing-3: peak WS median -0.1 MB (min -11.3, max +0.1), candidate higher in 1 of 3
+paired cat   S3 XR32 0 candidate - testing-3: peak WS median -0.1 MB (min -0.1, max +0.0), candidate higher in 0 of 3
+paired coast S2 XR32 1 candidate - testing-3: peak WS median +0.8 MB (min +0.5, max +1.7), candidate higher in 3 of 3
+paired coast S2 XR32 0 candidate - testing-3: peak WS median +0.1 MB (min -0.4, max +0.2), candidate higher in 2 of 3
+paired coast S3 XR32 1 candidate - testing-3: peak WS median +1.1 MB (min +1.0, max +1.2), candidate higher in 3 of 3
+paired coast S3 XR32 0 candidate - testing-3: peak WS median -0.1 MB (min -0.2, max +0.0), candidate higher in 0 of 3
+CONTROL injected FATAL line in a copy of out/km-coast-cand-s3-xr1-r1/run.err: classifier 0 -> 1 -> the check can fail
+CONTROL foreign hash on a copy of row 1: provenance failures 1 -> the check can fail
+failures: 0

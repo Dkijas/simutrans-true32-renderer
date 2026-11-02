@@ -1,0 +1,12 @@
+== w-co-s3 sha 2cf48afdf0e0a689 pak128.german-makie coastworld STLAB_SCEN=coast STLAB_VERIFY=1 STLAB_FRAMES=240 reinit at frame 100
+REINIT before anz_images=52816 image_offset=48202 water_tile_ids=2144 (min 48202 max 56393) with_node=2080 derive_tiles=2080 compose_n=82
+REINIT after anz_images=52816 image_offset=48202 water_tile_ids=2144 (min 48202 max 56393) with_node=2080 derive_tiles=4160 compose_n=82
+REINIT exited
+# verify_last_mismatch=none
+frame,frame_ms,sleep_ms,flush_ms,upload_ms,render_ms,present_ms,lock_ms,resize_ms,rects,bytes,dirty_frac,used,mismatch
+== w-t3-s3 sha 20ac277f6583287f pak128.german-makie coastworld STLAB_SCEN=coast STLAB_VERIFY=1 STLAB_FRAMES=240 reinit at frame 100
+REINIT before anz_images=52816 image_offset=48202 water_tile_ids=2144 (min 48202 max 56393) with_node=0
+REINIT after anz_images=52816 image_offset=48202 water_tile_ids=2144 (min 48202 max 56393) with_node=0
+REINIT exited
+# verify_last_mismatch=none
+frame,frame_ms,sleep_ms,flush_ms,upload_ms,render_ms,present_ms,lock_ms,resize_ms,rects,bytes,dirty_frac,used,mismatch

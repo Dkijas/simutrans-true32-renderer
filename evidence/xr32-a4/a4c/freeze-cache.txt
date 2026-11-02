@@ -1,0 +1,34 @@
+df2a1b0 = df2a1b0f5624d9b4af41389bcb41b954734b1744 tree e0c48441e437efc9572bab10c07a9ef7c704e71a
+84b3225 = 84b3225506804ff6e14edb5e70bd0924ab78faf5 tree 64548ac8c9e3976394e2c02cc5ab33974ca8dbd0
+a4/prod = 9b03e8bb59f11c7de8b20596cf2f656a14bb6acf tree df26ce64541952c6c1534accd4c86764bde42b69
+a4/cache = 0afdfbd31ee38c8a581a7f6251ade9bc80f60439 tree 96f3d4104f4ef3518f7697bfc02efd2b70ca46f2
+lab/cache = 7fe351ea52faeee3e4bb1ce2fa8983d8f31bc65f tree b26a8a75ec5cd128c70f5fb865aa66ecc19e2a2a
+mut/cache-stale = 1b697781d94073024a7d9700435a610a19f5a11e tree c7d977d7b79edee4360c975494a7c8ff09983996
+The bundle uses this hash algorithm: sha1
+XR32-A4-COMPLETE-r12377-testing-3.diff sha256 b7020b023d392f8ee0ab66535ed612bb2437e85cbeeb5d87a06e237d07b68aef bytes 19622 CR bytes 0
+XR32-A4C-CACHE-ONLY.diff sha256 f1d9d168807ba09473af05ace5391e76a71e989c6f22b65aa6eaeb55eb5c1a74 bytes 7272 CR bytes 0
+XR32-A4C-CLEANUP-vs-84b3225.diff sha256 73e086fff79045225535ddb575f0b504ac1cbc379828bbe4b42d08dd5895e889 bytes 5847 CR bytes 0
+COMPLETE diffstat:
+ src/simutrans/descriptor/ground_desc.cc   |  11 +
+ src/simutrans/display/stlab_xr32.h        |   5 +
+ src/simutrans/display/stlab_xr32_hook.cci | 327 +++++++++++++++++++++++++++++-
+ src/simutrans/display/stlab_xr32_zoom.cci |   7 +-
+ 4 files changed, 346 insertions(+), 4 deletions(-)
+CACHE-ONLY diffstat:
+ src/simutrans/display/stlab_xr32_hook.cci | 112 ++++++++++++++++++++++++++----
+ 1 file changed, 100 insertions(+), 12 deletions(-)
+CLEANUP diffstat:
+ src/simutrans/display/simgraph32.cc       |  2 --
+ src/simutrans/display/stlab_xr32_hook.cci | 29 -----------------------------
+ 2 files changed, 31 deletions(-)
+CONTROL before applying: testing-3 vs a4/cache differing entries 4; a4/prod vs a4/cache 1; 84b3225 vs a4/prod 2
+R1 rc=0 vs a4/cache: 0 differing entries
+R2 rc=0 vs a4/cache: 0 differing entries
+R3 published e71c024c source/xr32-r12377 vs testing-3 before applying: 0 differing entries
+R3 rc=0 vs a4/cache: 0 differing entries
+R4 rc=0 (cache-only on a4/prod) vs a4/cache: 0 differing entries
+R5 rc=0 (cleanup on 84b3225) vs a4/prod: 0 differing entries
+CONTROL altered context lines: 2
+CONTROL git apply --check of COMPLETE on the altered copy rc=1 (non-zero expected)
+scratch <temp>
+FREEZE_DONE

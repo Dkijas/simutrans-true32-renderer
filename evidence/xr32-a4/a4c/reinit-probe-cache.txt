@@ -1,0 +1,7 @@
+== w-ca-s3 sha 209f0fbd6073d3ff (lab/cache: a4/cache WITHOUT release_above) pak128.german-makie coastworld STLAB_SCEN=coast STLAB_VERIFY=1 STLAB_FRAMES=240 reinit at frame 100
+REINIT before anz_images=52816 image_offset=48202 water_tile_ids=2144 (min 48202 max 56393) with_node=2080 derive_tiles=2080 compose_n=59
+REINIT after anz_images=52816 image_offset=48202 water_tile_ids=2144 (min 48202 max 56393) with_node=2080 derive_tiles=4160 compose_n=59
+REINIT exited
+# verify_last_mismatch=none
+frame,frame_ms,sleep_ms,flush_ms,upload_ms,render_ms,present_ms,lock_ms,resize_ms,rects,bytes,dirty_frac,used,mismatch
+frames with mismatch px > 0: 0

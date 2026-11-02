@@ -1,0 +1,29 @@
+base     df2a1b0 = df2a1b0f5624d9b4af41389bcb41b954734b1744 tree e0c48441e437efc9572bab10c07a9ef7c704e71a
+candidate coast/candidate = 84b3225506804ff6e14edb5e70bd0924ab78faf5 tree 64548ac8c9e3976394e2c02cc5ab33974ca8dbd0
+parent of candidate: df2a1b0f5624d9b4af41389bcb41b954734b1744
+The bundle uses this hash algorithm: sha1
+patch 05792adcf794d8bd4e8e0a4b83a0aa8b58c60a1e32f0975299c47393401ea849 bytes 18455 lines 400
+patch diffstat:
+ src/simutrans/descriptor/ground_desc.cc   |  11 ++
+ src/simutrans/display/simgraph32.cc       |   2 +
+ src/simutrans/display/stlab_xr32.h        |   5 +
+ src/simutrans/display/stlab_xr32_hook.cci | 268 +++++++++++++++++++++++++++++-
+ src/simutrans/display/stlab_xr32_zoom.cci |   7 +-
+ 5 files changed, 289 insertions(+), 4 deletions(-)
+patch CR bytes: 0 (the touched files are LF)
+CONTROL before applying: touched files differing base vs candidate: 5 of 5
+CONTROL whole trees base vs candidate: 5 differing entries
+R1 git apply rc=0
+R1 vs candidate tree: 0 differing entries
+R2 GNU patch rc=0
+R2 vs candidate tree: 0 differing entries
+R3 published e71c024c = e71c024c54d6ff550d0f1b2c2a3dcf6789ffc937 tree 7b1002c59b27a5e4e5505e36f634b8d17628d56b
+R3 published source/xr32-r12377 vs testing-3 lab tree df2a1b0, before applying: 0 differing entries
+R3 git apply rc=0
+R3 published source/xr32-r12377 after applying vs candidate tree: 0 differing entries
+CONTROL altered context lines: 2
+error: patch failed: src/simutrans/descriptor/ground_desc.cc:29
+error: src/simutrans/descriptor/ground_desc.cc: patch does not apply
+CONTROL git apply --check on the altered copy rc=1 (non-zero expected)
+scratch <temp>
+FREEZE_DONE

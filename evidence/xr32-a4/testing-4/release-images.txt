@@ -1,0 +1,3 @@
+sources: <a4c-lab>\out (vis-rgba32-* = published testing-3 69444edc, vis-cache-* = testing-4 candidate 43420d63)
+xr32-r12377-testing-4-coast-mutant.png: window x 144 y 864 240x135, scale x3, 1/1 magenta test sea, 1390 px magenta in testing-4 only, in the window, sha256 1af2f1f30f2867ceed437358ada7f0f3d7063fa8a544020ecf427ed7c78434a5
+xr32-r12377-testing-4-h1-2x1.png: window x 685 y 264 60x34, scale x8, 2/1 magenta test sea, centred on the sand gap at (715,281): testing-3 607890, testing-4 b0a040, sha256 9be5ff9d6cc923159059808d1b249739272f77472508bab670919d2a697bb698

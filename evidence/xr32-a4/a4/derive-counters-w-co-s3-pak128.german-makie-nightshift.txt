@@ -1,0 +1,35 @@
+# w-co-s3.exe sha256 2cf48afdf0e0a689 objects pak128.german-makie save coastworld frames 3000 -screensize 1920x1080
+== scen coast
+CNT frame=100 tiles=2080 compose_n=70 compose_us=14613 legacy_px=0 ref_px=29806 night_shift=4
+CNT frame=200 tiles=2080 compose_n=125 compose_us=24053 legacy_px=0 ref_px=51801 night_shift=3
+CNT frame=300 tiles=2080 compose_n=180 compose_us=33367 legacy_px=0 ref_px=73796 night_shift=2
+CNT frame=400 tiles=2080 compose_n=257 compose_us=47083 legacy_px=0 ref_px=104589 night_shift=0
+CNT frame=500 tiles=2080 compose_n=301 compose_us=54353 legacy_px=0 ref_px=122185 night_shift=0
+CNT frame=600 tiles=2080 compose_n=367 compose_us=70607 legacy_px=0 ref_px=148579 night_shift=0
+CNT frame=700 tiles=2080 compose_n=433 compose_us=81744 legacy_px=0 ref_px=174973 night_shift=0
+CNT frame=800 tiles=2080 compose_n=488 compose_us=95426 legacy_px=0 ref_px=196968 night_shift=0
+CNT frame=900 tiles=2080 compose_n=543 compose_us=105255 legacy_px=0 ref_px=218963 night_shift=0
+CNT frame=1000 tiles=2080 compose_n=587 compose_us=113942 legacy_px=0 ref_px=236559 night_shift=0
+CNT frame=1100 tiles=2080 compose_n=587 compose_us=113942 legacy_px=0 ref_px=236559 night_shift=0
+CNT frame=1200 tiles=2080 compose_n=587 compose_us=113942 legacy_px=0 ref_px=236559 night_shift=0
+CNT frame=1300 tiles=2080 compose_n=587 compose_us=113942 legacy_px=0 ref_px=236559 night_shift=0
+CNT frame=1400 tiles=2080 compose_n=587 compose_us=113942 legacy_px=0 ref_px=236559 night_shift=0
+CNT frame=1500 tiles=2080 compose_n=587 compose_us=113942 legacy_px=0 ref_px=236559 night_shift=0
+CNT frame=1600 tiles=2080 compose_n=587 compose_us=113942 legacy_px=0 ref_px=236559 night_shift=0
+CNT frame=1700 tiles=2080 compose_n=587 compose_us=113942 legacy_px=0 ref_px=236559 night_shift=0
+CNT frame=1800 tiles=2080 compose_n=587 compose_us=113942 legacy_px=0 ref_px=236559 night_shift=0
+CNT frame=1900 tiles=2080 compose_n=609 compose_us=117360 legacy_px=0 ref_px=245357 night_shift=1
+CNT frame=2000 tiles=2080 compose_n=675 compose_us=127351 legacy_px=0 ref_px=271751 night_shift=2
+CNT frame=2100 tiles=2080 compose_n=741 compose_us=139585 legacy_px=0 ref_px=298145 night_shift=4
+CNT frame=2200 tiles=2080 compose_n=785 compose_us=147265 legacy_px=0 ref_px=315741 night_shift=4
+CNT frame=2300 tiles=2080 compose_n=840 compose_us=156385 legacy_px=0 ref_px=337736 night_shift=4
+CNT frame=2400 tiles=2080 compose_n=884 compose_us=164457 legacy_px=0 ref_px=355332 night_shift=4
+CNT frame=2500 tiles=2080 compose_n=928 compose_us=171894 legacy_px=0 ref_px=372928 night_shift=4
+CNT frame=2600 tiles=2080 compose_n=983 compose_us=181303 legacy_px=0 ref_px=394923 night_shift=4
+CNT frame=2700 tiles=2080 compose_n=1027 compose_us=188701 legacy_px=0 ref_px=412519 night_shift=4
+CNT frame=2800 tiles=2080 compose_n=1071 compose_us=196389 legacy_px=0 ref_px=430115 night_shift=4
+CNT frame=2900 tiles=2080 compose_n=1071 compose_us=196389 legacy_px=0 ref_px=430115 night_shift=4
+CNT frame=3000 tiles=2080 compose_n=1071 compose_us=196389 legacy_px=0 ref_px=430115 night_shift=4
+CNT frame=3100 tiles=2080 compose_n=1071 compose_us=196389 legacy_px=0 ref_px=430115 night_shift=4
+CNT exited
+DERIVE_COUNTERS_DONE

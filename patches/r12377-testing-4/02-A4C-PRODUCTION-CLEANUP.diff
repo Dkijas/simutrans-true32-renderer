@@ -1,0 +1,123 @@
+diff --git a/src/simutrans/display/simgraph32.cc b/src/simutrans/display/simgraph32.cc
+index 9cc00a077b55516e707d084c3b571f355d65cb40..dffe9025890ac1c83430e61f65a2c609b98bcc6e 100644
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -32,7 +32,6 @@
+ static bool stlab_xr32_zoom_prepare(image_id n);   // native zoom for candidate-backed images
+ static bool stlab_xr32_hires_prepare(image_id n);  // MRES: an authored 2x candidate at exactly 2/1
+ static void stlab_nightgen_register(image_id id);  // XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: generated night (experiment)
+-static void stlab_xr32_release_above(image_id above);   // XR32-COAST-RENDERING-01: freed images drop their XR32 data
+ bool stlab_xr32_recode_daytime(image_id n, sint8 player_nr);   // XR32-UI-DAYTIME-01: daynight=false at night
+ void stlab_xr32_forget_daytime();                              // XR32-UI-DAYTIME-01: the palette changed
+ const PIXVAL *stlab_xr32_base_runs(image_id n, sint8 player_nr, bool daynight, scr_coord_val *x, scr_coord_val *y,
+@@ -2788,7 +2787,6 @@ static bool simgraph32_is_display_init()
+ 
+ static void simgraph32_free_all_images_above(image_id above)
+ {
+-	stlab_xr32_release_above( above );
+ 	while(  anz_images > above  ) {
+ 		anz_images--;
+ 		imd32 &d = images[anz_images];
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index c165ef3b9108442911320149f611cb61069ab50f..605b65f3d56efcd88e35907a96c76cbe3283b0a6 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -11,7 +11,6 @@
+  * did -- but for these images those runs were never STORED_PIXVAL.
+  * ==========================================================================*/
+ 
+-#include <atomic>
+ #include <chrono>
+ #include <map>
+ #include <vector>
+@@ -372,11 +371,6 @@ struct stlab_xr32_derive_t {
+ 	image_id light = IMG_EMPTY, sea = IMG_EMPTY, ref = IMG_EMPTY;
+ };
+ static std::map<image_id, stlab_xr32_derive_t> stlab_derived;
+-static std::atomic<uint32> stlab_derive_tiles( 0 );        ///< measurement only: tiles that got a recipe
+-static std::atomic<uint64> stlab_derive_compose_n( 0 );    ///< measurement only: rasters composed
+-static std::atomic<uint64> stlab_derive_compose_us( 0 );   ///< measurement only: wall time composing, microseconds
+-static std::atomic<uint64> stlab_derive_ref_px( 0 );       ///< measurement only: tile pixels from the texture, not the sea
+-static std::atomic<uint64> stlab_derive_legacy_px( 0 );    ///< measurement only: sea pixels without XR32 colour (legacy colour used)
+ 
+ 
+ /// one legacy pixel as the palette shows it by day (the NIGHTGEN expansion), and its legacy level-4 night colour
+@@ -442,7 +436,6 @@ bool stlab_xr32_derive_water_tile(image_id tile, image_id light, image_id sea, i
+ 	}
+ 	stlab_xr32_derive_t &rc = stlab_derived[tile];
+ 	rc.light = light;  rc.sea = sea;  rc.ref = ref;
+-	stlab_derive_tiles++;
+ 	return true;
+ }
+ 
+@@ -450,7 +443,6 @@ bool stlab_xr32_derive_water_tile(image_id tile, image_id light, image_id sea, i
+ /// compose the raster (and the night plane if the sea has one) of a derived tile; false if it cannot be done
+ static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, stlab_xr32_image_t &out)
+ {
+-	const std::chrono::steady_clock::time_point t0 = std::chrono::steady_clock::now();
+ 	const stlab_xr32_slot_t *ss = stlab_slot( rc.sea, false );
+ 	if(  ss == NULL  ||  ss->img == NULL  ||  ss->img->rgba == NULL  ) {
+ 		return false;
+@@ -492,7 +484,6 @@ static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, s
+ 			} while(  (runlen = *sp++)  );
+ 		}
+ 	}
+-	std::vector<uint8> from_sea( tex_px, 0 );
+ 	{
+ 		const STORED_PIXVAL *sp = sea.base_data;
+ 		for(  sint32 y = 0;  y < sea.base_h;  y++  ) {
+@@ -512,7 +503,6 @@ static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, s
+ 					}
+ 					else {
+ 						stlab_derive_legacy_rgba( sp[k], dc, night ? nc : NULL );
+-						stlab_derive_legacy_px++;
+ 					}
+ 					// copypixel() of create_texture_from_tile(), the same five places in the same order and bounds
+ 					const sint32 yy0 = y + sea.base_y;
+@@ -523,7 +513,6 @@ static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, s
+ 							const size_t i = (size_t)(py[c] - ry) * rw + px[c];
+ 							memcpy( &tex[i * 4], dc, 4 );
+ 							if(  night  ) memcpy( &texn[i * 4], nc, 4 );
+-							from_sea[i] = 1;
+ 						}
+ 					}
+ 				}
+@@ -557,7 +546,6 @@ static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, s
+ 					const size_t i = (size_t)row * rw + x;
+ 					memcpy( dp, &tex[i * 4], 4 );
+ 					if(  night  ) memcpy( np, &texn[i * 4], 4 );
+-					if(  !from_sea[i]  ) stlab_derive_ref_px++;
+ 				}
+ 				else {
+ 					stlab_derive_legacy_rgba( tp[k], dp, np );   // black where the light map is black (binary mode)
+@@ -573,8 +561,6 @@ static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, s
+ 	out.version = sn->version;
+ 	out.rgba = day;
+ 	out.night = nig;
+-	stlab_derive_compose_n++;
+-	stlab_derive_compose_us += (uint64)std::chrono::duration_cast<std::chrono::microseconds>( std::chrono::steady_clock::now() - t0 ).count();
+ 	return true;
+ }
+ 
+@@ -593,21 +579,6 @@ static const stlab_xr32_image_t *stlab_xr32_source(image_id n, const stlab_xr32_
+ }
+ 
+ 
+-/// the images from @p above on are being freed: drop their XR32 data with them (their ids are reused next)
+-static void stlab_xr32_release_above(image_id above)
+-{
+-	stlab_xr32_base_release();
+-	for(  image_id i = above;  i < stlab_slots_alloc;  i++  ) {
+-		stlab_xr32_zoom_release( &stlab_slots[i] );
+-		delete stlab_slots[i].img;
+-		stlab_slots[i] = stlab_xr32_slot_t();
+-	}
+-	for(  std::map<image_id, stlab_xr32_derive_t>::iterator it = stlab_derived.lower_bound( above );  it != stlab_derived.end();  ) {
+-		it = stlab_derived.erase( it );
+-	}
+-}
+-
+-
+ void stlab_xr32_scratch_release();
+ struct stlab_xr32_slot_t;
+ 

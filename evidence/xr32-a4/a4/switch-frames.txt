@@ -1,0 +1,29 @@
+LC   coastfull  l3-co    video dummy  : verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+LC   coastresize l3-co    video dummy  : verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+LCW  coastfull  l2-co    video wayland: verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+LCW  coastfull  l3-co    video wayland: verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+LCW  coastresize l2-co    video wayland: verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+LCW  coastresize l3-co    video wayland: verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+LCX  coastfull  l2-co    video x11    : verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+LCX  coastfull  l3-co    video x11    : verified 240 | whole-mismatch frames cand [15, 105, 195] / testing-3 same -> same set | cand px on the other frames 0 -> PASS outside 3 switch frame(s) (UNVERIFIABLE there, identical in testing-3)
+LCX  coastresize l2-co    video x11    : verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+LCX  coastresize l3-co    video x11    : verified 240 | whole-mismatch frames cand [0, 30, 60, 90, 120, 150, 180, 210] / testing-3 same -> same set | cand px on the other frames 0 -> PASS outside 8 switch frame(s) (UNVERIFIABLE there, identical in testing-3)
+WC   coastfull  s2-co    video native : verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+WC   coastfull  s3-co    video native : verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+WC   coastresize s2-co    video native : verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+WC   coastresize s3-co    video native : verified 240 | whole-mismatch frames cand [] / testing-3 same -> same set | cand px on the other frames 0 -> PASS
+CONTROL LC   coastfull  l3-mut  : mutant mismatches on 156 frames outside testing-3's switch frames -> the check can fail
+CONTROL LC   coastresize l3-mut  : mutant mismatches on 79 frames outside testing-3's switch frames -> the check can fail
+CONTROL LCW  coastfull  l2-mut  : mutant mismatches on 220 frames outside testing-3's switch frames -> the check can fail
+CONTROL LCW  coastfull  l3-mut  : mutant mismatches on 168 frames outside testing-3's switch frames -> the check can fail
+CONTROL LCW  coastresize l2-mut  : mutant mismatches on 177 frames outside testing-3's switch frames -> the check can fail
+CONTROL LCW  coastresize l3-mut  : mutant mismatches on 129 frames outside testing-3's switch frames -> the check can fail
+CONTROL LCX  coastfull  l2-mut  : mutant mismatches on 182 frames outside testing-3's switch frames -> the check can fail
+CONTROL LCX  coastfull  l3-mut  : mutant mismatches on 167 frames outside testing-3's switch frames -> the check can fail
+CONTROL LCX  coastresize l2-mut  : mutant mismatches on 132 frames outside testing-3's switch frames -> the check can fail
+CONTROL LCX  coastresize l3-mut  : mutant mismatches on 38 frames outside testing-3's switch frames -> the check can fail
+CONTROL WC   coastfull  s2-mut  : mutant mismatches on 188 frames outside testing-3's switch frames -> the check can fail
+CONTROL WC   coastfull  s3-mut  : mutant mismatches on 178 frames outside testing-3's switch frames -> the check can fail
+CONTROL WC   coastresize s2-mut  : mutant mismatches on 97 frames outside testing-3's switch frames -> the check can fail
+CONTROL WC   coastresize s3-mut  : mutant mismatches on 95 frames outside testing-3's switch frames -> the check can fail
+failures: 0

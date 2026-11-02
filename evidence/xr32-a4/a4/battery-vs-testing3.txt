@@ -1,0 +1,26 @@
+battery-win.txt: testing-3 237 lines, candidate 237 lines, differing lines 12
+    -seadraw    xr32 slots 54 | images 54 | colour 201,7,133 px: XR32 on 0, off 0 | on vs off identical pictures 0 of 54 -> ok
+    -mutantdraw xr32 slots 54 | images 54 | colour 201,7,133 px: XR32 on 221184, off 0 | on vs off identical pictures 0 of 54 -> ok
+    +seadraw    xr32 slots 2134 | images 2134 | colour 201,7,133 px: XR32 on 0, off 0 | on vs off identical pictures 32 of 2134 -> ok
+    +mutantdraw xr32 slots 2134 | images 2134 | colour 201,7,133 px: XR32 on 6497600, off 0 | on vs off identical pictures 32 of 2134 -> ok
+    -catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 210, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 558, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 49, legacy-hidden 0, drawn where legacy hides 0 -> ok
+    +catworld   n0 1/1: rezoomed 49, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 203, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 543, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 46, legacy-hidden 0, drawn where legacy hides 0 -> ok
+    -seadraw    xr32 slots 54 | images 54 | colour 201,7,133 px: XR32 on 0, off 0 | on vs off identical pictures 0 of 54 -> ok
+    -mutantdraw xr32 slots 54 | images 54 | colour 201,7,133 px: XR32 on 221184, off 0 | on vs off identical pictures 0 of 54 -> ok
+    +seadraw    xr32 slots 2134 | images 2134 | colour 201,7,133 px: XR32 on 0, off 0 | on vs off identical pictures 32 of 2134 -> ok
+    +mutantdraw xr32 slots 2134 | images 2134 | colour 201,7,133 px: XR32 on 6497600, off 0 | on vs off identical pictures 32 of 2134 -> ok
+    -catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 209, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 560, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 46, legacy-hidden 0, drawn where legacy hides 0 -> ok
+    +catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 209, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 559, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 46, legacy-hidden 0, drawn where legacy hides 0 -> ok
+battery-linux.txt: testing-3 68 lines, candidate 68 lines, differing lines 8
+    -a6 fin2 pak64.german-mres1 A: errors [] [('3/2', 10895), ('5/4', 10895)]
+    -a6 fin2 pak64.german-mres1 B: errors [] [('3/2', 10895), ('5/4', 10895)]
+    +a6 fin2 pak64.german-mres1 A: errors [] [('3/2', 10970), ('5/4', 10970)]
+    +a6 fin2 pak64.german-mres1 B: errors [] [('3/2', 10970), ('5/4', 10970)]
+    -a6 fin3 pak64.german-mres1 A: errors [] [('3/2', 10895), ('5/4', 10895)]
+    -a6 fin3 pak64.german-mres1 B: errors [] [('3/2', 10895), ('5/4', 10895)]
+    +a6 fin3 pak64.german-mres1 A: errors [] [('3/2', 10970), ('5/4', 10970)]
+    +a6 fin3 pak64.german-mres1 B: errors [] [('3/2', 10970), ('5/4', 10970)]
+gates-sdl2.txt: testing-3 44 lines, candidate 44 lines, differing lines 0
+gates-sdl3.txt: testing-3 44 lines, candidate 44 lines, differing lines 0
+CONTROL testing-3 battery-win vs a copy with line 24 altered: 2 differing lines -> the comparison can fail
+total differing lines: 20

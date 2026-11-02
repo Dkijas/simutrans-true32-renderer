@@ -1,0 +1,150 @@
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index 605b65f3d56efcd88e35907a96c76cbe3283b0a6..bfaf37b2cd313d5ed105b13dd6284fd5aa4f3fe2 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -13,6 +13,7 @@
+ 
+ #include <chrono>
+ #include <map>
++#include <memory>
+ #include <vector>
+ 
+ /* --- what the semantic layer needs from the renderer ------------------------ */
+@@ -440,24 +441,78 @@ bool stlab_xr32_derive_water_tile(image_id tile, image_id light, image_id sea, i
+ }
+ 
+ 
+-/// compose the raster (and the night plane if the sea has one) of a derived tile; false if it cannot be done
+-static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, stlab_xr32_image_t &out)
++/* XR32-A4-PHASE-CACHE-OPTIMIZATION-01: step 1 of a composition, the texture, depends on the sea image (one per water
++ * animation stage) and the water climate texture only - not on the slope: the 65 slopes of one stage build the same
++ * one. The last STLAB_DERIVE_TEX_KEEP textures are kept, most recent first. A burst of compositions (a light change,
++ * a new stage in view, a zoom step) composes the tiles of one stage, so one entry serves the whole burst; the others
++ * cover two display lanes and a stage change inside a burst. The key is everything step 1 reads, so a changed input
++ * never meets an old texture; zoom, palette, night_shift and the player are applied later (resolve, zoom build) and
++ * are not part of it. Read-only once built and shared by pointer: the screen cache and the zoom cache are
++ * built under different locks, so two lanes may compose at the same time.
++ */
++struct stlab_derive_tex_t {
++	// the key: what the texture is built from
++	image_id sea = IMG_EMPTY, ref = IMG_EMPTY;
++	const STORED_PIXVAL *sea_data = NULL, *ref_data = NULL;
++	const uint8 *sea_rgba = NULL, *sea_night = NULL, *ref_rgba = NULL, *ref_night = NULL;
++	int light = 0;
++	sint32 rw = 0, ry = 0, rh = 0;
++	// the texture: rows ry .. rh - 1 of the water climate texture, columns 0 .. rw - 1, RGBA; texn at night
++	std::vector<uint8> tex, texn;
++};
++static const size_t STLAB_DERIVE_TEX_KEEP = 4;
++static std::vector< std::shared_ptr<const stlab_derive_tex_t> > stlab_derive_texs;
++#ifdef MULTI_THREAD
++static pthread_mutex_t stlab_derive_tex_mutex = PTHREAD_MUTEX_INITIALIZER;
++#endif
++
++
++static bool stlab_derive_tex_is(const stlab_derive_tex_t &a, const stlab_derive_tex_t &b)
+ {
+-	const stlab_xr32_slot_t *ss = stlab_slot( rc.sea, false );
+-	if(  ss == NULL  ||  ss->img == NULL  ||  ss->img->rgba == NULL  ) {
+-		return false;
+-	}
+-	const stlab_xr32_image_t *sn = ss->img;
+-	const stlab_xr32_slot_t *rs = stlab_slot( rc.ref, false );
+-	const stlab_xr32_image_t *rn = (rs != NULL  &&  rs->img != NULL  &&  rs->img->rgba != NULL  &&  !stlab_derived.count( rc.ref )) ? rs->img : NULL;
++	return a.sea == b.sea  &&  a.ref == b.ref  &&  a.sea_data == b.sea_data  &&  a.ref_data == b.ref_data
++	    &&  a.sea_rgba == b.sea_rgba  &&  a.sea_night == b.sea_night  &&  a.ref_rgba == b.ref_rgba  &&  a.ref_night == b.ref_night
++	    &&  a.light == b.light  &&  a.rw == b.rw  &&  a.ry == b.ry  &&  a.rh == b.rh;
++}
++
++
++/// step 1 of a composition: the texture of @p rc's stage, from the cache or built (and kept)
++static std::shared_ptr<const stlab_derive_tex_t> stlab_derive_texture(const stlab_xr32_derive_t &rc, const stlab_xr32_image_t *sn,
++                                                                      const stlab_xr32_image_t *rn)
++{
++	const imd32 &sea = images[rc.sea], &r = images[rc.ref];
+ 	const bool night = sn->night != NULL;
+-	const imd32 &t = images[tile], &l = images[rc.light], &sea = images[rc.sea], &r = images[rc.ref];
++	stlab_derive_tex_t key;
++	key.sea = rc.sea;  key.ref = rc.ref;  key.sea_data = sea.base_data;  key.ref_data = r.base_data;
++	key.sea_rgba = sn->rgba;  key.sea_night = sn->night;  key.ref_rgba = rn ? rn->rgba : NULL;  key.ref_night = rn ? rn->night : NULL;
++	key.light = light_level;  key.rw = r.base_w;  key.ry = r.base_y;  key.rh = r.base_h;
++#ifdef MULTI_THREAD
++	pthread_mutex_lock( &stlab_derive_tex_mutex );
++#endif
++	for(  size_t i = 0;  i < stlab_derive_texs.size();  i++  ) {
++		if(  stlab_derive_tex_is( *stlab_derive_texs[i], key )  ) {
++			std::shared_ptr<const stlab_derive_tex_t> hit = stlab_derive_texs[i];
++			for(  size_t j = i;  j > 0;  j--  ) {
++				stlab_derive_texs[j] = stlab_derive_texs[j - 1];
++			}
++			stlab_derive_texs[0] = hit;
++#ifdef MULTI_THREAD
++			pthread_mutex_unlock( &stlab_derive_tex_mutex );
++#endif
++			return hit;
++		}
++	}
++#ifdef MULTI_THREAD
++	pthread_mutex_unlock( &stlab_derive_tex_mutex );
++#endif
+ 
+ 	// 1. the texture, as create_texture_from_tile() builds it: the water climate texture (rows r.y .. r.h - 1 in
+ 	//    its own convention, columns 0 .. w - 1), then every sea pixel pasted at its place and four neighbours
+-	const sint32 rw = r.base_w, ry = r.base_y, rh = r.base_h;
++	std::shared_ptr<stlab_derive_tex_t> made = std::make_shared<stlab_derive_tex_t>( key );
++	const sint32 rw = key.rw, ry = key.ry, rh = key.rh;
+ 	const size_t tex_px = (size_t)rw * (size_t)(rh > 0 ? rh : 0);
+-	std::vector<uint8> tex( tex_px * 4, 0 ), texn( night ? tex_px * 4 : 0, 0 );
++	std::vector<uint8> &tex = made->tex, &texn = made->texn;
++	tex.assign( tex_px * 4, 0 );
++	texn.assign( night ? tex_px * 4 : 0, 0 );
+ 	{
+ 		const STORED_PIXVAL *sp = r.base_data;
+ 		for(  sint32 y = 0;  y < rh;  y++  ) {
+@@ -521,6 +576,38 @@ static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, s
+ 		}
+ 	}
+ 
++#ifdef MULTI_THREAD
++	pthread_mutex_lock( &stlab_derive_tex_mutex );
++#endif
++	stlab_derive_texs.insert( stlab_derive_texs.begin(), made );
++	if(  stlab_derive_texs.size() > STLAB_DERIVE_TEX_KEEP  ) {
++		stlab_derive_texs.pop_back();
++	}
++#ifdef MULTI_THREAD
++	pthread_mutex_unlock( &stlab_derive_tex_mutex );
++#endif
++	return made;
++}
++
++
++/// compose the raster (and the night plane if the sea has one) of a derived tile; false if it cannot be done
++static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, stlab_xr32_image_t &out)
++{
++	const stlab_xr32_slot_t *ss = stlab_slot( rc.sea, false );
++	if(  ss == NULL  ||  ss->img == NULL  ||  ss->img->rgba == NULL  ) {
++		return false;
++	}
++	const stlab_xr32_image_t *sn = ss->img;
++	const stlab_xr32_slot_t *rs = stlab_slot( rc.ref, false );
++	const stlab_xr32_image_t *rn = (rs != NULL  &&  rs->img != NULL  &&  rs->img->rgba != NULL  &&  !stlab_derived.count( rc.ref )) ? rs->img : NULL;
++	const bool night = sn->night != NULL;
++	const imd32 &t = images[tile], &l = images[rc.light];
++
++	// 1. the texture of this stage (shared by every slope of it)
++	const std::shared_ptr<const stlab_derive_tex_t> tx = stlab_derive_texture( rc, sn, rn );
++	const std::vector<uint8> &tex = tx->tex, &texn = tx->texn;
++	const sint32 rw = tx->rw, ry = tx->ry, rh = tx->rh;
++
+ 	// 2. the tile, as create_textured_tile(binary) cuts it: where the light map is not black, the texture pixel at the
+ 	//    same column and row; where it is black, the tile keeps that black
+ 	const uint32 w = (uint32)t.base_w, h = (uint32)t.base_h;
+@@ -598,6 +685,7 @@ void stlab_xr32_release_all()
+ 	stlab_slots = NULL;
+ 	stlab_slots_alloc = 0;
+ 	stlab_derived.clear();
++	stlab_derive_texs.clear();
+ }
+ 
+ 

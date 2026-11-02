@@ -1,0 +1,10 @@
+fin2 route A z2: cache 10970 images, == A4 10970 of 10970 (missing 0) | common with testing-3 10895, == testing-3 10895
+fin2 route A z5: cache 10970 images, == A4 10970 of 10970 (missing 0) | common with testing-3 10895, == testing-3 10895
+fin2 route B z2: cache 10970 images, == A4 10970 of 10970 (missing 0) | common with testing-3 10895, == testing-3 10895
+fin2 route B z5: cache 10970 images, == A4 10970 of 10970 (missing 0) | common with testing-3 10895, == testing-3 10895
+fin3 route A z2: cache 10970 images, == A4 10970 of 10970 (missing 0) | common with testing-3 10895, == testing-3 10895
+fin3 route A z5: cache 10970 images, == A4 10970 of 10970 (missing 0) | common with testing-3 10895, == testing-3 10895
+fin3 route B z2: cache 10970 images, == A4 10970 of 10970 (missing 0) | common with testing-3 10895, == testing-3 10895
+fin3 route B z5: cache 10970 images, == A4 10970 of 10970 (missing 0) | common with testing-3 10895, == testing-3 10895
+CONTROL A4 z2 vs A4 z5 pictures of the same images: 10488 of 10970 differ -> the comparison can fail
+failures: 0

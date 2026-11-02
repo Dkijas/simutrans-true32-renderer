@@ -1,0 +1,39 @@
+labt3-sdl2-coast               t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl2-coastfull           t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl2-coastnight          t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl2-coastresize         t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl2-coastscroll         t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl2-coastzoom           t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl2-dnnight             t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl3-coast               t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl3-coastfull           t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl3-coastnight          t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl3-coastresize         t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl3-coastscroll         t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl3-coastzoom           t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+labt3-sdl3-dnnight             t3 rc=0 ASan 0 UBSan 8 LSan 16 | cand rc=0 ASan 0 UBSan 8 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+t3-sdl2-worldcat               t3 rc=0 ASan 0 UBSan 4 LSan 16 | cand rc=0 ASan 0 UBSan 4 LSan 17 | new UBSan 0, new LSan 1, gone UBSan 0
+    NEW LSan Direct <- loadsave_t::rdwr_str(char simutrans/dataobj/loadsave.cc
+t3-sdl2-worldcoast             t3 rc=0 ASan 0 UBSan 7 LSan 16 | cand rc=0 ASan 0 UBSan 7 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+t3-sdl3-worldcat               t3 rc=0 ASan 0 UBSan 4 LSan 17 | cand rc=0 ASan 0 UBSan 4 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+t3-sdl3-worldcoast             t3 rc=0 ASan 0 UBSan 7 LSan 16 | cand rc=0 ASan 0 UBSan 7 LSan 16 | new UBSan 0, new LSan 0, gone UBSan 0
+
+UBSan locations over all candidate runs (8):
+    simutrans/display/blit_clip_core.h [const sint64 t = (((sint64)y - y0) << 16) / sdy;] col 39 left shift of negative value N
+    simutrans/display/blit_clip_core.h [r.sx = t * sdx + inc + ((sint64)x0 << 16);] col 39 left shift of negative value N
+    simutrans/display/blit_clip_core.h [sdx = ((sint64)dx << 16) / steps;] col 21 left shift of negative value N
+    simutrans/display/blit_clip_core.h [sdy = ((sint64)dy << 16) / steps;] col 21 left shift of negative value N
+    simutrans/tpl/freelist_tpl.h [freelist = tmp->next;] col 19 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_tpl.h [return (void *)(&(tmp->next));] col 31 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_tpl.h [tmp->next = freelist;] col 13 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_tpl.h [tmp->next = freelist;] col 15 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+CONTROL synthetic UBSan line in a copy of asan-labcand-sdl2-coast: new 1 -> the check can fail
+failures: 1
+
+ADDENDUM (the one "failure" above): NEW LSan "Direct leak 3 bytes <- loadsave_t::rdwr_str <- env_t::rdwr" in
+cand-sdl2-worldcat. Not the candidate's: the testing-3 SDL2 worldcat run it was compared with was the FIRST run of
+tools/asan_a4.sh, in a fresh run dir without settings.xml; every later worldcat run (candidate SDL2, testing-3 SDL3,
+candidate SDL3) has the leak. tools/asan_rerun_t3.sh repeated testing-3 SDL2 worldcat with settings.xml present:
+47 leak reports, the rdwr_str <- env_t::rdwr leak among them (evidence/asan-rerun-t3-worldcat.txt). The worldcat
+workload (pak128.german-cat) has no XR32 water: the A4 code registers nothing there. Order-dependent, pre-existing.
+Net: ASan errors 0 in 36 runs; new UBSan locations 0; new LSan origins 0 once the run order is accounted for.

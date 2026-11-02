@@ -1,0 +1,66 @@
+win: rejected runs 0
+linux: rejected runs 0
+
+=== linux LC (renderer software) - mismatching px over the verified frames
+scenario               l3-co         l3-mut          l3-t3
+coast                 0/240f  26045831/240f         0/240f
+coastfull             0/240f  15192370/240f         0/240f
+coastnight            0/240f   5454651/240f         0/240f
+coastresize           0/240f   4136202/240f         0/240f
+coastscroll           0/240f         0/240f         0/240f
+coastzoom             0/240f   3565952/240f         0/240f
+  control droprect mutant: fails in 5 of 6 scenarios (coast,coastfull,coastnight,coastresize,coastzoom); passes in: coastscroll
+
+=== linux LCD (renderer opengl) - mismatching px over the verified frames
+scenario               l2-co         l2-mut          l2-t3          l3-co         l3-mut          l3-t3
+coast                 0/240f  19173962/240f         0/240f         0/240f  17324735/240f         0/240f
+coastnight            0/240f   5934243/240f         0/240f         0/240f   4347008/240f         0/240f
+  control droprect mutant: fails in 2 of 2 scenarios (coast,coastnight); passes in: -
+
+=== linux LCI (renderer opengl) - mismatching px over the verified frames
+scenario               l2-co          l2-t3          l3-co          l3-t3
+coast                  0/40f          0/40f          0/40f          0/40f
+
+=== linux LCW (renderer opengl) - mismatching px over the verified frames
+scenario               l2-co         l2-mut          l2-t3          l3-co         l3-mut          l3-t3
+coast                 0/240f  22340409/240f         0/240f         0/240f  23404938/240f         0/240f
+coastfull             0/240f  40971715/240f         0/240f         0/240f  33073954/240f         0/240f
+coastnight            0/240f   4604940/240f         0/240f         0/240f   3185072/240f         0/240f
+coastresize           0/240f  15594569/240f         0/240f         0/240f  11622858/240f         0/240f
+coastscroll           0/240f         0/240f         0/240f         0/240f         0/240f         0/240f
+coastzoom             0/240f   8779184/240f         0/240f         0/240f   8842400/240f         0/240f
+  control droprect mutant: fails in 5 of 6 scenarios (coast,coastfull,coastnight,coastresize,coastzoom); passes in: coastscroll
+
+=== linux LCX (renderer opengl) - mismatching px over the verified frames
+scenario               l2-co         l2-mut          l2-t3          l3-co         l3-mut          l3-t3
+coast                 0/240f  25671646/240f         0/240f         0/240f  24537079/240f         0/240f
+coastfull             0/240f  50881576/240f         0/240f  11968665/240f  52155543/240f  11968680/240f
+coastnight            0/240f   5309830/240f         0/240f         0/240f   5850518/240f         0/240f
+coastresize           0/240f  10666256/240f         0/240f  14019589/240f  19599841/240f  14020564/240f
+coastscroll           0/240f         0/240f         0/240f         0/240f         0/240f         0/240f
+coastzoom             0/240f   7036619/240f         0/240f         0/240f   9268424/240f         0/240f
+  SWITCH l3-co coastfull: 11968665 px, all on the switch frames that testing-2 mismatches identically -> PASS outside 3 switch frame(s) (UNVERIFIABLE there, identical in testing-3) (switch-frames.txt)
+  SWITCH l3-co coastresize: 14019589 px, all on the switch frames that testing-2 mismatches identically -> PASS outside 8 switch frame(s) (UNVERIFIABLE there, identical in testing-3) (switch-frames.txt)
+  control droprect mutant: fails in 5 of 6 scenarios (coast,coastfull,coastnight,coastresize,coastzoom); passes in: coastscroll
+
+=== win WC (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario               s2-co         s2-mut          s2-t3          s3-co         s3-mut          s3-t3
+coast                 0/240f  24018419/240f         0/240f         0/240f  26049141/240f         0/240f
+coastfull             0/240f  38486703/240f         0/240f         0/240f  52018807/240f         0/240f
+coastnight            0/240f   3608384/240f         0/240f         0/240f   7541558/240f         0/240f
+coastresize           0/240f   7096836/240f         0/240f         0/240f   7095299/240f         0/240f
+coastscroll           0/240f         0/240f         0/240f         0/240f         0/240f         0/240f
+coastzoom             0/240f   7653063/240f         0/240f         0/240f   4735325/240f         0/240f
+  control droprect mutant: fails in 5 of 6 scenarios (coast,coastfull,coastnight,coastresize,coastzoom); passes in: coastscroll
+
+=== win WCD (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario               s2-co         s2-mut          s2-t3          s3-co         s3-mut          s3-t3
+coast                 0/240f  18053888/240f         0/240f         0/240f  21659989/240f         0/240f
+coastnight            0/240f   5217543/240f         0/240f         0/240f   3649302/240f         0/240f
+  control droprect mutant: fails in 2 of 2 scenarios (coast,coastnight); passes in: -
+
+=== win WCI (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario               s2-co          s2-t3          s3-co          s3-t3
+coast                  0/40f          0/40f          0/40f          0/40f
+
+candidate failures outside KNOWN, or void controls: 0

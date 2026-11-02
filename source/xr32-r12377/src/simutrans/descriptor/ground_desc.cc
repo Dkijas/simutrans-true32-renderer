@@ -29,6 +29,10 @@ const int totalslopes = 81;
 #endif
 
 
+#if COLOUR_DEPTH == 32
+#include "../display/stlab_xr32.h"   // XR32-COAST-RENDERING-01 (A4)
+#endif
+
 /* combines a texture and a lightmap
  * just weights all pixels by the lightmap
  * @param binary if true, then a binary decision is made: if lightmap is grey then take original pixel, if not set to black
@@ -849,6 +853,13 @@ void ground_desc_t::init_ground_textures(karte_t *world)
 				int slope = double_grounds ? dslope : slopetable[dslope];
 				final_tile = create_textured_tile( light_map->get_image_ptr( slope ), water_stage_texture[stage], true);
 				ground_image_list.append( final_tile );
+#if COLOUR_DEPTH == 32
+				// XR32 (A4): the tile's 32-bit picture comes from the sea's XR32 data, if it has any
+				if(  light_map->get_image_ptr( slope )  ) {
+					stlab_xr32_derive_water_tile( final_tile->get_id(), light_map->get_image_ptr( slope )->get_id(),
+						sea->get_image( 0, stage ), boden_texture->get_image( water_climate ) );
+				}
+#endif
 			}
 		}
 	}

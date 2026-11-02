@@ -1,0 +1,2 @@
+settings.xml before the run: -rw-r--r-- 1 root root 6629 Nov  2 12:23 <wsl-a4-lab>/run-asan/settings.xml
+rerun testing-3 SDL2 worldcat: rc=0 exe 7f6eedb5b499b267 leaks 47 rdwr_str<-env_t::rdwr leaks 1

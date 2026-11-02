@@ -1,0 +1,11 @@
+1/1 testing-3 key px  985198 | holes (1..8 px, enclosed by water) 41, px in holes 97
+1/1 A4        key px  988611 | holes (1..8 px, enclosed by water) 43, px in holes 102
+1/1 cache     key px  971180 | holes (1..8 px, enclosed by water) 43, px in holes 102
+1/1 A4        holes not present in testing-3 at the same pixels: 2 (px 5)
+1/1 cache     holes not present in testing-3 at the same pixels: 2 (px 5)
+2/1 testing-3 key px  531622 | holes (1..8 px, enclosed by water) 25, px in holes 100
+2/1 A4        key px  532987 | holes (1..8 px, enclosed by water) 55, px in holes 130
+2/1 cache     key px  515556 | holes (1..8 px, enclosed by water) 55, px in holes 130
+2/1 A4        holes not present in testing-3 at the same pixels: 30 (px 30)
+2/1 cache     holes not present in testing-3 at the same pixels: 30 (px 30)
+CONTROL cache 2/1 with 5316 key pixels knocked out: new holes 5146 -> the check can fail

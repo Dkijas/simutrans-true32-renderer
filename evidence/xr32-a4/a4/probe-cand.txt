@@ -1,0 +1,2 @@
+cand xr1 errors [] stages 32 xr32_enabled 1 pak images with node 54 coast tiles with node Counter({1: 2080, 0: 64})
+cand xr0 errors [] stages 32 xr32_enabled 0 pak images with node 0 coast tiles with node Counter({0: 2144})

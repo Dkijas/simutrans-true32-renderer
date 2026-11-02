@@ -1,0 +1,156 @@
+simutrans-final.exe 52a0e2cb08ecae008f8264c4b5963c77628b8322d48f8b1de9c126459bc6e8e1
+simutrans-rgba32.exe (published testing-3) 69444edca3042ce91bef8a7a3301ada579c9314b641a8c95368210d76d0d6fa0
+fin-mutant-xr1: rc=0 rows 195 "errors": []
+fin-mutant-xr0: rc=0 rows 195 "errors": []
+fin-makie: rc=0 rows 3735 "errors": []
+fin-daynight: rc=0 rows 2660 "errors": []
+fin-mutant-zooms: rc=0 rows 1950 "errors": []
+fin-plain: rc=0 rows 1560 "errors": []
+fin-mutant-pak-xr1: rc=0 rows 476 "errors": []
+fin-mutant-pak-xr0: rc=0 rows 476 "errors": []
+fin-t3-mutant-pak-xr0: rc=0 rows 476 "errors": []
+### composition oracle 1/1 (independent model)
+run fin-mutant-xr1 (exe=simutrans-final.exe | sha256=52a0e2cb08ecae008f8264c4b5963c77628b8322d48f8b1de9c126459bc6e8e1 | xr32=1 pak=pak128.german-mutant zooms=7 levels=0 stages=0,13,31 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 588414
+  zoom 1/1   level 0: tiles  195, opaque px   816396, key-colour px   588414
+run fin-mutant-xr0 (exe=simutrans-final.exe | sha256=52a0e2cb08ecae008f8264c4b5963c77628b8322d48f8b1de9c126459bc6e8e1 | xr32=0 pak=pak128.german-mutant zooms=7 levels=0 stages=0,13,31 | rc=0 |): model tile16 (legacy words); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 0
+  zoom 1/1   level 0: tiles  195, opaque px   816396, key-colour px        0
+run t3-mutant-xr1 (exe=simutrans-rgba32.exe | sha256=69444edca3042ce91bef8a7a3301ada579c9314b641a8c95368210d76d0d6fa0 | xr32=1 pak=pak128.german-mutant zooms=7 levels=0 stages=0,13,31 | rc=0 |): model tile16 (legacy words); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 0
+  zoom 1/1   level 0: tiles  195, opaque px   816396, key-colour px        0
+rc=0
+run fin-makie (exe=simutrans-final.exe | sha256=52a0e2cb08ecae008f8264c4b5963c77628b8322d48f8b1de9c126459bc6e8e1 | xr32=1 pak=pak128.german-makie zooms=7,0,3,11,13 levels=0,2,4 stages=0,13,31 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 0
+  zoom 2/1   level 0: tiles  195, opaque px  3265584, key-colour px        0
+  zoom 2/1   level 2: tiles  195, opaque px  3265584, key-colour px        0
+  zoom 2/1   level 4: tiles  195, opaque px  3265584, key-colour px        0
+  zoom 11/8  level 0: tiles  195, opaque px  1584678, key-colour px        0
+  zoom 11/8  level 2: tiles  195, opaque px  1584678, key-colour px        0
+  zoom 11/8  level 4: tiles  195, opaque px  1584678, key-colour px        0
+  zoom 1/1   level 0: tiles  195, opaque px   816396, key-colour px        0
+  zoom 1/1   level 2: tiles  195, opaque px   816396, key-colour px        0
+  zoom 1/1   level 4: tiles  195, opaque px   816396, key-colour px        0
+  zoom 3/8   level 0: tiles  195, opaque px   125946, key-colour px        0
+  zoom 3/8   level 2: tiles  195, opaque px   125946, key-colour px        0
+  zoom 3/8   level 4: tiles  195, opaque px   125946, key-colour px        0
+  zoom 1/8   level 0: tiles  195, opaque px    15744, key-colour px        0
+  zoom 1/8   level 2: tiles  195, opaque px    15744, key-colour px        0
+  zoom 1/8   level 4: tiles  195, opaque px    15744, key-colour px        0
+run t3-makie (exe=simutrans-rgba32.exe | sha256=69444edca3042ce91bef8a7a3301ada579c9314b641a8c95368210d76d0d6fa0 | xr32=1 pak=pak128.german-makie zooms=7,0,3,11,13 levels=0,2,4 stages=0,13,31 | rc=0 |): model tile16 (legacy words); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 0
+  zoom 2/1   level 0: tiles  195, opaque px  3264876, key-colour px        0
+  zoom 2/1   level 2: tiles  195, opaque px  3264876, key-colour px        0
+  zoom 2/1   level 4: tiles  195, opaque px  3264876, key-colour px        0
+  zoom 11/8  level 0: tiles  195, opaque px  1584678, key-colour px        0
+  zoom 11/8  level 2: tiles  195, opaque px  1584678, key-colour px        0
+  zoom 11/8  level 4: tiles  195, opaque px  1584678, key-colour px        0
+  zoom 1/1   level 0: tiles  195, opaque px   816396, key-colour px        0
+  zoom 1/1   level 2: tiles  195, opaque px   816396, key-colour px        0
+  zoom 1/1   level 4: tiles  195, opaque px   816396, key-colour px        0
+  zoom 3/8   level 0: tiles  195, opaque px   125946, key-colour px        0
+  zoom 3/8   level 2: tiles  195, opaque px   125946, key-colour px        0
+  zoom 3/8   level 4: tiles  195, opaque px   125946, key-colour px        0
+  zoom 1/8   level 0: tiles  195, opaque px    15744, key-colour px        0
+  zoom 1/8   level 2: tiles  195, opaque px    15744, key-colour px        0
+  zoom 1/8   level 4: tiles  195, opaque px    15744, key-colour px        0
+rc=0
+run fin-daynight (exe=simutrans-final.exe | sha256=52a0e2cb08ecae008f8264c4b5963c77628b8322d48f8b1de9c126459bc6e8e1 | xr32=1 pak=pak128.german-daynight zooms=7,11 levels=0,1,2,3,4 stages=0,1,2,3 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 4, water tile slopes 65
+  1/1 day: tiles 260 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 0
+  zoom 1/1   level 0: tiles  260, opaque px  1088528, key-colour px        0
+  zoom 1/1   level 1: tiles  260, opaque px  1088528, key-colour px        0
+  zoom 1/1   level 2: tiles  260, opaque px  1088528, key-colour px        0
+  zoom 1/1   level 3: tiles  260, opaque px  1088528, key-colour px        0
+  zoom 1/1   level 4: tiles  260, opaque px  1088528, key-colour px        0
+  zoom 3/8   level 0: tiles  260, opaque px   167928, key-colour px        0
+  zoom 3/8   level 1: tiles  260, opaque px   167928, key-colour px        0
+  zoom 3/8   level 2: tiles  260, opaque px   167928, key-colour px        0
+  zoom 3/8   level 3: tiles  260, opaque px   167928, key-colour px        0
+  zoom 3/8   level 4: tiles  260, opaque px   167928, key-colour px        0
+rc=0
+### CONTROLS of the composition oracle (expected to FAIL): the no-neighbour-copies mutant, testing-3 against model32
+run mut-nocopies-xr1 (exe=simutrans-mut-nocopies.exe | sha256=edbdc613df6ecea99140d8f2c2fefd31bfbb9b2ca9ce1bf0136cd395556c1a5f | xr32=1 pak=pak128.german-mutant zooms=7 levels=0 stages=0,13,31 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 180 (tiles) | key-colour px 325572
+run t3-mutant-xr1 (exe=simutrans-rgba32.exe | sha256=69444edca3042ce91bef8a7a3301ada579c9314b641a8c95368210d76d0d6fa0 | xr32=1 pak=pak128.german-mutant zooms=7 levels=0 stages=0,13,31 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 192 (tiles) | key-colour px 0
+rc=0 (pipe)
+### makie precision
+t3-makie     1/1 day coast tiles: opaque px 816396, px with a channel not a multiple of 8 (impossible in RGB555 c<<3) 0 (0.0 %), distinct colours 58
+fin-makie    1/1 day coast tiles: opaque px 816396, px with a channel not a multiple of 8 (impossible in RGB555 c<<3) 587048 (71.9 %), distinct colours 1063
+### night, relative to the drawn sea image
+run fin-makie: sea stage images matched to their pak XR32 planes: 32 of 32 stages (night planes in the dump: 0)
+  level 0: tiles 195 | sea-sourced px   588414, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 192 tiles, 571884 px differ -> the check can fail | CONTROL vs the sea at another level: 195 tiles, 588414 px differ -> the check can fail
+  level 2: tiles 195 | sea-sourced px   588414, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 192 tiles, 549711 px differ -> the check can fail | CONTROL vs the sea at another level: 195 tiles, 588414 px differ -> the check can fail
+  level 4: tiles 195 | sea-sourced px   588414, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 192 tiles, 520947 px differ -> the check can fail | CONTROL vs the sea at another level: 195 tiles, 588414 px differ -> the check can fail
+failures: 0
+rc=0
+run fin-daynight: sea stage images matched to their pak XR32 planes: 4 of 4 stages (night planes in the dump: 6)
+  level 0: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 752176 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+  level 1: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 731364 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+  level 2: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 708984 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+  level 3: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 696120 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+  level 4: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 644952 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+failures: 0
+rc=0
+run fin-mutant-pak-xr1: sea stage images matched to their pak XR32 planes: 32 of 32 stages (night planes in the dump: 0)
+  level 0: tiles  65 | sea-sourced px   196138, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 0 tiles, 0 px differ -> no differing stage to test | CONTROL vs the sea at another level: 65 tiles, 196138 px differ -> the check can fail
+  level 4: tiles  65 | sea-sourced px   196138, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 0 tiles, 0 px differ -> no differing stage to test | CONTROL vs the sea at another level: 65 tiles, 196138 px differ -> the check can fail
+failures: 0
+rc=0
+### zoom geometry vs testing-3
+t3-mutant-zooms vs fin-mutant-zooms: 1950 common (zoom, level, tile) draws, only in base 0, only in candidate 0
+  zoom 2/1   level 0: tiles  195 | geometry differs 0 | coverage px differ  52026 | key px base        0, candidate  2353656
+  zoom 2/1   level 4: tiles  195 | geometry differs 0 | coverage px differ  52026 | key px base        0, candidate        0
+  zoom 11/8  level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate  1134066
+  zoom 11/8  level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/1   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate   588414
+  zoom 1/1   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 3/8   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate    88473
+  zoom 3/8   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/8   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate    10800
+  zoom 1/8   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  CONTROL base vs itself shifted by one tile id: 640 pairs, geometry differs 384, coverage px differ 559924 -> the comparison can fail
+differences: 2
+rc=1 (exit 1 expected: 2/1 inherited H1)
+t3-makie vs fin-makie: 3735 common (zoom, level, tile) draws, only in base 0, only in candidate 0
+  zoom 2/1   level 0: tiles  249 | geometry differs 0 | coverage px differ  52026 | key px base        0, candidate        0
+  zoom 2/1   level 2: tiles  249 | geometry differs 0 | coverage px differ  52026 | key px base        0, candidate        0
+  zoom 2/1   level 4: tiles  249 | geometry differs 0 | coverage px differ  52026 | key px base        0, candidate        0
+  zoom 11/8  level 0: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 11/8  level 2: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 11/8  level 4: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/1   level 0: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/1   level 2: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/1   level 4: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 3/8   level 0: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 3/8   level 2: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 3/8   level 4: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/8   level 0: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/8   level 2: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/8   level 4: tiles  249 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  CONTROL base vs itself shifted by one tile id: 1755 pairs, geometry differs 576, coverage px differ 839886 -> the comparison can fail
+differences: 3
+rc=1 (exit 1 expected: 2/1 inherited H1)
+### inherited 2/1 edge coverage (H1): each exe XR32 on vs off
+  testing-3 XR32 on vs XR32 off    zoom 1/1: generated coast tile               images  65, geometry differs 0, coverage px differ      0
+  testing-3 XR32 on vs XR32 off    zoom 1/1: pak sea image (node from the pak)  images  54, geometry differs 0, coverage px differ      0
+  testing-3 XR32 on vs XR32 off    zoom 2/1: generated coast tile               images  65, geometry differs 0, coverage px differ      0
+  testing-3 XR32 on vs XR32 off    zoom 2/1: pak sea image (node from the pak)  images  54, geometry differs 0, coverage px differ  13176
+  candidate XR32 on vs XR32 off    zoom 1/1: generated coast tile               images  65, geometry differs 0, coverage px differ      0
+  candidate XR32 on vs XR32 off    zoom 1/1: pak sea image (node from the pak)  images  54, geometry differs 0, coverage px differ      0
+  candidate XR32 on vs XR32 off    zoom 2/1: generated coast tile               images  65, geometry differs 0, coverage px differ  17342
+  candidate XR32 on vs XR32 off    zoom 2/1: pak sea image (node from the pak)  images  54, geometry differs 0, coverage px differ  13176
+### plain pak128.german (no XR32 water): byte identity with testing-3
+t3-plain vs fin-plain: common draws 1560, only in base 0, only in candidate 0
+  zoom 1/1   level 0: tiles 195, not byte-identical 0
+  zoom 1/1   level 4: tiles 195, not byte-identical 0
+  zoom 1/8   level 0: tiles 195, not byte-identical 0
+  zoom 1/8   level 4: tiles 195, not byte-identical 0
+  zoom 2/1   level 0: tiles 195, not byte-identical 0
+  zoom 2/1   level 4: tiles 195, not byte-identical 0
+  zoom 3/8   level 0: tiles 195, not byte-identical 0
+  zoom 3/8   level 4: tiles 195, not byte-identical 0
+fin-plain: 1560 draws byte-identical, 0 differ
+CONTROL neighbouring draws of t3-plain compared with each other: 1552 of 1552 pairs differ -> the comparison can fail
+rc=0
+FINAL_GATES_DONE

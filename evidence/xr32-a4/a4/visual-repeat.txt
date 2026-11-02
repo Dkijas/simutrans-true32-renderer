@@ -1,0 +1,36 @@
+day  t3 run 0   vs t3 run 1   differing px   35993
+day  t3 run 0   vs t3 run 2   differing px   35318
+day  t3 run 0   vs cand run 0 differing px   10159
+day  t3 run 0   vs cand run 1 differing px   46844
+day  t3 run 1   vs t3 run 2   differing px   35951
+day  t3 run 1   vs cand run 0 differing px   46068
+day  t3 run 1   vs cand run 1 differing px   47465
+day  t3 run 2   vs cand run 0 differing px   45393
+day  t3 run 2   vs cand run 1 differing px   46326
+day  cand run 0 vs cand run 1 differing px   38401
+z2   t3 run 0   vs t3 run 1   differing px   35990
+z2   t3 run 0   vs t3 run 2   differing px   35276
+z2   t3 run 0   vs cand run 0 differing px  551268
+z2   t3 run 0   vs cand run 1 differing px   45285
+z2   t3 run 1   vs t3 run 2   differing px   35990
+z2   t3 run 1   vs cand run 0 differing px  587206
+z2   t3 run 1   vs cand run 1 differing px   45999
+z2   t3 run 2   vs cand run 0 differing px  585570
+z2   t3 run 2   vs cand run 1 differing px   45273
+z2   cand run 0 vs cand run 1 differing px  585959
+back t3 run 0   vs t3 run 1   differing px   36020
+back t3 run 0   vs t3 run 2   differing px   35345
+back t3 run 0   vs cand run 0 differing px   10178
+back t3 run 0   vs cand run 1 differing px   46783
+back t3 run 1   vs t3 run 2   differing px   35951
+back t3 run 1   vs cand run 0 differing px   46100
+back t3 run 1   vs cand run 1 differing px   47515
+back t3 run 2   vs cand run 0 differing px   45425
+back t3 run 2   vs cand run 1 differing px   46376
+back cand run 0 vs cand run 1 differing px   38469
+day  cand run 0 differs from all 3 testing-3 runs: 10117 px
+day  cand run 1 differs from all 3 testing-3 runs: 29164 px
+day  CONTROL t3 run 0 differs from both other t3 runs: 17680 px (the run-to-run floor of this measure)
+z2   cand run 0 differs from all 3 testing-3 runs: 551263 px
+z2   cand run 1 differs from all 3 testing-3 runs: 27647 px
+z2   CONTROL t3 run 0 differs from both other t3 runs: 17638 px (the run-to-run floor of this measure)

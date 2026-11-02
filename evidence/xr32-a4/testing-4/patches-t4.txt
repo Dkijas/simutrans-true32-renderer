@@ -1,0 +1,19 @@
+7cc6d45 = 7cc6d452be63c55943d650bc5a72fce27ec54853 tree 9f152f52e68553f9680d462d4b9654563bf25c58
+df2a1b0 = df2a1b0f5624d9b4af41389bcb41b954734b1744 tree e0c48441e437efc9572bab10c07a9ef7c704e71a
+84b3225 = 84b3225506804ff6e14edb5e70bd0924ab78faf5 tree 64548ac8c9e3976394e2c02cc5ab33974ca8dbd0
+9b03e8b = 9b03e8bb59f11c7de8b20596cf2f656a14bb6acf tree df26ce64541952c6c1534accd4c86764bde42b69
+0afdfbd = 0afdfbd31ee38c8a581a7f6251ade9bc80f60439 tree 96f3d4104f4ef3518f7697bfc02efd2b70ca46f2
+a4/cache = 0afdfbd31ee38c8a581a7f6251ade9bc80f60439
+testing-3 recipe check: f93f11d271685128916d7cc213f14685962a61f12502868b110d05fd2f75351e (published f93f11d271685128916d7cc213f14685962a61f12502868b110d05fd2f75351e)
+2b760a0d6d6947d361acc5bfc03ead7cea972c496937f879c4b91630aa05e9ba  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-4.diff
+1708181c199043ff9cca6753491b96887907006669ffe40757b7043896c5fc4c  A4-ON-TESTING-3.diff
+dd8bc0df110bdcd868a693ff2af6badf6d3eedcb2761ec7b68fefd02069de224  01-A4-COAST-WATER.diff
+05b7e37a8761f7aba4683a229e7a875b8bf402556aa5abf6ac3235e99dfd134c  02-A4C-PRODUCTION-CLEANUP.diff
+b0e50601bd557845aa8b03cba0c28a245cf6732d8b53914d41aa8894fea62127  03-A4C-PHASE-TEXTURE-CACHE.diff
+43cac2dc169e62190e4c4c2edbfa8aa9cb2890bbb8f7b18c2c9bb1405db322bd  APPLY-ORDER.txt
+CR bytes in the patch set: 20
+FULL on r12377 rc=0 vs a4/cache: 0 differing entries
+A4-ON-TESTING-3 on testing-3 rc=0 vs a4/cache: 0 differing entries
+01+02+03 on testing-3 rc=0 vs a4/cache: 0 differing entries
+CONTROL 03 alone on testing-3: git apply --check rc=1 (non-zero expected)
+PATCHES_T4_DONE

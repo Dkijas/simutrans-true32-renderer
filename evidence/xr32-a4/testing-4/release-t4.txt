@@ -1,0 +1,30 @@
+reused unchanged (testing-3's published file): makeobj-xr32-night-prototype-r12377-testing-2-windows-x86_64.zip 092987ab7d16eb13
+reused unchanged (testing-3's published file): makeobj-xr32-night-prototype-r12377-testing-2-linux-x86_64.tar.gz 18f280f5fe299a6f
+reused unchanged (testing-3's published file): xr32-night-prototype-r12377-testing-2-testkit.zip 200902e829f350f0
+makeobj source: identical between testing-3 (df2a1b0) and testing-4 (a4/cache)
+makeobj does not compile the changed files: 0 matches in its CMakeLists; #include of display/stlab_xr32.h in makeobj / writer sources (comments that name it do not count): 0
+recipe check: testing-3 source re-made 8c50e5f9e2b259f7e4b0cc7a86e235b1ef5e0274a000af1cc1b50720c6ac543f published 8c50e5f9e2b259f7e4b0cc7a86e235b1ef5e0274a000af1cc1b50720c6ac543f
+source tarball reproducible: 91abde4335d046b90b1a46070bce83e0bef6b6f40570dc2c400948d1babb70ee
+source tarball files: 2231 (tree 96f3d4104f4ef3518f7697bfc02efd2b70ca46f2); modes:    2231 -rw-r--r--     104 drwxr-xr-x 
+full diff == the patch set's
+90b60f6c607501e1216dbcd4dcda124c101025d425c1a71079a5536c4ab4752d  simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl2.zip
+0c6abe5f61bc5a71fd0ef1a25229c6a1bdf5b33680f09e8cda9a9300cb646b5a  simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl3.zip
+d5dfa80a938765eb75d870e9d86883559eaf3b2879db355860654edb54381b67  simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl2.tar.gz
+31b81d16adb87ec3fa0fd0abc5b0d400ffa728a81984e27d24136815c18b711c  simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl3.tar.gz
+092987ab7d16eb13e87d0945a3b508e998f4fffd458517c66e3d112f5f1f6eb1  makeobj-xr32-night-prototype-r12377-testing-2-windows-x86_64.zip
+18f280f5fe299a6feb04237c32b60807a9dadd5e3a167e8e18fdfb09b5ccdad2  makeobj-xr32-night-prototype-r12377-testing-2-linux-x86_64.tar.gz
+200902e829f350f05460e7ed6b3d596c0cb31ad735954c1b3ce55c3628707903  xr32-night-prototype-r12377-testing-2-testkit.zip
+91abde4335d046b90b1a46070bce83e0bef6b6f40570dc2c400948d1babb70ee  xr32-night-prototype-r12377-testing-4-source.tar.gz
+2b760a0d6d6947d361acc5bfc03ead7cea972c496937f879c4b91630aa05e9ba  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-4.diff
+5802 bytes  MANIFEST-r12377-testing-4.md
+1147 bytes  SHA256SUMS.txt
+523156 bytes  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-4.diff
+202878 bytes  makeobj-xr32-night-prototype-r12377-testing-2-linux-x86_64.tar.gz
+588369 bytes  makeobj-xr32-night-prototype-r12377-testing-2-windows-x86_64.zip
+9044067 bytes  simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl2.tar.gz
+12455636 bytes  simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl3.tar.gz
+15760573 bytes  simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl2.zip
+17576696 bytes  simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl3.zip
+353849 bytes  xr32-night-prototype-r12377-testing-2-testkit.zip
+5449740 bytes  xr32-night-prototype-r12377-testing-4-source.tar.gz
+RELEASE_T4_DONE

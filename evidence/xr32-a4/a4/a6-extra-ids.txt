@@ -1,0 +1,10 @@
+fin2: testing-3 10895 images, candidate 10970; extra in candidate 75 (ids 11058..11132), missing 0
+  extra ids contiguous: True; sizes [('93', '24'), ('96', '24'), ('96', '27'), ('96', '48'), ('96', '72')]
+  common images 10895, byte-identical pictures 10895
+  A6 verdict candidate fin2 z2: route A vs route B differing pictures 0 of 10970
+  A6 verdict candidate fin2 z5: route A vs route B differing pictures 0 of 10970
+fin3: testing-3 10895 images, candidate 10970; extra in candidate 75 (ids 11058..11132), missing 0
+  extra ids contiguous: True; sizes [('93', '24'), ('96', '24'), ('96', '27'), ('96', '48'), ('96', '72')]
+  common images 10895, byte-identical pictures 10895
+  A6 verdict candidate fin3 z2: route A vs route B differing pictures 0 of 10970
+  A6 verdict candidate fin3 z5: route A vs route B differing pictures 0 of 10970

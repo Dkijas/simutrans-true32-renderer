@@ -1,0 +1,5 @@
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl2 simutrans-rgba32 sha c0cec57e268e509a mode 755: exit 0, FATAL/Error lines 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl2 simutrans-16bit sha 3e7cd80e112cf9d5 mode 755: exit 0, FATAL/Error lines 0, skipped XR32 nodes 192 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl3 simutrans-rgba32 sha 7a556636051d1072 mode 755: exit 0, FATAL/Error lines 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl3 simutrans-16bit sha 9822aee1d322a616 mode 755: exit 0, FATAL/Error lines 0, skipped XR32 nodes 192 -> PASS
+SMOKE_T4_LINUX_DONE

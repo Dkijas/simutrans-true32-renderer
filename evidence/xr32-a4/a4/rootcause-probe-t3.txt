@@ -1,0 +1,6 @@
+xr1 errors [] stages 32 image_offset 48202 xr32_enabled 1 pak images with node 54 coast tiles with node Counter({0: 2144})
+xr0 errors [] stages 32 image_offset 48202 xr32_enabled 0 pak images with node 0 coast tiles with node Counter({0: 2144})
+errors [] tiles 2144
+bbox px total 21036480 (= 80.2 MB as RGBA8888 rasters), stored legacy words 9297281 (= 17.7 MB 16-bit)
+bbox sizes [((128, 96), 678), ((128, 64), 294), ((128, 65), 293), ((128, 127), 288), ((128, 33), 132), ((128, 95), 98)]
+zoomable flags Counter({4: 2112, 0: 32})

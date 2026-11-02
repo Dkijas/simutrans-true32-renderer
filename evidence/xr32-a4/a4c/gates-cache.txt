@@ -1,0 +1,120 @@
+simutrans-cache.exe 43420d63ef6e66c714118836a2b81686ab0313274ed385b1c3ed5a8c0b9da233
+simutrans-stale.exe b534f0da0a6ed811a93b9d181d2d4f51a07f409af14eb2642aad5de872199741
+simutrans-final.exe 52a0e2cb08ecae008f8264c4b5963c77628b8322d48f8b1de9c126459bc6e8e1
+simutrans-rgba32.exe 69444edca3042ce91bef8a7a3301ada579c9314b641a8c95368210d76d0d6fa0
+ca-mutant-xr1: rc=0 rows 195 "errors": []
+ca-mutant-xr0: rc=0 rows 195 "errors": []
+ca-makie: rc=0 rows 3735 "errors": []
+ca-daynight: rc=0 rows 2660 "errors": []
+ca-mutant-zooms: rc=0 rows 1950 "errors": []
+ca-plain: rc=0 rows 1560 "errors": []
+ca-mutant-pak-xr1: rc=0 rows 476 "errors": []
+ca-mutant-pak-xr0: rc=0 rows 476 "errors": []
+stale-makie: rc=0 rows 3735 "errors": []
+stale-daynight: rc=0 rows 2660 "errors": []
+### ACCEPTANCE: cache candidate draws byte-identical to the A4 frozen candidate's
+fin-mutant-xr1 vs ca-mutant-xr1: common draws 195, only in base 0, only in candidate 0
+ca-mutant-xr1: 195 draws byte-identical, 0 differ
+CONTROL neighbouring draws of fin-mutant-xr1 compared with each other: 64 of 194 pairs differ -> the comparison can fail
+rc=0
+fin-mutant-xr0 vs ca-mutant-xr0: common draws 195, only in base 0, only in candidate 0
+ca-mutant-xr0: 195 draws byte-identical, 0 differ
+CONTROL neighbouring draws of fin-mutant-xr0 compared with each other: 192 of 194 pairs differ -> the comparison can fail
+rc=0
+fin-makie vs ca-makie: common draws 3735, only in base 0, only in candidate 0
+ca-makie: 3735 draws byte-identical, 0 differ
+CONTROL neighbouring draws of fin-makie compared with each other: 3678 of 3720 pairs differ -> the comparison can fail
+rc=0
+fin-daynight vs ca-daynight: common draws 2660, only in base 0, only in candidate 0
+ca-daynight: 2660 draws byte-identical, 0 differ
+CONTROL neighbouring draws of fin-daynight compared with each other: 1335 of 2650 pairs differ -> the comparison can fail
+rc=0
+fin-mutant-zooms vs ca-mutant-zooms: common draws 1950, only in base 0, only in candidate 0
+ca-mutant-zooms: 1950 draws byte-identical, 0 differ
+CONTROL neighbouring draws of fin-mutant-zooms compared with each other: 640 of 1940 pairs differ -> the comparison can fail
+rc=0
+fin-plain vs ca-plain: common draws 1560, only in base 0, only in candidate 0
+ca-plain: 1560 draws byte-identical, 0 differ
+CONTROL neighbouring draws of fin-plain compared with each other: 1552 of 1552 pairs differ -> the comparison can fail
+rc=0
+fin-mutant-pak-xr1 vs ca-mutant-pak-xr1: common draws 476, only in base 0, only in candidate 0
+ca-mutant-pak-xr1: 476 draws byte-identical, 0 differ
+CONTROL neighbouring draws of fin-mutant-pak-xr1 compared with each other: 260 of 472 pairs differ -> the comparison can fail
+rc=0
+fin-mutant-pak-xr0 vs ca-mutant-pak-xr0: common draws 476, only in base 0, only in candidate 0
+ca-mutant-pak-xr0: 476 draws byte-identical, 0 differ
+CONTROL neighbouring draws of fin-mutant-pak-xr0 compared with each other: 472 of 472 pairs differ -> the comparison can fail
+rc=0
+### CONTROL: the stale-key mutant against A4 (expected to FAIL)
+fin-makie vs stale-makie: common draws 3735, only in base 0, only in candidate 0
+stale-makie: 873 draws byte-identical, 2862 differ
+CONTROL neighbouring draws of fin-makie compared with each other: 3678 of 3720 pairs differ -> the comparison can fail
+rc=0
+fin-daynight vs stale-daynight: common draws 2660, only in base 0, only in candidate 0
+stale-daynight: 1390 draws byte-identical, 1270 differ
+CONTROL neighbouring draws of fin-daynight compared with each other: 1335 of 2650 pairs differ -> the comparison can fail
+rc=0
+### composition oracle 1/1 (independent model)
+run ca-mutant-xr1 (exe=simutrans-cache.exe | sha256=43420d63ef6e66c714118836a2b81686ab0313274ed385b1c3ed5a8c0b9da233 | xr32=1 pak=pak128.german-mutant zooms=7 levels=0 stages=0,13,31 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 588414
+run ca-mutant-xr0 (exe=simutrans-cache.exe | sha256=43420d63ef6e66c714118836a2b81686ab0313274ed385b1c3ed5a8c0b9da233 | xr32=0 pak=pak128.german-mutant zooms=7 levels=0 stages=0,13,31 | rc=0 |): model tile16 (legacy words); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 0
+rc=0
+run ca-makie (exe=simutrans-cache.exe | sha256=43420d63ef6e66c714118836a2b81686ab0313274ed385b1c3ed5a8c0b9da233 | xr32=1 pak=pak128.german-makie zooms=7,0,3,11,13 levels=0,2,4 stages=0,13,31 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 0
+rc=0
+run ca-daynight (exe=simutrans-cache.exe | sha256=43420d63ef6e66c714118836a2b81686ab0313274ed385b1c3ed5a8c0b9da233 | xr32=1 pak=pak128.german-daynight zooms=7,11 levels=0,1,2,3,4 stages=0,1,2,3 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 4, water tile slopes 65
+  1/1 day: tiles 260 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 0 (tiles) | key-colour px 0
+rc=0
+### CONTROL of the oracle: the stale-key mutant against model32 (expected to FAIL)
+run stale-makie (exe=simutrans-stale.exe | sha256=b534f0da0a6ed811a93b9d181d2d4f51a07f409af14eb2642aad5de872199741 | xr32=1 pak=pak128.german-makie zooms=7,0,3,11,13 levels=0,2,4 stages=0,13,31 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 32, water tile slopes 65
+  1/1 day: tiles 195 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 192 (tiles) | key-colour px 0
+run stale-daynight (exe=simutrans-stale.exe | sha256=b534f0da0a6ed811a93b9d181d2d4f51a07f409af14eb2642aad5de872199741 | xr32=1 pak=pak128.german-daynight zooms=7,11 levels=0,1,2,3,4 stages=0,1,2,3 | rc=0 |): model tile32 (XR32 plane); double_grounds True, stages 4, water tile slopes 65
+  1/1 day: tiles 260 | geometry mismatches 0 | coverage mismatches 0 | colour mismatches 128 (tiles) | key-colour px 0
+### night, relative to the drawn sea image
+  level 0: tiles 195 | sea-sourced px   588414, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 192 tiles, 571884 px differ -> the check can fail | CONTROL vs the sea at another level: 195 tiles, 588414 px differ -> the check can fail
+  level 2: tiles 195 | sea-sourced px   588414, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 192 tiles, 549711 px differ -> the check can fail | CONTROL vs the sea at another level: 195 tiles, 588414 px differ -> the check can fail
+  level 4: tiles 195 | sea-sourced px   588414, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 192 tiles, 520947 px differ -> the check can fail | CONTROL vs the sea at another level: 195 tiles, 588414 px differ -> the check can fail
+failures: 0
+rc=0
+  level 0: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 752176 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+  level 1: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 731364 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+  level 2: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 708984 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+  level 3: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 696120 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+  level 4: tiles 260 | sea-sourced px   784552, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 256 tiles, 644952 px differ -> the check can fail | CONTROL vs the sea at another level: 260 tiles, 784552 px differ -> the check can fail
+failures: 0
+rc=0
+  level 0: tiles  65 | sea-sourced px   196138, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 0 tiles, 0 px differ -> no differing stage to test | CONTROL vs the sea at another level: 65 tiles, 196138 px differ -> the check can fail
+  level 4: tiles  65 | sea-sourced px   196138, differ from the drawn sea pixel 0 | light-map black px      0, not black 0 | CONTROL vs another stage's sea: 0 tiles, 0 px differ -> no differing stage to test | CONTROL vs the sea at another level: 65 tiles, 196138 px differ -> the check can fail
+failures: 0
+rc=0
+### zoom geometry vs testing-3 (2/1 = H1, accepted)
+t3-mutant-zooms vs ca-mutant-zooms: 1950 common (zoom, level, tile) draws, only in base 0, only in candidate 0
+  zoom 2/1   level 0: tiles  195 | geometry differs 0 | coverage px differ  52026 | key px base        0, candidate  2353656
+  zoom 2/1   level 4: tiles  195 | geometry differs 0 | coverage px differ  52026 | key px base        0, candidate        0
+  zoom 11/8  level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate  1134066
+  zoom 11/8  level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/1   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate   588414
+  zoom 1/1   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 3/8   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate    88473
+  zoom 3/8   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/8   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate    10800
+  zoom 1/8   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  CONTROL base vs itself shifted by one tile id: 640 pairs, geometry differs 384, coverage px differ 559924 -> the comparison can fail
+differences: 2
+rc=1
+### H1: each exe XR32 on vs off
+  cache XR32 on vs XR32 off        zoom 1/1: generated coast tile               images  65, geometry differs 0, coverage px differ      0
+  cache XR32 on vs XR32 off        zoom 1/1: pak sea image (node from the pak)  images  54, geometry differs 0, coverage px differ      0
+  cache XR32 on vs XR32 off        zoom 2/1: generated coast tile               images  65, geometry differs 0, coverage px differ  17342
+  cache XR32 on vs XR32 off        zoom 2/1: pak sea image (node from the pak)  images  54, geometry differs 0, coverage px differ  13176
+### plain pak128.german: byte identity with testing-3
+t3-plain vs ca-plain: common draws 1560, only in base 0, only in candidate 0
+ca-plain: 1560 draws byte-identical, 0 differ
+CONTROL neighbouring draws of t3-plain compared with each other: 1552 of 1552 pairs differ -> the comparison can fail
+rc=0
+### makie precision
+t3-makie     1/1 day coast tiles: opaque px 816396, px with a channel not a multiple of 8 (impossible in RGB555 c<<3) 0 (0.0 %), distinct colours 58
+fin-makie    1/1 day coast tiles: opaque px 816396, px with a channel not a multiple of 8 (impossible in RGB555 c<<3) 587048 (71.9 %), distinct colours 1063
+ca-makie     1/1 day coast tiles: opaque px 816396, px with a channel not a multiple of 8 (impossible in RGB555 c<<3) 587048 (71.9 %), distinct colours 1063
+GATES_CACHE_DONE

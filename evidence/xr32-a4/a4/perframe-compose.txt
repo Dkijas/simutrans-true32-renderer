@@ -1,0 +1,6 @@
+coastnight: frames 781, frames with a composition 115, compositions 1269, composing time 169.2 ms
+  per frame composing time: P50 over composing frames 1.45 ms, P99 over all frames 1.83 ms, max 2.91 ms
+  frames composing > 1 ms: 114; largest: frame 2: 12 tiles 2.9 ms (night_shift 4), frame 474: 11 tiles 2.3 ms (night_shift 0), frame 466: 11 tiles 2.1 ms (night_shift 0), frame 490: 11 tiles 2.0 ms (night_shift 0), frame 538: 11 tiles 2.0 ms (night_shift 0), frame 545: 11 tiles 1.9 ms (night_shift 8)
+coastzoom: frames 781, frames with a composition 105, compositions 1191, composing time 148.5 ms
+  per frame composing time: P50 over composing frames 1.38 ms, P99 over all frames 1.67 ms, max 4.16 ms
+  frames composing > 1 ms: 104; largest: frame 2: 12 tiles 4.2 ms (night_shift 4), frame 417: 11 tiles 2.1 ms (night_shift 0), frame 651: 12 tiles 1.9 ms (night_shift 0), frame 537: 11 tiles 1.8 ms (night_shift 0), frame 33: 12 tiles 1.7 ms (night_shift 4), frame 617: 11 tiles 1.7 ms (night_shift 0)

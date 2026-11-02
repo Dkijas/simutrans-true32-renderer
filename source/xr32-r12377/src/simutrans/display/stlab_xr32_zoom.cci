@@ -492,7 +492,7 @@ static void stlab_xr32_zoom_release(stlab_xr32_slot_t *s)
  * One scale at a time, exactly the lifetime zoom_data already has. A player or
  * a night change never reaches here, which is the whole point of the design.
  */
-static bool stlab_xr32_zoom_ensure(image_id, stlab_xr32_slot_t *s)
+static bool stlab_xr32_zoom_ensure(image_id n, stlab_xr32_slot_t *s)
 {
 	if(  s == NULL  ||  s->img == NULL  ) {
 		return false;
@@ -506,7 +506,10 @@ static bool stlab_xr32_zoom_ensure(image_id, stlab_xr32_slot_t *s)
 	if(  s->zoom != NULL  ) {
 		stlab_xr32_zoom_release( s );
 	}
-	s->zoom = stlab_xr32_zoom_build( s->img, num, den );
+	// XR32-COAST-RENDERING-01: a derived tile's raster is composed for this one build
+	stlab_xr32_image_t derived;
+	const stlab_xr32_image_t *src = stlab_xr32_source( n, s, derived );
+	s->zoom = src ? stlab_xr32_zoom_build( src, num, den ) : NULL;
 	return s->zoom != NULL;
 }
 

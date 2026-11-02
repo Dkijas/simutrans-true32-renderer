@@ -1,0 +1,19 @@
+makie    day   (1/1      ): differing px   10110 (0.49 % of 1920x1080) | box x 320..1919 y 353..1061 | distinct colours in them: testing-3 4192, candidate 5682
+          crop makie-day-crop-t3-cand-mask.png at x 250 y 860 (160x90, x3): 2073 differing px
+makie    z2    (2/1      ): differing px    9021 (0.44 % of 1920x1080) | box x 21..1877 y 210..1074 | distinct colours in them: testing-3 1814, candidate 2313
+          crop makie-z2-crop-t3-cand-mask.png at x 510 y 360 (160x90, x3): 4086 differing px
+makie    back  (1/1 again): differing px   10179 (0.49 % of 1920x1080) | box x 131..1919 y 353..1074 | distinct colours in them: testing-3 4216, candidate 5707
+          crop makie-back-crop-t3-cand-mask.png at x 250 y 860 (160x90, x3): 2073 differing px
+mutant   day   (1/1      ): differing px   13509 (0.65 % of 1920x1080) | box x 320..1919 y 353..1061 | distinct colours in them: testing-3 6456, candidate 5167 | key px testing-3 967767, candidate 971180, only in testing-3 0, only in candidate 3413
+          crop mutant-day-crop-t3-cand-mask.png at x 330 y 970 (160x90, x3): 2736 differing px
+mutant   z2    (2/1      ): differing px   13067 (0.63 % of 1920x1080) | box x 18..1915 y 202..1074 | distinct colours in them: testing-3 2759, candidate 2455 | key px testing-3 514191, candidate 515556, only in testing-3 0, only in candidate 1365
+          crop mutant-z2-crop-t3-cand-mask.png at x 520 y 360 (160x90, x3): 4856 differing px
+mutant   back  (1/1 again): differing px   13578 (0.65 % of 1920x1080) | box x 131..1919 y 353..1074 | distinct colours in them: testing-3 6480, candidate 5192 | key px testing-3 967767, candidate 971180, only in testing-3 0, only in candidate 3413
+          crop mutant-back-crop-t3-cand-mask.png at x 330 y 970 (160x90, x3): 2736 differing px
+daynight day   (1/1      ): differing px   10159 (0.49 % of 1920x1080) | box x 137..1919 y 353..1074 | distinct colours in them: testing-3 4258, candidate 5715
+          crop daynight-day-crop-t3-cand-mask.png at x 250 y 860 (160x90, x3): 2078 differing px
+daynight z2    (2/1      ): differing px  551268 (26.59 % of 1920x1080) | box x 0..1919 y 32..1074 | distinct colours in them: testing-3 11676, candidate 11737
+          crop daynight-z2-crop-t3-cand-mask.png at x 200 y 300 (160x90, x3): 13988 differing px
+daynight back  (1/1 again): differing px   10178 (0.49 % of 1920x1080) | box x 131..1919 y 353..1074 | distinct colours in them: testing-3 4219, candidate 5701
+          crop daynight-back-crop-t3-cand-mask.png at x 250 y 860 (160x90, x3): 2073 differing px
+CONTROL candidate makie 'day' vs candidate mutant 'back': 1014799 px differ -> the comparison can fail

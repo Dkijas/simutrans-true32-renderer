@@ -1,0 +1,13 @@
+XR32 r12377 testing-4 - patch set
+
+XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-4.diff   apply to official Simutrans SVN trunk r12377: the whole XR32 tree of
+                                                  testing-4 (git apply, or patch -p1)
+A4-ON-TESTING-3.diff                              apply to the testing-3 source tree: what testing-4 adds (A4)
+
+The same A4 change in three reviewable steps, on the testing-3 source tree, in this order:
+  01-A4-COAST-WATER.diff            sloped-coast water tiles take their 32-bit picture from the sea's XR32 data
+                                    (the certified A4 candidate 84b3225)
+  02-A4C-PRODUCTION-CLEANUP.diff    drops the measurement counters and the unreachable release_above()
+  03-A4C-PHASE-TEXTURE-CACHE.diff   keeps the coast water texture of a stage for the slopes that follow
+                                    (same pixels, lower rebuild cost)
+Each step leaves a tree that builds; the three together equal A4-ON-TESTING-3.diff.

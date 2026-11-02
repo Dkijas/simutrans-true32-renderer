@@ -1,0 +1,12 @@
+coast       A4    frames 782 composing 39 | compositions 433, 83.9 ms, 193.7 us each | per frame: P50(composing) 2.161 P95 0.000 P99 2.323 max 3.170 ms
+coast       cache frames 781 composing 39 | compositions 433, 20.9 ms, 48.3 us each | per frame: P50(composing) 0.503 P95 0.000 P99 0.598 max 1.631 ms | textures built 13, hits 420 (97.0 %), 2.1 ms building
+coast       cache / A4: time per composition x0.25, P99 per-frame composing time 2.323 -> 0.598 ms
+coastnight  A4    frames 781 composing 113 | compositions 1247, 168.2 ms, 134.9 us each | per frame: P50(composing) 1.469 P95 1.549 P99 1.778 max 2.810 ms
+coastnight  cache frames 781 composing 113 | compositions 1247, 33.2 ms, 26.6 us each | per frame: P50(composing) 0.261 P95 0.305 P99 0.463 max 0.973 ms | textures built 13, hits 1234 (99.0 %), 1.4 ms building
+coastnight  cache / A4: time per composition x0.20, P99 per-frame composing time 1.778 -> 0.463 ms
+coastscroll A4    frames 781 composing 51 | compositions 405, 61.1 ms, 150.8 us each | per frame: P50(composing) 1.343 P95 0.559 P99 1.672 max 2.556 ms
+coastscroll cache frames 781 composing 50 | compositions 404, 16.3 ms, 40.2 us each | per frame: P50(composing) 0.360 P95 0.185 P99 0.430 max 1.030 ms | textures built 13, hits 391 (96.8 %), 1.9 ms building
+coastscroll cache / A4: time per composition x0.27, P99 per-frame composing time 1.672 -> 0.430 ms
+coastzoom   A4    frames 781 composing 106 | compositions 1202, 146.8 ms, 122.2 us each | per frame: P50(composing) 1.373 P95 1.436 P99 1.648 max 3.559 ms
+coastzoom   cache frames 781 composing 110 | compositions 1246, 34.6 ms, 27.7 us each | per frame: P50(composing) 0.293 P95 0.346 P99 0.500 max 0.811 ms | textures built 14, hits 1232 (98.9 %), 1.9 ms building
+coastzoom   cache / A4: time per composition x0.23, P99 per-frame composing time 1.648 -> 0.500 ms

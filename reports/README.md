@@ -98,3 +98,12 @@ for review. They can be provided on request.
   Windows and Linux, SDL2 and SDL3, with its controls and the trunk's theme-switch staleness T1),
   `XR32-REGRESSION-MATRIX.md` (testing-2's battery, identical values), `PATCH-REVIEW.md` (the four changes),
   `PLATFORM-VALIDATION-MATRIX.csv` and `BENCHMARK-COMPARISON.csv`.
+
+## XR32 DAY+NIGHT, r12377 testing-4
+
+- **xr32-a4/** - the two certifications of testing-4's only change, A4: the water of sloped coasts, which the game
+  generates from the sea picture, now uses the pakset's 32-bit sea.
+  - `a4/`: the first candidate, with the root cause, the design and its alternatives, the oracles, the regression
+    matrix and the benchmarks.
+  - `a4c/`: the testing-4 code, with a per-stage texture cache that gives byte-identical pictures at a 4–5 times lower
+    rebuild cost, and the zoom 2/1 sand-gap finding (known issue A11).

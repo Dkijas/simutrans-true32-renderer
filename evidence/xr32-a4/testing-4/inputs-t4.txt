@@ -1,0 +1,15 @@
+ok   win64 sdl2 rgba32 (cache lane p-sdl2) 42e9089c6dd6fd31317194a167a5885ce53eb18d928a04fb9140ffd54997acc2
+ok   win64 sdl3 rgba32 (cache lane p-sdl3) 43420d63ef6e66c714118836a2b81686ab0313274ed385b1c3ed5a8c0b9da233
+ok   linux sdl2 rgba32 (cache lane p-sdl2-32) c0cec57e268e509a7d4f585af8f281b6fc1096cdc59eaac498ba935d34cd5e3d
+ok   linux sdl3 rgba32 (cache lane p-sdl3-32) 7a556636051d10727f46558a9bedd644a90c15010b1e8239e9bcfcbe504aefb7
+ok   testing-3 published XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-3.diff f93f11d271685128916d7cc213f14685962a61f12502868b110d05fd2f75351e
+ok   testing-3 published makeobj-xr32-night-prototype-r12377-testing-2-linux-x86_64.tar.gz 18f280f5fe299a6feb04237c32b60807a9dadd5e3a167e8e18fdfb09b5ccdad2
+ok   testing-3 published makeobj-xr32-night-prototype-r12377-testing-2-windows-x86_64.zip 092987ab7d16eb13e87d0945a3b508e998f4fffd458517c66e3d112f5f1f6eb1
+ok   testing-3 published simutrans-xr32-night-prototype-r12377-testing-3-linux-x86_64-sdl2.tar.gz e10e24e4b97f6d40053420701ea93f3f2f5dc7a7f991c0945b80f6212ecb2b14
+ok   testing-3 published simutrans-xr32-night-prototype-r12377-testing-3-linux-x86_64-sdl3.tar.gz 999ab215fd868b8e49f400fc16f8717636c2dfe41696a37e57f3fa7ec8f29a89
+ok   testing-3 published simutrans-xr32-night-prototype-r12377-testing-3-win64-sdl2.zip 1582a22f456160867681da4ab563fcbcb2a9f173a3f5f019adc268e32f94f070
+ok   testing-3 published simutrans-xr32-night-prototype-r12377-testing-3-win64-sdl3.zip a717cf3db24fa28559623b3107dd9a29137f0bc2abbcf98f9b242a5a6e3e1e43
+ok   testing-3 published xr32-night-prototype-r12377-testing-2-testkit.zip 200902e829f350f05460e7ed6b3d596c0cb31ad735954c1b3ce55c3628707903
+FAIL testing-3 published xr32-night-prototype-r12377-testing-3-source.tar.gz 14590f99c7cbdce45d583379cf5b751b077c579a707558206bcf08851c4d09e4 != 8c50e5f9e2b259f7e4b0cc7a86e235b1ef5e0274a000af1cc1b50720c6ac543f
+problems: 1
+testing-3 published xr32-night-prototype-r12377-testing-3-source.tar.gz taken from the publication staging (the certification lane copy is the pre-umask-022 one): 8c50e5f9e2b259f7e4b0cc7a86e235b1ef5e0274a000af1cc1b50720c6ac543f ok

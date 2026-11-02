@@ -1,0 +1,37 @@
+1/1: new holes 2, px 5: {'BLEND': 2, 'SAME': 3, 'OTHER': 0}
+    ( 474, 720) candidate 182, 15,120  testing-3 182, 15,120  -> SAME
+    ( 473, 721) candidate 182, 15,120  testing-3 182, 15,120  -> SAME
+    ( 474, 721) candidate 144, 32, 95  testing-3 144, 32, 95  -> SAME
+    ( 475, 722) candidate 163, 23,108  testing-3  65, 96,104  -> BLEND
+    ( 476, 722) candidate 182, 15,120  testing-3  72, 96,116  -> BLEND
+2/1: new holes 30, px 30: {'BLEND': 0, 'SAME': 23, 'OTHER': 7}
+    ( 715, 281) candidate 176,160, 64  testing-3  96,120,144  -> OTHER
+    ( 711, 283) candidate 176,160, 64  testing-3  96,120,144  -> OTHER
+    ( 876, 309) candidate 128,112, 48  testing-3  80,104,136  -> OTHER
+    ( 880, 311) candidate 128,112, 40  testing-3  80,104,136  -> OTHER
+    ( 515, 381) candidate 176,160, 56  testing-3  88,112,144  -> OTHER
+    ( 516, 387) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 532, 395) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 536, 397) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 540, 399) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 544, 401) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 548, 403) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 552, 405) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 556, 407) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 560, 409) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 564, 411) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 568, 413) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 572, 415) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 576, 417) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 580, 419) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 584, 421) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 588, 423) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 592, 425) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 596, 427) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 600, 429) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 620, 439) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 624, 441) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 628, 443) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 632, 445) candidate  64, 64, 64  testing-3  64, 64, 64  -> SAME
+    ( 143, 695) candidate 168,160, 64  testing-3  88,112,144  -> OTHER
+    ( 131, 701) candidate 176,160, 56  testing-3  88,112,144  -> OTHER
