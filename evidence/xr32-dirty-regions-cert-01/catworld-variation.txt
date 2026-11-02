@@ -1,0 +1,4 @@
+rt2a: catworld   n0 1/1: rezoomed 49, lh 0 dwlh 0 | z11 3/8: rezoomed 143, lh 0 dwlh 0 | z12 1/4: rezoomed 209, lh 1 dwlh 0 | z13 1/8: rezoomed 559, lh 6 dwlh 0 | back 1/1: rezoomed 46, lh 0 dwlh 0 -> ok
+rt2b: catworld   n0 1/1: rezoomed 48, lh 0 dwlh 0 | z11 3/8: rezoomed 143, lh 0 dwlh 0 | z12 1/4: rezoomed 209, lh 1 dwlh 0 | z13 1/8: rezoomed 545, lh 6 dwlh 0 | back 1/1: rezoomed 46, lh 0 dwlh 0 -> ok
+rcanda: catworld   n0 1/1: rezoomed 48, lh 0 dwlh 0 | z11 3/8: rezoomed 143, lh 0 dwlh 0 | z12 1/4: rezoomed 209, lh 1 dwlh 0 | z13 1/8: rezoomed 545, lh 6 dwlh 0 | back 1/1: rezoomed 49, lh 0 dwlh 0 -> ok
+rcandb: catworld   n0 1/1: rezoomed 48, lh 0 dwlh 0 | z11 3/8: rezoomed 143, lh 0 dwlh 0 | z12 1/4: rezoomed 209, lh 1 dwlh 0 | z13 1/8: rezoomed 545, lh 6 dwlh 0 | back 1/1: rezoomed 49, lh 0 dwlh 0 -> ok

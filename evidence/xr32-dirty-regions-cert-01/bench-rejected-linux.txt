@@ -1,0 +1,4 @@
+LT l3-off16 theme r1: colour depth 16
+LT l3-off16 theme r2: colour depth 16
+LT2 l2-off16 theme r1: colour depth 16
+LT2 l3-off16 theme r1: colour depth 16

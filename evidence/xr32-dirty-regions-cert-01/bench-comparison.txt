@@ -1,0 +1,64 @@
+LBD SDL3 daynight   synthetic | busy P50  3.804 ->  3.709  P95  5.995 ->  5.472 | MB/frame  7.910 ->  2.017 | paired -0.095 ms (-0.108..-0.082) lower 2 of 2, t2 spread 0.038 -> candidate lower
+LBD SDL3 fullredraw synthetic | busy P50  3.016 ->  3.054  P95  4.821 ->  4.843 | MB/frame  7.910 ->  7.910 | paired +0.051 ms (+0.023..+0.080) lower 0 of 2, t2 spread 0.092 -> no measurable difference
+LBD SDL3 scroll     synthetic | busy P50  3.013 ->  3.029  P95  4.622 ->  4.849 | MB/frame  7.910 ->  7.910 | paired +0.015 ms (-0.005..+0.035) lower 1 of 2, t2 spread 0.000 -> no measurable difference
+LBD SDL3 static     real      | busy P50  3.753 ->  3.694  P95  5.675 ->  4.035 | MB/frame  7.910 ->  0.053 | paired -0.060 ms (-0.069..-0.051) lower 2 of 2, t2 spread 0.000 -> candidate lower
+LBD SDL3 vehicles   real      | busy P50  3.042 ->  2.320  P95  4.782 ->  3.415 | MB/frame  7.910 ->  0.160 | paired -0.721 ms (-0.752..-0.690) lower 2 of 2, t2 spread 0.065 -> candidate lower
+LBD SDL3 windows    synthetic | busy P50  4.036 ->  3.123  P95  5.722 ->  4.694 | MB/frame  7.910 ->  1.118 | paired -0.915 ms (-1.194..-0.635) lower 2 of 2, t2 spread 0.509 -> candidate lower
+LBD SDL3 zoom       synthetic | busy P50  3.086 ->  2.635  P95  7.710 ->  6.094 | MB/frame  7.910 ->  1.726 | paired -0.449 ms (-0.458..-0.441) lower 2 of 2, t2 spread 0.056 -> candidate lower
+LBH SDL2 daynight   synthetic | busy P50 12.778 -> 11.104  P95 14.944 -> 13.784 | MB/frame 14.062 ->  3.539 | paired -1.679 ms (-1.704..-1.653) lower 2 of 2, t2 spread 0.081 -> candidate lower
+LBH SDL2 fullredraw synthetic | busy P50 12.367 -> 12.383  P95 14.441 -> 14.278 | MB/frame 14.062 -> 14.062 | paired +0.001 ms (-0.013..+0.015) lower 1 of 2, t2 spread 0.065 -> no measurable difference
+LBH SDL2 scroll     synthetic | busy P50 12.544 -> 12.588  P95 14.290 -> 14.427 | MB/frame 14.062 -> 14.062 | paired +0.046 ms (-0.085..+0.176) lower 1 of 2, t2 spread 0.104 -> no measurable difference
+LBH SDL2 static     real      | busy P50 12.589 -> 10.591  P95 14.414 -> 12.464 | MB/frame 14.062 ->  0.031 | paired -2.002 ms (-2.012..-1.992) lower 2 of 2, t2 spread 0.045 -> candidate lower
+LBH SDL2 vehicles   real      | busy P50 12.443 -> 10.471  P95 14.331 -> 12.599 | MB/frame 14.062 ->  0.334 | paired -2.007 ms (-2.127..-1.886) lower 2 of 2, t2 spread 0.198 -> candidate lower
+LBH SDL2 windows    synthetic | busy P50 13.500 -> 11.454  P95 15.371 -> 13.489 | MB/frame 14.062 ->  1.298 | paired -2.029 ms (-2.146..-1.912) lower 2 of 2, t2 spread 0.274 -> candidate lower
+LBH SDL2 zoom       synthetic | busy P50 12.877 -> 11.223  P95 19.870 -> 21.196 | MB/frame 14.062 ->  3.188 | paired -1.685 ms (-1.689..-1.681) lower 2 of 2, t2 spread 0.117 -> candidate lower
+LBH SDL3 daynight   synthetic | busy P50 15.860 -> 11.393  P95 18.129 -> 15.989 | MB/frame 14.062 ->  3.539 | paired -4.458 ms (-4.582..-4.333) lower 2 of 2, t2 spread 0.268 -> candidate lower
+LBH SDL3 fullredraw synthetic | busy P50 15.879 -> 15.355  P95 17.644 -> 17.243 | MB/frame 14.062 -> 14.062 | paired -0.522 ms (-0.541..-0.503) lower 2 of 2, t2 spread 0.020 -> candidate lower
+LBH SDL3 scroll     synthetic | busy P50 15.649 -> 15.241  P95 17.660 -> 17.146 | MB/frame 14.062 -> 14.062 | paired -0.421 ms (-0.481..-0.361) lower 2 of 2, t2 spread 0.048 -> candidate lower
+LBH SDL3 static     real      | busy P50 15.802 -> 10.636  P95 17.671 -> 12.499 | MB/frame 14.062 ->  0.031 | paired -5.164 ms (-5.174..-5.155) lower 2 of 2, t2 spread 0.037 -> candidate lower
+LBH SDL3 vehicles   real      | busy P50 15.891 -> 10.424  P95 17.782 -> 12.769 | MB/frame 14.062 ->  0.338 | paired -5.468 ms (-5.477..-5.459) lower 2 of 2, t2 spread 0.008 -> candidate lower
+LBH SDL3 windows    synthetic | busy P50 16.565 -> 12.079  P95 18.238 -> 14.124 | MB/frame 14.062 ->  1.367 | paired -4.483 ms (-4.534..-4.432) lower 2 of 2, t2 spread 0.192 -> candidate lower
+LBH SDL3 zoom       synthetic | busy P50 16.087 -> 11.497  P95 23.864 -> 21.637 | MB/frame 14.062 ->  3.152 | paired -4.576 ms (-4.578..-4.574) lower 2 of 2, t2 spread 0.065 -> candidate lower
+LBX SDL2 daynight   synthetic | busy P50  8.239 ->  7.811  P95 10.303 ->  9.978 | MB/frame  7.910 ->  2.017 | paired -0.428 ms (-0.437..-0.409) lower 3 of 3, t2 spread 0.079 -> candidate lower
+LBX SDL2 fullredraw synthetic | busy P50  7.626 ->  7.574  P95  9.146 ->  9.061 | MB/frame  7.910 ->  7.910 | paired -0.060 ms (-0.088..+0.036) lower 2 of 3, t2 spread 0.057 -> no measurable difference
+LBX SDL2 scroll     synthetic | busy P50  7.560 ->  7.549  P95  9.103 ->  9.178 | MB/frame  7.910 ->  7.910 | paired -0.015 ms (-0.174..+0.187) lower 2 of 3, t2 spread 0.164 -> no measurable difference
+LBX SDL2 static     real      | busy P50  8.126 ->  7.561  P95 10.006 ->  9.354 | MB/frame  7.910 ->  0.053 | paired -0.538 ms (-0.666..-0.491) lower 3 of 3, t2 spread 0.108 -> candidate lower
+LBX SDL2 vehicles   real      | busy P50  7.595 ->  6.619  P95  9.237 ->  8.282 | MB/frame  7.910 ->  0.158 | paired -0.987 ms (-1.041..-0.892) lower 3 of 3, t2 spread 0.142 -> candidate lower
+LBX SDL2 windows    synthetic | busy P50  8.419 ->  7.601  P95  9.961 ->  9.153 | MB/frame  7.910 ->  1.113 | paired -0.802 ms (-0.862..-0.745) lower 3 of 3, t2 spread 0.252 -> candidate lower
+LBX SDL2 zoom       synthetic | busy P50  7.916 ->  7.154  P95 13.894 -> 13.027 | MB/frame  7.910 ->  1.758 | paired -0.780 ms (-0.781..-0.736) lower 3 of 3, t2 spread 0.063 -> candidate lower
+LBX SDL3 daynight   synthetic | busy P50  9.965 ->  7.970  P95 11.186 -> 10.247 | MB/frame  7.910 ->  2.017 | paired -2.014 ms (-2.038..-1.938) lower 3 of 3, t2 spread 0.033 -> candidate lower
+LBX SDL3 fullredraw synthetic | busy P50  9.096 ->  8.860  P95 10.836 -> 10.569 | MB/frame  7.910 ->  7.910 | paired -0.251 ms (-0.309..-0.129) lower 3 of 3, t2 spread 0.048 -> candidate lower
+LBX SDL3 scroll     synthetic | busy P50  9.055 ->  9.132  P95 10.718 -> 11.065 | MB/frame  7.910 ->  7.910 | paired -0.232 ms (-0.235..+0.734) lower 2 of 3, t2 spread 0.129 -> no measurable difference
+LBX SDL3 static     real      | busy P50  9.953 ->  7.514  P95 10.871 ->  9.250 | MB/frame  7.910 ->  0.053 | paired -2.426 ms (-2.470..-2.412) lower 3 of 3, t2 spread 0.014 -> candidate lower
+LBX SDL3 vehicles   real      | busy P50  9.062 ->  6.672  P95 10.722 ->  8.304 | MB/frame  7.910 ->  0.158 | paired -2.346 ms (-2.483..-2.335) lower 3 of 3, t2 spread 0.146 -> candidate lower
+LBX SDL3 windows    synthetic | busy P50  9.817 ->  7.907  P95 11.607 ->  9.468 | MB/frame  7.910 ->  1.138 | paired -1.906 ms (-1.973..-1.811) lower 3 of 3, t2 spread 0.111 -> candidate lower
+LBX SDL3 zoom       synthetic | busy P50  9.423 ->  7.356  P95 15.060 -> 12.916 | MB/frame  7.910 ->  1.749 | paired -2.026 ms (-2.175..-2.019) lower 3 of 3, t2 spread 0.067 -> candidate lower
+WB  SDL2 daynight   synthetic | busy P50  2.933 ->  2.201  P95  5.420 ->  4.491 | MB/frame  7.910 ->  2.013 | paired -0.731 ms (-0.810..-0.666) lower 3 of 3, t2 spread 0.141 -> candidate lower
+WB  SDL2 fullredraw synthetic | busy P50  2.995 ->  2.899  P95  4.327 ->  4.243 | MB/frame  7.910 ->  7.910 | paired -0.111 ms (-0.197..+0.026) lower 2 of 3, t2 spread 0.199 -> no measurable difference
+WB  SDL2 scroll     synthetic | busy P50  3.011 ->  2.942  P95  4.337 ->  4.332 | MB/frame  7.910 ->  7.910 | paired -0.019 ms (-0.167..+0.007) lower 2 of 3, t2 spread 0.190 -> no measurable difference
+WB  SDL2 static     real      | busy P50  2.937 ->  1.899  P95  4.605 ->  2.850 | MB/frame  7.910 ->  0.047 | paired -0.940 ms (-1.765..-0.890) lower 3 of 3, t2 spread 0.864 -> candidate lower
+WB  SDL2 vehicles   real      | busy P50  2.902 ->  2.266  P95  4.244 ->  3.233 | MB/frame  7.910 ->  0.234 | paired -0.630 ms (-0.671..-0.595) lower 3 of 3, t2 spread 0.161 -> candidate lower
+WB  SDL2 windows    synthetic | busy P50  3.778 ->  3.502  P95  5.072 ->  4.583 | MB/frame  7.910 ->  1.047 | paired -0.284 ms (-0.296..-0.282) lower 3 of 3, t2 spread 0.109 -> candidate lower
+WB  SDL2 zoom       synthetic | busy P50  3.064 ->  2.515  P95 10.803 ->  8.273 | MB/frame  7.910 ->  1.770 | paired -0.548 ms (-0.728..-0.406) lower 3 of 3, t2 spread 0.308 -> candidate lower
+WB  SDL3 daynight   synthetic | busy P50  3.378 ->  3.066  P95  7.081 ->  4.935 | MB/frame  7.910 ->  2.013 | paired -0.306 ms (-0.330..-0.257) lower 3 of 3, t2 spread 0.166 -> candidate lower
+WB  SDL3 fullredraw synthetic | busy P50  2.890 ->  3.014  P95  3.646 ->  3.712 | MB/frame  7.910 ->  7.910 | paired +0.169 ms (-0.049..+0.261) lower 1 of 3, t2 spread 0.126 -> no measurable difference
+WB  SDL3 scroll     synthetic | busy P50  2.843 ->  2.954  P95  3.688 ->  3.798 | MB/frame  7.910 ->  7.910 | paired +0.083 ms (+0.031..+0.196) lower 0 of 3, t2 spread 0.017 -> candidate higher
+WB  SDL3 static     real      | busy P50  3.174 ->  2.935  P95  5.126 ->  3.625 | MB/frame  7.910 ->  0.047 | paired -0.293 ms (-0.340..-0.051) lower 3 of 3, t2 spread 0.173 -> candidate lower
+WB  SDL3 vehicles   real      | busy P50  3.033 ->  1.853  P95  3.746 ->  2.638 | MB/frame  7.910 ->  0.154 | paired -1.188 ms (-1.243..-1.132) lower 3 of 3, t2 spread 0.203 -> candidate lower
+WB  SDL3 windows    synthetic | busy P50  3.990 ->  2.992  P95  4.905 ->  4.151 | MB/frame  7.910 ->  0.996 | paired -0.998 ms (-1.015..-0.968) lower 3 of 3, t2 spread 0.013 -> candidate lower
+WB  SDL3 zoom       synthetic | busy P50  3.199 ->  2.174  P95  7.364 ->  7.760 | MB/frame  7.910 ->  1.739 | paired -1.026 ms (-1.090..-0.982) lower 3 of 3, t2 spread 0.110 -> candidate lower
+WH  SDL2 daynight   synthetic | busy P50  4.604 ->  3.159  P95  8.962 ->  8.140 | MB/frame 14.062 ->  3.536 | paired -1.472 ms (-1.567..-1.376) lower 2 of 2, t2 spread 0.364 -> candidate lower
+WH  SDL2 fullredraw synthetic | busy P50  4.498 ->  4.483  P95  6.705 ->  6.734 | MB/frame 14.062 -> 14.062 | paired -0.016 ms (-0.042..+0.010) lower 1 of 2, t2 spread 0.087 -> no measurable difference
+WH  SDL2 scroll     synthetic | busy P50  4.681 ->  4.757  P95  6.850 ->  6.952 | MB/frame 14.062 -> 14.062 | paired +0.105 ms (+0.002..+0.208) lower 0 of 2, t2 spread 0.028 -> candidate higher
+WH  SDL2 static     real      | busy P50  4.732 ->  2.762  P95  8.217 ->  3.900 | MB/frame 14.062 ->  0.027 | paired -1.990 ms (-2.041..-1.939) lower 2 of 2, t2 spread 0.147 -> candidate lower
+WH  SDL2 vehicles   real      | busy P50  4.343 ->  2.983  P95  6.563 ->  4.396 | MB/frame 14.062 ->  0.451 | paired -1.358 ms (-1.411..-1.305) lower 2 of 2, t2 spread 0.074 -> candidate lower
+WH  SDL2 windows    synthetic | busy P50  6.119 ->  4.869  P95  7.911 ->  6.534 | MB/frame 14.062 ->  1.262 | paired -1.275 ms (-1.324..-1.226) lower 2 of 2, t2 spread 0.095 -> candidate lower
+WH  SDL2 zoom       synthetic | busy P50  5.216 ->  3.460  P95 13.119 -> 11.425 | MB/frame 14.062 ->  3.251 | paired -1.735 ms (-1.853..-1.616) lower 2 of 2, t2 spread 0.109 -> candidate lower
+WH  SDL3 daynight   synthetic | busy P50  5.189 ->  3.583  P95  8.833 ->  7.303 | MB/frame 14.062 ->  3.536 | paired -1.593 ms (-1.629..-1.556) lower 2 of 2, t2 spread 0.095 -> candidate lower
+WH  SDL3 fullredraw synthetic | busy P50  4.610 ->  4.596  P95  5.368 ->  5.407 | MB/frame 14.062 -> 14.062 | paired -0.004 ms (-0.020..+0.012) lower 1 of 2, t2 spread 0.091 -> no measurable difference
+WH  SDL3 scroll     synthetic | busy P50  4.337 ->  4.748  P95  5.369 ->  5.644 | MB/frame 14.062 -> 14.062 | paired +0.408 ms (+0.339..+0.478) lower 0 of 2, t2 spread 0.149 -> candidate higher
+WH  SDL3 static     real      | busy P50  4.823 ->  3.125  P95  5.825 ->  4.151 | MB/frame 14.062 ->  0.027 | paired -1.690 ms (-1.729..-1.651) lower 2 of 2, t2 spread 0.018 -> candidate lower
+WH  SDL3 vehicles   real      | busy P50  4.269 ->  2.657  P95  5.395 ->  3.711 | MB/frame 14.062 ->  0.278 | paired -1.606 ms (-1.656..-1.556) lower 2 of 2, t2 spread 0.127 -> candidate lower
+WH  SDL3 windows    synthetic | busy P50  5.428 ->  4.097  P95  6.279 ->  5.360 | MB/frame 14.062 ->  1.121 | paired -1.326 ms (-1.353..-1.299) lower 2 of 2, t2 spread 0.091 -> candidate lower
+WH  SDL3 zoom       synthetic | busy P50  4.949 ->  3.177  P95 10.725 ->  9.680 | MB/frame 14.062 ->  3.175 | paired -1.753 ms (-1.902..-1.605) lower 2 of 2, t2 spread 0.301 -> candidate lower
+rejected runs: 0

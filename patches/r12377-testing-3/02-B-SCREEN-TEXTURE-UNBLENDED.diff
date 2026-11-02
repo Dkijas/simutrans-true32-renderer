@@ -1,0 +1,30 @@
+diff --git a/src/simutrans/sys/simsys_s2.cc b/src/simutrans/sys/simsys_s2.cc
+index 702419f9afb14957eb0b09d30932d068cf9c4781..2ce035e9e3efecfddd118cf1d0f2b68fc38b7472 100644
+--- a/src/simutrans/sys/simsys_s2.cc
++++ b/src/simutrans/sys/simsys_s2.cc
+@@ -430,6 +430,10 @@ bool internal_create_surfaces(int tex_width, int tex_height)
+ 		dbg->error( "internal_create_surfaces(SDL2)", "Couldn't create texture: %s", SDL_GetError() );
+ 		return false;
+ 	}
++#if COLOUR_DEPTH == 32
++	// the framebuffer is opaque; an ARGB8888 texture would otherwise be alpha-blended by SDL
++	SDL_SetTextureBlendMode( screen_tx, SDL_BLENDMODE_NONE );
++#endif
+ 
+ 	// Color component bitmasks for the pixel format the renderer writes
+ 	int bpp;
+diff --git a/src/simutrans/sys/simsys_s3.cc b/src/simutrans/sys/simsys_s3.cc
+index 6ac731afb7e559cd052ed1995da48b3f4253ceef..544c0fb79fcd2a1708f705b9ebd95321505d9fc4 100644
+--- a/src/simutrans/sys/simsys_s3.cc
++++ b/src/simutrans/sys/simsys_s3.cc
+@@ -653,6 +653,10 @@ static bool internal_create_surfaces(int tex_width, int tex_height)
+ 	 * scaling stays nearest so the pixels are not smeared. */
+ 	const bool integer_scaling = (x_scale & (SCALE_NEUTRAL_X - 1)) == 0  &&  (y_scale & (SCALE_NEUTRAL_Y - 1)) == 0;
+ 	SDL_SetTextureScaleMode( screen_tx, integer_scaling ? SDL_SCALEMODE_NEAREST : SDL_SCALEMODE_LINEAR );
++#if COLOUR_DEPTH == 32
++	// the framebuffer is opaque; an ARGB8888 texture would otherwise be alpha-blended by SDL
++	SDL_SetTextureBlendMode( screen_tx, SDL_BLENDMODE_NONE );
++#endif
+ 
+ 	/* The format has to be exactly COLOUR_DEPTH bits with exactly the alpha
+ 	 * mask the renderer expects - none at 16, 0xFF000000 at 32 - or the

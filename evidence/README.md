@@ -54,3 +54,7 @@ downloaded from their official locations; the exact files are identified in
   against testing-1, executables against the certified hashes, the three patch routes, the test
   kit, the suite and gate battery on the extracted packages). Derived summaries only: no
   binaries, no paksets, no raw logs.
+- `xr32-dirty-regions-cert-01/` (XR32-DIRTY-REGIONS-CERTIFICATION-01, testing-3) - the read-back oracle matrices and
+  their controls, the theme-switch references against official r12377 16-bit, every run's manifest with executable
+  hashes, the benchmark analyses, the regression battery compared with testing-2's evidence, sanitizer and warning
+  sets, and the package derivation. Raw per-frame outputs are not included.

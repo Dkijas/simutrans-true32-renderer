@@ -1,0 +1,628 @@
+==================== phase LBD ====================
+-- LBD daynight
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l3-cand         2   3.709   5.472   6.479 |   0.236   0.226   0.002   0.787   0.000 |    2.017    3.2  0.255 |  0.97   541.7 | -0.095 ms median (-0.108..-0.082), lower in 2 of 2
+   l3-t2           2   3.804   5.995   7.643 |   0.943   0.942   0.003   0.709   0.000 |    7.910    1.0  1.000 |  0.99   542.1 | 
+-- LBD fullredraw
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l3-cand         2   3.054   4.843   5.536 |   0.963   0.953   0.003   0.678   0.000 |    7.910    1.0  1.000 |  0.84   542.8 | +0.051 ms median (+0.023..+0.080), lower in 0 of 2
+   l3-t2           2   3.016   4.821   5.491 |   0.910   0.910   0.004   0.689   0.000 |    7.910    1.0  1.000 |  0.83   542.0 | 
+-- LBD scroll
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l3-cand         2   3.029   4.849   5.369 |   0.884   0.874   0.003   0.774   0.000 |    7.910    1.0  1.000 |  0.74   542.9 | +0.015 ms median (-0.005..+0.035), lower in 1 of 2
+   l3-t2           2   3.013   4.622   5.360 |   0.917   0.916   0.003   0.684   0.000 |    7.910    1.0  1.000 |  0.72   542.3 | 
+-- LBD static
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l3-cand         2   3.694   4.035   4.876 |   0.019   0.010   0.002   0.728   0.000 |    0.053    4.0  0.007 |  0.90   541.8 | -0.060 ms median (-0.069..-0.051), lower in 2 of 2
+   l3-t2           2   3.753   5.675   6.156 |   0.831   0.830   0.003   0.686   0.000 |    7.910    1.0  1.000 |  0.94   542.0 | 
+-- LBD vehicles
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l3-cand         2   2.320   3.415   4.165 |   0.035   0.025   0.002   0.793   0.000 |    0.160    5.8  0.020 |  0.75   542.3 | -0.721 ms median (-0.752..-0.690), lower in 2 of 2
+   l3-t2           2   3.042   4.782   5.992 |   0.906   0.905   0.004   0.762   0.000 |    7.910    1.0  1.000 |  0.84   542.5 | 
+-- LBD windows
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l3-cand         2   3.123   4.694   5.276 |   0.144   0.136   0.002   0.764   0.000 |    1.118    7.7  0.141 |  0.85   541.9 | -0.915 ms median (-1.194..-0.635), lower in 2 of 2
+   l3-t2           2   4.036   5.722   6.455 |   1.008   1.007   0.004   0.740   0.000 |    7.910    1.0  1.000 |  0.95   541.6 | 
+-- LBD zoom
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l3-cand         2   2.635   6.094  17.556 |   0.221   0.211   0.002   0.817   0.000 |    1.726    4.6  0.218 |  0.75   546.2 | -0.449 ms median (-0.458..-0.441), lower in 2 of 2
+   l3-t2           2   3.086   7.710  17.451 |   0.888   0.887   0.004   0.690   0.000 |    7.910    1.0  1.000 |  0.78   545.7 | 
+==================== phase LBH ====================
+-- LBH daynight
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         2  11.104  13.784  14.550 |   0.516   0.501   0.003   8.499   0.000 |    3.539    3.2  0.252 |  3.90   678.8 | -1.679 ms median (-1.704..-1.653), lower in 2 of 2
+   l2-t2           2  12.778  14.944  16.310 |   1.883   1.882   0.005   8.731   0.000 |   14.062    1.0  1.000 |  3.56   678.3 | 
+   l3-cand         2  11.393  15.989  17.249 |   1.085   1.070   0.004   8.559   0.000 |    3.539    3.2  0.252 |  3.79   678.4 | -4.458 ms median (-4.582..-4.333), lower in 2 of 2
+   l3-t2           2  15.860  18.129  19.178 |   4.052   4.051   0.005   9.633   0.000 |   14.062    1.0  1.000 |  3.49   677.5 | 
+-- LBH fullredraw
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         2  12.383  14.278  14.913 |   1.860   1.844   0.005   8.460   0.000 |   14.062    1.0  1.000 |  3.57   677.9 | +0.001 ms median (-0.013..+0.015), lower in 1 of 2
+   l2-t2           2  12.367  14.441  15.136 |   1.847   1.846   0.005   8.502   0.000 |   14.062    1.0  1.000 |  3.55   678.4 | 
+   l3-cand         2  15.355  17.243  17.958 |   4.092   4.076   0.005   9.121   0.000 |   14.062    1.0  1.000 |  3.10   678.9 | -0.522 ms median (-0.541..-0.503), lower in 2 of 2
+   l3-t2           2  15.879  17.644  18.451 |   4.072   4.071   0.006   9.624   0.000 |   14.062    1.0  1.000 |  3.40   678.6 | 
+-- LBH scroll
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         2  12.588  14.427  15.131 |   1.827   1.811   0.005   8.592   0.000 |   14.062    1.0  1.000 |  3.43   679.9 | +0.046 ms median (-0.085..+0.176), lower in 1 of 2
+   l2-t2           2  12.544  14.290  15.022 |   1.798   1.798   0.005   8.585   0.000 |   14.062    1.0  1.000 |  3.44   680.0 | 
+   l3-cand         2  15.241  17.146  17.757 |   3.991   3.975   0.006   9.064   0.000 |   14.062    1.0  1.000 |  3.07   679.2 | -0.421 ms median (-0.481..-0.361), lower in 2 of 2
+   l3-t2           2  15.649  17.660  18.624 |   3.997   3.995   0.006   9.520   0.000 |   14.062    1.0  1.000 |  3.36   679.9 | 
+-- LBH static
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         2  10.591  12.464  13.057 |   0.065   0.051   0.003   8.450   0.000 |    0.031    4.0  0.002 |  4.07   677.8 | -2.002 ms median (-2.012..-1.992), lower in 2 of 2
+   l2-t2           2  12.589  14.414  15.007 |   1.876   1.876   0.005   8.686   0.000 |   14.062    1.0  1.000 |  3.60   678.4 | 
+   l3-cand         2  10.636  12.499  13.105 |   0.081   0.066   0.003   8.489   0.000 |    0.031    4.0  0.002 |  4.05   678.1 | -5.164 ms median (-5.174..-5.155), lower in 2 of 2
+   l3-t2           2  15.802  17.671  18.379 |   4.071   4.070   0.005   9.686   0.000 |   14.062    1.0  1.000 |  3.52   678.3 | 
+-- LBH vehicles
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         2  10.471  12.599  13.391 |   0.128   0.113   0.003   8.333   0.000 |    0.334    6.3  0.024 |  3.86   678.5 | -2.007 ms median (-2.127..-1.886), lower in 2 of 2
+   l2-t2           2  12.443  14.331  15.051 |   1.855   1.854   0.005   8.567   0.000 |   14.062    1.0  1.000 |  3.53   678.1 | 
+   l3-cand         2  10.424  12.769  13.942 |   0.200   0.186   0.003   8.299   0.000 |    0.338    6.3  0.024 |  3.86   677.3 | -5.468 ms median (-5.477..-5.459), lower in 2 of 2
+   l3-t2           2  15.891  17.782  18.554 |   4.053   4.052   0.006   9.709   0.000 |   14.062    1.0  1.000 |  3.42   677.2 | 
+-- LBH windows
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         2  11.454  13.489  14.230 |   0.365   0.352   0.003   8.205   0.000 |    1.298    7.8  0.092 |  3.71   678.1 | -2.029 ms median (-2.146..-1.912), lower in 2 of 2
+   l2-t2           2  13.500  15.371  16.052 |   1.815   1.814   0.004   8.731   0.000 |   14.062    1.0  1.000 |  3.32   678.7 | 
+   l3-cand         2  12.079  14.124  15.698 |   0.665   0.652   0.003   8.495   0.000 |    1.367    7.8  0.097 |  3.57   678.6 | -4.483 ms median (-4.534..-4.432), lower in 2 of 2
+   l3-t2           2  16.565  18.238  19.233 |   4.051   4.050   0.006   9.664   0.000 |   14.062    1.0  1.000 |  3.31   678.7 | 
+-- LBH zoom
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         2  11.223  21.196  35.340 |   0.532   0.517   0.003   8.430   0.000 |    3.188    5.3  0.227 |  3.27   681.8 | -1.685 ms median (-1.689..-1.681), lower in 2 of 2
+   l2-t2           2  12.877  19.870  36.358 |   1.872   1.871   0.005   8.664   0.000 |   14.062    1.0  1.000 |  3.17   681.9 | 
+   l3-cand         2  11.497  21.637  35.327 |   1.021   1.006   0.004   8.508   0.000 |    3.152    5.4  0.224 |  3.21   682.3 | -4.576 ms median (-4.578..-4.574), lower in 2 of 2
+   l3-t2           2  16.087  23.864  41.176 |   4.052   4.050   0.006   9.731   0.000 |   14.062    1.0  1.000 |  3.21   681.8 | 
+==================== phase LBX ====================
+-- LBX daynight
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         3   7.811   9.978  10.726 |   0.344   0.334   0.003   4.838   0.000 |    2.017    3.2  0.255 |  2.79   652.8 | -0.428 ms median (-0.437..-0.409), lower in 3 of 3
+   l2-t2           3   8.239  10.303  11.106 |   1.031   1.030   0.004   4.973   0.000 |    7.910    1.0  1.000 |  2.87   652.5 | 
+   l3-cand         3   7.970  10.247  10.907 |   0.654   0.644   0.003   4.886   0.000 |    2.017    3.2  0.255 |  2.82   652.2 | -2.014 ms median (-2.038..-1.938), lower in 3 of 3
+   l3-t2           3   9.965  11.186  12.313 |   2.318   2.317   0.005   5.312   0.000 |    7.910    1.0  1.000 |  3.43   652.1 | 
+-- LBX fullredraw
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         3   7.574   9.061   9.881 |   1.052   1.042   0.004   4.910   0.000 |    7.910    1.0  1.000 |  2.66   652.9 | -0.060 ms median (-0.088..+0.036), lower in 2 of 3
+   l2-t2           3   7.626   9.146   9.937 |   1.041   1.040   0.004   4.967   0.000 |    7.910    1.0  1.000 |  2.65   653.0 | 
+   l3-cand         3   8.860  10.569  11.364 |   2.289   2.279   0.005   5.066   0.000 |    7.910    1.0  1.000 |  2.82   652.3 | -0.251 ms median (-0.309..-0.129), lower in 3 of 3
+   l3-t2           3   9.096  10.836  11.434 |   2.281   2.280   0.005   5.318   0.000 |    7.910    1.0  1.000 |  3.19   652.7 | 
+-- LBX scroll
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         3   7.549   9.178   9.847 |   1.046   1.037   0.004   4.933   0.000 |    7.910    1.0  1.000 |  2.56   653.1 | -0.015 ms median (-0.174..+0.187), lower in 2 of 3
+   l2-t2           3   7.560   9.103   9.774 |   1.044   1.043   0.004   4.950   0.000 |    7.910    1.0  1.000 |  2.56   652.9 | 
+   l3-cand         3   9.132  11.065  11.723 |   2.602   2.591   0.005   5.087   0.000 |    7.910    1.0  1.000 |  2.72   651.8 | -0.232 ms median (-0.235..+0.734), lower in 2 of 3
+   l3-t2           3   9.055  10.718  11.760 |   2.265   2.264   0.005   5.355   0.000 |    7.910    1.0  1.000 |  3.05   653.2 | 
+-- LBX static
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         3   7.561   9.354   9.855 |   0.069   0.059   0.003   4.859   0.000 |    0.053    4.0  0.007 |  2.73   652.5 | -0.538 ms median (-0.666..-0.491), lower in 3 of 3
+   l2-t2           3   8.126  10.006  10.199 |   1.051   1.051   0.004   4.919   0.000 |    7.910    1.0  1.000 |  2.87   652.9 | 
+   l3-cand         3   7.514   9.250   9.941 |   0.094   0.084   0.003   4.779   0.000 |    0.053    4.0  0.007 |  2.74   652.4 | -2.426 ms median (-2.470..-2.412), lower in 3 of 3
+   l3-t2           3   9.953  10.871  11.366 |   2.333   2.332   0.005   5.289   0.000 |    7.910    1.0  1.000 |  3.37   652.7 | 
+-- LBX vehicles
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         3   6.619   8.282   9.073 |   0.097   0.087   0.003   4.901   0.000 |    0.158    5.7  0.020 |  2.59   652.7 | -0.987 ms median (-1.041..-0.892), lower in 3 of 3
+   l2-t2           3   7.595   9.237   9.908 |   1.041   1.040   0.004   4.956   0.000 |    7.910    1.0  1.000 |  2.66   653.0 | 
+   l3-cand         3   6.672   8.304   9.120 |   0.144   0.134   0.003   4.875   0.000 |    0.158    5.7  0.020 |  2.59   652.6 | -2.346 ms median (-2.483..-2.335), lower in 3 of 3
+   l3-t2           3   9.062  10.722  11.454 |   2.290   2.289   0.005   5.280   0.000 |    7.910    1.0  1.000 |  3.19   652.6 | 
+-- LBX windows
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         3   7.601   9.153   9.866 |   0.325   0.317   0.003   4.787   0.000 |    1.113    7.2  0.141 |  2.62   652.9 | -0.802 ms median (-0.862..-0.745), lower in 3 of 3
+   l2-t2           3   8.419   9.961  10.640 |   0.992   0.992   0.004   4.991   0.000 |    7.910    1.0  1.000 |  2.75   652.5 | 
+   l3-cand         3   7.907   9.468  10.546 |   0.579   0.571   0.003   4.893   0.000 |    1.138    7.2  0.144 |  2.64   652.3 | -1.906 ms median (-1.973..-1.811), lower in 3 of 3
+   l3-t2           3   9.817  11.607  12.399 |   2.255   2.254   0.004   5.306   0.000 |    7.910    1.0  1.000 |  3.18   652.2 | 
+-- LBX zoom
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         3   7.154  13.027  22.357 |   0.332   0.322   0.004   4.967   0.000 |    1.758    4.6  0.222 |  2.31   655.9 | -0.780 ms median (-0.781..-0.736), lower in 3 of 3
+   l2-t2           3   7.916  13.894  23.295 |   1.095   1.094   0.004   5.061   0.000 |    7.910    1.0  1.000 |  2.37   656.2 | 
+   l3-cand         3   7.356  12.916  22.394 |   0.593   0.583   0.003   4.978   0.000 |    1.749    4.4  0.221 |  2.30   656.3 | -2.026 ms median (-2.175..-2.019), lower in 3 of 3
+   l3-t2           3   9.423  15.060  24.495 |   2.298   2.296   0.005   5.440   0.000 |    7.910    1.0  1.000 |  2.78   655.5 | 
+==================== phase LGW ====================
+-- LGW daynight_raw
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   6.150  19.532  21.761 |   0.293   0.283   0.003   3.545   0.000 |    1.711    4.9  0.216 |  2.46   725.7 | -0.895 ms median (-0.895..-0.895), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   7.045  20.444  23.698 |   1.034   1.033   0.004   3.774   0.000 |    7.910    1.0  1.000 |  2.51   725.9 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   6.679  20.028  22.246 |   0.608   0.599   0.003   3.756   0.000 |    1.748    4.8  0.221 |  2.57   716.6 | -1.687 ms median (-1.687..-1.687), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   6.713  20.119  22.336 |   0.787   0.777   0.003   3.691   0.000 |    1.701    4.8  0.221 |  2.56   717.8 | -1.653 ms median (-1.653..-1.653), lower in 1 of 1 VERIFY 120 frames, 1327231 px differ
+   l3-t2           1   8.366  21.257  23.229 |   2.320   2.319   0.004   3.832   0.000 |    7.910    1.0  1.000 |  2.87   716.4 |  VERIFY 120 frames, 3143 px differ
+-- LGW edges
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   5.891  20.047  22.172 |   0.146   0.135   0.003   3.627   0.000 |    0.235   13.8  0.030 |  2.35   725.7 | -1.311 ms median (-1.311..-1.311), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   7.202  21.081  23.488 |   1.434   1.433   0.004   3.732   0.000 |    7.910    1.0  1.000 |  2.45   725.4 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   5.948  19.142  20.881 |   0.237   0.226   0.003   3.599   0.000 |    0.235   13.8  0.030 |  2.39   716.7 | -2.480 ms median (-2.480..-2.480), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   5.921  19.106  20.880 |   0.174   0.164   0.003   3.627   0.000 |    0.156   13.8  0.030 |  2.39   717.5 | -2.506 ms median (-2.506..-2.506), lower in 1 of 1 VERIFY 120 frames, 4964944 px differ
+   l3-t2           1   8.427  21.876  23.968 |   2.328   2.327   0.005   3.972   0.000 |    7.910    1.0  1.000 |  2.84   717.4 |  VERIFY 120 frames, 56274 px differ
+-- LGW fullscreen
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  10.879  54.433 102.055 |   0.223   0.209   0.003   7.519   0.000 |    0.802    7.0  0.056 |  2.64   889.6 | -1.780 ms median (-1.780..-1.780), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1  12.659  54.048 100.462 |   1.713   1.712   0.004   7.348   0.000 |   13.129    1.0  1.000 |  2.54   888.7 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  11.067  29.916 102.108 |   0.325   0.311   0.003   7.628   0.000 |    0.725    6.8  0.052 |  2.85   875.2 | -5.129 ms median (-5.129..-5.129), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  10.991  29.828  90.524 |   0.267   0.253   0.003   7.544   0.000 |    0.629    6.8  0.053 |  2.94   864.0 | -5.204 ms median (-5.204..-5.204), lower in 1 of 1 VERIFY 120 frames, 15646946 px differ
+   l3-t2           1  16.195  34.185  90.291 |   3.857   3.855   0.005   8.031   0.000 |   13.129    1.0  1.000 |  3.08   873.8 |  VERIFY 120 frames, 12090 px differ
+-- LGW playercolor
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   5.907  19.413  22.074 |   0.206   0.196   0.003   3.591   0.000 |    0.978    5.5  0.124 |  2.45   725.6 | -0.935 ms median (-0.935..-0.935), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   6.842  20.516  21.704 |   1.043   1.042   0.004   3.644   0.000 |    7.910    1.0  1.000 |  2.48   725.5 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   6.061  19.533  21.298 |   0.384   0.374   0.003   3.590   0.000 |    0.963    5.2  0.122 |  2.42   716.4 | -2.367 ms median (-2.367..-2.367), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   5.932  20.175  21.367 |   0.353   0.343   0.003   3.566   0.000 |    0.916    5.3  0.123 |  2.42   717.7 | -2.496 ms median (-2.496..-2.496), lower in 1 of 1 VERIFY 120 frames, 912298 px differ
+   l3-t2           1   8.428  21.890  23.320 |   2.319   2.317   0.005   3.879   0.000 |    7.910    1.0  1.000 |  2.80   716.7 |  VERIFY 120 frames, 3077 px differ
+-- LGW resize
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   5.744  53.336 237.438 |   0.155   0.146   0.003  10.589   0.000 |    0.640    5.1  0.094 |  1.36   755.8 | -1.059 ms median (-1.059..-1.059), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   6.803  54.588 230.346 |   0.927   0.926   0.004  10.460   0.000 |    6.702    1.0  1.000 |  1.41   755.9 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   5.752  23.228 225.611 |   0.280   0.271   0.003  10.187   0.000 |    0.632    5.0  0.092 |  1.47   739.8 | -2.625 ms median (-2.625..-2.625), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   5.761  23.409 220.438 |   0.246   0.237   0.003  10.430   0.000 |    0.570    5.2  0.092 |  1.43   746.2 | -2.616 ms median (-2.616..-2.616), lower in 1 of 1 VERIFY 120 frames, 2266716 px differ
+   l3-t2           1   8.377  25.413 239.706 |   2.074   2.073   0.005  10.827   0.000 |    6.702    1.0  1.000 |  1.75   746.5 |  VERIFY 120 frames, 8665 px differ
+-- LGW theme
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   6.242  20.784  29.506 |   0.130   0.120   0.003   3.832   0.000 |    0.215    5.9  0.027 |  2.44   725.4 | -0.723 ms median (-0.723..-0.723), lower in 1 of 1 VERIFY 120 frames, 39950 px differ
+   l2-t2           1   6.965  20.606  22.730 |   1.057   1.056   0.004   3.702   0.000 |    7.910    1.0  1.000 |  2.41   726.0 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   5.930  19.146  21.402 |   0.177   0.167   0.003   3.630   0.000 |    0.215    5.9  0.027 |  2.40   717.5 | -2.688 ms median (-2.688..-2.688), lower in 1 of 1 VERIFY 120 frames, 45050 px differ
+   l3-mut          1   5.898  19.518  21.456 |   0.138   0.128   0.003   3.652   0.000 |    0.148    5.9  0.027 |  2.38   716.9 | -2.719 ms median (-2.719..-2.719), lower in 1 of 1 VERIFY 120 frames, 6693585 px differ
+   l3-t2           1   8.617  22.440  25.533 |   2.361   2.360   0.005   3.956   0.000 |    7.910    1.0  1.000 |  2.65   717.5 |  VERIFY 120 frames, 3108 px differ
+-- LGW vehicles
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   6.163  22.594  26.359 |   0.140   0.129   0.003   3.711   0.000 |    0.220    5.8  0.028 |  2.23   725.9 | -1.122 ms median (-1.122..-1.122), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   7.285  21.913  24.668 |   1.075   1.074   0.004   3.861   0.000 |    7.910    1.0  1.000 |  2.33   725.4 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   7.385  26.106  35.401 |   0.234   0.223   0.004   4.869   0.000 |    0.223    5.9  0.028 |  2.50   717.1 | -3.685 ms median (-3.685..-3.685), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   6.170  19.999  21.527 |   0.138   0.128   0.003   3.722   0.000 |    0.131    5.8  0.024 |  2.38   717.9 | -4.900 ms median (-4.900..-4.900), lower in 1 of 1 VERIFY 120 frames, 5329343 px differ
+   l3-t2           1  11.070  30.048  37.547 |   2.674   2.672   0.007   5.600   0.000 |    7.910    1.0  1.000 |  2.73   717.7 |  VERIFY 120 frames, 3030 px differ
+-- LGW zoom
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   6.277  21.273  23.764 |   0.327   0.317   0.003   3.615   0.000 |    1.794    4.8  0.227 |  2.16   728.8 | -0.737 ms median (-0.737..-0.737), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   7.013  21.394  23.490 |   1.048   1.047   0.004   3.653   0.000 |    7.910    1.0  1.000 |  2.18   729.3 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   6.321  20.922  23.053 |   0.590   0.580   0.003   3.647   0.000 |    1.775    4.8  0.224 |  2.13   721.2 | -3.196 ms median (-3.196..-3.196), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   6.375  21.855  24.216 |   0.779   0.770   0.003   3.706   0.000 |    1.722    4.7  0.224 |  2.21   720.5 | -3.142 ms median (-3.142..-3.142), lower in 1 of 1 VERIFY 120 frames, 770531 px differ
+   l3-t2           1   9.517  23.778  25.899 |   3.364   3.363   0.004   3.890   0.000 |    7.910    1.0  1.000 |  2.49   721.1 |  VERIFY 120 frames, 3082 px differ
+==================== phase LGW2 ====================
+-- LGW2 daynight
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  16.768  47.677  51.786 |   0.291   0.282   0.002  16.801   0.000 |    2.017    3.2  0.255 |  1.25   725.7 | +0.007 ms median (+0.007..+0.007), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1  16.756  48.092  52.678 |   0.285   0.276   0.003  16.926   0.000 |    1.998    3.2  0.255 |  1.25   726.0 | -0.005 ms median (-0.005..-0.005), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1  16.761  49.166  52.020 |   0.987   0.986   0.003  16.841   0.000 |    7.910    1.0  1.000 |  1.30   725.7 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  16.924  46.327  50.536 |   0.618   0.609   0.003  16.311   0.000 |    2.017    3.2  0.255 |  1.35   717.5 | -6.982 ms median (-6.982..-6.982), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  16.145  47.158  52.011 |   0.622   0.612   0.003  16.432   0.000 |    1.998    3.2  0.255 |  1.34   717.3 | -7.762 ms median (-7.762..-7.762), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1  23.906  51.330  54.850 |   2.251   2.250   0.004  20.520   0.000 |    7.910    1.0  1.000 |  1.31   716.5 |  VERIFY 120 frames, 3720 px differ
+-- LGW2 edges
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  17.145  44.971  47.744 |   0.127   0.117   0.003  16.342   0.000 |    0.310   14.3  0.039 |  1.25   725.9 | +7.961 ms median (+7.961..+7.961), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1  16.280  44.081  48.125 |   0.097   0.087   0.002  16.217   0.000 |    0.217   14.3  0.039 |  1.22   725.8 | +7.097 ms median (+7.097..+7.097), lower in 0 of 1 VERIFY 120 frames, 4891598 px differ
+   l2-t2           1   9.184  47.760  53.078 |   0.983   0.982   0.003  16.327   0.000 |    7.910    1.0  1.000 |  1.26   725.6 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  15.954  45.261  48.406 |   0.207   0.197   0.002  16.369   0.000 |    0.312   14.3  0.039 |  1.23   717.3 | -9.302 ms median (-9.302..-9.302), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  16.170  43.690  47.235 |   0.156   0.145   0.002  15.986   0.000 |    0.217   14.3  0.039 |  1.25   716.7 | -9.087 ms median (-9.087..-9.087), lower in 1 of 1 VERIFY 120 frames, 4714409 px differ
+   l3-t2           1  25.257  48.000  51.424 |   2.263   2.262   0.004  19.818   0.000 |    7.910    1.0  1.000 |  1.26   718.1 |  VERIFY 120 frames, 57291 px differ
+-- LGW2 fullredraw
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  17.092  46.635  50.763 |   0.981   0.971   0.003  16.009   0.000 |    7.910    1.0  1.000 |  1.26   725.9 | +0.974 ms median (+0.974..+0.974), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1  15.706  46.487  50.937 |   1.051   1.042   0.003  15.811   0.000 |    7.910    1.0  1.000 |  1.26   726.5 | -0.412 ms median (-0.412..-0.412), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1  16.118  46.180  50.943 |   0.976   0.976   0.003  15.522   0.000 |    7.910    1.0  1.000 |  1.31   725.8 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  21.314  47.971  51.432 |   2.266   2.256   0.004  18.878   0.000 |    7.910    1.0  1.000 |  1.19   716.9 | -2.028 ms median (-2.028..-2.028), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  23.210  47.210  50.085 |   2.233   2.223   0.004  19.041   0.000 |    7.910    1.0  1.000 |  1.16   718.1 | -0.132 ms median (-0.132..-0.132), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1  23.342  48.644  51.835 |   2.242   2.241   0.004  20.064   0.000 |    7.910    1.0  1.000 |  1.26   718.2 |  VERIFY 120 frames, 4124 px differ
+-- LGW2 scroll
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  17.389  46.867  49.818 |   1.319   1.308   0.003  17.043   0.000 |    7.910    1.0  1.000 |  1.21   725.9 | +0.663 ms median (+0.663..+0.663), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1  16.336  46.889  50.549 |   0.964   0.954   0.003  16.063   0.000 |    7.910    1.0  1.000 |  1.26   725.8 | -0.390 ms median (-0.390..-0.390), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1  16.726  46.589  51.890 |   0.955   0.954   0.003  15.930   0.000 |    7.910    1.0  1.000 |  1.26   725.6 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  17.254  47.834  51.076 |   2.184   2.174   0.004  17.591   0.000 |    7.910    1.0  1.000 |  1.15   717.0 | -2.910 ms median (-2.910..-2.910), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  17.527  48.165  50.176 |   2.217   2.208   0.004  17.272   0.000 |    7.910    1.0  1.000 |  1.18   718.7 | -2.636 ms median (-2.636..-2.636), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1  20.163  47.695  51.109 |   2.210   2.209   0.004  19.005   0.000 |    7.910    1.0  1.000 |  1.22   717.3 |  VERIFY 120 frames, 4078 px differ
+-- LGW2 static
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  16.306  45.884  49.938 |   0.059   0.050   0.002  16.882   0.000 |    0.053    4.0  0.007 |  1.25   725.8 | -0.638 ms median (-0.638..-0.638), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1  16.578  45.524  49.866 |   0.053   0.044   0.002  16.562   0.000 |    0.028    4.0  0.007 |  1.27   725.0 | -0.366 ms median (-0.366..-0.366), lower in 1 of 1 VERIFY 120 frames, 8234280 px differ
+   l2-t2           1  16.944  49.642  52.003 |   0.967   0.967   0.003  17.007   0.000 |    7.910    1.0  1.000 |  1.26   725.8 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  16.132  44.805  49.444 |   0.084   0.075   0.002  16.647   0.000 |    0.053    4.0  0.007 |  1.26   717.5 | -8.096 ms median (-8.096..-8.096), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  15.869  45.599  50.402 |   0.069   0.060   0.002  16.586   0.000 |    0.028    4.0  0.007 |  1.29   717.7 | -8.360 ms median (-8.360..-8.360), lower in 1 of 1 VERIFY 120 frames, 8234280 px differ
+   l3-t2           1  24.228  52.021  54.735 |   2.246   2.245   0.004  20.720   0.000 |    7.910    1.0  1.000 |  1.30   717.6 |  VERIFY 120 frames, 3960 px differ
+-- LGW2 vehicles
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  16.578  45.143  48.666 |   0.105   0.096   0.003  16.460   0.000 |    0.267    6.4  0.034 |  1.26   725.7 | -0.613 ms median (-0.613..-0.613), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1  16.985  44.943  48.430 |   0.083   0.074   0.002  16.406   0.000 |    0.197    6.4  0.034 |  1.26   726.1 | -0.205 ms median (-0.205..-0.205), lower in 1 of 1 VERIFY 120 frames, 4047063 px differ
+   l2-t2           1  17.191  47.308  51.343 |   0.978   0.977   0.003  16.328   0.000 |    7.910    1.0  1.000 |  1.24   725.7 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  16.110  45.785  49.245 |   0.193   0.183   0.002  16.338   0.000 |    0.267    6.4  0.034 |  1.30   717.6 | -4.758 ms median (-4.758..-4.758), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  16.230  44.517  48.477 |   0.127   0.117   0.003  16.208   0.000 |    0.195    6.4  0.034 |  1.28   717.2 | -4.637 ms median (-4.637..-4.637), lower in 1 of 1 VERIFY 120 frames, 4051848 px differ
+   l3-t2           1  20.868  48.385  51.051 |   2.226   2.225   0.004  19.283   0.000 |    7.910    1.0  1.000 |  1.25   716.8 |  VERIFY 120 frames, 4065 px differ
+-- LGW2 windows
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   9.698  47.865  51.075 |   0.359   0.351   0.002  15.883   0.000 |    1.107    8.4  0.140 |  1.25   725.7 | -0.324 ms median (-0.324..-0.324), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1  17.598  47.227  51.745 |   0.253   0.245   0.003  16.358   0.000 |    1.027    8.4  0.140 |  1.28   726.0 | +7.576 ms median (+7.576..+7.576), lower in 0 of 1 VERIFY 120 frames, 4081619 px differ
+   l2-t2           1  10.022  47.264  51.460 |   0.962   0.961   0.003  16.600   0.000 |    7.910    1.0  1.000 |  1.22   725.7 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  15.308  47.813  50.214 |   0.496   0.488   0.002  16.615   0.000 |    1.108    8.4  0.140 |  1.21   717.5 | -14.137 ms median (-14.137..-14.137), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  16.923  47.497  52.200 |   0.432   0.425   0.003  16.977   0.000 |    1.026    8.4  0.140 |  1.22   717.0 | -12.523 ms median (-12.523..-12.523), lower in 1 of 1 VERIFY 120 frames, 3907244 px differ
+   l3-t2           1  29.446  48.012  50.825 |   2.199   2.198   0.004  19.830   0.000 |    7.910    1.0  1.000 |  1.26   716.2 |  VERIFY 120 frames, 104884 px differ
+-- LGW2 zoomx
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  18.547  50.775  67.851 |   0.422   0.412   0.003  15.490   0.000 |    2.867    7.7  0.362 |  1.33   738.7 | -0.336 ms median (-0.336..-0.336), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1  18.301  51.381  71.221 |   0.527   0.517   0.003  14.897   0.000 |    2.750    7.6  0.357 |  1.38   736.5 | -0.582 ms median (-0.582..-0.582), lower in 1 of 1 VERIFY 120 frames, 1828795 px differ
+   l2-t2           1  18.883  51.602  80.256 |   0.989   0.988   0.003  15.884   0.000 |    7.910    1.0  1.000 |  1.33   736.7 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  18.698  50.887  68.749 |   0.870   0.860   0.003  15.004   0.000 |    2.866    7.4  0.362 |  1.39   730.2 | -4.873 ms median (-4.873..-4.873), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  18.160  48.591  61.054 |   0.839   0.829   0.003  14.687   0.000 |    2.805    7.3  0.363 |  1.37   730.1 | -5.411 ms median (-5.411..-5.411), lower in 1 of 1 VERIFY 120 frames, 1262330 px differ
+   l3-t2           1  23.571  54.723  75.786 |   2.226   2.225   0.005  17.485   0.000 |    7.910    1.0  1.000 |  1.41   729.1 |  VERIFY 120 frames, 4425 px differ
+==================== phase LGWM ====================
+-- LGWM static
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand-alpha    1  16.342  51.202  54.844 |   0.136   0.125   0.003  18.990   0.000 |    0.624    4.0  0.079 |  0.94   309.3 |  VERIFY 120 frames, 0 px differ
+   l2-cand-mres    1  16.129  47.517  51.799 |   0.141   0.130   0.003  17.362   0.000 |    0.624    4.0  0.079 |  1.05   310.3 |  VERIFY 120 frames, 0 px differ
+   l2-t2-mres      1  17.009  48.583  52.434 |   1.042   1.041   0.003  17.369   0.000 |    7.910    1.0  1.000 |  1.09   310.0 |  VERIFY 120 frames, 0 px differ
+   l3-cand-alpha    1  16.139  46.735  52.345 |   0.268   0.258   0.003  17.375   0.000 |    0.624    4.0  0.079 |  1.03   301.2 |  VERIFY 120 frames, 0 px differ
+   l3-cand-mres    1  15.722  46.214  49.538 |   0.266   0.256   0.002  17.313   0.000 |    0.624    4.0  0.079 |  1.03   301.6 |  VERIFY 120 frames, 0 px differ
+   l3-t2-mres      1  18.171  55.613  59.064 |   2.367   2.366   0.004  21.642   0.000 |    7.910    1.0  1.000 |  1.05   300.5 |  VERIFY 120 frames, 2880 px differ
+-- LGWM theme
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand-alpha    1  16.039  45.018  50.854 |   0.141   0.131   0.003  16.383   0.000 |    0.630    4.0  0.080 |  1.02   315.0 |  VERIFY 120 frames, 0 px differ
+   l2-cand-mres    1  16.198  44.822  48.497 |   0.166   0.156   0.002  16.239   0.000 |    0.630    4.0  0.080 |  1.02   315.5 |  VERIFY 120 frames, 0 px differ
+   l2-t2-mres      1  17.385  46.449  50.560 |   1.034   1.034   0.003  16.438   0.000 |    7.910    1.0  1.000 |  1.03   316.1 |  VERIFY 120 frames, 0 px differ
+   l3-cand-alpha    1  15.818  44.213  50.477 |   0.258   0.248   0.002  16.069   0.000 |    0.630    4.0  0.080 |  1.04   307.6 |  VERIFY 120 frames, 0 px differ
+   l3-cand-mres    1  15.771  45.746  50.937 |   0.262   0.252   0.003  16.394   0.000 |    0.630    4.0  0.080 |  1.06   306.2 |  VERIFY 120 frames, 0 px differ
+   l3-t2-mres      1  22.172  48.759  52.746 |   3.317   3.316   0.004  19.748   0.000 |    7.910    1.0  1.000 |  1.10   306.3 |  VERIFY 120 frames, 2494 px differ
+-- LGWM zoom
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand-alpha    1  16.243  45.128  48.385 |   0.325   0.315   0.003  16.063   0.000 |    2.085    3.4  0.264 |  1.05   309.5 |  VERIFY 120 frames, 0 px differ
+   l2-cand-mres    1  16.092  45.728  49.044 |   0.327   0.317   0.003  16.044   0.000 |    2.069    3.4  0.262 |  1.07   309.3 |  VERIFY 120 frames, 0 px differ
+   l2-t2-mres      1  16.601  46.127  51.190 |   1.068   1.067   0.003  15.934   0.000 |    7.910    1.0  1.000 |  1.05   309.7 |  VERIFY 120 frames, 0 px differ
+   l3-cand-alpha    1  16.240  46.155  49.440 |   0.663   0.653   0.003  16.190   0.000 |    2.069    3.4  0.262 |  1.04   300.9 |  VERIFY 120 frames, 0 px differ
+   l3-cand-mres    1  17.705  46.690  50.571 |   0.899   0.889   0.003  16.719   0.000 |    2.053    3.4  0.260 |  1.02   300.8 |  VERIFY 120 frames, 0 px differ
+   l3-t2-mres      1  17.760  49.234  52.946 |   2.330   2.330   0.004  18.434   0.000 |    7.910    1.0  1.000 |  1.16   302.4 |  VERIFY 120 frames, 2422 px differ
+==================== phase LGX ====================
+-- LGX daynight_raw
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  17.804  46.123  58.176 |   0.447   0.428   0.004  11.195   0.000 |    1.907    5.0  0.241 |  1.45   677.7 | -4.978 ms median (-4.978..-4.978), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1  22.783  49.921  57.733 |   1.509   1.508   0.007  14.465   0.000 |    7.910    1.0  1.000 |  1.21   677.8 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  24.524  51.699  62.460 |   1.010   0.995   0.005  15.828   0.000 |    1.876    5.5  0.237 |  1.16   669.1 | +13.393 ms median (+13.393..+13.393), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  19.007  44.994  48.926 |   0.869   0.853   0.004  12.102   0.000 |    1.862    5.1  0.242 |  1.33   670.3 | +7.877 ms median (+7.877..+7.877), lower in 0 of 1 VERIFY 120 frames, 1730924 px differ
+   l3-t2           1  11.131  28.241  32.587 |   2.481   2.479   0.006   6.079   0.000 |    7.910    1.0  1.000 |  2.38   668.5 |  VERIFY 120 frames, 3191 px differ
+-- LGX edges
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   9.811  29.215  36.179 |   0.216   0.203   0.004   6.720   0.000 |    0.272   13.9  0.034 |  2.19   677.2 | -0.760 ms median (-0.760..-0.760), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1  10.571  36.379  48.747 |   1.472   1.470   0.006   6.961   0.000 |    7.910    1.0  1.000 |  2.17   677.7 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   9.370  29.567  43.099 |   0.330   0.316   0.003   6.654   0.000 |    0.272   13.9  0.034 |  2.16   668.3 | -2.042 ms median (-2.042..-2.042), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   9.029  29.814  34.525 |   0.240   0.227   0.005   6.250   0.000 |    0.188   13.9  0.034 |  2.21   669.8 | -2.384 ms median (-2.384..-2.384), lower in 1 of 1 VERIFY 120 frames, 5010184 px differ
+   l3-t2           1  11.412  31.685  43.498 |   2.618   2.616   0.006   6.252   0.000 |    7.910    1.0  1.000 |  2.33   668.6 |  VERIFY 120 frames, 56296 px differ
+-- LGX fullscreen
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  15.576  61.268 123.451 |   0.327   0.310   0.005  10.087   0.000 |    0.827    7.3  0.058 |  2.41   768.6 | -2.652 ms median (-2.652..-2.652), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1  18.227  64.504 115.303 |   2.243   2.242   0.006  10.713   0.000 |   13.129    1.0  1.000 |  2.29   772.8 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  18.029  48.321  67.422 |   0.490   0.472   0.005  11.373   0.000 |    0.791    7.2  0.056 |  2.59   764.2 | -3.117 ms median (-3.117..-3.117), lower in 1 of 1 VERIFY 120 frames, 25954609 px differ
+   l3-mut          1  18.250  49.323  68.977 |   0.355   0.338   0.005  11.199   0.000 |    0.623    7.1  0.057 |  2.61   764.0 | -2.896 ms median (-2.896..-2.896), lower in 1 of 1 VERIFY 120 frames, 41032095 px differ
+   l3-t2           1  21.146  50.321  69.951 |   4.207   4.205   0.007  11.140   0.000 |   13.147    1.0  1.000 |  2.53   762.8 |  VERIFY 120 frames, 25968012 px differ
+-- LGX playercolor
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   9.181  36.190  84.866 |   0.263   0.251   0.004   6.284   0.000 |    0.995    5.5  0.126 |  2.07   676.8 | -0.487 ms median (-0.487..-0.487), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   9.668  29.895  36.134 |   1.165   1.164   0.005   5.999   0.000 |    7.910    1.0  1.000 |  2.21   676.9 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   9.112  27.186  29.945 |   0.461   0.449   0.004   6.021   0.000 |    1.004    5.4  0.127 |  2.30   669.4 | -3.162 ms median (-3.162..-3.162), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   8.281  25.759  32.990 |   0.385   0.374   0.003   5.583   0.000 |    0.934    5.4  0.125 |  2.20   669.3 | -3.993 ms median (-3.993..-3.993), lower in 1 of 1 VERIFY 120 frames, 2355683 px differ
+   l3-t2           1  12.274  31.837  34.055 |   2.700   2.698   0.007   6.743   0.000 |    7.910    1.0  1.000 |  2.29   668.5 |  VERIFY 120 frames, 3113 px differ
+-- LGX resize
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   7.985  33.108  87.216 |   0.180   0.170   0.004   5.376   0.000 |    0.579    4.9  0.087 |  1.88   697.8 | -1.194 ms median (-1.194..-1.194), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   9.180  35.260  90.374 |   1.058   1.057   0.006   5.583   0.000 |    6.702    1.0  1.000 |  1.94   697.5 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   7.839  18.880  40.692 |   0.302   0.291   0.004   5.282   0.000 |    0.579    4.8  0.088 |  2.24   684.7 | -1.931 ms median (-1.931..-1.931), lower in 1 of 1 VERIFY 120 frames, 34949601 px differ
+   l3-mut          1   8.412  20.361  43.993 |   0.273   0.263   0.004   5.646   0.000 |    0.556    4.7  0.090 |  2.23   684.9 | -1.358 ms median (-1.358..-1.358), lower in 1 of 1 VERIFY 120 frames, 36496012 px differ
+   l3-t2           1   9.770  20.084  38.684 |   2.103   2.102   0.006   5.266   0.000 |    6.702    1.0  1.000 |  2.41   684.4 |  VERIFY 120 frames, 34956704 px differ
+-- LGX theme
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   8.883  29.276  33.957 |   0.166   0.154   0.004   6.122   0.000 |    0.249    6.0  0.031 |  2.22   677.2 | -1.494 ms median (-1.494..-1.494), lower in 1 of 1 VERIFY 120 frames, 37400 px differ
+   l2-t2           1  10.377  29.919  33.610 |   1.273   1.272   0.005   6.429   0.000 |    7.910    1.0  1.000 |  2.23   676.9 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   8.992  29.855  41.194 |   0.248   0.236   0.004   6.288   0.000 |    0.248    6.1  0.031 |  2.15   669.0 | -2.507 ms median (-2.507..-2.507), lower in 1 of 1 VERIFY 120 frames, 32300 px differ
+   l3-mut          1   8.866  29.991  39.374 |   0.185   0.173   0.003   6.100   0.000 |    0.182    6.1  0.032 |  2.20   668.3 | -2.633 ms median (-2.633..-2.633), lower in 1 of 1 VERIFY 120 frames, 6114851 px differ
+   l3-t2           1  11.499  30.245  35.489 |   2.580   2.578   0.006   6.291   0.000 |    7.910    1.0  1.000 |  2.37   668.6 |  VERIFY 120 frames, 3087 px differ
+-- LGX vehicles
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  19.748  45.900  55.377 |   0.227   0.213   0.004  13.644   0.000 |    0.271    6.4  0.034 |  1.27   678.3 | +9.836 ms median (+9.836..+9.836), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   9.913  28.476  37.077 |   1.250   1.249   0.005   6.446   0.000 |    7.910    1.0  1.000 |  2.15   676.6 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   8.026  25.212  27.227 |   0.203   0.191   0.003   5.528   0.000 |    0.223    5.9  0.028 |  2.17   672.3 | -4.282 ms median (-4.282..-4.282), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   8.481  27.197  36.409 |   0.182   0.171   0.004   6.053   0.000 |    0.163    5.9  0.028 |  2.31   668.2 | -3.828 ms median (-3.828..-3.828), lower in 1 of 1 VERIFY 120 frames, 5271481 px differ
+   l3-t2           1  12.308  32.800  40.278 |   2.638   2.637   0.006   6.840   0.000 |    7.910    1.0  1.000 |  2.11   668.7 |  VERIFY 120 frames, 3087 px differ
+-- LGX zoom
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   8.849  27.272  30.687 |   0.333   0.323   0.004   5.907   0.000 |    1.771    4.9  0.224 |  2.01   680.3 | -0.904 ms median (-0.904..-0.904), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   9.753  28.985  32.148 |   1.147   1.146   0.006   5.962   0.000 |    7.910    1.0  1.000 |  1.95   681.0 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1  27.793  56.993  74.139 |   1.016   0.996   0.005  17.473   0.000 |    1.837    5.9  0.232 |  1.15   674.1 | +2.311 ms median (+2.311..+2.311), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1  10.988  33.933  39.498 |   0.680   0.667   0.004   7.223   0.000 |    1.690    5.0  0.221 |  1.84   672.0 | -14.495 ms median (-14.495..-14.495), lower in 1 of 1 VERIFY 120 frames, 1073305 px differ
+   l3-t2           1  25.483  49.675  57.140 |   3.617   3.615   0.008  14.354   0.000 |    7.910    1.0  1.000 |  1.27   674.6 |  VERIFY 120 frames, 4038 px differ
+==================== phase LGX2 ====================
+-- LGX2 daynight
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   7.726  20.035  23.465 |   0.295   0.285   0.003   4.236   0.000 |    2.017    3.2  0.255 |  2.42   676.8 | -0.287 ms median (-0.287..-0.287), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1   7.745  21.012  25.220 |   0.293   0.284   0.003   4.274   0.000 |    1.998    3.2  0.255 |  2.42   677.8 | -0.268 ms median (-0.268..-0.268), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   8.014  20.999  24.185 |   1.016   1.015   0.003   4.168   0.000 |    7.910    1.0  1.000 |  2.50   677.1 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   8.098  20.371  23.734 |   0.878   0.868   0.003   4.146   0.000 |    2.017    3.2  0.255 |  2.48   668.5 | -1.865 ms median (-1.865..-1.865), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   7.879  19.535  25.436 |   0.630   0.621   0.003   4.139   0.000 |    1.998    3.2  0.255 |  2.45   668.7 | -2.083 ms median (-2.083..-2.083), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1   9.962  21.373  22.970 |   2.317   2.316   0.004   4.530   0.000 |    7.910    1.0  1.000 |  2.84   668.5 |  VERIFY 120 frames, 3840 px differ
+-- LGX2 edges
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   6.263  19.858  22.709 |   0.115   0.104   0.002   4.204   0.000 |    0.235   13.8  0.030 |  2.27   677.8 | -0.928 ms median (-0.928..-0.928), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1   6.193  19.967  22.893 |   0.098   0.088   0.002   4.165   0.000 |    0.156   13.8  0.030 |  2.25   677.2 | -0.998 ms median (-0.998..-0.998), lower in 1 of 1 VERIFY 120 frames, 4918809 px differ
+   l2-t2           1   7.190  21.031  23.728 |   1.006   1.006   0.003   4.241   0.000 |    7.910    1.0  1.000 |  2.31   677.2 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   6.240  19.183  23.877 |   0.192   0.181   0.003   4.129   0.000 |    0.235   13.8  0.030 |  2.32   669.5 | -2.361 ms median (-2.361..-2.361), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   6.296  18.757  21.680 |   0.141   0.131   0.003   4.210   0.000 |    0.156   13.7  0.030 |  2.31   669.1 | -2.305 ms median (-2.305..-2.305), lower in 1 of 1 VERIFY 120 frames, 4947178 px differ
+   l3-t2           1   8.602  21.267  23.696 |   2.248   2.247   0.004   4.424   0.000 |    7.910    1.0  1.000 |  2.72   669.2 |  VERIFY 120 frames, 56268 px differ
+-- LGX2 fullredraw
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   7.616  21.609  24.658 |   1.359   1.349   0.003   4.330   0.000 |    7.910    1.0  1.000 |  2.30   677.6 | +0.366 ms median (+0.366..+0.366), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1   7.137  21.226  23.711 |   1.001   0.992   0.003   4.224   0.000 |    7.910    1.0  1.000 |  2.28   676.8 | -0.113 ms median (-0.113..-0.113), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   7.250  20.603  24.229 |   0.997   0.997   0.003   4.293   0.000 |    7.910    1.0  1.000 |  2.30   676.9 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   8.555  20.507  23.188 |   2.284   2.273   0.004   4.326   0.000 |    7.910    1.0  1.000 |  2.40   669.4 | -0.206 ms median (-0.206..-0.206), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   8.541  21.530  24.223 |   2.300   2.289   0.004   4.299   0.000 |    7.910    1.0  1.000 |  2.36   668.8 | -0.220 ms median (-0.220..-0.220), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1   8.761  21.499  25.130 |   2.307   2.306   0.005   4.591   0.000 |    7.910    1.0  1.000 |  2.70   669.9 |  VERIFY 120 frames, 3126 px differ
+-- LGX2 scroll
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   7.050  20.179  23.219 |   0.969   0.960   0.003   4.260   0.000 |    7.910    1.0  1.000 |  2.21   677.4 | -0.025 ms median (-0.025..-0.025), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1   7.107  20.351  22.382 |   0.990   0.980   0.003   4.225   0.000 |    7.910    1.0  1.000 |  2.19   677.0 | +0.032 ms median (+0.032..+0.032), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l2-t2           1   7.075  20.053  24.879 |   0.978   0.977   0.003   4.186   0.000 |    7.910    1.0  1.000 |  2.18   677.1 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   8.459  20.967  23.255 |   2.296   2.286   0.004   4.299   0.000 |    7.910    1.0  1.000 |  2.27   669.3 | -0.231 ms median (-0.231..-0.231), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   9.456  21.962  26.245 |   3.321   3.310   0.004   4.304   0.000 |    7.910    1.0  1.000 |  2.25   669.2 | +0.766 ms median (+0.766..+0.766), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1   8.689  21.579  24.493 |   2.286   2.285   0.004   4.511   0.000 |    7.910    1.0  1.000 |  2.63   668.0 |  VERIFY 120 frames, 3027 px differ
+-- LGX2 static
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   7.281  19.809  24.069 |   0.062   0.053   0.003   4.169   0.000 |    0.053    4.0  0.007 |  2.27   676.8 | -0.774 ms median (-0.774..-0.774), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1   7.315  19.713  22.997 |   0.054   0.045   0.002   4.178   0.000 |    0.028    4.0  0.007 |  2.39   677.4 | -0.740 ms median (-0.740..-0.740), lower in 1 of 1 VERIFY 120 frames, 5334360 px differ
+   l2-t2           1   8.055  21.032  24.970 |   1.036   1.035   0.003   4.408   0.000 |    7.910    1.0  1.000 |  2.48   676.1 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   7.571  18.888  22.023 |   0.088   0.078   0.002   4.273   0.000 |    0.053    4.0  0.007 |  2.40   668.5 | -2.345 ms median (-2.345..-2.345), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   7.310  19.739  22.302 |   0.072   0.063   0.002   4.135   0.000 |    0.028    4.0  0.007 |  2.41   668.6 | -2.606 ms median (-2.606..-2.606), lower in 1 of 1 VERIFY 120 frames, 5334360 px differ
+   l3-t2           1   9.916  22.218  24.232 |   2.350   2.350   0.004   4.615   0.000 |    7.910    1.0  1.000 |  2.89   669.2 |  VERIFY 120 frames, 3720 px differ
+-- LGX2 vehicles
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   6.214  19.737  22.527 |   0.090   0.081   0.002   4.189   0.000 |    0.191    5.8  0.024 |  2.25   677.3 | -1.163 ms median (-1.163..-1.163), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1   6.186  19.389  22.652 |   0.073   0.064   0.002   4.149   0.000 |    0.131    5.8  0.024 |  2.33   677.1 | -1.191 ms median (-1.191..-1.191), lower in 1 of 1 VERIFY 120 frames, 7096202 px differ
+   l2-t2           1   7.377  21.041  24.772 |   1.003   1.003   0.004   4.328   0.000 |    7.910    1.0  1.000 |  2.33   676.9 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   6.199  19.352  21.779 |   0.138   0.129   0.003   4.168   0.000 |    0.191    5.8  0.024 |  2.26   669.2 | -2.462 ms median (-2.462..-2.462), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   6.117  18.475  20.875 |   0.103   0.093   0.002   4.084   0.000 |    0.130    5.8  0.024 |  2.26   669.4 | -2.543 ms median (-2.543..-2.543), lower in 1 of 1 VERIFY 120 frames, 7138453 px differ
+   l3-t2           1   8.660  21.402  24.354 |   2.275   2.275   0.004   4.433   0.000 |    7.910    1.0  1.000 |  2.69   668.1 |  VERIFY 120 frames, 3074 px differ
+-- LGX2 windows
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   7.248  21.193  24.152 |   0.280   0.272   0.003   4.231   0.000 |    1.145    7.4  0.145 |  2.26   677.6 | -1.028 ms median (-1.028..-1.028), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1   7.174  20.784  23.911 |   0.229   0.222   0.002   4.249   0.000 |    0.919    7.4  0.145 |  2.27   677.6 | -1.102 ms median (-1.102..-1.102), lower in 1 of 1 VERIFY 120 frames, 2987005 px differ
+   l2-t2           1   8.276  22.493  25.240 |   1.364   1.363   0.003   4.292   0.000 |    7.910    1.0  1.000 |  2.32   677.4 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   7.458  19.713  24.446 |   0.534   0.526   0.002   4.286   0.000 |    1.169    7.4  0.148 |  2.30   668.9 | -1.923 ms median (-1.923..-1.923), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   7.293  20.263  23.249 |   0.412   0.404   0.002   4.204   0.000 |    0.951    7.4  0.148 |  2.31   669.4 | -2.088 ms median (-2.088..-2.088), lower in 1 of 1 VERIFY 120 frames, 2562273 px differ
+   l3-t2           1   9.381  22.395  25.412 |   2.254   2.253   0.004   4.456   0.000 |    7.910    1.0  1.000 |  2.66   669.7 |  VERIFY 120 frames, 114212 px differ
+-- LGX2 zoomx
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   7.909  31.555  44.069 |   0.407   0.397   0.003   4.237   0.000 |    2.809    6.9  0.355 |  2.05   689.2 | -0.560 ms median (-0.560..-0.560), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1   8.024  30.235  44.612 |   0.397   0.387   0.003   4.349   0.000 |    2.795    7.0  0.360 |  2.08   689.1 | -0.445 ms median (-0.445..-0.445), lower in 1 of 1 VERIFY 120 frames, 416531 px differ
+   l2-t2           1   8.469  31.684  43.006 |   1.014   1.013   0.003   4.262   0.000 |    7.910    1.0  1.000 |  2.08   689.0 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   9.009  31.769  43.273 |   0.896   0.886   0.003   4.304   0.000 |    2.850    7.1  0.360 |  2.13   679.3 | -1.204 ms median (-1.204..-1.204), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   8.868  30.354  39.850 |   0.827   0.817   0.003   4.288   0.000 |    2.773    6.8  0.356 |  2.12   679.7 | -1.344 ms median (-1.344..-1.344), lower in 1 of 1 VERIFY 120 frames, 622964 px differ
+   l3-t2           1  10.212  33.834  43.911 |   2.312   2.310   0.005   4.521   0.000 |    7.910    1.0  1.000 |  2.34   680.2 |  VERIFY 120 frames, 3461 px differ
+==================== phase LGXM ====================
+-- LGXM static
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand-alpha    1   6.959  19.939  22.968 |   0.178   0.167   0.003   4.232   0.000 |    0.624    4.0  0.079 |  1.96   260.5 |  VERIFY 120 frames, 0 px differ
+   l2-cand-mres    1   6.620  19.726  22.850 |   0.144   0.133   0.003   4.150   0.000 |    0.624    4.0  0.079 |  1.99   261.3 |  VERIFY 120 frames, 0 px differ
+   l2-t2-mres      1   8.017  21.313  23.818 |   1.472   1.471   0.004   4.339   0.000 |    7.910    1.0  1.000 |  2.08   261.8 |  VERIFY 120 frames, 0 px differ
+   l3-cand-alpha    1   7.187  18.460  21.761 |   0.275   0.264   0.003   4.237   0.000 |    0.624    4.0  0.079 |  2.01   252.3 |  VERIFY 120 frames, 0 px differ
+   l3-cand-mres    1   7.143  18.548  21.624 |   0.272   0.262   0.003   4.295   0.000 |    0.624    4.0  0.079 |  2.04   253.4 |  VERIFY 120 frames, 0 px differ
+   l3-t2-mres      1   9.504  21.651  24.109 |   2.328   2.327   0.004   4.431   0.000 |    7.910    1.0  1.000 |  2.39   252.0 |  VERIFY 120 frames, 720 px differ
+-- LGXM theme
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand-alpha    1   5.949  21.471  27.190 |   0.180   0.169   0.003   4.236   0.000 |    0.637    4.0  0.081 |  1.79   266.7 |  VERIFY 120 frames, 0 px differ
+   l2-cand-mres    1   6.217  21.042  26.673 |   0.154   0.143   0.003   4.411   0.000 |    0.636    4.0  0.080 |  1.86   267.0 |  VERIFY 120 frames, 0 px differ
+   l2-t2-mres      1   7.308  22.197  25.816 |   1.117   1.117   0.003   4.516   0.000 |    7.910    1.0  1.000 |  1.93   266.7 |  VERIFY 120 frames, 0 px differ
+   l3-cand-alpha    1   6.127  18.988  23.002 |   0.270   0.260   0.003   4.290   0.000 |    0.637    4.0  0.081 |  1.85   257.9 |  VERIFY 120 frames, 0 px differ
+   l3-cand-mres    1   6.106  18.833  22.752 |   0.275   0.264   0.003   4.282   0.000 |    0.637    4.0  0.081 |  1.85   258.2 |  VERIFY 120 frames, 0 px differ
+   l3-t2-mres      1   8.528  21.585  25.084 |   2.346   2.346   0.004   4.612   0.000 |    7.910    1.0  1.000 |  2.32   258.6 |  VERIFY 120 frames, 2138 px differ
+-- LGXM zoom
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand-alpha    1   6.222  20.213  24.140 |   0.344   0.334   0.003   4.336   0.000 |    2.141    3.4  0.271 |  1.69   261.2 |  VERIFY 120 frames, 0 px differ
+   l2-cand-mres    1   6.237  20.382  22.690 |   0.360   0.349   0.003   4.259   0.000 |    2.153    3.4  0.272 |  1.74   260.9 |  VERIFY 120 frames, 0 px differ
+   l2-t2-mres      1   7.081  20.793  24.435 |   1.239   1.239   0.004   4.296   0.000 |    7.910    1.0  1.000 |  1.74   261.4 |  VERIFY 120 frames, 0 px differ
+   l3-cand-alpha    1   6.577  20.934  23.089 |   0.708   0.694   0.003   4.364   0.000 |    2.129    3.4  0.269 |  1.75   253.5 |  VERIFY 120 frames, 0 px differ
+   l3-cand-mres    1   6.349  20.663  24.489 |   0.702   0.692   0.003   4.256   0.000 |    2.141    3.4  0.271 |  1.67   253.6 |  VERIFY 120 frames, 0 px differ
+   l3-t2-mres      1   8.389  21.113  24.231 |   2.329   2.328   0.005   4.482   0.000 |    7.910    1.0  1.000 |  2.05   252.3 |  VERIFY 120 frames, 2151 px differ
+==================== phase LI ====================
+-- LI vehicles
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   4.714   8.268   8.606 |   0.038   0.033   0.003   0.005   0.000 |    0.201    5.9  0.067 |  0.69   541.3 | -0.148 ms median (-0.148..-0.148), lower in 1 of 1 VERIFY 40 frames, 30596800 px differ
+   l2-t2           1   4.863   8.390   8.511 |   0.335   0.335   0.003   0.005   0.000 |    3.000    1.0  1.000 |  0.69   541.1 |  VERIFY 40 frames, 30596800 px differ
+   l3-cand         1  12.394  15.637  16.360 |   0.067   0.058   0.002   0.012   0.000 |    0.405    7.8  0.051 |  1.36   557.4 | -0.433 ms median (-0.433..-0.433), lower in 1 of 1 VERIFY 40 frames, 0 px differ
+   l3-t2           1  12.827  17.010  18.005 |   1.084   1.083   0.003   0.013   0.000 |    7.910    1.0  1.000 |  1.31   557.9 |  VERIFY 40 frames, 661 px differ
+==================== phase LR ====================
+-- LR edges
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   4.408   6.786   7.420 |   0.026   0.021   0.002   0.005   0.000 |    0.097   13.0  0.032 |  0.73   541.0 | -0.428 ms median (-0.428..-0.428), lower in 1 of 1 VERIFY 600 frames, 463591354 px differ
+   l2-t2           1   4.836   7.328   8.468 |   0.350   0.349   0.003   0.004   0.000 |    3.000    1.0  1.000 |  0.77   541.0 |  VERIFY 600 frames, 463590977 px differ
+   l3-cand         1  12.040  15.690  18.444 |   0.060   0.050   0.002   0.012   0.000 |    0.267   13.8  0.034 |  1.35   557.0 | -1.236 ms median (-1.236..-1.236), lower in 1 of 1 VERIFY 600 frames, 0 px differ
+   l3-mut          1  12.079  16.193  18.593 |   0.055   0.045   0.002   0.013   0.000 |    0.186   13.8  0.034 |  1.37   557.4 | -1.197 ms median (-1.197..-1.197), lower in 1 of 1 VERIFY 600 frames, 24490133 px differ
+   l3-t2           1  13.276  17.601  19.714 |   1.017   1.016   0.004   0.012   0.000 |    7.910    1.0  1.000 |  1.32   557.1 |  VERIFY 600 frames, 282201 px differ
+-- LR fullscreen
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  10.473  15.042  17.979 |   0.041   0.034   0.003   0.006   0.000 |    0.301    4.8  0.056 |  1.03   559.3 | -0.572 ms median (-0.572..-0.572), lower in 1 of 1 VERIFY 600 frames, 0 px differ
+   l2-t2           1  11.045  15.924  17.876 |   0.452   0.452   0.004   0.006   0.000 |    5.578    1.0  1.000 |  1.02   559.1 |  VERIFY 600 frames, 0 px differ
+   l3-cand         1  11.621  16.695  18.954 |   0.036   0.029   0.002   0.011   0.000 |    0.255    4.9  0.046 |  1.03   563.4 | -0.364 ms median (-0.364..-0.364), lower in 1 of 1 VERIFY 600 frames, 0 px differ
+   l3-mut          1  11.689  16.541  18.847 |   0.037   0.030   0.002   0.011   0.000 |    0.245    4.9  0.049 |  1.04   563.2 | -0.296 ms median (-0.296..-0.296), lower in 1 of 1 VERIFY 600 frames, 13263779 px differ
+   l3-t2           1  11.985  16.905  18.504 |   0.424   0.424   0.003   0.011   0.000 |    5.578    1.0  1.000 |  1.03   563.8 |  VERIFY 600 frames, 11944 px differ
+-- LR resize
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  10.643  15.902  18.541 |   0.068   0.059   0.003   0.006   0.000 |    0.599    4.8  0.087 |  1.15   559.3 | -0.360 ms median (-0.360..-0.360), lower in 1 of 1 VERIFY 600 frames, 0 px differ
+   l2-t2           1  11.003  15.755  18.601 |   0.533   0.532   0.004   0.006   0.000 |    6.702    1.0  1.000 |  1.15   559.3 |  VERIFY 600 frames, 0 px differ
+   l3-cand         1   6.554  15.804  17.552 |   0.068   0.059   0.002   0.011   0.000 |    0.600    4.8  0.087 |  1.09   568.1 | -0.369 ms median (-0.369..-0.369), lower in 1 of 1 VERIFY 600 frames, 0 px differ
+   l3-mut          1   6.545  15.452  17.693 |   0.061   0.053   0.002   0.012   0.000 |    0.556    4.8  0.088 |  1.10   569.0 | -0.378 ms median (-0.378..-0.378), lower in 1 of 1 VERIFY 600 frames, 11711289 px differ
+   l3-t2           1   6.923  15.324  17.865 |   0.599   0.599   0.003   0.011   0.000 |    6.702    1.0  1.000 |  1.10   568.7 |  VERIFY 600 frames, 9082 px differ
+-- LR theme
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   4.604   7.194   8.824 |   0.018   0.013   0.002   0.005   0.000 |    0.077    4.1  0.026 |  0.76   541.4 | -0.220 ms median (-0.220..-0.220), lower in 1 of 1 VERIFY 600 frames, 463996731 px differ
+   l2-t2           1   4.824   7.677   9.002 |   0.342   0.341   0.003   0.005   0.000 |    3.000    1.0  1.000 |  0.77   541.2 |  VERIFY 600 frames, 463996443 px differ
+   l3-cand         1  12.815  18.297  21.613 |   0.052   0.043   0.002   0.013   0.000 |    0.250    6.1  0.032 |  1.33   557.2 | -0.662 ms median (-0.662..-0.662), lower in 1 of 1 VERIFY 600 frames, 196350 px differ
+   l3-mut          1  12.713  17.460  19.777 |   0.040   0.031   0.002   0.012   0.000 |    0.181    6.0  0.031 |  1.33   558.6 | -0.764 ms median (-0.764..-0.764), lower in 1 of 1 VERIFY 600 frames, 31662114 px differ
+   l3-t2           1  13.476  18.192  20.313 |   1.076   1.075   0.004   0.013   0.000 |    7.910    1.0  1.000 |  1.31   557.4 |  VERIFY 600 frames, 15487 px differ
+==================== phase LRX ====================
+-- LRX fullscreen
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  16.999  55.360 133.699 |   0.337   0.322   0.004   6.892   0.000 |    1.069    8.8  0.071 |  1.73   770.1 | -1.948 ms median (-1.948..-1.948), lower in 1 of 1 VERIFY 600 frames, 0 px differ
+   l2-t2           1  18.946  57.284 132.149 |   1.864   1.862   0.005   6.927   0.000 |   13.129    1.0  1.000 |  1.70   773.0 |  VERIFY 600 frames, 0 px differ
+   l3-cand         1  16.434  38.731  56.774 |   0.394   0.380   0.003   6.776   0.000 |    0.892    7.8  0.064 |  2.12   763.5 | -2.829 ms median (-2.829..-2.829), lower in 1 of 1 VERIFY 600 frames, 25954634 px differ
+   l3-t2           1  19.263  44.179  61.134 |   3.807   3.806   0.005   6.627   0.000 |   13.147    1.0  1.000 |  2.15   763.4 |  VERIFY 600 frames, 26025896 px differ
+-- LRX resize
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  19.291  27.637  84.395 |   0.149   0.140   0.003   3.078   0.000 |    0.621    5.1  0.092 |  1.79   697.3 | -1.239 ms median (-1.239..-1.239), lower in 1 of 1 VERIFY 600 frames, 0 px differ
+   l2-t2           1  20.530  29.292  87.946 |   0.896   0.896   0.004   3.269   0.000 |    6.702    1.0  1.000 |  1.76   704.0 |  VERIFY 600 frames, 0 px differ
+   l3-cand         1  11.983  18.151  37.840 |   0.269   0.261   0.003   3.088   0.000 |    0.631    4.8  0.091 |  2.15   684.0 | -2.413 ms median (-2.413..-2.413), lower in 1 of 1 VERIFY 600 frames, 34949583 px differ
+   l3-t2           1  14.397  19.585  35.657 |   1.951   1.950   0.004   3.084   0.000 |    6.702    1.0  1.000 |  2.12   685.7 |  VERIFY 600 frames, 34991253 px differ
+==================== phase LT ====================
+-- LT theme
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l3-cand         2   2.588  14.247  16.706 |   0.043   0.034   0.002   0.734   0.000 |    0.185    5.9  0.023 |  0.95   558.6 | -0.768 ms median (-0.794..-0.742), lower in 2 of 2 VERIFY 240 frames, 91800 px differ
+   l3-t2           2   3.354  14.911  17.872 |   1.051   1.050   0.004   0.615   0.000 |    7.910    1.0  1.000 |  0.97   558.6 |  VERIFY 240 frames, 6057 px differ
+==================== phase LT2 ====================
+-- LT2 theme
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1  20.775  26.409  29.181 |   0.128   0.118   0.003   3.949   0.000 |    0.280    6.5  0.035 |  2.02   676.7 | -1.162 ms median (-1.162..-1.162), lower in 1 of 1 VERIFY 600 frames, 163870 px differ
+   l2-t2           1  21.937  27.263  30.037 |   1.140   1.139   0.004   4.020   0.000 |    7.910    1.0  1.000 |  1.99   677.4 |  VERIFY 600 frames, 0 px differ
+   l3-cand         1  18.869  22.162  24.276 |   0.188   0.178   0.003   3.374   0.000 |    0.272    6.4  0.034 |  1.95   669.2 | -2.722 ms median (-2.722..-2.722), lower in 1 of 1 VERIFY 600 frames, 185970 px differ
+   l3-t2           1  21.592  25.198  27.866 |   2.333   2.332   0.005   3.521   0.000 |    7.910    1.0  1.000 |  2.05   667.7 |  VERIFY 600 frames, 16616 px differ
+==================== phase LV ====================
+-- LV daynight
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   5.810  11.920  14.738 |   0.192   0.184   0.013   1.580   0.000 |    0.771    2.5  0.257 |  0.81   541.6 | +0.029 ms median (+0.029..+0.029), lower in 0 of 1 VERIFY 120 frames, 92765400 px differ
+   l2-mut          1   4.996   9.800  12.976 |   0.162   0.155   0.004   1.462   0.000 |    0.762    2.5  0.257 |  0.73   541.6 | -0.785 ms median (-0.785..-0.785), lower in 1 of 1 VERIFY 120 frames, 92765400 px differ
+   l2-noC          1   4.905   9.624  10.925 |   0.167   0.159   0.004   1.427   0.000 |    0.771    2.5  0.257 |  0.73   541.8 | -0.876 ms median (-0.876..-0.876), lower in 1 of 1 VERIFY 120 frames, 92765400 px differ
+   l2-t2           1   5.781  10.820  14.384 |   0.632   0.631   0.004   1.429   0.000 |    3.000    1.0  1.000 |  0.81   541.5 |  VERIFY 120 frames, 92765400 px differ
+   l3-cand         1   4.128  15.866  22.956 |   0.369   0.358   0.003   0.853   0.000 |    2.017    3.2  0.255 |  1.18   558.2 | -0.590 ms median (-0.590..-0.590), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   5.126  22.188  24.889 |   0.403   0.389   0.004   0.767   0.000 |    1.998    3.2  0.255 |  1.05   557.3 | +0.408 ms median (+0.408..+0.408), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-noC          1   4.995  21.235  26.239 |   0.447   0.433   0.004   0.879   0.000 |    2.017    3.2  0.255 |  1.03   557.6 | +0.277 ms median (+0.277..+0.277), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1   4.718  15.862  17.332 |   1.179   1.178   0.004   0.625   0.000 |    7.910    1.0  1.000 |  1.15   557.8 |  VERIFY 120 frames, 3720 px differ
+-- LV daynight_raw
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   2.785   6.099   7.387 |   0.090   0.084   0.003   1.045   0.000 |    0.622    3.4  0.207 |  0.61   541.5 | -0.496 ms median (-0.496..-0.496), lower in 1 of 1 VERIFY 120 frames, 92766215 px differ
+   l2-mut          1   2.811   6.369   7.401 |   0.087   0.081   0.003   1.022   0.000 |    0.618    3.4  0.209 |  0.64   541.1 | -0.469 ms median (-0.469..-0.469), lower in 1 of 1 VERIFY 120 frames, 92766462 px differ
+   l2-noC          1   2.708   5.898   7.294 |   0.015   0.009   0.003   1.045   0.000 |    0.033    4.0  0.011 |  0.63   540.9 | -0.573 ms median (-0.573..-0.573), lower in 1 of 1 VERIFY 120 frames, 93018008 px differ
+   l2-t2           1   3.281   7.370  10.398 |   0.455   0.455   0.004   1.154   0.000 |    3.000    1.0  1.000 |  0.69   541.2 |  VERIFY 120 frames, 92766249 px differ
+   l3-cand         1   5.350  24.647  30.244 |   0.461   0.446   0.006   0.894   0.000 |    1.781    4.9  0.225 |  0.93   559.0 | -0.652 ms median (-0.652..-0.652), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   5.163  29.055  36.833 |   0.451   0.430   0.003   0.920   0.000 |    1.681    5.0  0.219 |  0.94   558.6 | -0.839 ms median (-0.839..-0.839), lower in 1 of 1 VERIFY 120 frames, 1351843 px differ
+   l3-noC          1   4.311  23.022  27.729 |   0.056   0.042   0.003   0.864   0.000 |    0.117    5.9  0.015 |  0.89   559.1 | -1.691 ms median (-1.691..-1.691), lower in 1 of 1 VERIFY 120 frames, 72304755 px differ
+   l3-t2           1   6.002  24.253  28.788 |   1.765   1.763   0.005   0.872   0.000 |    7.910    1.0  1.000 |  0.98   557.6 |  VERIFY 120 frames, 3089 px differ
+-- LV edges
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   3.075   6.647   7.787 |   0.033   0.025   0.003   1.216   0.000 |    0.097   13.0  0.032 |  0.58   541.5 | +0.000 ms median (+0.000..+0.000), lower in 0 of 1 VERIFY 120 frames, 92718304 px differ
+   l2-mut          1   4.144   9.521  11.333 |   0.031   0.023   0.005   1.514   0.000 |    0.060   13.0  0.032 |  0.64   541.8 | +1.068 ms median (+1.068..+1.068), lower in 0 of 1 VERIFY 120 frames, 92722551 px differ
+   l2-noC          1   3.873   9.215  13.412 |   0.034   0.025   0.003   1.393   0.000 |    0.078   13.0  0.026 |  0.62   541.2 | +0.797 ms median (+0.797..+0.797), lower in 0 of 1 VERIFY 120 frames, 92955544 px differ
+   l2-t2           1   3.075   6.245   7.013 |   0.404   0.403   0.003   1.034   0.000 |    3.000    1.0  1.000 |  0.65   541.5 |  VERIFY 120 frames, 92718196 px differ
+   l3-cand         1   2.878  17.346  19.519 |   0.078   0.065   0.003   0.753   0.000 |    0.235   13.8  0.030 |  0.89   559.1 | -3.617 ms median (-3.617..-3.617), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   2.897  17.514  21.291 |   0.054   0.043   0.003   0.803   0.000 |    0.155   13.7  0.029 |  1.00   556.9 | -3.598 ms median (-3.598..-3.598), lower in 1 of 1 VERIFY 120 frames, 5003614 px differ
+   l3-noC          1   2.760  17.311  22.297 |   0.062   0.049   0.003   0.758   0.000 |    0.157   13.9  0.020 |  0.95   557.3 | -3.735 ms median (-3.735..-3.735), lower in 1 of 1 VERIFY 120 frames, 60941343 px differ
+   l3-t2           1   6.495  26.686  32.579 |   1.775   1.774   0.006   1.003   0.000 |    7.910    1.0  1.000 |  1.01   557.8 |  VERIFY 120 frames, 56232 px differ
+-- LV fullredraw
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   4.888  10.496  12.786 |   0.669   0.659   0.004   1.533   0.000 |    3.000    1.0  1.000 |  0.69   541.6 | +1.899 ms median (+1.899..+1.899), lower in 0 of 1 VERIFY 120 frames, 92766299 px differ
+   l2-mut          1   6.055  14.449  18.926 |   0.816   0.805   0.006   1.745   0.000 |    3.000    1.0  1.000 |  0.77   541.7 | +3.066 ms median (+3.066..+3.066), lower in 0 of 1 VERIFY 120 frames, 92766112 px differ
+   l2-noC          1   4.595  10.824  14.150 |   0.675   0.664   0.004   1.490   0.000 |    3.000    1.0  1.000 |  0.68   541.6 | +1.606 ms median (+1.606..+1.606), lower in 0 of 1 VERIFY 120 frames, 92766149 px differ
+   l2-t2           1   2.990   5.949   7.562 |   0.383   0.382   0.003   1.059   0.000 |    3.000    1.0  1.000 |  0.61   541.2 |  VERIFY 120 frames, 92766289 px differ
+   l3-cand         1   4.195  19.630  22.990 |   1.423   1.410   0.005   0.820   0.000 |    7.910    1.0  1.000 |  1.09   557.3 | -0.086 ms median (-0.086..-0.086), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   4.112  16.649  27.525 |   1.425   1.411   0.004   0.793   0.000 |    7.910    1.0  1.000 |  1.07   558.2 | -0.169 ms median (-0.169..-0.169), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-noC          1   3.921  17.054  18.904 |   1.303   1.290   0.004   0.708   0.000 |    7.910    1.0  1.000 |  1.07   557.9 | -0.360 ms median (-0.360..-0.360), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1   4.281  20.053  26.373 |   1.548   1.546   0.005   0.829   0.000 |    7.910    1.0  1.000 |  1.08   557.1 |  VERIFY 120 frames, 3099 px differ
+-- LV playercolor
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   3.706   8.408  11.701 |   0.085   0.077   0.004   1.410   0.000 |    0.349    3.7  0.117 |  0.61   541.5 | -0.675 ms median (-0.675..-0.675), lower in 1 of 1 VERIFY 120 frames, 92766276 px differ
+   l2-mut          1   3.659   8.099   9.837 |   0.075   0.067   0.003   1.406   0.000 |    0.340    3.7  0.116 |  0.59   541.7 | -0.722 ms median (-0.722..-0.722), lower in 1 of 1 VERIFY 120 frames, 92766240 px differ
+   l2-noC          1   3.970   9.271  12.003 |   0.020   0.012   0.003   1.504   0.000 |    0.033    4.0  0.011 |  0.64   541.7 | -0.411 ms median (-0.411..-0.411), lower in 1 of 1 VERIFY 120 frames, 92996005 px differ
+   l2-t2           1   4.381   8.777  10.377 |   0.573   0.570   0.004   1.394   0.000 |    3.000    1.0  1.000 |  0.65   541.5 |  VERIFY 120 frames, 92766288 px differ
+   l3-cand         1   4.627  23.994  28.770 |   0.264   0.250   0.003   0.798   0.000 |    1.003    5.4  0.127 |  0.88   559.7 | +0.848 ms median (+0.848..+0.848), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   4.556  23.418  27.637 |   0.245   0.231   0.003   0.836   0.000 |    0.946    5.4  0.127 |  0.89   558.9 | +0.777 ms median (+0.777..+0.777), lower in 0 of 1 VERIFY 120 frames, 2853067 px differ
+   l3-noC          1   4.749  24.364  29.145 |   0.061   0.047   0.003   0.943   0.000 |    0.117    5.9  0.015 |  0.91   557.9 | +0.970 ms median (+0.970..+0.970), lower in 0 of 1 VERIFY 120 frames, 74141048 px differ
+   l3-t2           1   3.779  15.511  16.994 |   1.175   1.174   0.005   0.620   0.000 |    7.910    1.0  1.000 |  1.04   558.2 |  VERIFY 120 frames, 3161 px differ
+-- LV resize
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   4.430  22.335  29.091 |   0.114   0.100   0.004   0.734   0.000 |    0.575    4.9  0.085 |  0.79   559.5 | -1.299 ms median (-1.299..-1.299), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l2-mut          1   2.501  15.057  18.138 |   0.085   0.073   0.004   0.644   0.000 |    0.539    4.8  0.087 |  0.82   559.5 | -3.228 ms median (-3.228..-3.228), lower in 1 of 1 VERIFY 120 frames, 2087560 px differ
+   l2-noC          1   2.748  15.239  20.678 |   0.084   0.073   0.003   0.620   0.000 |    0.524    4.9  0.078 |  0.78   559.8 | -2.981 ms median (-2.981..-2.981), lower in 1 of 1 VERIFY 120 frames, 8095568 px differ
+   l2-t2           1   5.729  23.510  28.824 |   0.994   0.993   0.005   0.855   0.000 |    6.702    1.0  1.000 |  0.89   559.7 |  VERIFY 120 frames, 0 px differ
+   l3-cand         1   9.837  48.435  69.656 |   0.165   0.151   0.003   0.873   0.000 |    0.621    5.1  0.091 |  0.74   568.8 | +2.113 ms median (+2.113..+2.113), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   7.898  33.228  57.194 |   0.166   0.146   0.003   1.007   0.000 |    0.565    5.0  0.092 |  0.87   570.0 | +0.174 ms median (+0.174..+0.174), lower in 0 of 1 VERIFY 120 frames, 1927157 px differ
+   l3-noC          1   9.206  48.091  65.745 |   0.132   0.119   0.003   0.951   0.000 |    0.539    5.1  0.080 |  0.70   569.4 | +1.482 ms median (+1.482..+1.482), lower in 0 of 1 VERIFY 120 frames, 11984648 px differ
+   l3-t2           1   7.724  31.619  52.640 |   1.425   1.422   0.007   1.223   0.000 |    6.702    1.0  1.000 |  0.88   568.9 |  VERIFY 120 frames, 1752 px differ
+-- LV scroll
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   3.152   6.512   7.645 |   0.434   0.427   0.003   1.064   0.000 |    3.000    1.0  1.000 |  0.61   541.5 | -0.000 ms median (-0.000..-0.000), lower in 1 of 1 VERIFY 120 frames, 91760552 px differ
+   l2-mut          1   3.116   7.325   8.695 |   0.417   0.411   0.003   1.054   0.000 |    3.000    1.0  1.000 |  0.63   541.4 | -0.037 ms median (-0.037..-0.037), lower in 1 of 1 VERIFY 120 frames, 91760969 px differ
+   l2-noC          1   3.232   7.230   8.415 |   0.472   0.465   0.003   1.083   0.000 |    3.000    1.0  1.000 |  0.64   541.7 | +0.080 ms median (+0.080..+0.080), lower in 0 of 1 VERIFY 120 frames, 91760498 px differ
+   l2-t2           1   3.152   6.821   7.727 |   0.424   0.424   0.003   1.037   0.000 |    3.000    1.0  1.000 |  0.62   541.1 |  VERIFY 120 frames, 91760175 px differ
+   l3-cand         1   3.760  13.984  16.966 |   1.120   1.109   0.004   0.700   0.000 |    7.910    1.0  1.000 |  0.99   557.2 | +0.095 ms median (+0.095..+0.095), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   3.731  14.557  16.687 |   1.157   1.146   0.004   0.615   0.000 |    7.910    1.0  1.000 |  1.00   557.3 | +0.066 ms median (+0.066..+0.066), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-noC          1   3.986  14.560  16.453 |   1.166   1.155   0.004   0.685   0.000 |    7.910    1.0  1.000 |  1.03   558.0 | +0.321 ms median (+0.321..+0.321), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1   3.665  15.162  21.207 |   1.199   1.199   0.004   0.668   0.000 |    7.910    1.0  1.000 |  0.99   558.3 |  VERIFY 120 frames, 2998 px differ
+-- LV static
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   3.754   6.231  11.510 |   0.013   0.007   0.003   1.152   0.000 |    0.027    3.0  0.009 |  0.77   541.3 | -0.119 ms median (-0.119..-0.119), lower in 1 of 1 VERIFY 120 frames, 92765400 px differ
+   l2-mut          1   3.700   5.939   6.274 |   0.011   0.005   0.003   1.032   0.000 |    0.017    3.0  0.009 |  0.72   541.3 | -0.173 ms median (-0.173..-0.173), lower in 1 of 1 VERIFY 120 frames, 92765400 px differ
+   l2-noC          1   3.743   7.024   7.815 |   0.012   0.007   0.003   1.017   0.000 |    0.027    3.0  0.009 |  0.73   541.3 | -0.130 ms median (-0.130..-0.130), lower in 1 of 1 VERIFY 120 frames, 92765400 px differ
+   l2-t2           1   3.874   8.166  10.012 |   0.453   0.452   0.004   1.136   0.000 |    3.000    1.0  1.000 |  0.82   541.1 |  VERIFY 120 frames, 92765400 px differ
+   l3-cand         1   3.666  12.452  13.288 |   0.024   0.014   0.002   0.604   0.000 |    0.053    4.0  0.007 |  1.07   558.3 | -0.227 ms median (-0.227..-0.227), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   3.715  13.802  17.678 |   0.022   0.011   0.003   0.701   0.000 |    0.028    4.0  0.007 |  1.11   558.0 | -0.178 ms median (-0.178..-0.178), lower in 1 of 1 VERIFY 120 frames, 8199840 px differ
+   l3-noC          1   3.667  12.562  13.181 |   0.024   0.014   0.002   0.581   0.000 |    0.053    4.0  0.007 |  1.07   558.3 | -0.226 ms median (-0.226..-0.226), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1   3.894  13.570  14.874 |   1.128   1.127   0.004   0.534   0.000 |    7.910    1.0  1.000 |  1.09   557.9 |  VERIFY 120 frames, 3840 px differ
+-- LV theme
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   3.913   8.070  12.073 |   0.029   0.021   0.003   1.383   0.000 |    0.077    4.1  0.026 |  0.59   541.9 | -1.512 ms median (-1.512..-1.512), lower in 1 of 1 VERIFY 120 frames, 92799433 px differ
+   l2-mut          1   3.107   6.846  11.681 |   0.020   0.013   0.003   1.268   0.000 |    0.062    4.1  0.026 |  0.62   541.5 | -2.318 ms median (-2.318..-2.318), lower in 1 of 1 VERIFY 120 frames, 92831160 px differ
+   l2-noC          1   3.706   8.440  13.178 |   0.022   0.015   0.003   1.435   0.000 |    0.058    4.1  0.019 |  0.59   542.0 | -1.719 ms median (-1.719..-1.719), lower in 1 of 1 VERIFY 120 frames, 92949298 px differ
+   l2-t2           1   5.425  12.930  17.082 |   0.772   0.771   0.009   1.729   0.000 |    3.000    1.0  1.000 |  0.75   541.7 |  VERIFY 120 frames, 92799254 px differ
+   l3-cand         1   4.220  23.834  29.168 |   0.088   0.072   0.003   0.951   0.000 |    0.244    6.0  0.031 |  0.88   559.0 | -2.788 ms median (-2.788..-2.788), lower in 1 of 1 VERIFY 120 frames, 35700 px differ
+   l3-mut          1   4.541  23.342  28.943 |   0.083   0.066   0.003   0.888   0.000 |    0.177    6.0  0.031 |  0.90   558.4 | -2.466 ms median (-2.466..-2.466), lower in 1 of 1 VERIFY 120 frames, 6252268 px differ
+   l3-noC          1   4.550  25.335  33.865 |   0.078   0.064   0.003   0.890   0.000 |    0.141    6.0  0.018 |  0.88   559.1 | -2.458 ms median (-2.458..-2.458), lower in 1 of 1 VERIFY 120 frames, 76248722 px differ
+   l3-t2           1   7.008  28.783  34.424 |   1.898   1.896   0.006   1.038   0.000 |    7.910    1.0  1.000 |  1.02   558.1 |  VERIFY 120 frames, 3039 px differ
+-- LV vehicles
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   2.712   5.565   7.435 |   0.020   0.013   0.003   1.052   0.000 |    0.053    4.0  0.018 |  0.61   541.2 | -0.408 ms median (-0.408..-0.408), lower in 1 of 1 VERIFY 120 frames, 92766226 px differ
+   l2-mut          1   2.696   5.647   9.353 |   0.015   0.009   0.003   1.072   0.000 |    0.042    4.0  0.018 |  0.61   541.0 | -0.424 ms median (-0.424..-0.424), lower in 1 of 1 VERIFY 120 frames, 92762290 px differ
+   l2-noC          1   2.607   5.140   6.419 |   0.014   0.008   0.003   1.025   0.000 |    0.033    4.0  0.011 |  0.59   541.3 | -0.513 ms median (-0.513..-0.513), lower in 1 of 1 VERIFY 120 frames, 93017972 px differ
+   l2-t2           1   3.120   6.256   8.526 |   0.416   0.416   0.003   1.073   0.000 |    3.000    1.0  1.000 |  0.65   541.0 |  VERIFY 120 frames, 92766273 px differ
+   l3-cand         1   2.425  12.579  13.744 |   0.042   0.031   0.002   0.606   0.000 |    0.161    5.8  0.020 |  0.91   557.3 | -1.159 ms median (-1.159..-1.159), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   2.384  12.848  15.034 |   0.032   0.022   0.003   0.582   0.000 |    0.102    5.8  0.020 |  0.92   558.1 | -1.200 ms median (-1.200..-1.200), lower in 1 of 1 VERIFY 120 frames, 5544561 px differ
+   l3-noC          1   2.397  13.247  14.694 |   0.034   0.024   0.002   0.570   0.000 |    0.109    5.8  0.014 |  0.91   558.7 | -1.187 ms median (-1.187..-1.187), lower in 1 of 1 VERIFY 120 frames, 48300920 px differ
+   l3-t2           1   3.585  14.192  15.022 |   1.158   1.157   0.004   0.558   0.000 |    7.910    1.0  1.000 |  1.01   558.1 |  VERIFY 120 frames, 2972 px differ
+-- LV windows
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   5.168   9.658  12.287 |   0.234   0.226   0.003   1.386   0.000 |    1.008    5.5  0.336 |  0.71   541.7 | -0.514 ms median (-0.514..-0.514), lower in 1 of 1 VERIFY 120 frames, 89154400 px differ
+   l2-mut          1   3.801   7.483  10.255 |   0.173   0.169   0.003   1.083   0.000 |    0.982    5.4  0.336 |  0.74   541.5 | -1.881 ms median (-1.881..-1.881), lower in 1 of 1 VERIFY 120 frames, 89154006 px differ
+   l2-noC          1   4.423   9.100  12.271 |   0.210   0.204   0.003   1.243   0.000 |    0.995    5.5  0.332 |  0.75   541.9 | -1.259 ms median (-1.259..-1.259), lower in 1 of 1 VERIFY 120 frames, 89172576 px differ
+   l2-t2           1   5.682  10.325  12.888 |   0.582   0.581   0.004   1.480   0.000 |    3.000    1.0  1.000 |  0.78   541.7 |  VERIFY 120 frames, 89154208 px differ
+   l3-cand         1   7.491  36.349  48.445 |   0.407   0.390   0.003   1.088   0.000 |    1.147    8.0  0.145 |  1.01   559.2 | -4.303 ms median (-4.303..-4.303), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   5.784  24.455  26.204 |   0.274   0.261   0.003   0.707   0.000 |    1.060    7.8  0.148 |  0.96   558.9 | -6.011 ms median (-6.011..-6.011), lower in 1 of 1 VERIFY 120 frames, 5186585 px differ
+   l3-noC          1   6.130  28.249  32.978 |   0.336   0.319   0.004   0.809   0.000 |    1.068    8.0  0.135 |  0.97   557.9 | -5.665 ms median (-5.665..-5.665), lower in 1 of 1 VERIFY 120 frames, 75015036 px differ
+   l3-t2           1  11.795  45.192  65.330 |   2.389   2.387   0.006   1.497   0.000 |    7.910    1.0  1.000 |  1.08   558.0 |  VERIFY 120 frames, 103820 px differ
+-- LV zoom
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   3.907  10.427  12.643 |   0.129   0.119   0.003   1.384   0.000 |    0.663    4.0  0.221 |  0.58   544.4 | +0.828 ms median (+0.828..+0.828), lower in 0 of 1 VERIFY 120 frames, 91742575 px differ
+   l2-mut          1   3.391  12.310  18.129 |   0.191   0.183   0.003   1.663   0.000 |    0.641    4.0  0.219 |  0.68   543.9 | +0.312 ms median (+0.312..+0.312), lower in 0 of 1 VERIFY 120 frames, 91742524 px differ
+   l2-noC          1   3.985  10.313  11.600 |   0.127   0.117   0.003   1.416   0.000 |    0.633    4.0  0.211 |  0.57   544.1 | +0.906 ms median (+0.906..+0.906), lower in 0 of 1 VERIFY 120 frames, 91770484 px differ
+   l2-t2           1   3.079   8.086   9.732 |   0.385   0.384   0.003   1.019   0.000 |    3.000    1.0  1.000 |  0.62   543.5 |  VERIFY 120 frames, 91742746 px differ
+   l3-cand         1   3.219  16.599  19.525 |   0.321   0.310   0.003   0.763   0.000 |    1.780    4.6  0.225 |  0.96   560.6 | -1.026 ms median (-1.026..-1.026), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   3.362  17.427  21.589 |   0.316   0.305   0.003   0.786   0.000 |    1.736    4.8  0.226 |  0.97   560.9 | -0.883 ms median (-0.883..-0.883), lower in 1 of 1 VERIFY 120 frames, 1081262 px differ
+   l3-noC          1   3.360  17.654  21.160 |   0.323   0.312   0.003   0.768   0.000 |    1.684    4.8  0.213 |  0.99   561.8 | -0.885 ms median (-0.885..-0.885), lower in 1 of 1 VERIFY 120 frames, 0 px differ
+   l3-t2           1   4.244  17.461  19.940 |   1.297   1.296   0.005   0.658   0.000 |    7.910    1.0  1.000 |  1.03   561.5 |  VERIFY 120 frames, 3074 px differ
+-- LV zoomx
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand         1   6.094  26.376  45.587 |   0.284   0.275   0.004   1.899   0.000 |    1.077    4.2  0.359 |  0.86   554.3 | +1.783 ms median (+1.783..+1.783), lower in 0 of 1 VERIFY 120 frames, 91109477 px differ
+   l2-mut          1   7.020  32.877  53.798 |   0.328   0.300   0.003   2.198   0.000 |    1.054    4.1  0.357 |  0.87   554.6 | +2.709 ms median (+2.709..+2.709), lower in 0 of 1 VERIFY 120 frames, 91105332 px differ
+   l2-noC          1   8.826  40.401  71.133 |   0.386   0.378   0.003   2.828   0.000 |    1.055    4.3  0.352 |  0.91   555.9 | +4.515 ms median (+4.515..+4.515), lower in 0 of 1 VERIFY 120 frames, 91118522 px differ
+   l2-t2           1   4.311  17.193  30.825 |   0.521   0.520   0.003   1.298   0.000 |    3.000    1.0  1.000 |  0.83   554.6 |  VERIFY 120 frames, 91114123 px differ
+   l3-cand         1  13.855  80.254 116.566 |   1.185   1.169   0.023   1.268   0.000 |    2.895    7.7  0.366 |  1.16   575.3 | +5.018 ms median (+5.018..+5.018), lower in 0 of 1 VERIFY 120 frames, 0 px differ
+   l3-mut          1   4.348  28.801  42.823 |   0.484   0.472   0.003   0.724   0.000 |    2.776    7.0  0.357 |  1.21   570.8 | -4.489 ms median (-4.489..-4.489), lower in 1 of 1 VERIFY 120 frames, 712278 px differ
+   l3-noC          1   9.027  50.497  71.184 |   0.703   0.686   0.004   0.940   0.000 |    2.775    7.4  0.351 |  1.17   572.0 | +0.190 ms median (+0.190..+0.190), lower in 0 of 1 VERIFY 120 frames, 1974193 px differ
+   l3-t2           1   8.837  55.692  76.349 |   2.145   2.144   0.006   1.271   0.000 |    7.910    1.0  1.000 |  1.24   567.9 |  VERIFY 120 frames, 3676 px differ
+==================== phase LVM ====================
+-- LVM static
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand-alpha    1   3.823  10.053  12.883 |   0.079   0.070   0.004   1.583   0.000 |    0.338    4.0  0.113 |  0.51   128.9 |  VERIFY 120 frames, 33518760 px differ
+   l2-cand-mres    1   3.720   5.880   7.357 |   0.054   0.047   0.003   1.093   0.000 |    0.338    4.0  0.113 |  0.46   129.0 |  VERIFY 120 frames, 33518880 px differ
+   l2-t2-mres      1   3.790   8.557  10.298 |   0.657   0.656   0.004   1.376   0.000 |    3.000    1.0  1.000 |  0.53   129.3 |  VERIFY 120 frames, 33518880 px differ
+   l3-cand-alpha    1   3.732  16.998  24.297 |   0.128   0.116   0.003   0.869   0.000 |    0.624    4.0  0.079 |  0.61   141.0 |  VERIFY 120 frames, 0 px differ
+   l3-cand-mres    1   3.718  15.098  17.486 |   0.115   0.103   0.003   0.773   0.000 |    0.624    4.0  0.079 |  0.58   142.3 |  VERIFY 120 frames, 0 px differ
+   l3-t2-mres      1   4.000  16.847  24.608 |   1.494   1.493   0.006   0.718   0.000 |    7.910    1.0  1.000 |  0.66   143.1 |  VERIFY 120 frames, 720 px differ
+-- LVM theme
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand-alpha    1   3.095   9.622  14.169 |   0.074   0.065   0.003   1.587   0.000 |    0.340    4.1  0.113 |  0.42   134.6 |  VERIFY 120 frames, 35239020 px differ
+   l2-cand-mres    1   2.920   8.540  16.761 |   0.076   0.068   0.004   1.498   0.000 |    0.340    4.1  0.113 |  0.41   134.4 |  VERIFY 120 frames, 35240580 px differ
+   l2-t2-mres      1   3.521   8.941  13.296 |   0.635   0.633   0.004   1.527   0.000 |    3.000    1.0  1.000 |  0.45   134.6 |  VERIFY 120 frames, 35240580 px differ
+   l3-cand-alpha    1   2.558  24.867  34.114 |   0.141   0.126   0.003   0.827   0.000 |    0.661    4.0  0.084 |  0.54   148.5 |  VERIFY 120 frames, 0 px differ
+   l3-cand-mres    1   2.727  22.803  29.394 |   0.152   0.139   0.004   0.893   0.000 |    0.661    4.0  0.084 |  0.54   147.3 |  VERIFY 120 frames, 0 px differ
+   l3-t2-mres      1   4.395  25.365  40.878 |   1.895   1.893   0.022   1.033   0.000 |    7.910    1.0  1.000 |  0.67   148.6 |  VERIFY 120 frames, 2158 px differ
+-- LVM zoom
+   config       runs busyP50 busyP95 busyP99 |   flush  upload  render present    lock | MB/frame  rects  dirty |   cpu  peakMB | paired busy vs baseline
+   l2-cand-alpha    1   2.831   7.791  10.499 |   0.173   0.165   0.004   1.414   0.000 |    0.878    3.4  0.293 |  0.35   129.2 |  VERIFY 120 frames, 32154840 px differ
+   l2-cand-mres    1   2.817   8.026  12.011 |   0.194   0.186   0.003   1.465   0.000 |    0.878    3.4  0.293 |  0.34   129.2 |  VERIFY 120 frames, 32154960 px differ
+   l2-t2-mres      1   3.377   7.502   9.013 |   0.634   0.632   0.004   1.422   0.000 |    3.000    1.0  1.000 |  0.37   129.1 |  VERIFY 120 frames, 32154960 px differ
+   l3-cand-alpha    1   2.996  25.383  31.387 |   0.518   0.504   0.004   0.974   0.000 |    2.141    3.4  0.271 |  0.51   142.6 |  VERIFY 120 frames, 0 px differ
+   l3-cand-mres    1   2.717  23.864  26.398 |   0.488   0.473   0.004   0.851   0.000 |    2.153    3.4  0.272 |  0.49   143.2 |  VERIFY 120 frames, 0 px differ
+   l3-t2-mres      1   4.804  25.024  28.621 |   1.910   1.908   0.006   1.071   0.000 |    7.910    1.0  1.000 |  0.61   142.1 |  VERIFY 120 frames, 2138 px differ
+
+runs accepted 542, rejected 4 (evidence/bench-rejected.txt)

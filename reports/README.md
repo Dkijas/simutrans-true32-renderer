@@ -87,3 +87,14 @@ for review. They can be provided on request.
   the certification of the published packages themselves.
 - **XR32-CONSOLIDATION-01-INCIDENT-MATRIX.md** - the incident matrix (A1-A8, N1-N5) with
   status, root cause, fix and evidence.
+
+## XR32 DAY+NIGHT, r12377 testing-3
+
+- **XR32-DIRTY-REGIONS-CERTIFICATION-01.md** - the certification of testing-3: testing-2 plus a screen update that
+  sends only the changed 16x16 tiles (simgraph16's walk), draws the screen texture without blending, and reports light /
+  company-colour changes and filled rectangles as changed (a missing dirty mark in `draw_rect` was found by the oracle).
+  Verdict B, certified with limitations (WSLg is not a native Linux desktop). A dated publication note on top.
+- **xr32-dirty-regions-cert-01/** - its companion reports: `FRAMEBUFFER-INTEGRITY-REPORT.md` (the read-back oracle on
+  Windows and Linux, SDL2 and SDL3, with its controls and the trunk's theme-switch staleness T1),
+  `XR32-REGRESSION-MATRIX.md` (testing-2's battery, identical values), `PATCH-REVIEW.md` (the four changes),
+  `PLATFORM-VALIDATION-MATRIX.csv` and `BENCHMARK-COMPARISON.csv`.

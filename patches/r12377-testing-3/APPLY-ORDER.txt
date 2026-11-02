@@ -1,0 +1,15 @@
+XR32 r12377 testing-3 - patches, -p1, LF; apply with: git -c core.autocrlf=false apply <file>
+
+Complete change against official trunk r12377 (svn export -r 12377 --native-eol LF svn://servers.simutrans.org/simutrans/trunk):
+  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-3.diff
+
+The same as steps on top of testing-2 (source/xr32-r12377/ at tag xr32-prissi-night-image-prototype-01-r12377-testing-2):
+  01-C-INVALIDATE-ON-LIGHT-AND-COLOUR.diff   a night level or company colour change marks the whole screen dirty (as simgraph16)
+  02-B-SCREEN-TEXTURE-UNBLENDED.diff         the 32-bit screen texture is drawn with SDL_BLENDMODE_NONE
+  03-D-DRAW-RECT-MARKS-DIRTY.diff            draw_rect marks the tiles it fills when asked to (as simgraph16)
+  04-A-DIRTY-TILE-UPLOAD.diff                only the dirty tiles are uploaded to the screen texture (simgraph16's walk)
+or in one:
+  DIRTY-REGIONS-ON-TESTING-2.diff            01..04 together
+
+04 must not be applied without 01 and 03. All three routes give the same tree, byte for byte.
+The Windows build fix that is NOT part of XR32 is unchanged: ../r12377/upstream-build-fix/H-r12362-cmake-ole32.diff

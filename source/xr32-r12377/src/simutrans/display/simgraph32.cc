@@ -13,6 +13,7 @@
  * compiled into this configuration.
  */
 
+#include <vector>
 #include "../simconst.h"
 #include "../pathes.h"      // FONT_PATH_X, for the font fallback
 #include "../sys/simsys.h"
@@ -2100,6 +2101,7 @@ static void simgraph32_set_daynight_level(int night)
 	if(  night != night_shift  ) {
 		night_shift = night;
 		calc_base_pal_from_night_shift( night );
+		simgraph32_mark_screen_dirty();   // as simgraph16: every picture changes
 		// rgbmap_all_day is a snapshot of the night==0 tables and is
 		// deliberately NOT refreshed here - simgraph16_set_daynight_level()
 		// does not touch it either. Refreshing it would make the daytime
@@ -2124,6 +2126,7 @@ static void simgraph32_set_player_color_scheme(const int player, const uint8 col
 			// calc_base_pal_from_night_shift resets player_night to 0
 			player_day = player_night;
 		}
+		simgraph32_mark_screen_dirty();   // as simgraph16: every picture of this player changes
 	}
 }
 
@@ -2644,23 +2647,15 @@ static void simgraph32_tint_rect(scr_coord_val xp, scr_coord_val yp, scr_coord_v
 }
 
 
-static void simgraph32_draw_rect(scr_coord_val xp, scr_coord_val yp, scr_coord_val w, scr_coord_val h, PIXVAL color, bool)
+static void display_fb_internal32(scr_coord_val xp, scr_coord_val yp, scr_coord_val w, scr_coord_val h, PIXVAL colval, bool dirty, scr_coord_val cL, scr_coord_val cR, scr_coord_val cT, scr_coord_val cB);
+
+static void simgraph32_draw_rect(scr_coord_val xp, scr_coord_val yp, scr_coord_val w, scr_coord_val h, PIXVAL color, bool dirty)
 {
 	if(  textur == NULL  ) {
 		return;
 	}
-	// clip against the framebuffer; there is no clip rect machinery yet
-	if(  xp < 0  ) { w += xp; xp = 0; }
-	if(  yp < 0  ) { h += yp; yp = 0; }
-	if(  xp + w > disp_actual_width  ) { w = disp_actual_width - xp; }
-	if(  yp + h > disp_height       ) { h = disp_height - yp;       }
-
-	for(  scr_coord_val y = 0;  y < h;  y++  ) {
-		PIXVAL *p = textur + (size_t)(yp + y) * disp_width + xp;
-		for(  scr_coord_val x = 0;  x < w;  x++  ) {
-			*p++ = color;
-		}
-	}
+	// as simgraph16_draw_rect: clipped to the framebuffer, and the tiles are marked when asked to
+	display_fb_internal32( xp, yp, w, h, color, dirty, 0, disp_width, 0, disp_height );
 }
 
 
@@ -2725,9 +2720,13 @@ static void simgraph32_draw_array(scr_coord_val xp, scr_coord_val yp, scr_coord_
 
 
 
+static bool flush_dirty_tiles();   // at the end of this file, after the dirty-map statics
+
+/// Hand the backend only what changed: the dirty tiles of this and the previous frame, merged into rectangles,
+/// exactly as simgraph16 does. The whole screen only when there is no dirty map yet.
 static void simgraph32_flush_framebuffer()
 {
-	if(  textur != NULL  ) {
+	if(  textur != NULL  &&  !flush_dirty_tiles()  ) {
 		dr_textur( 0, 0, disp_actual_width, disp_height );
 	}
 }
@@ -4208,3 +4207,105 @@ void simgraph32_set_light_color(int light_idx, rgb888_t day_colour, rgb888_t nig
 
 
 #include "stlab_xr32_hook.cci"
+
+
+static inline uint32 dirty_lowest_set_bit(uint32 val)
+{
+	static const uint8 MultiplyDeBruijnBitPosition[32] =
+	{
+		0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
+	};
+
+	return MultiplyDeBruijnBitPosition[(((val & -val) * 0x077CB531U)) >> 27];
+}
+
+/// simgraph16_flush_framebuffer's dirty-tile walk, transposed (same map layout, same rectangles)
+static bool flush_dirty_tiles()
+{
+	if(  tile_dirty == NULL  ||  tile_dirty_old == NULL  ) {
+		return false;
+	}
+	// combine current with last dirty tiles
+	for(  int i = 0;  i < tile_buffer_length;  i++  ) {
+		tile_dirty_old[i] |= tile_dirty[i];
+	}
+
+	const int tile_words_per_line = tile_buffer_per_line >> 5;
+	std::vector<uint32> masks_v( tile_words_per_line + 1 );
+	uint32 *masks = masks_v.data();
+
+	for(  int x1 = 0;  x1 < tiles_per_line;  x1++  ) {
+		const uint32 x_search_mask = 1 << (x1 & 31); // bit mask for finding bit x set
+		int y1 = 0;
+		do {
+			const int word_max = (0 + (y1 + 1) * tile_buffer_per_line) >> 5; // first word on next line. limit search to < max
+			const int word_x1 = (x1 + y1 * tile_buffer_per_line) >> 5;
+			if(  (tile_dirty_old[word_x1] & x_search_mask) == x_search_mask  ) {
+				// found dirty tile at x1, now find contiguous block of dirties - x2
+				const uint32 testval = ~((~(0xFFFFFFFF << (x1 & 31))) | tile_dirty_old[word_x1]);
+				int word_x2 = word_x1;
+				int x2;
+				if(  testval == 0  ) { // dirty block spans words
+					masks[0] = tile_dirty_old[word_x1];
+					word_x2++;
+					while(  word_x2 < word_max  &&  tile_dirty_old[word_x2] == 0xFFFFFFFF  ) {
+						masks[word_x2 - word_x1] = 0xFFFFFFFF; // dirty block spans this entire word
+						word_x2++;
+					}
+					if(  word_x2 >= word_max                   // dirty tiles extend all the way to screen edge
+						 ||  !(tile_dirty_old[word_x2] & 1)  ) { // dirty block actually ended on the word edge
+						x2 = 32; // set to whole word
+						word_x2--; // masks already set in while loop above
+					}
+					else { // dirty block ends in word_x2
+						x2 = dirty_lowest_set_bit(~tile_dirty_old[word_x2]);
+						masks[word_x2-word_x1] = 0xFFFFFFFF >> (32 - x2);
+					}
+				}
+				else { // dirty block is all within one word - word_x1
+					x2 = dirty_lowest_set_bit(testval);
+					masks[0] = (0xFFFFFFFF << (32 - x2 + (x1 & 31))) >> (32 - x2);
+				}
+
+				for(  int i = word_x1;  i <= word_x2;  i++  ) { // clear dirty
+					tile_dirty_old[i] &= ~masks[i - word_x1];
+				}
+
+				// x2 from bit index to tile coords
+				x2 += (x1 & ~31) + ((word_x2 - word_x1) << 5);
+
+				// find how many rows can be combined into one rectangle
+				int y2 = y1 + 1;
+				bool xmatch = true;
+				while(  y2 < tile_lines  &&  xmatch  ) {
+					const int li = (x1 + y2 * tile_buffer_per_line) >> 5;
+					const int ri = li + word_x2 - word_x1;
+					for(  int i = li;  i <= ri;  i++ ) {
+						if(  (tile_dirty_old[i] & masks[i - li])  !=  masks[i - li]  ) {
+							xmatch = false;
+							break;
+						}
+					}
+					if(  xmatch  ) {
+						for(  int i = li;  i <= ri;  i++  ) { // clear dirty
+							tile_dirty_old[i] &= ~masks[i - li];
+						}
+						y2++;
+					}
+				}
+
+				dr_textur( x1 << DIRTY_TILE_SHIFT, y1 << DIRTY_TILE_SHIFT, (x2 - x1) << DIRTY_TILE_SHIFT, (y2 - y1) << DIRTY_TILE_SHIFT );
+				y1 = y2; // continue search from bottom of found rectangle
+			}
+			else {
+				y1++;
+			}
+		} while(  y1 < tile_lines  );
+	}
+
+	// swap tile buffers
+	uint32 *tmp = tile_dirty_old;
+	tile_dirty_old = tile_dirty;
+	tile_dirty = tmp; // _old was cleared to 0 in above loops
+	return true;
+}

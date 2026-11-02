@@ -1,0 +1,20 @@
+s3-cand-d1      850 px, box x 10..1919 y 32..116
+s3-cand-d2       82 px, box x 10..38 y 96..116
+s3-cand-d3      850 px, box x 10..1919 y 32..116
+s3-cand-d4      850 px, box x 10..1919 y 32..116
+s3-cand-d5      850 px, box x 10..1919 y 32..116
+s3-cand-d6      850 px, box x 10..1919 y 32..116
+s3-cand-d7      850 px, box x 10..1919 y 32..116
+s3-cand-d8       82 px, box x 10..38 y 96..116
+s3-off16-d1      82 px, box x 10..38 y 96..116
+s3-off16-d2     850 px, box x 10..1919 y 32..116
+s3-off16-d3      82 px, box x 10..38 y 96..116
+s3-off16-d4      82 px, box x 10..38 y 96..116
+s3-off16-d5     850 px, box x 10..1919 y 32..116
+s3-off16-d6     850 px, box x 10..1919 y 32..116
+s3-off16-d7     850 px, box x 10..1919 y 32..116
+s3-off16-d8     850 px, box x 10..1919 y 32..116
+82-px sets: s3-cand-d2, s3-cand-d8, s3-off16-d1, s3-off16-d3, s3-off16-d4 -> ALL IDENTICAL (positions)
+850-px sets: s3-cand-d1, s3-cand-d3, s3-cand-d4, s3-cand-d5, s3-cand-d6, s3-cand-d7, s3-off16-d2, s3-off16-d5, s3-off16-d6, s3-off16-d7, s3-off16-d8 -> ALL IDENTICAL (positions)
+every 82-px set inside every 850-px set: True
+the 850-px set minus the 82-px set: 768 px, box x 1872..1919 y 32..47

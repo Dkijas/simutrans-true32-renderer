@@ -1,0 +1,41 @@
+control tests written
+grep: <lab>/out/suite-control-linuxsdl3-32/suite.err: No such file or directory
+suite control-linuxsdl3-32: FAIL (FAILED, last counter [1/310], tests listed 310)
+grep: <lab>/out/suite-cand-linuxsdl3-32/suite.err: No such file or directory
+suite cand-linuxsdl3-32: PASS (COMPLETED, last counter [309/309], tests listed 309)
+grep: <lab>/out/suite-cand-linuxsdl3-16/suite.err: No such file or directory
+suite cand-linuxsdl3-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+linux simutrans-rgba32 objects=pak-kitB8 xr32=0: rc=0 skip_lines=8 fatal_or_error=0
+linux simutrans-rgba32 objects=pak-kitB8 xr32=1: rc=0 skip_lines=0 fatal_or_error=0
+linux simutrans-16bit objects=pak-kitB8 xr32=0: rc=0 skip_lines=8 fatal_or_error=0
+linux simutrans-rgba32 objects=pak128.german-cat xr32=1: rc=0 skip_lines=0 fatal_or_error=0
+linux frank150 xr32=1: state.json errors_empty=1
+linux mres200f xr32=1: state.json errors_empty=1
+linux alpha100 xr32=1: state.json errors_empty=1
+linux alpha125 xr32=1: state.json errors_empty=1
+linux thinpoles xr32=1: state.json errors_empty=1
+linux catdraw xr32=1: state.json errors_empty=1
+linux seadraw xr32=1: state.json errors_empty=1
+linux mutantdraw xr32=1: state.json errors_empty=1
+linux nightday xr32=1: state.json errors_empty=1
+linux nightkit xr32=1: state.json errors_empty=1
+linux themeswap xr32=1: state.json errors_empty=1
+linux barzoom xr32=1: state.json errors_empty=1
+linux frank150 xr32=0: state.json errors_empty=1
+linux mres200f xr32=0: state.json errors_empty=1
+linux alpha100 xr32=0: state.json errors_empty=1
+linux alpha125 xr32=0: state.json errors_empty=1
+linux thinpoles xr32=0: state.json errors_empty=1
+linux catdraw xr32=0: state.json errors_empty=1
+linux seadraw xr32=0: state.json errors_empty=1
+linux mutantdraw xr32=0: state.json errors_empty=1
+linux nightday xr32=0: state.json errors_empty=1
+linux nightkit xr32=0: state.json errors_empty=1
+linux themeswap xr32=0: state.json errors_empty=1
+linux barzoom xr32=0: state.json errors_empty=1
+linux f16_150 xr32=0: state.json errors_empty=1
+linux f16_swap xr32=0: state.json errors_empty=1
+shutdown linux simutrans-rgba32 xr32=1: rc=0 wall_s=23 fatal_or_error=0 skipped_xr32=0 peak_rss_mb=521 -> PASS
+shutdown linux simutrans-rgba32 xr32=0: rc=0 wall_s=24 fatal_or_error=0 skipped_xr32=154 peak_rss_mb=518 -> PASS
+shutdown linux simutrans-16bit xr32=0: rc=0 wall_s=23 fatal_or_error=0 skipped_xr32=154 peak_rss_mb=514 -> PASS
+LINUX_ALL_DONE

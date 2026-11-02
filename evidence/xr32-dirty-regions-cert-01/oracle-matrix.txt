@@ -1,0 +1,215 @@
+win: rejected runs 16
+    WI s3-t2 vehicles r1: 39 rows < 40
+    WI s3-cand vehicles r1: 39 rows < 40
+    WI s2-t2 vehicles r1: 39 rows < 40
+    WI s2-cand vehicles r1: 39 rows < 40
+    WT s3-off16 theme r1: colour depth 16
+    WT s3-off16 theme r2: colour depth 16
+    WT2 s2-off16 theme r1: colour depth 16
+    WT2 s3-off16 theme r1: colour depth 16
+    WTD s3-off16-d1 theme r1: colour depth 16
+    WTD s3-off16-d2 theme r1: colour depth 16
+    WTD s3-off16-d3 theme r1: colour depth 16
+    WTD s3-off16-d4 theme r1: colour depth 16
+    WTD s3-off16-d5 theme r1: colour depth 16
+    WTD s3-off16-d6 theme r1: colour depth 16
+    WTD s3-off16-d7 theme r1: colour depth 16
+    WTD s3-off16-d8 theme r1: colour depth 16
+linux: rejected runs 4
+    LT l3-off16 theme r1: colour depth 16
+    LT l3-off16 theme r2: colour depth 16
+    LT2 l2-off16 theme r1: colour depth 16
+    LT2 l3-off16 theme r1: colour depth 16
+
+=== linux LGW (renderer opengl) - mismatching px over the verified frames
+scenario             l2-cand          l2-t2        l3-cand         l3-mut          l3-t2
+daynight_raw          0/120f         0/120f         0/120f   1327231/120f      3143/120f
+edges                 0/120f         0/120f         0/120f   4964944/120f     56274/120f
+fullscreen            0/120f         0/120f         0/120f  15646946/120f     12090/120f
+playercolor           0/120f         0/120f         0/120f    912298/120f      3077/120f
+resize                0/120f         0/120f         0/120f   2266716/120f      8665/120f
+theme             39950/120f         0/120f     45050/120f   6693585/120f      3108/120f
+vehicles              0/120f         0/120f         0/120f   5329343/120f      3030/120f
+zoom                  0/120f         0/120f         0/120f    770531/120f      3082/120f
+  KNOWN  l2-cand theme: 39950 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  l3-cand theme: 45050 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  control droprect mutant: fails in 8 of 8 scenarios (daynight_raw,edges,fullscreen,playercolor,resize,theme,vehicles,zoom); passes in: -
+
+=== linux LGW2 (renderer opengl) - mismatching px over the verified frames
+scenario             l2-cand         l2-mut          l2-t2        l3-cand         l3-mut          l3-t2
+daynight              0/120f         0/120f         0/120f         0/120f         0/120f      3720/120f
+edges                 0/120f   4891598/120f         0/120f         0/120f   4714409/120f     57291/120f
+fullredraw            0/120f         0/120f         0/120f         0/120f         0/120f      4124/120f
+scroll                0/120f         0/120f         0/120f         0/120f         0/120f      4078/120f
+static                0/120f   8234280/120f         0/120f         0/120f   8234280/120f      3960/120f
+vehicles              0/120f   4047063/120f         0/120f         0/120f   4051848/120f      4065/120f
+windows               0/120f   4081619/120f         0/120f         0/120f   3907244/120f    104884/120f
+zoomx                 0/120f   1828795/120f         0/120f         0/120f   1262330/120f      4425/120f
+  control droprect mutant: fails in 5 of 8 scenarios (edges,static,vehicles,windows,zoomx); passes in: daynight,fullredraw,scroll
+
+=== linux LGWM (renderer opengl) - mismatching px over the verified frames
+scenario       l2-cand-alpha   l2-cand-mres     l2-t2-mres  l3-cand-alpha   l3-cand-mres     l3-t2-mres
+static                0/120f         0/120f         0/120f         0/120f         0/120f      2880/120f
+theme                 0/120f         0/120f         0/120f         0/120f         0/120f      2494/120f
+zoom                  0/120f         0/120f         0/120f         0/120f         0/120f      2422/120f
+
+=== linux LGX (renderer opengl) - mismatching px over the verified frames
+scenario             l2-cand          l2-t2        l3-cand         l3-mut          l3-t2
+daynight_raw          0/120f         0/120f         0/120f   1730924/120f      3191/120f
+edges                 0/120f         0/120f         0/120f   5010184/120f     56296/120f
+fullscreen            0/120f         0/120f  25954609/120f  41032095/120f  25968012/120f
+playercolor           0/120f         0/120f         0/120f   2355683/120f      3113/120f
+resize                0/120f         0/120f  34949601/120f  36496012/120f  34956704/120f
+theme             37400/120f         0/120f     32300/120f   6114851/120f      3087/120f
+vehicles              0/120f         0/120f         0/120f   5271481/120f      3087/120f
+zoom                  0/120f         0/120f         0/120f   1073305/120f      4038/120f
+  SWITCH l3-cand fullscreen: 25954609 px, all on the switch frames that testing-2 mismatches identically -> PASS outside 7 switch frame(s) (UNVERIFIABLE there, identical in testing-2) (switch-frames.txt)
+  SWITCH l3-cand resize: 34949601 px, all on the switch frames that testing-2 mismatches identically -> PASS outside 20 switch frame(s) (UNVERIFIABLE there, identical in testing-2) (switch-frames.txt)
+  KNOWN  l2-cand theme: 37400 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  l3-cand theme: 32300 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  control droprect mutant: fails in 8 of 8 scenarios (daynight_raw,edges,fullscreen,playercolor,resize,theme,vehicles,zoom); passes in: -
+
+=== linux LGX2 (renderer opengl) - mismatching px over the verified frames
+scenario             l2-cand         l2-mut          l2-t2        l3-cand         l3-mut          l3-t2
+daynight              0/120f         0/120f         0/120f         0/120f         0/120f      3840/120f
+edges                 0/120f   4918809/120f         0/120f         0/120f   4947178/120f     56268/120f
+fullredraw            0/120f         0/120f         0/120f         0/120f         0/120f      3126/120f
+scroll                0/120f         0/120f         0/120f         0/120f         0/120f      3027/120f
+static                0/120f   5334360/120f         0/120f         0/120f   5334360/120f      3720/120f
+vehicles              0/120f   7096202/120f         0/120f         0/120f   7138453/120f      3074/120f
+windows               0/120f   2987005/120f         0/120f         0/120f   2562273/120f    114212/120f
+zoomx                 0/120f    416531/120f         0/120f         0/120f    622964/120f      3461/120f
+  control droprect mutant: fails in 5 of 8 scenarios (edges,static,vehicles,windows,zoomx); passes in: daynight,fullredraw,scroll
+
+=== linux LGXM (renderer opengl) - mismatching px over the verified frames
+scenario       l2-cand-alpha   l2-cand-mres     l2-t2-mres  l3-cand-alpha   l3-cand-mres     l3-t2-mres
+static                0/120f         0/120f         0/120f         0/120f         0/120f       720/120f
+theme                 0/120f         0/120f         0/120f         0/120f         0/120f      2138/120f
+zoom                  0/120f         0/120f         0/120f         0/120f         0/120f      2151/120f
+
+=== linux LI (renderer software) - mismatching px over the verified frames
+scenario             l2-cand          l2-t2        l3-cand          l3-t2
+vehicles        30596800/40f   30596800/40f          0/40f        661/40f
+  VOID LANE l2-* (linux, video dummy): testing-2 itself fails 'static' by > 1 % of the verified pixels -> the oracle cannot see this lane's frame; no result of l2-* counts (neither PASS nor FAIL)
+
+=== linux LR (renderer software) - mismatching px over the verified frames
+scenario             l2-cand          l2-t2        l3-cand         l3-mut          l3-t2
+edges         463591354/600f 463590977/600f         0/600f  24490133/600f    282201/600f
+fullscreen            0/600f         0/600f         0/600f  13263779/600f     11944/600f
+resize                0/600f         0/600f         0/600f  11711289/600f      9082/600f
+theme         463996731/600f 463996443/600f    196350/600f  31662114/600f     15487/600f
+  VOID LANE l2-* (linux, video dummy): testing-2 itself fails 'static' by > 1 % of the verified pixels -> the oracle cannot see this lane's frame; no result of l2-* counts (neither PASS nor FAIL)
+  KNOWN  l3-cand theme: 196350 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  control droprect mutant: fails in 4 of 4 scenarios (edges,fullscreen,resize,theme); passes in: -
+
+=== linux LRX (renderer opengl) - mismatching px over the verified frames
+scenario             l2-cand          l2-t2        l3-cand          l3-t2
+fullscreen            0/600f         0/600f  25954634/600f  26025896/600f
+resize                0/600f         0/600f  34949583/600f  34991253/600f
+  SWITCH l3-cand fullscreen: 25954634 px, all on the switch frames that testing-2 mismatches identically -> PASS outside 7 switch frame(s) (UNVERIFIABLE there, identical in testing-2) (switch-frames.txt)
+  SWITCH l3-cand resize: 34949583 px, all on the switch frames that testing-2 mismatches identically -> PASS outside 20 switch frame(s) (UNVERIFIABLE there, identical in testing-2) (switch-frames.txt)
+
+=== linux LT (renderer software) - mismatching px over the verified frames
+scenario             l3-cand          l3-t2
+theme             91800/240f      6057/240f
+  VOID LANE l2-* (linux, video dummy): testing-2 itself fails 'static' by > 1 % of the verified pixels -> the oracle cannot see this lane's frame; no result of l2-* counts (neither PASS nor FAIL)
+  KNOWN  l3-cand theme: 91800 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+
+=== linux LT2 (renderer opengl) - mismatching px over the verified frames
+scenario             l2-cand          l2-t2        l3-cand          l3-t2
+theme            163870/600f         0/600f    185970/600f     16616/600f
+  KNOWN  l2-cand theme: 163870 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  l3-cand theme: 185970 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+
+=== linux LV (renderer software) - mismatching px over the verified frames
+scenario             l2-cand         l2-mut         l2-noC          l2-t2        l3-cand         l3-mut         l3-noC          l3-t2
+daynight       92765400/120f  92765400/120f  92765400/120f  92765400/120f         0/120f         0/120f         0/120f      3720/120f
+daynight_raw   92766215/120f  92766462/120f  93018008/120f  92766249/120f         0/120f   1351843/120f  72304755/120f      3089/120f
+edges          92718304/120f  92722551/120f  92955544/120f  92718196/120f         0/120f   5003614/120f  60941343/120f     56232/120f
+fullredraw     92766299/120f  92766112/120f  92766149/120f  92766289/120f         0/120f         0/120f         0/120f      3099/120f
+playercolor    92766276/120f  92766240/120f  92996005/120f  92766288/120f         0/120f   2853067/120f  74141048/120f      3161/120f
+resize                0/120f   2087560/120f   8095568/120f         0/120f         0/120f   1927157/120f  11984648/120f      1752/120f
+scroll         91760552/120f  91760969/120f  91760498/120f  91760175/120f         0/120f         0/120f         0/120f      2998/120f
+static         92765400/120f  92765400/120f  92765400/120f  92765400/120f         0/120f   8199840/120f         0/120f      3840/120f
+theme          92799433/120f  92831160/120f  92949298/120f  92799254/120f     35700/120f   6252268/120f  76248722/120f      3039/120f
+vehicles       92766226/120f  92762290/120f  93017972/120f  92766273/120f         0/120f   5544561/120f  48300920/120f      2972/120f
+windows        89154400/120f  89154006/120f  89172576/120f  89154208/120f         0/120f   5186585/120f  75015036/120f    103820/120f
+zoom           91742575/120f  91742524/120f  91770484/120f  91742746/120f         0/120f   1081262/120f         0/120f      3074/120f
+zoomx          91109477/120f  91105332/120f  91118522/120f  91114123/120f         0/120f    712278/120f   1974193/120f      3676/120f
+  VOID LANE l2-* (linux, video dummy): testing-2 itself fails 'static' by > 1 % of the verified pixels -> the oracle cannot see this lane's frame; no result of l2-* counts (neither PASS nor FAIL)
+  KNOWN  l3-cand theme: 35700 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  control droprect mutant: fails in 10 of 13 scenarios (daynight_raw,edges,playercolor,resize,static,theme,vehicles,windows,zoom,zoomx); passes in: daynight,fullredraw,scroll
+  control noC (candidate without C): fails in daynight_raw,edges,playercolor,resize,theme,vehicles,windows,zoomx; passes in daynight,fullredraw,scroll,static,zoom
+
+=== linux LVM (renderer software) - mismatching px over the verified frames
+scenario       l2-cand-alpha   l2-cand-mres     l2-t2-mres  l3-cand-alpha   l3-cand-mres     l3-t2-mres
+static         33518760/120f  33518880/120f  33518880/120f         0/120f         0/120f       720/120f
+theme          35239020/120f  35240580/120f  35240580/120f         0/120f         0/120f      2158/120f
+zoom           32154840/120f  32154960/120f  32154960/120f         0/120f         0/120f      2138/120f
+  VOID LANE l2-* (linux, video dummy): testing-2 itself fails 'static' by > 1 % of the verified pixels -> the oracle cannot see this lane's frame; no result of l2-* counts (neither PASS nor FAIL)
+
+=== win WI2 (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario             s2-cand          s2-t2        s3-cand          s3-t2
+vehicles               0/40f          0/40f          0/40f        378/40f
+
+=== win WM (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario       s2-cand-alpha   s2-cand-mres    s2-t2-alpha     s2-t2-mres  s3-cand-alpha   s3-cand-mres    s3-t2-alpha     s3-t2-mres
+static                0/120f         0/120f         0/120f         0/120f         0/120f         0/120f       600/120f       600/120f
+theme                 0/120f         0/120f         0/120f         0/120f         0/120f         0/120f       691/120f       690/120f
+zoom                  0/120f         0/120f         0/120f         0/120f         0/120f         0/120f       695/120f       670/120f
+
+=== win WR (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario             s2-cand          s2-t2        s3-cand         s3-mut          s3-t2
+edges                 0/600f         0/600f         0/600f  24654857/600f    277080/600f
+fullscreen            0/600f         0/600f         0/600f  77365179/600f      7792/600f
+resize                0/600f         0/600f         0/600f  11506601/600f      6433/600f
+theme            113070/600f         0/600f    221850/600f  31631215/600f     10503/600f
+  KNOWN  s2-cand theme: 113070 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand theme: 221850 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  control droprect mutant: fails in 4 of 4 scenarios (edges,fullscreen,resize,theme); passes in: -
+
+=== win WT (renderer direct3d11) - mismatching px over the verified frames
+scenario             s3-cand          s3-t2
+theme             77350/240f      3779/240f
+  KNOWN  s3-cand theme: 77350 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+
+=== win WT2 (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario             s2-cand          s2-t2        s3-cand          s3-t2
+theme            221000/600f         0/600f    185120/600f     10317/600f
+  KNOWN  s2-cand theme: 221000 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand theme: 185120 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+
+=== win WTD (renderer direct3d11) - mismatching px over the verified frames
+scenario          s3-cand-d1     s3-cand-d2     s3-cand-d3     s3-cand-d4     s3-cand-d5     s3-cand-d6     s3-cand-d7     s3-cand-d8
+theme              25500/60f       2460/60f      25500/60f      25500/60f      25500/60f      25500/60f      25500/60f       2460/60f
+  KNOWN  s3-cand-d1 theme: 25500 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand-d2 theme: 2460 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand-d3 theme: 25500 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand-d4 theme: 25500 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand-d5 theme: 25500 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand-d6 theme: 25500 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand-d7 theme: 25500 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand-d8 theme: 2460 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+
+=== win WV (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario             s2-cand         s2-mut         s2-noC          s2-t2        s3-cand         s3-mut         s3-noC          s3-t2
+daynight              0/120f         0/120f         0/120f         0/120f         0/120f         0/120f         0/120f      1920/120f
+daynight_raw          0/120f    949886/120f 110059146/120f         0/120f         0/120f   1455834/120f  72350586/120f      1845/120f
+edges                 0/120f   4822499/120f 118735491/120f         0/120f         0/120f   4818475/120f  73849300/120f     54970/120f
+fullredraw            0/120f         0/120f         0/120f         0/120f         0/120f         0/120f         0/120f      1847/120f
+fullscreen            0/120f  14107271/120f  70383013/120f         0/120f         0/120f  15332838/120f  70025508/120f      1636/120f
+playercolor           0/120f   2202411/120f 121064347/120f         0/120f         0/120f   2275809/120f  64783244/120f      1848/120f
+resize                0/120f   1771557/120f  13943896/120f         0/120f         0/120f   1895772/120f  17496767/120f      1022/120f
+scroll                0/120f         0/120f         0/120f         0/120f         0/120f         0/120f         0/120f      1865/120f
+static                0/120f   3744960/120f         0/120f         0/120f         0/120f   3744960/120f         0/120f      1920/120f
+theme             41650/120f   5464829/120f 109730252/120f         0/120f     45900/120f   6596191/120f  66873530/120f      1967/120f
+vehicles              0/120f   4621147/120f 120877055/120f         0/120f         0/120f   5227931/120f  72054131/120f      1867/120f
+windows               0/120f   4658100/120f 114276197/120f         0/120f         0/120f   5249700/120f  66588515/120f     30654/120f
+zoom                  0/120f   1332594/120f   3946347/120f         0/120f         0/120f    898515/120f   1972321/120f      1960/120f
+zoomx                 0/120f   1339286/120f   3944662/120f         0/120f         0/120f    381180/120f   3921643/120f      2838/120f
+  KNOWN  s2-cand theme: 41650 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  KNOWN  s3-cand theme: 45900 px - T1: two toolbar elements (compass 768 px + 82 px), the same pixel positions as official r12377 16-bit (theme-masks.txt)
+  control droprect mutant: fails in 11 of 14 scenarios (daynight_raw,edges,fullscreen,playercolor,resize,static,theme,vehicles,windows,zoom,zoomx); passes in: daynight,fullredraw,scroll
+  control noC (candidate without C): fails in daynight_raw,edges,fullscreen,playercolor,resize,theme,vehicles,windows,zoom,zoomx; passes in daynight,fullredraw,scroll,static
+
+candidate failures outside KNOWN, or void controls: 0

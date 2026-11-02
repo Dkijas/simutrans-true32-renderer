@@ -1,0 +1,20 @@
+diff --git a/src/simutrans/display/simgraph32.cc b/src/simutrans/display/simgraph32.cc
+index 37d8b7829f3c5188989987fd8c6c2fa332467721..d6394fc590bf22a6664af668932e767b8fa2959a 100644
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -2100,6 +2100,7 @@ static void simgraph32_set_daynight_level(int night)
+ 	if(  night != night_shift  ) {
+ 		night_shift = night;
+ 		calc_base_pal_from_night_shift( night );
++		simgraph32_mark_screen_dirty();   // as simgraph16: every picture changes
+ 		// rgbmap_all_day is a snapshot of the night==0 tables and is
+ 		// deliberately NOT refreshed here - simgraph16_set_daynight_level()
+ 		// does not touch it either. Refreshing it would make the daytime
+@@ -2124,6 +2125,7 @@ static void simgraph32_set_player_color_scheme(const int player, const uint8 col
+ 			// calc_base_pal_from_night_shift resets player_night to 0
+ 			player_day = player_night;
+ 		}
++		simgraph32_mark_screen_dirty();   // as simgraph16: every picture of this player changes
+ 	}
+ }
+ 

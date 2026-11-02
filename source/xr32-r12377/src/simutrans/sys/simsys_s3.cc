@@ -653,6 +653,10 @@ static bool internal_create_surfaces(int tex_width, int tex_height)
 	 * scaling stays nearest so the pixels are not smeared. */
 	const bool integer_scaling = (x_scale & (SCALE_NEUTRAL_X - 1)) == 0  &&  (y_scale & (SCALE_NEUTRAL_Y - 1)) == 0;
 	SDL_SetTextureScaleMode( screen_tx, integer_scaling ? SDL_SCALEMODE_NEAREST : SDL_SCALEMODE_LINEAR );
+#if COLOUR_DEPTH == 32
+	// the framebuffer is opaque; an ARGB8888 texture would otherwise be alpha-blended by SDL
+	SDL_SetTextureBlendMode( screen_tx, SDL_BLENDMODE_NONE );
+#endif
 
 	/* The format has to be exactly COLOUR_DEPTH bits with exactly the alpha
 	 * mask the renderer expects - none at 16, 0xFF000000 at 32 - or the

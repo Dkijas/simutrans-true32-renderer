@@ -1,0 +1,14 @@
+Windows clean shutdown + peak working set, pak128.german-cat 1950 save -> 1951.3, SDL dummy video, n=3 interleaved
+cand-sdl2  simutrans-rgba32.exe   XR32 0 | PASS 3 of 3 | skipped XR32 nodes 154 | peak WS median  559.2 MB ( 559.2- 559.2) | wall median 24 s
+cand-sdl2  simutrans-rgba32.exe   XR32 1 | PASS 3 of 3 | skipped XR32 nodes 0 | peak WS median  563.2 MB ( 563.0- 563.3) | wall median 26 s
+cand-sdl3  simutrans-rgba32.exe   XR32 0 | PASS 3 of 3 | skipped XR32 nodes 154 | peak WS median  534.2 MB ( 534.1- 534.3) | wall median 24 s
+cand-sdl3  simutrans-rgba32.exe   XR32 1 | PASS 3 of 3 | skipped XR32 nodes 0 | peak WS median  538.0 MB ( 537.2- 538.0) | wall median 24 s
+t2-sdl2    simutrans-t2.exe       XR32 0 | PASS 3 of 3 | skipped XR32 nodes 154 | peak WS median  559.2 MB ( 559.2- 559.3) | wall median 24 s
+t2-sdl2    simutrans-t2.exe       XR32 1 | PASS 3 of 3 | skipped XR32 nodes 0 | peak WS median  563.1 MB ( 562.7- 573.2) | wall median 25 s
+t2-sdl3    simutrans-t2.exe       XR32 0 | PASS 3 of 3 | skipped XR32 nodes 154 | peak WS median  534.0 MB ( 534.0- 534.0) | wall median 25 s
+t2-sdl3    simutrans-t2.exe       XR32 1 | PASS 3 of 3 | skipped XR32 nodes 0 | peak WS median  537.9 MB ( 537.9- 549.4) | wall median 24 s
+paired SDL2 XR32 1 candidate - testing-2: peak WS median +0.2 MB (min -10.2, max +0.5), candidate higher in 2 of 3
+paired SDL2 XR32 0 candidate - testing-2: peak WS median +0.0 MB (min -0.1, max +0.0), candidate higher in 0 of 3
+paired SDL3 XR32 1 candidate - testing-2: peak WS median +0.1 MB (min -12.2, max +0.1), candidate higher in 2 of 3
+paired SDL3 XR32 0 candidate - testing-2: peak WS median +0.2 MB (min +0.1, max +0.3), candidate higher in 3 of 3
+failures: 0

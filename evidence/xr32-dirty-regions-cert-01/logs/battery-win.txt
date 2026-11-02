@@ -1,0 +1,237 @@
+start 2026-11-01T23:44:39+01:00
+6e016e9687ab5adb9727cc04053124cd4c4bfb8da0f8f6e4f2d455cc0688abac  <lab>/work/smoke/win-sdl2/simutrans-rgba32.exe
+69444edca3042ce91bef8a7a3301ada579c9314b641a8c95368210d76d0d6fa0  <lab>/work/smoke/win-sdl3/simutrans-rgba32.exe
+6a3a97421a5a6699f670762d33b636576d2e6f873b9b34eec2a201b61e28e238  <lab>/work/smoke/win-sdl2/simutrans-16bit.exe
+a3b66376fba0ff49bc2c57256ec0ec4ddb67ff9d035f886e331c036660eaadc6  <lab>/work/smoke/win-sdl3/simutrans-16bit.exe
+GATES_DONE
+GATES_DONE
+sdl2 simutrans-rgba32.exe objects=pak-kitB8 xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=6e016e9687ab5adb
+sdl2 simutrans-rgba32.exe objects=pak-kitB8 xr32=1: rc=0 simu.log=yes skip_lines=0 fatal_or_error=0 exe_sha=6e016e9687ab5adb
+sdl2 simutrans-16bit.exe objects=pak-day xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=6a3a97421a5a6699
+sdl2 simutrans-16bit.exe objects=pak-kitB8 xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=6a3a97421a5a6699
+sdl2 simutrans-rgba32.exe objects=pak128.german-cat xr32=0: rc=0 simu.log=yes skip_lines=154 fatal_or_error=0 exe_sha=6e016e9687ab5adb
+sdl2 simutrans-rgba32.exe objects=pak128.german-cat xr32=1: rc=0 simu.log=yes skip_lines=0 fatal_or_error=0 exe_sha=6e016e9687ab5adb
+sdl2 simutrans-16bit.exe objects=pak128.german-cat xr32=0: rc=0 simu.log=yes skip_lines=154 fatal_or_error=0 exe_sha=6a3a97421a5a6699
+sdl3 simutrans-rgba32.exe objects=pak-kitB8 xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=69444edca3042ce9
+sdl3 simutrans-rgba32.exe objects=pak-kitB8 xr32=1: rc=0 simu.log=yes skip_lines=0 fatal_or_error=0 exe_sha=69444edca3042ce9
+sdl3 simutrans-16bit.exe objects=pak-day xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=a3b66376fba0ff49
+sdl3 simutrans-16bit.exe objects=pak-kitB8 xr32=0: rc=0 simu.log=yes skip_lines=8 fatal_or_error=0 exe_sha=a3b66376fba0ff49
+sdl3 simutrans-rgba32.exe objects=pak128.german-cat xr32=0: rc=0 simu.log=yes skip_lines=154 fatal_or_error=0 exe_sha=69444edca3042ce9
+sdl3 simutrans-rgba32.exe objects=pak128.german-cat xr32=1: rc=0 simu.log=yes skip_lines=0 fatal_or_error=0 exe_sha=69444edca3042ce9
+sdl3 simutrans-16bit.exe objects=pak128.german-cat xr32=0: rc=0 simu.log=yes skip_lines=154 fatal_or_error=0 exe_sha=a3b66376fba0ff49
+control tests written: <lab>/build\suite-control-tests
+suite control-sdl2-32: FAIL (FAILED, last counter [1/310], tests listed 310)
+suite cand-sdl2-32: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-sdl2-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite official-sdl2-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-sdl3-32: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-sdl3-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite official-sdl3-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+SUITES_WIN_DONE
+identity-winsdl2-cand-xr1: 1 clean state
+a5-uinight-winsdl2-cand-xr1: 1 clean state
+identity-winsdl2-cand-xr0: 1 clean state
+a5-uinight-winsdl2-cand-xr0: 1 clean state
+a5-uiday-winsdl2-cand-xr1: 1 clean state
+n1-winsdl2-cand-xr1: 1 clean state
+n1-winsdl2-cand-xr0: 1 clean state
+identity-winsdl2-base-xr1: 1 clean state
+a5-uinight-winsdl2-base-xr1: 1 clean state
+identity-winsdl2-base-xr0: 1 clean state
+a5-uinight-winsdl2-base-xr0: 1 clean state
+a5-uiday-winsdl2-base-xr1: 1 clean state
+n1-winsdl2-base-xr1: 1 clean state
+n1-winsdl2-base-xr0: 1 clean state
+identity-winsdl3-cand-xr1: 1 clean state
+a5-uinight-winsdl3-cand-xr1: 1 clean state
+identity-winsdl3-cand-xr0: 1 clean state
+a5-uinight-winsdl3-cand-xr0: 1 clean state
+a5-uiday-winsdl3-cand-xr1: 1 clean state
+n1-winsdl3-cand-xr1: 1 clean state
+n1-winsdl3-cand-xr0: 1 clean state
+identity-winsdl3-base-xr1: 1 clean state
+a5-uinight-winsdl3-base-xr1: 1 clean state
+identity-winsdl3-base-xr0: 1 clean state
+a5-uinight-winsdl3-base-xr0: 1 clean state
+a5-uiday-winsdl3-base-xr1: 1 clean state
+n1-winsdl3-base-xr1: 1 clean state
+n1-winsdl3-base-xr0: 1 clean state
+WIN_NEW_GATES_DONE
+=== analysers
+== sdl2
+frank100   iconsize [40, 40] fitted 1 ['5/4'] | parity with 16-bit: equal 1, known-issue-1 0, unexpected 0, base-mismatch 0
+frank150   iconsize [60, 60] fitted 278 ['3/2', '7/4'] | parity with 16-bit: equal 253, known-issue-1 0, unexpected 0, base-mismatch 25
+themeswap  iconsize [40, 40] -> [60, 60] -> [40, 40] | fitted 1 -> 278 -> 1 | 150 % parity with 16-bit: equal 253, known-issue-1 0, unexpected 0, base-mismatch 25 | toolbar band 100 % before vs after: 0 px differ -> FAIL
+barzoom    xr1 toolbar band (rows 0..80-1) vs world zoom 1/1: z0:0 z11:0 z7back:0 | hires used [1, 1, 1, 1] -> ok
+barzoom    xr0 toolbar band (rows 0..80-1) vs world zoom 1/1: z0:0 z11:6400 z7back:6400 | hires used [0, 0, 0, 0] -> reported
+barzoom150 xr1 toolbar band (rows 0..60-1) vs world zoom 1/1: z0:0 z11:0 z7back:0 | hires used [0, 0, 0, 0] -> ok
+barzoom150 xr0 toolbar band (rows 0..60-1) vs world zoom 1/1: z0:0 z11:0 z7back:0 | hires used [0, 0, 0, 0] -> ok
+seadraw    xr32 slots 54 | images 54 | colour 201,7,133 px: XR32 on 0, off 0 | on vs off identical pictures 0 of 54 -> ok
+mutantdraw xr32 slots 54 | images 54 | colour 201,7,133 px: XR32 on 221184, off 0 | on vs off identical pictures 0 of 54 -> ok
+seaworld   colour 201,7,133 px in the loaded world framebuffer: XR32 on 0, off 0
+mutantworld colour 201,7,133 px in the loaded world framebuffer: XR32 on 0, off 0
+catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 210, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 558, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 49, legacy-hidden 0, drawn where legacy hides 0 -> ok
+uinight    xr1 toolbar band mean brightness night 122.1, day 125.4 (ratio 0.97)
+uinight    xr0 toolbar band mean brightness night 118.4, day 121.8 (ratio 0.97)
+failures 26
+== sdl3
+frank100   iconsize [40, 40] fitted 1 ['5/4'] | parity with 16-bit: equal 1, known-issue-1 0, unexpected 0, base-mismatch 0
+frank150   iconsize [60, 60] fitted 278 ['3/2', '7/4'] | parity with 16-bit: equal 253, known-issue-1 0, unexpected 0, base-mismatch 25
+themeswap  iconsize [40, 40] -> [60, 60] -> [40, 40] | fitted 1 -> 278 -> 1 | 150 % parity with 16-bit: equal 253, known-issue-1 0, unexpected 0, base-mismatch 25 | toolbar band 100 % before vs after: 0 px differ -> FAIL
+barzoom    xr1 toolbar band (rows 0..80-1) vs world zoom 1/1: z0:0 z11:0 z7back:0 | hires used [1, 1, 1, 1] -> ok
+barzoom    xr0 toolbar band (rows 0..80-1) vs world zoom 1/1: z0:0 z11:6400 z7back:6400 | hires used [0, 0, 0, 0] -> reported
+barzoom150 xr1 toolbar band (rows 0..60-1) vs world zoom 1/1: z0:0 z11:0 z7back:0 | hires used [0, 0, 0, 0] -> ok
+barzoom150 xr0 toolbar band (rows 0..60-1) vs world zoom 1/1: z0:0 z11:0 z7back:0 | hires used [0, 0, 0, 0] -> ok
+seadraw    xr32 slots 54 | images 54 | colour 201,7,133 px: XR32 on 0, off 0 | on vs off identical pictures 0 of 54 -> ok
+mutantdraw xr32 slots 54 | images 54 | colour 201,7,133 px: XR32 on 221184, off 0 | on vs off identical pictures 0 of 54 -> ok
+seaworld   colour 201,7,133 px in the loaded world framebuffer: XR32 on 0, off 0
+mutantworld colour 201,7,133 px in the loaded world framebuffer: XR32 on 0, off 0
+catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 209, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 560, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 46, legacy-hidden 0, drawn where legacy hides 0 -> ok
+uinight    xr1 toolbar band mean brightness night 122.1, day 125.4 (ratio 0.97)
+uinight    xr0 toolbar band mean brightness night 118.4, day 121.8 (ratio 0.97)
+failures 26
+analyze_gates rc=0
+sdl2           catdraw   rows   726 | legacy-hidden   21 | drawn where legacy hides   0 [z10:0/0 z11:0/5 z12:0/6 z13:0/10 z7:0/0 z7back:0/0] | back to 1/1: 0 of 121 differ -> ok
+sdl2           thinpoles rows    30 | legacy-hidden    3 | drawn where legacy hides   0 [z10:0/0 z11:0/1 z12:0/1 z13:0/1 z7:0/0 z7back:0/0] | back to 1/1: 0 of 5 differ -> ok
+sdl3           catdraw   rows   726 | legacy-hidden   21 | drawn where legacy hides   0 [z10:0/0 z11:0/5 z12:0/6 z13:0/10 z7:0/0 z7back:0/0] | back to 1/1: 0 of 121 differ -> ok
+sdl3           thinpoles rows    30 | legacy-hidden    3 | drawn where legacy hides   0 [z10:0/0 z11:0/1 z12:0/1 z13:0/1 z7:0/0 z7back:0/0] | back to 1/1: 0 of 5 differ -> ok
+failures 0
+thin_check rc=0
+sdl2   nightday   xr1: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> ok
+sdl2   nightkit   xr1: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> ok
+sdl2   day vs night cards xr1: level 0 differ 0 of 16 | level 13 differ 16 of 16 | per level 0:0 1:16 2:16 3:16 4:16 5:16 8:16 13:16 0:0 -> ok
+sdl2   nightday   xr0: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> reported
+sdl2   nightkit   xr0: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> reported
+sdl2   day vs night cards xr0: level 0 differ 0 of 16 | level 13 differ 0 of 16 | per level 0:0 1:0 2:0 3:0 4:0 5:0 8:0 13:0 0:0 -> CONTROL: night-used finds nothing -> the check FAILS as it must
+sdl3   nightday   xr1: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> ok
+sdl3   nightkit   xr1: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> ok
+sdl3   day vs night cards xr1: level 0 differ 0 of 16 | level 13 differ 16 of 16 | per level 0:0 1:16 2:16 3:16 4:16 5:16 8:16 13:16 0:0 -> ok
+sdl3   nightday   xr0: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> reported
+sdl3   nightkit   xr0: images x players  16 (drawn  16) | geometry changes 0 | return-to-day differs 0 | dusk brightness rises 0 -> reported
+sdl3   day vs night cards xr0: level 0 differ 0 of 16 | level 13 differ 0 of 16 | per level 0:0 1:0 2:0 3:0 4:0 5:0 8:0 13:0 0:0 -> CONTROL: night-used finds nothing -> the check FAILS as it must
+compared 128 image x player series; failures 0
+night_pk_check rc=0
+sdl2: fitted 278 | best single cut T=9139 explains 278 of them
+sdl2: parity with the cut: equal 278, known-issue-1 0, unexpected 0
+parity_cut_check sdl2 rc=0
+sdl3: fitted 278 | best single cut T=9139 explains 278 of them
+sdl3: parity with the cut: equal 278, known-issue-1 0, unexpected 0
+parity_cut_check sdl3 rc=0
+mres-pksdl2-xr0-s100               cell 40x40 drawn 40x40 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl2-xr0-s150               cell 60x60 drawn 60x60 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl2-xr0-s200               cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 8): 6400 / 6400 = 100.0 %
+mres-pksdl2-xr1-s100               cell 40x40 drawn 40x40 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl2-xr1-s150               cell 60x60 drawn 60x60 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl2-xr1-s200               cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %
+mres_check pksdl2 rc=0
+mres-pksdl3-xr0-s100               cell 40x40 drawn 40x40 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl3-xr0-s150               cell 60x60 drawn 60x60 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl3-xr0-s200               cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 8): 6400 / 6400 = 100.0 %
+mres-pksdl3-xr1-s100               cell 40x40 drawn 40x40 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl3-xr1-s150               cell 60x60 drawn 60x60 | not 80x80: cannot be the 2x art 1:1
+mres-pksdl3-xr1-s200               cell 80x80 drawn 80x80 | pixels equal to the authored 2x art (tol 0): 6400 / 6400 = 100.0 %
+mres_check pksdl3 rc=0
+identity winsdl2-cand
+sanity: XR32 off, 16-bit pictures equal (7 vehicles) ok
+B!=A by day (XR32 day differs)                   ok
+C==A day+night, same image ids                   ok  ids A [2197, 2198, 2199, 2200, 2201, 2202, 2203, 2204] C [2197, 2198, 2199, 2200, 2201, 2202, 2203, 2204]
+E!=D at night                                    ok
+E==D by day                                      ok
+F==D day+night, same image ids                   ok
+D!=A at night (night picture vs none)            ok
+D==A by day                                      ok
+H!=G for player 3 (coverage differs)             ok  16-bit images of G and H differ (not a sharing case)
+K: same 16-bit image as G (XR32 off identical)   ok
+K!=G for player 3 (player-colour runs differ)    ok
+L legacy: XR32 on draws as XR32 off              ok
+L legacy: not IdA's XR32 picture                 ok
+image ids (dir 0) XR32 on: IdA=2197 IdB=2173 IdC=2197 IdD=2165 IdE=2181 IdF=2165 IdG=2206 IdH=2189 IdK=2157 IdL=2213
+image ids (dir 0) XR32 off: IdA=2165 IdB=2165 IdC=2165 IdD=2165 IdE=2165 IdF=2165 IdG=2157 IdH=2173 IdK=2157 IdL=2165
+distinct image ids over the 80 slots: XR32 on 64, off 25
+identity winsdl2-base
+sanity: XR32 off, 16-bit pictures equal (7 vehicles) ok
+B!=A by day (XR32 day differs)                   FAIL
+C==A day+night, same image ids                   ok  ids A [2165, 2166, 2167, 2168, 2169, 2170, 2171, 2172] C [2165, 2166, 2167, 2168, 2169, 2170, 2171, 2172]
+E!=D at night                                    FAIL
+E==D by day                                      ok
+F==D day+night, same image ids                   ok
+D!=A at night (night picture vs none)            FAIL
+D==A by day                                      ok
+H!=G for player 3 (coverage differs)             ok  16-bit images of G and H differ (not a sharing case)
+K: same 16-bit image as G (XR32 off identical)   ok
+K!=G for player 3 (player-colour runs differ)    FAIL
+L legacy: XR32 on draws as XR32 off              FAIL
+L legacy: not IdA's XR32 picture                 FAIL
+image ids (dir 0) XR32 on: IdA=2165 IdB=2165 IdC=2165 IdD=2165 IdE=2165 IdF=2165 IdG=2157 IdH=2173 IdK=2157 IdL=2165
+image ids (dir 0) XR32 off: IdA=2165 IdB=2165 IdC=2165 IdD=2165 IdE=2165 IdF=2165 IdG=2157 IdH=2173 IdK=2157 IdL=2165
+distinct image ids over the 80 slots: XR32 on 25, off 25
+identity winsdl3-cand
+sanity: XR32 off, 16-bit pictures equal (7 vehicles) ok
+B!=A by day (XR32 day differs)                   ok
+C==A day+night, same image ids                   ok  ids A [2197, 2198, 2199, 2200, 2201, 2202, 2203, 2204] C [2197, 2198, 2199, 2200, 2201, 2202, 2203, 2204]
+E!=D at night                                    ok
+E==D by day                                      ok
+F==D day+night, same image ids                   ok
+D!=A at night (night picture vs none)            ok
+D==A by day                                      ok
+H!=G for player 3 (coverage differs)             ok  16-bit images of G and H differ (not a sharing case)
+K: same 16-bit image as G (XR32 off identical)   ok
+K!=G for player 3 (player-colour runs differ)    ok
+L legacy: XR32 on draws as XR32 off              ok
+L legacy: not IdA's XR32 picture                 ok
+image ids (dir 0) XR32 on: IdA=2197 IdB=2173 IdC=2197 IdD=2165 IdE=2181 IdF=2165 IdG=2206 IdH=2189 IdK=2157 IdL=2213
+image ids (dir 0) XR32 off: IdA=2165 IdB=2165 IdC=2165 IdD=2165 IdE=2165 IdF=2165 IdG=2157 IdH=2173 IdK=2157 IdL=2165
+distinct image ids over the 80 slots: XR32 on 64, off 25
+identity winsdl3-base
+sanity: XR32 off, 16-bit pictures equal (7 vehicles) ok
+B!=A by day (XR32 day differs)                   FAIL
+C==A day+night, same image ids                   ok  ids A [2165, 2166, 2167, 2168, 2169, 2170, 2171, 2172] C [2165, 2166, 2167, 2168, 2169, 2170, 2171, 2172]
+E!=D at night                                    FAIL
+E==D by day                                      ok
+F==D day+night, same image ids                   ok
+D!=A at night (night picture vs none)            FAIL
+D==A by day                                      ok
+H!=G for player 3 (coverage differs)             ok  16-bit images of G and H differ (not a sharing case)
+K: same 16-bit image as G (XR32 off identical)   ok
+K!=G for player 3 (player-colour runs differ)    FAIL
+L legacy: XR32 on draws as XR32 off              FAIL
+L legacy: not IdA's XR32 picture                 FAIL
+image ids (dir 0) XR32 on: IdA=2165 IdB=2165 IdC=2165 IdD=2165 IdE=2165 IdF=2165 IdG=2157 IdH=2173 IdK=2157 IdL=2165
+image ids (dir 0) XR32 off: IdA=2165 IdB=2165 IdC=2165 IdD=2165 IdE=2165 IdF=2165 IdG=2157 IdH=2173 IdK=2157 IdL=2165
+distinct image ids over the 80 slots: XR32 on 25, off 25
+failures: 12
+identity_check rc=1
+a5 winsdl2-cand
+ui-day: daynight=false = day       ok  8 images x 2 players x 9 steps, 0 differ from level 0
+world-dark: night differs at 13    ok  16 of 16 (image, player) at level 13 differ from level 0
+world: night.csv == base           ok  144 rows
+toolbar xr1 mean brightness of rows 0..63: night 122.1, day 125.4, ratio 0.973
+toolbar xr0 mean brightness of rows 0..63: night 118.4, day 121.8, ratio 0.973
+a5 winsdl2-base
+ui-day: daynight=false = day       FAIL  8 images x 2 players x 9 steps, 112 differ from level 0
+world-dark: night differs at 13    ok  16 of 16 (image, player) at level 13 differ from level 0
+toolbar xr1 mean brightness of rows 0..63: night 42.9, day 125.7, ratio 0.341
+toolbar xr0 mean brightness of rows 0..63: night 118.4, day 121.8, ratio 0.973
+a5 winsdl3-cand
+ui-day: daynight=false = day       ok  8 images x 2 players x 9 steps, 0 differ from level 0
+world-dark: night differs at 13    ok  16 of 16 (image, player) at level 13 differ from level 0
+world: night.csv == base           ok  144 rows
+toolbar xr1 mean brightness of rows 0..63: night 122.1, day 125.4, ratio 0.973
+toolbar xr0 mean brightness of rows 0..63: night 118.4, day 121.8, ratio 0.973
+a5 winsdl3-base
+ui-day: daynight=false = day       FAIL  8 images x 2 players x 9 steps, 112 differ from level 0
+world-dark: night differs at 13    ok  16 of 16 (image, player) at level 13 differ from level 0
+toolbar xr1 mean brightness of rows 0..63: night 42.9, day 125.7, ratio 0.341
+toolbar xr0 mean brightness of rows 0..63: night 118.4, day 121.8, ratio 0.973
+failures: 2
+a5_check rc=1
+winsdl2-cand  images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+winsdl3-cand  images 8 | at 3/8: == 16-bit picture 0, == its 1:1 XR32 picture 8
+labels not fully XR32: 0 (testing-1 base labels are expected here)
+n1_check cand rc=0
+winsdl2-base  images 8 | at 3/8: == 16-bit picture 8, == its 1:1 XR32 picture 0
+winsdl3-base  images 8 | at 3/8: == 16-bit picture 8, == its 1:1 XR32 picture 0
+labels not fully XR32: 2 (testing-1 base labels are expected here)
+n1_check base (testing-1, expected to fail) rc=0
+end 2026-11-02T00:13:11+01:00
+BATTERY_WIN_DONE

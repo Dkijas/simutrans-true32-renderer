@@ -430,6 +430,10 @@ bool internal_create_surfaces(int tex_width, int tex_height)
 		dbg->error( "internal_create_surfaces(SDL2)", "Couldn't create texture: %s", SDL_GetError() );
 		return false;
 	}
+#if COLOUR_DEPTH == 32
+	// the framebuffer is opaque; an ARGB8888 texture would otherwise be alpha-blended by SDL
+	SDL_SetTextureBlendMode( screen_tx, SDL_BLENDMODE_NONE );
+#endif
 
 	// Color component bitmasks for the pixel format the renderer writes
 	int bpp;

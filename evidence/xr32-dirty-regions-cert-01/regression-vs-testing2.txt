@@ -1,0 +1,36 @@
+identity-fin2: same checks, same values as testing-2
+identity-fin3: same checks, same values as testing-2
+identity-base: same checks, same values as testing-2
+a5-fin2: same checks, same values as testing-2
+a5-fin3: same checks, same values as testing-2
+a5-base: same checks, same values as testing-2
+a6-images-fin2: same checks, same values as testing-2
+a6-images-fin3: same checks, same values as testing-2
+a6-images-base: same checks, same values as testing-2
+identity-winsdl2-cand: same checks, same values as testing-2
+identity-winsdl3-cand: same checks, same values as testing-2
+identity-winsdl2-base: same checks, same values as testing-2
+identity-winsdl3-base: same checks, same values as testing-2
+a5-winsdl2-cand: same checks, same values as testing-2
+a5-winsdl3-cand: same checks, same values as testing-2
+a5-winsdl2-base: same checks, same values as testing-2
+a5-winsdl3-base: same checks, same values as testing-2
+CONTROL: candidate identity-fin2 vs testing-1's identity-base (label line dropped): 18 lines differ -> the comparison can fail
+a2-fin2: same checks, same values as testing-2
+a2-fin3: same checks, same values as testing-2
+a2-base: same checks, same values as testing-2
+a1box-fin2: same checks, same values as testing-2
+a1box-fin3: same checks, same values as testing-2
+a1box-base: same checks, same values as testing-2
+gates-sdl2 vs consolidation (testing-2's certified binaries): 2 lines differ
+12c12
+< catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 209, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 545, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 49, legacy-hidden 0, drawn where legacy hides 0 -> ok
+---
+> catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 210, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 558, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 49, legacy-hidden 0, drawn where legacy hides 0 -> ok
+gates-sdl3 vs consolidation (testing-2's certified binaries): 2 lines differ
+12c12
+< catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 209, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 545, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 49, legacy-hidden 0, drawn where legacy hides 0 -> ok
+---
+> catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 209, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 560, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 46, legacy-hidden 0, drawn where legacy hides 0 -> ok
+gates-linux vs consolidation (testing-2's certified binaries): 0 lines differ
+gates-linuxsdl3 vs consolidation (testing-2's certified binaries): 0 lines differ

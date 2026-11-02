@@ -1,0 +1,39 @@
+labt2-sdl2-edges               t2 rc=0 ASan 0 UBSan 14 LSan 17 | cand rc=0 ASan 0 UBSan 14 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl2-fullscreen          t2 rc=0 ASan 0 UBSan 14 LSan 17 | cand rc=0 ASan 0 UBSan 14 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl2-resize              t2 rc=0 ASan 0 UBSan 14 LSan 17 | cand rc=0 ASan 0 UBSan 14 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl2-scroll              t2 rc=0 ASan 0 UBSan 14 LSan 17 | cand rc=0 ASan 0 UBSan 14 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl2-theme               t2 rc=0 ASan 0 UBSan 14 LSan 17 | cand rc=0 ASan 0 UBSan 14 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl2-windows             t2 rc=0 ASan 0 UBSan 16 LSan 24 | cand rc=0 ASan 0 UBSan 16 LSan 24 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl2-zoomx               t2 rc=0 ASan 0 UBSan 14 LSan 17 | cand rc=0 ASan 0 UBSan 14 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl3-edges               t2 rc=0 ASan 0 UBSan 13 LSan 17 | cand rc=0 ASan 0 UBSan 13 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl3-fullscreen          t2 rc=0 ASan 0 UBSan 13 LSan 17 | cand rc=0 ASan 0 UBSan 13 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl3-resize              t2 rc=0 ASan 0 UBSan 13 LSan 17 | cand rc=0 ASan 0 UBSan 13 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl3-scroll              t2 rc=0 ASan 0 UBSan 14 LSan 17 | cand rc=0 ASan 0 UBSan 14 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl3-theme               t2 rc=0 ASan 0 UBSan 13 LSan 17 | cand rc=0 ASan 0 UBSan 13 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl3-windows             t2 rc=0 ASan 0 UBSan 15 LSan 24 | cand rc=0 ASan 0 UBSan 15 LSan 24 | new UBSan 0, new LSan 0, gone UBSan 0
+labt2-sdl3-zoomx               t2 rc=0 ASan 0 UBSan 14 LSan 17 | cand rc=0 ASan 0 UBSan 14 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+t2-sdl2-world                  t2 rc=0 ASan 0 UBSan 4 LSan 16 | cand rc=0 ASan 0 UBSan 4 LSan 17 | new UBSan 0, new LSan 1, gone UBSan 0
+    NEW LSan Direct <- loadsave_t::rdwr_str(char simutrans/dataobj/loadsave.cc
+t2-sdl2-world2                 t2 rc=0 ASan 0 UBSan 4 LSan 17 | cand rc=0 ASan 0 UBSan 4 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+t2-sdl3-world                  t2 rc=0 ASan 0 UBSan 4 LSan 17 | cand rc=0 ASan 0 UBSan 4 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+t2-sdl3-world2                 t2 rc=0 ASan 0 UBSan 4 LSan 17 | cand rc=0 ASan 0 UBSan 4 LSan 17 | new UBSan 0, new LSan 0, gone UBSan 0
+
+UBSan locations over all candidate runs (16):
+    simutrans/display/blit_clip_core.h [const sint64 t = (((sint64)y - y0) << 16) / sdy;] col 39 left shift of negative value N
+    simutrans/display/blit_clip_core.h [r.sx = t * sdx + inc + ((sint64)x0 << 16);] col 39 left shift of negative value N
+    simutrans/display/blit_clip_core.h [sdx = ((sint64)dx << 16) / steps;] col 21 left shift of negative value N
+    simutrans/display/blit_clip_core.h [sdy = ((sint64)dy << 16) / steps;] col 21 left shift of negative value N
+    simutrans/display/simgraph32.cc [xs = ((sint64)dx << 16) / steps;] col 19 left shift of negative value N
+    simutrans/display/simgraph32.cc [ys = ((sint64)dy << 16) / steps;] col 19 left shift of negative value N
+    simutrans/tpl/freelist_iter_tpl.h [T *obj = (T *)&((reinterpret_cast<nodelist_node_t*>(p + (i * NODE_SIZE)))->next);] col 8 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_iter_tpl.h [change_obj((char *)(&(tmp->next)),true);] col 23 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_iter_tpl.h [freelist = tmp->next;] col 19 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_iter_tpl.h [return (void *)(&(tmp->next));] col 31 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_iter_tpl.h [tmp->next = freelist;] col 13 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_iter_tpl.h [tmp->next = freelist;] col 15 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_tpl.h [freelist = tmp->next;] col 19 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_tpl.h [return (void *)(&(tmp->next));] col 31 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_tpl.h [tmp->next = freelist;] col 13 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+    simutrans/tpl/freelist_tpl.h [tmp->next = freelist;] col 15 member access within misaligned address ADDR for type 'struct nodelist_node_t', which requires N byte alignment
+CONTROL synthetic UBSan line in a copy of asan-labcand-sdl2-edges: new 1 -> the check can fail
+failures: 1

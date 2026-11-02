@@ -1,0 +1,33 @@
+diff --git a/src/simutrans/display/simgraph32.cc b/src/simutrans/display/simgraph32.cc
+index d6394fc590bf22a6664af668932e767b8fa2959a..bb825787232b9c6f597c18e7aaf1386d4ba5b1a7 100644
+--- a/src/simutrans/display/simgraph32.cc
++++ b/src/simutrans/display/simgraph32.cc
+@@ -2646,23 +2646,15 @@ static void simgraph32_tint_rect(scr_coord_val xp, scr_coord_val yp, scr_coord_v
+ }
+ 
+ 
+-static void simgraph32_draw_rect(scr_coord_val xp, scr_coord_val yp, scr_coord_val w, scr_coord_val h, PIXVAL color, bool)
++static void display_fb_internal32(scr_coord_val xp, scr_coord_val yp, scr_coord_val w, scr_coord_val h, PIXVAL colval, bool dirty, scr_coord_val cL, scr_coord_val cR, scr_coord_val cT, scr_coord_val cB);
++
++static void simgraph32_draw_rect(scr_coord_val xp, scr_coord_val yp, scr_coord_val w, scr_coord_val h, PIXVAL color, bool dirty)
+ {
+ 	if(  textur == NULL  ) {
+ 		return;
+ 	}
+-	// clip against the framebuffer; there is no clip rect machinery yet
+-	if(  xp < 0  ) { w += xp; xp = 0; }
+-	if(  yp < 0  ) { h += yp; yp = 0; }
+-	if(  xp + w > disp_actual_width  ) { w = disp_actual_width - xp; }
+-	if(  yp + h > disp_height       ) { h = disp_height - yp;       }
+-
+-	for(  scr_coord_val y = 0;  y < h;  y++  ) {
+-		PIXVAL *p = textur + (size_t)(yp + y) * disp_width + xp;
+-		for(  scr_coord_val x = 0;  x < w;  x++  ) {
+-			*p++ = color;
+-		}
+-	}
++	// as simgraph16_draw_rect: clipped to the framebuffer, and the tiles are marked when asked to
++	display_fb_internal32( xp, yp, w, h, color, dirty, 0, disp_width, 0, disp_height );
+ }
+ 
+ 

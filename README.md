@@ -1,4 +1,4 @@
-# Simutrans XR32 32-bit renderer — DAY+NIGHT test build on trunk r12377, testing-2
+# Simutrans XR32 32-bit renderer — DAY+NIGHT test build on trunk r12377, testing-3
 
 > **IMPORTANT: start the game with `SIMUTRANS_XR32=1`, or you will not see any 32-bit art.**
 >
@@ -32,6 +32,108 @@ stable version. Use a separate folder and copies of your savegames.
 | `STLAB_XR32_WRITE=1` | **makeobj** | writes 32-bit (XR32) image data into the paks it builds, next to the ordinary 16-bit images |
 | `SIMUTRANS_XR32=1` | **simutrans-rgba32** | reads and draws that 32-bit data |
 
+To check that XR32 is really on, start once with `-log -debug 2` added to the command line. If the variable is
+**not** set, the file `simu.log` in your Simutrans user folder lists
+`Warning: pakset_manager_t::read_nodes: Skipping unknown XR32-node` once for every 32-bit image. With
+`SIMUTRANS_XR32=1`, that line does not appear.
+
+## What this build is
+
+- **Simutrans trunk r12377**, the same trunk as testing-1 and testing-2.
+- **testing-2's XR32 renderer with a new screen update:** what the renderer draws is unchanged; how the finished
+  picture reaches the window changes. No new graphics feature; the DAY + optional NIGHT prototype, its pak syntax and
+  makeobj are unchanged.
+- **Changes since testing-2:**
+  - only the changed parts of the screen are sent to the graphics card, with the 16-bit renderer's own method
+    (testing-2 sent the whole 32-bit screen every frame: 7.9 MB at 1920×1080; with a running game it is now
+    0.15–0.45 MB);
+  - the 32-bit screen picture is copied to the window without blending (with SDL3, testing-2 let a few interface
+    pixels blend with the window background);
+  - a light level or company colour change, and filled rectangles, are reported as changed, as the 16-bit renderer
+    does.
+- The CPU time of a frame drops wherever only part of the screen changes (−0.6 to −5.5 ms per frame with traffic,
+  Windows and Linux, SDL2 and SDL3); whole-screen scrolling is unchanged within a fraction of a millisecond. See the
+  release notes for the measurements and the one small cost.
+- `simutrans-16bit`, makeobj and the test kit are testing-2's files, byte for byte.
+
+## Downloads
+
+Releases of this repository contain:
+
+- Windows (SDL2 and SDL3) and Linux (SDL2 and SDL3) builds, each with `simutrans-rgba32` (32-bit, XR32) and
+  `simutrans-16bit` (the normal renderer, for comparison);
+- the matching makeobj for Windows and Linux;
+- a test kit;
+- the full source diff against trunk r12377, and (from testing-3) a source archive.
+
+No pakset is included.
+
+## Source
+
+`source/xr32-r12377/` is the complete source tree of testing-3: official trunk r12377 plus this test build's changes.
+`patches/r12377-testing-3/` has the same changes as one full diff against official r12377, and as four steps on top
+of testing-2 (`APPLY-ORDER.txt`; step 04 must not be applied without 01 and 03). testing-1's and testing-2's trees
+stay at their tags, and their patches in `patches/r12377/` and `patches/r12377-testing-2/`.
+`patches/r12377/upstream-build-fix/` is **not** part of XR32: it is the one-word fix (`old32` → `ole32`) that
+official r12377's `CMakeLists.txt` needs before any Windows CMake build links.
+
+## Known issues, certification and reports
+
+See `docs/KNOWN-ISSUES-r12377-testing-3.md`, the release notes (`RELEASE-NOTES-r12377-testing-3.md`) and the
+certification report `reports/XR32-DIRTY-REGIONS-CERTIFICATION-01.md` (companion reports in
+`reports/xr32-dirty-regions-cert-01/`, evidence in `evidence/xr32-dirty-regions-cert-01/`).
+
+New in testing-3's known issues, from the official trunk itself: after a live theme change the compass and one small
+toolbar element can keep their old picture until they are redrawn; the official 16-bit renderer leaves exactly the
+same pixels stale.
+
+Report problems at <https://github.com/Dkijas/simutrans-true32-renderer/issues>. Please include:
+
+- the release tag;
+- your OS and package (Windows or Linux, SDL2 or SDL3);
+- the pakset;
+- whether `SIMUTRANS_XR32=1` was set;
+- a PNG screenshot.
+
+---
+
+*The section below describes the previous test build, testing-2 on trunk r12377. Its release and its tag stay
+unchanged; the section is kept here for history.*
+
+## Previous test build: testing-2 on trunk r12377
+
+> **IMPORTANT: start the game with `SIMUTRANS_XR32=1`, or you will not see any 32-bit art.**
+>
+> Windows (cmd):
+>
+>     set SIMUTRANS_XR32=1
+>     simutrans-rgba32.exe
+>
+> Windows (PowerShell):
+>
+>     $env:SIMUTRANS_XR32="1"
+>     .\simutrans-rgba32.exe
+>
+> Linux:
+>
+>     SIMUTRANS_XR32=1 ./simutrans-rgba32
+>
+> Without it, paks that contain 32-bit data still load and play normally, but the game deliberately draws their old
+> 16-bit images instead.
+
+**This is an experimental test build.** It is not an official Simutrans release, not merged into Simutrans and not a
+stable version. Use a separate folder and copies of your savegames.
+
+> **Warning, from the official trunk r12377 itself:** founding a city whose first road runs onto a road with a
+> private-way sign crashes the game, in both programs of this build. See `docs/KNOWN-ISSUES-r12377.md`, item B1.
+
+### Two switches, two programs
+
+| Switch | Program | What it does |
+| --- | --- | --- |
+| `STLAB_XR32_WRITE=1` | **makeobj** | writes 32-bit (XR32) image data into the paks it builds, next to the ordinary 16-bit images |
+| `SIMUTRANS_XR32=1` | **simutrans-rgba32** | reads and draws that 32-bit data |
+
 A pak built with `STLAB_XR32_WRITE=1` also loads in the other builds we tested, which ignore the extra data: the
 official Simutrans r12377 and the 16-bit build. To *see* it, you need this build's `simutrans-rgba32` **and**
 `SIMUTRANS_XR32=1`.
@@ -41,7 +143,7 @@ To check that XR32 is really on, start once with `-log -debug 2` added to the co
 `Warning: pakset_manager_t::read_nodes: Skipping unknown XR32-node` once for every 32-bit image. With
 `SIMUTRANS_XR32=1`, that line does not appear.
 
-## What this build is
+### What this build is
 
 - **Simutrans trunk r12377**, the same trunk as testing-1.
 - **The XR32 DAY + optional NIGHT prototype of testing-1, consolidated:** five fixes that make the 32-bit renderer
@@ -56,7 +158,7 @@ To check that XR32 is really on, start once with `-log -debug 2` added to the co
 - testing-1's known issue A6 (the 3/2 picture depending on the zoom step before it) could not be reproduced; it is
   listed as not reproduced, not as fixed.
 
-## Downloads
+### Downloads
 
 Releases of this repository contain:
 
@@ -68,7 +170,7 @@ Releases of this repository contain:
 
 No pakset is included.
 
-## Source
+### Source
 
 `source/xr32-r12377/` is the complete source tree of testing-2: official trunk r12377 plus this test build's changes.
 `patches/r12377-testing-2/` has the same changes as one full diff against official r12377, and as five steps on top of
@@ -76,7 +178,7 @@ testing-1 (`APPLY-ORDER.txt`). testing-1's tree stays at its tag, and its patche
 `patches/r12377/upstream-build-fix/` is **not** part of XR32: it is the one-word fix (`old32` → `ole32`) that
 official r12377's `CMakeLists.txt` needs before any Windows CMake build links.
 
-## Known issues, certification and reports
+### Known issues, certification and reports
 
 See `docs/KNOWN-ISSUES-r12377-testing-2.md`, the release notes (`RELEASE-NOTES-r12377-testing-2.md`) and the
 certification report `reports/XR32-CONSOLIDATION-01.md` (evidence in `evidence/xr32-consolidation-01/`).

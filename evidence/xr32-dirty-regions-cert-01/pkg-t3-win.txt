@@ -1,0 +1,4 @@
+simutrans-xr32-night-prototype-r12377-testing-3-win64-sdl2: files 952 (testing-2 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-2.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-3.diff'] | as expected
+simutrans-xr32-night-prototype-r12377-testing-3-win64-sdl2.zip: 952 entries, read-back OK 
+simutrans-xr32-night-prototype-r12377-testing-3-win64-sdl3: files 952 (testing-2 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-2.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-3.diff'] | as expected
+simutrans-xr32-night-prototype-r12377-testing-3-win64-sdl3.zip: 952 entries, read-back OK 

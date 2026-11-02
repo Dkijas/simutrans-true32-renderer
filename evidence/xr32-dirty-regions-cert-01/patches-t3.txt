@@ -1,0 +1,18 @@
+01-C-INVALIDATE-ON-LIGHT-AND-COLOUR.diff <- 2d9905db49830b9afc26b6245149280105dbaccd XR32: mark the whole screen dirty on a night level or company colour change, as simgraph16 does
+02-B-SCREEN-TEXTURE-UNBLENDED.diff <- 0de51bc425b15a91261a8cf2d39c09e8b2243b9d XR32: draw the 32-bit screen texture unblended (SDL_BLENDMODE_NONE)
+03-D-DRAW-RECT-MARKS-DIRTY.diff <- 0671565eb637bf306b0e1018067ab552a945b5bd XR32: draw_rect marks the tiles it fills when asked to, as simgraph16 does
+04-A-DIRTY-TILE-UPLOAD.diff <- df2a1b0f5624d9b4af41389bcb41b954734b1744 XR32: upload only the dirty tiles, with simgraph16's walk
+generator check: git diff 7cc6d45 fb5e8a5 == testing-2's published full diff (byte for byte)
+steps route == dr/candidate (tree e0c48441), byte for byte
+one route == dr/candidate (tree e0c48441), byte for byte
+full route == dr/candidate (tree e0c48441), byte for byte
+CONTROL full diff minus its last file: differs (1 path(s)) -> the check can fail
+CR bytes in the patches: 20
+files: candidate 2231, svn export r12377 2209
+cdea0c1cff639d49f8bf86d45ab387601e55d028230c712f7f634e71cef33bcb  01-C-INVALIDATE-ON-LIGHT-AND-COLOUR.diff
+24d66e24c6d1a4e82954ea3d70eedc009ca171a6a2505395376d276cb9724c20  02-B-SCREEN-TEXTURE-UNBLENDED.diff
+8b37cb42f3c2bec4d97efb79f480ef1865e8cb3483a2d5e68417535826a7ad95  03-D-DRAW-RECT-MARKS-DIRTY.diff
+2820dbd4d634f0a0f81729753cee720054daa1ec9218600331078e46a8499e0e  04-A-DIRTY-TILE-UPLOAD.diff
+90f6fcb1033215ac837c42fb9cb3c65585a064557eb58beac1b78f3598400bba  DIRTY-REGIONS-ON-TESTING-2.diff
+f93f11d271685128916d7cc213f14685962a61f12502868b110d05fd2f75351e  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-3.diff
+745c269b070eca162c739625b9681eb236ea0a844711e1aa182b886ce703f740  APPLY-ORDER.txt

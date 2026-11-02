@@ -1,0 +1,41 @@
+LGW  fullscreen l2-cand  video wayland: verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LGW  fullscreen l3-cand  video wayland: verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LGW  resize     l2-cand  video wayland: verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LGW  resize     l3-cand  video wayland: verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LGX  fullscreen l2-cand  video x11    : verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LGX  fullscreen l3-cand  video x11    : verified 120 | whole-mismatch frames cand [15, 105, 195, 285, 375, 465, 555] / testing-2 same -> same set | cand px on the other frames 0 -> PASS outside 7 switch frame(s) (UNVERIFIABLE there, identical in testing-2)
+LGX  resize     l2-cand  video x11    : verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LGX  resize     l3-cand  video x11    : verified 120 | whole-mismatch frames cand 20 frames / testing-2 same -> same set | cand px on the other frames 0 -> PASS outside 20 switch frame(s) (UNVERIFIABLE there, identical in testing-2)
+LR   fullscreen l2-cand  video dummy  : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LR   fullscreen l3-cand  video dummy  : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LR   resize     l2-cand  video dummy  : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LR   resize     l3-cand  video dummy  : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LRX  fullscreen l2-cand  video x11    : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LRX  fullscreen l3-cand  video x11    : verified 600 | whole-mismatch frames cand [15, 105, 195, 285, 375, 465, 555] / testing-2 same -> same set | cand px on the other frames 0 -> PASS outside 7 switch frame(s) (UNVERIFIABLE there, identical in testing-2)
+LRX  resize     l2-cand  video x11    : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LRX  resize     l3-cand  video x11    : verified 600 | whole-mismatch frames cand 20 frames / testing-2 same -> same set | cand px on the other frames 0 -> PASS outside 20 switch frame(s) (UNVERIFIABLE there, identical in testing-2)
+LV   resize     l2-cand  video dummy  : verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+LV   resize     l3-cand  video dummy  : verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+WR   fullscreen s2-cand  video native : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+WR   fullscreen s3-cand  video native : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+WR   resize     s2-cand  video native : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+WR   resize     s3-cand  video native : verified 600 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+WV   fullscreen s2-cand  video native : verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+WV   fullscreen s3-cand  video native : verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+WV   resize     s2-cand  video native : verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+WV   resize     s3-cand  video native : verified 120 | whole-mismatch frames cand [] / testing-2 same -> same set | cand px on the other frames 0 -> PASS
+CONTROL LGW  fullscreen l3-mut  : mutant mismatches on 107 frames outside testing-2's switch frames -> the check can fail
+CONTROL LGW  resize     l3-mut  : mutant mismatches on 97 frames outside testing-2's switch frames -> the check can fail
+CONTROL LGX  fullscreen l3-mut  : mutant mismatches on 103 frames outside testing-2's switch frames -> the check can fail
+CONTROL LGX  resize     l3-mut  : mutant mismatches on 93 frames outside testing-2's switch frames -> the check can fail
+CONTROL LR   fullscreen l3-mut  : mutant mismatches on 566 frames outside testing-2's switch frames -> the check can fail
+CONTROL LR   resize     l3-mut  : mutant mismatches on 542 frames outside testing-2's switch frames -> the check can fail
+CONTROL LV   resize     l2-mut  : mutant mismatches on 97 frames outside testing-2's switch frames -> the check can fail
+CONTROL LV   resize     l3-mut  : mutant mismatches on 95 frames outside testing-2's switch frames -> the check can fail
+CONTROL WR   fullscreen s3-mut  : mutant mismatches on 577 frames outside testing-2's switch frames -> the check can fail
+CONTROL WR   resize     s3-mut  : mutant mismatches on 547 frames outside testing-2's switch frames -> the check can fail
+CONTROL WV   fullscreen s2-mut  : mutant mismatches on 111 frames outside testing-2's switch frames -> the check can fail
+CONTROL WV   fullscreen s3-mut  : mutant mismatches on 112 frames outside testing-2's switch frames -> the check can fail
+CONTROL WV   resize     s2-mut  : mutant mismatches on 99 frames outside testing-2's switch frames -> the check can fail
+CONTROL WV   resize     s3-mut  : mutant mismatches on 99 frames outside testing-2's switch frames -> the check can fail
+failures: 0

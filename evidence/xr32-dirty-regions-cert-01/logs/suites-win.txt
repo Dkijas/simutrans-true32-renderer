@@ -1,0 +1,9 @@
+control tests written: <lab>/build\suite-control-tests
+suite control-sdl2-32: FAIL (FAILED, last counter [1/310], tests listed 310)
+suite cand-sdl2-32: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-sdl2-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite official-sdl2-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-sdl3-32: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite cand-sdl3-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+suite official-sdl3-16: PASS (COMPLETED, last counter [309/309], tests listed 309)
+SUITES_WIN_DONE

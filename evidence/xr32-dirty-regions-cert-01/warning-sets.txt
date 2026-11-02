@@ -1,0 +1,5 @@
+windows sdl2  testing-2  21  candidate  21  only in candidate 0  only in testing-2 0
+windows sdl3  testing-2  21  candidate  21  only in candidate 0  only in testing-2 0
+linux   sdl2  testing-2  16  candidate  16  only in candidate 0  only in testing-2 0
+linux   sdl3  testing-2  16  candidate  16  only in candidate 0  only in testing-2 0
+CONTROL synthetic extra warning in a copy of the candidate log: only in candidate 1 -> the check can fail

@@ -1,0 +1,16 @@
+WI s3-t2 vehicles r1: 39 rows < 40
+WI s3-cand vehicles r1: 39 rows < 40
+WI s2-t2 vehicles r1: 39 rows < 40
+WI s2-cand vehicles r1: 39 rows < 40
+WT s3-off16 theme r1: colour depth 16
+WT s3-off16 theme r2: colour depth 16
+WT2 s2-off16 theme r1: colour depth 16
+WT2 s3-off16 theme r1: colour depth 16
+WTD s3-off16-d1 theme r1: colour depth 16
+WTD s3-off16-d2 theme r1: colour depth 16
+WTD s3-off16-d3 theme r1: colour depth 16
+WTD s3-off16-d4 theme r1: colour depth 16
+WTD s3-off16-d5 theme r1: colour depth 16
+WTD s3-off16-d6 theme r1: colour depth 16
+WTD s3-off16-d7 theme r1: colour depth 16
+WTD s3-off16-d8 theme r1: colour depth 16

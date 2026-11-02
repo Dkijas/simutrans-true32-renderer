@@ -1,0 +1,7 @@
+p-t2-sdl2-32 rc=0 warnings=18 size 8727488 sha256 fc04d444b24d1684651e39cd988d957b90786a17b1b1cf643c88ede9a2d38e50 tar 4dbd1f6fc8b2b268 flags=''
+p-t2-sdl3-32 rc=0 warnings=18 size 13089832 sha256 7d4b36d2cf2f4478653092f486b3757815c1ff448bf0b58ef2c5eadc83afcf83 tar 4dbd1f6fc8b2b268 flags=''
+asan-t2-sdl2 rc=0 warnings=20 size 257551488 sha256 8b040809c1d50b8036e4c2ee7f697100fb14424c7f305a7a894ddc9b46ed143b tar 4dbd1f6fc8b2b268 flags='-fsanitize=address,undefined -fno-omit-frame-pointer -g1'
+asan-cand-sdl2 rc=0 warnings=20 size 257593664 sha256 70f883e54ae14427283c06cf44f539265bb6f7c05ee57b3454915e0a0805d976 tar 19ba622943d0a2aa flags='-fsanitize=address,undefined -fno-omit-frame-pointer -g1'
+asan-t2-sdl3 rc=0 warnings=20 size 261933392 sha256 91300ad4adf9ed69530e86963fe089eeac5f823469db1bfdbe4b571758ea4845 tar 4dbd1f6fc8b2b268 flags='-fsanitize=address,undefined -fno-omit-frame-pointer -g1'
+asan-cand-sdl3 rc=0 warnings=20 size 261967296 sha256 4ff97a35f1f59e0a61434512295bdb74336460343b6496c3a651b49bc5683391 tar 19ba622943d0a2aa flags='-fsanitize=address,undefined -fno-omit-frame-pointer -g1'
+BUILDS_LINUX_BASE_ASAN_DONE

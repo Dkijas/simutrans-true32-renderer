@@ -1,0 +1,7 @@
+w-cand-s3 ref=9ee106c36f0de475cce96685adaf268eab8626d9 rc=0 warnings=26 size 20619089 sha256 4a9dfff0b99e22a4ab8e2a2602385ad39a52a4a8ac6838416635fc27a602cfa0 flags='-DSTLAB_PERF'
+w-cand-s2 ref=9ee106c36f0de475cce96685adaf268eab8626d9 rc=0 warnings=26 size 18145850 sha256 efd1101440d543d36c27c3d0aecd8614fa5f896b047c4428ff840499e4d49207 flags='-DSTLAB_PERF'
+w-noC-s3 ref=f1627cdb56e7550fe8894a6dd543cfbec6abb7b8 rc=0 warnings=26 size 20618577 sha256 09a8f12569b565dab2990e59ff7dac509413e055cff0caa4f1e4c76cec081e57 flags='-DSTLAB_PERF'
+w-noC-s2 ref=f1627cdb56e7550fe8894a6dd543cfbec6abb7b8 rc=0 warnings=26 size 18145850 sha256 4821918efdfa3f3d5576d6a13d83b2a28b380b0d86173ffda5c3694b0b32caf6 flags='-DSTLAB_PERF'
+p-sdl3 ref=df2a1b0f5624d9b4af41389bcb41b954734b1744 rc=0 warnings=26 size 20600899 sha256 69444edca3042ce91bef8a7a3301ada579c9314b641a8c95368210d76d0d6fa0 flags=''
+p-sdl2 ref=df2a1b0f5624d9b4af41389bcb41b954734b1744 rc=0 warnings=26 size 18128712 sha256 6e016e9687ab5adb9727cc04053124cd4c4bfb8da0f8f6e4f2d455cc0688abac flags=''
+BUILDS_WIN_DONE

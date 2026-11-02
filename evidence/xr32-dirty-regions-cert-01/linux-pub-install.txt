@@ -1,0 +1,8 @@
+final-src.tar == dr-candidate.tar
+sdl2:
+  rgba32-candidate d096df85d8ba8b0c75b778682e5e0e466310c0f0fc40826e2b84b907507a6682 = expected
+  16bit=testing-2 3e7cd80e112cf9d52107c2b9f5e8729a1f9bc9897aef69c52eb711ae7d3100e3 = expected
+sdl3:
+  rgba32-candidate 2f594079319f632b3d69f5f55b42b76073e7e4d6e65a39b998d3231db7d6de3f = expected
+  16bit=testing-2 9822aee1d322a61606d80e5e6f61bd365365e9273f21012400d33f5f68bbd638 = expected
+problems: 0

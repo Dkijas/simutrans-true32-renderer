@@ -1,0 +1,7 @@
+l-cand-sdl2 rc=0 warnings=18 size 8751200 sha256 eeb8343f83b5e88811bd028cd155da9bdb45cff407ec05d332e372b64c14a971 tar 5ff4fcf2c95bd079 flags='-DSTLAB_PERF'
+l-noC-sdl2 rc=0 warnings=18 size 8747104 sha256 f0333d054e4aca1e837c69690a220f90b62f890d998ceddd723cd0e80ee5440a tar 4e47196a8c1a87c5 flags='-DSTLAB_PERF'
+p-sdl2-32 rc=0 warnings=18 size 8731864 sha256 d096df85d8ba8b0c75b778682e5e0e466310c0f0fc40826e2b84b907507a6682 tar 19ba622943d0a2aa flags=''
+l-cand-sdl3 rc=0 warnings=18 size 13109152 sha256 17e3332b8244fdd3e63e60e0903fc44646969f229b535c345ebaf409ddb604da tar 5ff4fcf2c95bd079 flags='-DSTLAB_PERF'
+l-noC-sdl3 rc=0 warnings=18 size 13109152 sha256 a5814da05ea543823154a1ae201532db3a5f05156949fcea17bc9e1206c4d9da tar 4e47196a8c1a87c5 flags='-DSTLAB_PERF'
+p-sdl3-32 rc=0 warnings=18 size 13090064 sha256 2f594079319f632b3d69f5f55b42b76073e7e4d6e65a39b998d3231db7d6de3f tar 19ba622943d0a2aa flags=''
+BUILDS_LINUX_DONE
