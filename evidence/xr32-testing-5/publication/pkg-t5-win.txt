@@ -1,0 +1,10 @@
+simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl2: re-zip of testing-4's own tree == published zip: True (90b60f6c607501e1)
+  simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2.zip: 952 entries, read-back OK
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2: members 952 (testing-4 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-4.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff'] | as expected
+  simutrans-16bit.exe unchanged: True
+  simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2.zip sha256 68d93437be053966dccad7830a6e67f9a8a678563f06d08cbaf1294249e3d102
+simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl3: testing-4's simutrans-rgba32.exe NOT extracted (Defender D1); the recipe check is the SDL2 one
+  simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3.zip: 952 entries, read-back OK
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3: members 952 (testing-4 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-4.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff'] | as expected
+  simutrans-16bit.exe unchanged: True
+  simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3.zip sha256 a2eab2e0c9eadd910a8f726bfd2ae62a2340c608fc8accfafa5ceb8a536d7e14

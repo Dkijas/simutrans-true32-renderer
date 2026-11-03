@@ -1,0 +1,5 @@
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2 simutrans-rgba32.exe sha e82a2ce83ad6ad90: exit 0, FATAL/Error lines 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2 simutrans-16bit.exe sha 6a3a97421a5a6699: exit 0, FATAL/Error lines 0, skipped XR32 nodes 192 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3 simutrans-rgba32.exe sha f7f7ce82a0fa789f: exit 0, FATAL/Error lines 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3 simutrans-16bit.exe sha a3b66376fba0ff49: exit 0, FATAL/Error lines 0, skipped XR32 nodes 192 -> PASS
+SMOKE_T5_WIN_DONE

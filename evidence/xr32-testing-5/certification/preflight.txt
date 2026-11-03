@@ -1,0 +1,7 @@
+== preflight 2026-11-03T04:14:17+01:00
+src HEAD 0afdfbd31ee38c8a581a7f6251ade9bc80f60439 branch a4/cache; status lines 0
+builder files: 16; check-ignore: none
+tcc/fix parent 0afdfbd31ee38c8a581a7f6251ade9bc80f60439 stat:  2 files changed, 22 insertions(+), 7 deletions(-)
+<tcc-lab>/deliver: SHA256SUMS verify OK (223 files)
+<tcc-consolidation-lab>/deliver: SHA256SUMS verify OK (247 files)
+CONTROL one byte changed in the diff copy -> sha256 check FAILS (ok)

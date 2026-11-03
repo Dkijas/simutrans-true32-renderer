@@ -1,0 +1,19 @@
+t4s3-x0 vs a11s3-x0: 3120 common draws
+  zoom 2/1   level 0: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 2/1   level 4: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 7/4   level 0: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 7/4   level 4: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 3/2   level 0: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 3/2   level 4: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 5/4   level 0: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 5/4   level 4: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 9/8   level 0: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 9/8   level 4: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 1/1   level 0: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 1/1   level 4: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 3/4   level 0: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 3/4   level 4: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 1/2   level 0: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  zoom 1/2   level 4: draws  195 | byte-identical  195 | coverage px changed      0 | colour px changed where both draw      0 | geometry differs 0
+  CONTROL base vs itself shifted by one tile id: 1024 of 1024 pairs not identical -> the comparison can fail
+contract violations: 0

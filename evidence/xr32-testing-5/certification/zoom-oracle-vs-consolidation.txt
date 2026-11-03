@@ -1,0 +1,5 @@
+zT5s3 vs consolidation zFX3 (whole result, file paths aside): IDENTICAL
+zT5s2 vs consolidation zFX3 (whole result, file paths aside): IDENTICAL
+9/8: row 2 (ordinary RGB) max |X| 0.00 | row 4 max deviation from ideal 3.46 | row 5 5.84
+3/4: row 2 (ordinary RGB) max |X| 0.00 | row 4 max deviation from ideal 3.79 | row 5 6.31
+1/2: row 2 (ordinary RGB) max |X| 0.00 | row 4 max deviation from ideal 3.49 | row 5 5.84

@@ -1,0 +1,6 @@
+Defender: product 4.18.26100.4, engine 1.1.26100.4, signatures 1.463.102.0 (updated 11/03/2026 01:16:52), real-time True; scan 2026-11-03T17:03:30
+simutrans-16bit-testing-5-candidate-win64-sdl2.exe   20CBF7DA7E183F52  -> Scanning <testing-5-publication-lab>\work\defender-scan\simutrans-16bit-testing-5-candidate-win64-sdl2.exe found no threats.
+simutrans-rgba32-testing-5-candidate-win64-sdl3.exe  F7F7CE82A0FA789F == certified -> Scanning <testing-5-publication-lab>\work\defender-scan\simutrans-rgba32-testing-5-candidate-win64-sdl3.exe found no threats.
+simutrans-rgba32-testing-5-candidate-win64-sdl2.exe  E82A2CE83AD6AD90 == certified -> Scanning <testing-5-publication-lab>\work\defender-scan\simutrans-rgba32-testing-5-candidate-win64-sdl2.exe found no threats.
+makeobj-xr32-testing-5-candidate-win64.exe           8A1503816821F923  -> Scanning <testing-5-publication-lab>\work\defender-scan\makeobj-xr32-testing-5-candidate-win64.exe found no threats.
+simutrans-16bit-testing-5-candidate-win64-sdl3.exe   8FEAAF49317CF1D7  -> Scanning <testing-5-publication-lab>\work\defender-scan\simutrans-16bit-testing-5-candidate-win64-sdl3.exe found no threats.

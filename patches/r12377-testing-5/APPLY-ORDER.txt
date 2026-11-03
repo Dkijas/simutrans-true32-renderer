@@ -1,0 +1,8 @@
+testing-5 = official Simutrans SVN trunk r12377 + XR32 (testing-4) + two fixes.
+
+  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff   everything XR32 changes against official r12377 (apply with -p1)
+  T5-ON-TESTING-4.diff                               testing-4 -> testing-5 in one step
+  01-TCC-TRANSLUCENT-COMPANY-COLOUR.diff             step 1 on testing-4: translucent company colours (makeobj + renderer)
+  02-A11-COAST-2X1-OUTLINE.diff                      step 2, after step 1: the 2/1 outline of generated coast water (A11)
+
+Order: 01 then 02. Each step alone, or the full diff on r12377, gives exactly the published source tree.

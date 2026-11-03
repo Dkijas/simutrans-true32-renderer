@@ -1,0 +1,24 @@
+exe asan-t5.exe ceb51f977f076c8beadfec7061a5d2d90564d3da068c85c0aeb8fbd2d070e9b7
+exe asan-base.exe 68c8b04a5815a9d49b1c210747ff1542ae06a0e153320c40e4e73dd1ac79eaa3
+t5 coastzoom pak128.german-makie: rc=0 ASan reports 0 | rows 246 
+base coastzoom pak128.german-makie: rc=0 ASan reports 0 | rows 246 
+t5 coast pak128.german-makie: rc=0 ASan reports 0 | rows 246 
+base coast pak128.german-makie: rc=0 ASan reports 0 | rows 246 
+t5 coastnight pak128.german-makie: rc=0 ASan reports 0 | rows 246 
+base coastnight pak128.german-makie: rc=0 ASan reports 0 | rows 246 
+t5 coastresize pak128.german-makie: rc=0 ASan reports 0 | rows 246 
+base coastresize pak128.german-makie: rc=0 ASan reports 0 | rows 246 
+t5 zoom pak128.german-cat: rc=0 ASan reports 0 | rows 246 
+base zoom pak128.german-cat: rc=0 ASan reports 0 | rows 246 
+t5 zoomx pak128.german-cat: rc=0 ASan reports 0 | rows 246 
+base zoomx pak128.german-cat: rc=0 ASan reports 0 | rows 246 
+t5 daynight pak128.german-cat: rc=0 ASan reports 0 | rows 246 
+base daynight pak128.german-cat: rc=0 ASan reports 0 | rows 246 
+t5 playercolor pak128.german-cat: rc=0 ASan reports 0 | rows 246 
+base playercolor pak128.german-cat: rc=0 ASan reports 0 | rows 246 
+### CONTROL
+﻿asan_control.exe (cl /fsanitize=address /Zi, MSVC 14.44, sha256 F0719FE1E27A08A7), exit code 1
+  ==8236==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x123a67ba0180 at pc 0x7ff61f4b109c bp 0x0053343cfd60 sp 0x0053343cfd68
+  WRITE of size 1 at 0x123a67ba0180 thread T0
+CONTROL: the injected heap overflow IS reported (ASan can fail)
+ASAN_WIN_DONE

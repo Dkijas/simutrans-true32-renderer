@@ -140,8 +140,9 @@ struct ordered_unders_t {
 /* SPECIAL_TRANSPARENT, and the alpha rule probe.py::masks() uses:
  *     hole   = (packed == 0xE7FFFF) | (alpha <= 7)
  *     opaque = (~hole) & (alpha == 255)
- * Note that a pixel with 7 < alpha < 255 is neither hole nor opaque: it takes part in
- * nothing, exactly as in the oracle. */
+ * Note that a pixel with 7 < alpha < 255 is neither hole nor opaque: it takes no part in the
+ * edge reconstruction, exactly as in the oracle. An exact marker with such an alpha still gets
+ * its coverage-255 record in step 1 (the oracle dropped it, and XR32 then drew the literal key). */
 #define STLAB_SPECIAL_TRANSPARENT (0x00E7FFFFu)
 
 
@@ -178,8 +179,12 @@ void stlab_extract_semantics(const uint8 *rgba, int w, int h,
 	// ---- 1. exact marker pixels, coverage 255 (records.py step 1) -------------------
 	// Order: records.py fills a dict keyed by linear index and sorts at the end, so the
 	// emission order is by position. The same is achieved here by walking in order.
+	// A TRANSLUCENT exact marker (7 < alpha < 255) is a marker too: the legacy encoder keeps it
+	// special (pixrgb_to_pixval: 0x8020 + i*31 + alpha, or 0x8000 + i for alpha 248..254) and the
+	// 16-bit renderer recolours it per company. Its record sets the colour; the plane keeps its
+	// 8-bit alpha (stlab_xr32_resolve). It does NOT seed the edge stage below, which stays opaque.
 	for(  size_t i = 0;  i < npx;  i++  ) {
-		if(  !opaque[i]  ||  midx[i] < 0  ) continue;
+		if(  hole[i]  ||  midx[i] < 0  ) continue;
 		const int m = midx[i];
 		stlab_semantic_record_t r;
 		r.position = (uint32)i;

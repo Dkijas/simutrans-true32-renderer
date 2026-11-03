@@ -1,0 +1,10 @@
+rows 48, verdicts ['PASS'], exit codes ['0'], fatal/error lines ['0'], MISSING 0
+peak working set MB; t5 = testing-5 product candidate, t4 = published testing-4 (42e9089c SDL2, 43420d63 SDL3); n=3 interleaved, rotated:
+  cat   s2 xr32=0  t5 mean 559.2 [559.1,559.2,559.3] | t4 mean 559.1 [559.0,559.1,559.3] | median delta +0.1, t4 spread 0.3 -> no measurable difference
+  cat   s2 xr32=1  t5 mean 566.3 [572.9,563.1,563.0] | t4 mean 566.5 [573.2,563.2,563.2] | median delta -0.2, t4 spread 10.0 -> no measurable difference
+  cat   s3 xr32=0  t5 mean 534.1 [534.0,534.1,534.1] | t4 mean 534.1 [534.1,534.0,534.2] | median delta -0.1, t4 spread 0.2 -> no measurable difference
+  cat   s3 xr32=1  t5 mean 541.7 [549.3,537.9,537.9] | t4 mean 541.7 [549.4,537.8,538.0] | median delta -0.1, t4 spread 11.6 -> no measurable difference
+  coast s2 xr32=0  t5 mean 518.4 [518.4,518.3,518.6] | t4 mean 518.4 [518.4,518.6,518.3] | median delta +0.0, t4 spread 0.3 -> no measurable difference
+  coast s2 xr32=1  t5 mean 521.9 [520.9,522.4,522.3] | t4 mean 522.6 [522.6,522.6,522.5] | median delta -0.2, t4 spread 0.1 -> t5 lower by 0.2 MB
+  coast s3 xr32=0  t5 mean 493.3 [493.2,493.4,493.2] | t4 mean 493.1 [493.3,492.9,493.0] | median delta +0.2, t4 spread 0.4 -> no measurable difference
+  coast s3 xr32=1  t5 mean 497.3 [497.4,497.4,497.2] | t4 mean 497.2 [497.3,497.2,497.1] | median delta +0.1, t4 spread 0.2 -> no measurable difference

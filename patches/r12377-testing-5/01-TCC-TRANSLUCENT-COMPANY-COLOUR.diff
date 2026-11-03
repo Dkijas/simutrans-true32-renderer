@@ -1,0 +1,89 @@
+diff --git a/src/simutrans/descriptor/writer/stlab_semantic.cc b/src/simutrans/descriptor/writer/stlab_semantic.cc
+index 4d6f9fcb217db5fe9808274caf91771effe53a82..760db881c42d8fb99d851dd0775c8ee2ad7b4e67 100644
+--- a/src/simutrans/descriptor/writer/stlab_semantic.cc
++++ b/src/simutrans/descriptor/writer/stlab_semantic.cc
+@@ -140,8 +140,9 @@ struct ordered_unders_t {
+ /* SPECIAL_TRANSPARENT, and the alpha rule probe.py::masks() uses:
+  *     hole   = (packed == 0xE7FFFF) | (alpha <= 7)
+  *     opaque = (~hole) & (alpha == 255)
+- * Note that a pixel with 7 < alpha < 255 is neither hole nor opaque: it takes part in
+- * nothing, exactly as in the oracle. */
++ * Note that a pixel with 7 < alpha < 255 is neither hole nor opaque: it takes no part in the
++ * edge reconstruction, exactly as in the oracle. An exact marker with such an alpha still gets
++ * its coverage-255 record in step 1 (the oracle dropped it, and XR32 then drew the literal key). */
+ #define STLAB_SPECIAL_TRANSPARENT (0x00E7FFFFu)
+ 
+ 
+@@ -178,8 +179,12 @@ void stlab_extract_semantics(const uint8 *rgba, int w, int h,
+ 	// ---- 1. exact marker pixels, coverage 255 (records.py step 1) -------------------
+ 	// Order: records.py fills a dict keyed by linear index and sorts at the end, so the
+ 	// emission order is by position. The same is achieved here by walking in order.
++	// A TRANSLUCENT exact marker (7 < alpha < 255) is a marker too: the legacy encoder keeps it
++	// special (pixrgb_to_pixval: 0x8020 + i*31 + alpha, or 0x8000 + i for alpha 248..254) and the
++	// 16-bit renderer recolours it per company. Its record sets the colour; the plane keeps its
++	// 8-bit alpha (stlab_xr32_resolve). It does NOT seed the edge stage below, which stays opaque.
+ 	for(  size_t i = 0;  i < npx;  i++  ) {
+-		if(  !opaque[i]  ||  midx[i] < 0  ) continue;
++		if(  hole[i]  ||  midx[i] < 0  ) continue;
+ 		const int m = midx[i];
+ 		stlab_semantic_record_t r;
+ 		r.position = (uint32)i;
+diff --git a/src/simutrans/display/stlab_xr32_zoom.cci b/src/simutrans/display/stlab_xr32_zoom.cci
+index 9371547449b88c25ffc2a9a6d4bdfd87824a0ec6..e3924f88d025bceda0a25077691a0322620f9f4f 100644
+--- a/src/simutrans/display/stlab_xr32_zoom.cci
++++ b/src/simutrans/display/stlab_xr32_zoom.cci
+@@ -222,8 +222,14 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	uint32 *acc_w = MALLOCN( uint32, nd );   ///< non-semantic weight numerator, x255
+ 	uint32 *opq   = MALLOCN( uint32, nd );   ///< samples on an opaque source pixel
+ 	uint32 *alp   = MALLOCN( uint32, nd );   ///< sum of their straight alpha
++	// v1 key weight denominator: every sample on a non-hole source pixel counts 255, except a
++	// TRANSLUCENT key (a record on a pixel with alpha < 255), which counts its alpha, so a glass
++	// key mixed with other pixels gets its premultiplied share. With opaque keys only (every pak
++	// written before translucent keys had records) kw == 255 * opq and the result is unchanged.
++	uint32 *kw    = MALLOCN( uint32, nd );
+ 	MEMZERON( acc_r, nd );  MEMZERON( acc_g, nd );  MEMZERON( acc_b, nd );
+ 	MEMZERON( acc_w, nd );  MEMZERON( opq, nd );    MEMZERON( alp, nd );
++	MEMZERON( kw, nd );
+ 	// XR32-PRISSI-NIGHT-IMAGE-PROTOTYPE-01: the night plane is reduced with the same samples
+ 	uint32 *nac = NULL;                      ///< r,g,b,w per destination
+ 	uint32 *nop = NULL, *nal = NULL;
+@@ -345,6 +351,8 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 						continue;
+ 					}
+ 					const uint8 k = skey[si];
++					const uint32 om = ( k != 0  &&  a < 255 ) ? (uint32)a : 255u;
++					kw[d] += om * wg;
+ 					if(  k == 0  ) {
+ 						// a normal pixel: its colour is weighted by its alpha (straight alpha,
+ 						// averaged as premultiplied), so a translucent pixel counts for less
+@@ -358,7 +366,7 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 						// resolve returns fg outright for it, so its weight is 1, not
+ 						// its coverage, and it leaves nothing for the day-colour term
+ 						const uint32 cov = sufb[si] ? 255u : scov[si];
+-						ka[k] += cov * wg;
++						ka[k] += cov * om * wg;
+ 						any_key = true;
+ 						if(  !sufb[si]  ) {
+ 							// the under-colour carries the rest of this pixel's weight
+@@ -376,8 +384,10 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 			}
+ 			// normalise over the OPAQUE samples, the same set the plane averages over, so that
+ 			// (255 - SUM cov) is exactly the plane's share. Dividing by every sample instead
+-			// would darken every pixel whose box contains a hole.
+-			const uint32 c = opq[d] ? opq[d] : 1;
++			// would darken every pixel whose box contains a hole. v1 keys are weighted (ka, kw above)
++			// so that a translucent key counts its alpha; for opaque keys this is the same division
++			// scaled by 255, which rounds identically (half-up of 255*q over 255*c == of q over c).
++			const uint32 c = v2 ? ( opq[d] ? opq[d] : 1 ) : ( kw[d] ? kw[d] : 1 );
+ 			stlab_zoom_sem_t e;
+ 			e.dest = d;
+ 			e.n = 0;
+@@ -467,7 +477,7 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 		free( nac );  free( nop );  free( nal );
+ 	}
+ 
+-	free( acc_r );  free( acc_g );  free( acc_b );  free( acc_w );
++	free( acc_r );  free( acc_g );  free( acc_b );  free( acc_w );  free( kw );
+ 	free( opq );    free( alp );
+ 	free( skey );   free( scov );   free( sufb );
+ 	free( sur );    free( sug );    free( sub );

@@ -1,0 +1,19 @@
+t4s3-x0 vs a11s3-x1: 3120 common (zoom, level, tile) draws, only in base 0, only in candidate 0
+  zoom 2/1   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate  2352888
+  zoom 2/1   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 7/4   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate  1825716
+  zoom 7/4   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 3/2   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate  1337769
+  zoom 3/2   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 5/4   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate   936276
+  zoom 5/4   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 9/8   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate   762525
+  zoom 9/8   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/1   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate   588414
+  zoom 1/1   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 3/4   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate   341196
+  zoom 3/4   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  zoom 1/2   level 0: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate   151344
+  zoom 1/2   level 4: tiles  195 | geometry differs 0 | coverage px differ      0 | key px base        0, candidate        0
+  CONTROL base vs itself shifted by one tile id: 1024 pairs, geometry differs 632, coverage px differ 1119556 -> the comparison can fail
+differences: 0

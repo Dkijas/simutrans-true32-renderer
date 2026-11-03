@@ -1,0 +1,15 @@
+# test kit (testing-2's, reused unchanged): every .dat directory built with STLAB_XR32_WRITE=1
+blender/A                (pak):  win-t5 813ef64c4f4e3204 | linux-t5 813ef64c4f4e3204 == win | testing-2 makeobj 813ef64c4f4e3204 same pak
+blender/B                (pak):  win-t5 313d2c7cce806b52 | linux-t5 313d2c7cce806b52 == win | testing-2 makeobj 313d2c7cce806b52 same pak
+cards-128/A              (pak128): win-t5 ca9e7bc61bc792da | linux-t5 ca9e7bc61bc792da == win | testing-2 makeobj ca9e7bc61bc792da same pak
+cards-128/B              (pak128): win-t5 c4cb7d7fc08f2788 | linux-t5 c4cb7d7fc08f2788 == win | testing-2 makeobj c4cb7d7fc08f2788 same pak
+cards-128/B8             (pak128): win-t5 4aa4791751eb1654 | linux-t5 4aa4791751eb1654 == win | testing-2 makeobj 4aa4791751eb1654 same pak
+cards-128/L              (pak128): win-t5 2fd080090c8d0691 | linux-t5 2fd080090c8d0691 == win | testing-2 makeobj b3d6d3c956006539 differs (translucent special-colour records added by TCC)
+cards-64/A               (pak):  win-t5 ac469d255376909e | linux-t5 ac469d255376909e == win | testing-2 makeobj ac469d255376909e same pak
+cards-64/B               (pak):  win-t5 84b8918f8956552f | linux-t5 84b8918f8956552f == win | testing-2 makeobj 84b8918f8956552f same pak
+cards-64/B8              (pak):  win-t5 9363c34c603d89ac | linux-t5 9363c34c603d89ac == win | testing-2 makeobj 9363c34c603d89ac same pak
+cards-64/L               (pak):  win-t5 b821122421795a44 | linux-t5 b821122421795a44 == win | testing-2 makeobj ce83a818ab5ba7a6 differs (translucent special-colour records added by TCC)
+pixelart/tram-daynight   (pak):  win-t5 12c7c7a2cf3be3e4 | linux-t5 12c7c7a2cf3be3e4 == win | testing-2 makeobj 12c7c7a2cf3be3e4 same pak
+pixelart/tram-r11        (pak):  win-t5 2dd1e215c1ab36ce | linux-t5 2dd1e215c1ab36ce == win | testing-2 makeobj 2dd1e215c1ab36ce same pak
+zoom                     (pak):  win-t5 881863d23d3d791f | linux-t5 881863d23d3d791f == win | testing-2 makeobj 881863d23d3d791f same pak
+makeobj: win t5 8a150381 / linux t5 482e041f / testing-2 published win e8d3bcf7 / linux 7646fe25

@@ -1,0 +1,42 @@
+exe simutrans-t5-s2.exe e82a2ce83ad6ad90dc62ef32f2567b9b56b2ead3f3c80894d2c808e06809ba81
+t5-s2-mutant-xr1: rc=0 rows 195 "errors": []
+t5-s2-mutant-xr0: rc=0 rows 195 "errors": []
+t5-s2-makie: rc=0 rows 3735 "errors": []
+t5-s2-daynight: rc=0 rows 2660 "errors": []
+t5-s2-mutant-zooms: rc=0 rows 1950 "errors": []
+t5-s2-plain: rc=0 rows 1560 "errors": []
+t5-s2-mutant-pak-xr1: rc=0 rows 476 "errors": []
+t5-s2-mutant-pak-xr0: rc=0 rows 476 "errors": []
+### ACCEPTANCE: t5-s2 against the A4C cache candidate (testing-4)
+ca-mutant-xr1 vs t5-s2-mutant-xr1: draws 195 (unmatched 0) | pak images 0/0 identical | derived, not 2/1: 195/195 identical | derived at 2/1: 0 draws, coverage px changed 0, colour changes 0 required -> PASS
+rc=0
+ca-mutant-xr0 vs t5-s2-mutant-xr0: draws 195 (unmatched 0) | pak images 0/0 identical | derived, not 2/1: 195/195 identical | derived at 2/1: 0 draws, coverage px changed 0, colour changes 0 required -> PASS
+rc=0
+ca-makie vs t5-s2-makie: draws 3735 (unmatched 0) | pak images 810/810 identical | derived, not 2/1: 2340/2340 identical | derived at 2/1: 585 draws, coverage px changed 156078, colour changes 0 required -> PASS
+rc=0
+ca-daynight vs t5-s2-daynight: draws 2660 (unmatched 0) | pak images 60/60 identical | derived, not 2/1: 2600/2600 identical | derived at 2/1: 0 draws, coverage px changed 0, colour changes 0 required -> PASS
+rc=0
+ca-mutant-zooms vs t5-s2-mutant-zooms: draws 1950 (unmatched 0) | pak images 0/0 identical | derived, not 2/1: 1560/1560 identical | derived at 2/1: 390 draws, coverage px changed 104052, colour changes 0 required -> PASS
+rc=0
+ca-plain vs t5-s2-plain: draws 1560 (unmatched 0) | pak images 0/0 identical | derived, not 2/1: 1170/1170 identical | derived at 2/1: 390 draws, coverage px changed 0, colour changes 0 required -> PASS
+rc=0
+ca-mutant-pak-xr1 vs t5-s2-mutant-pak-xr1: draws 476 (unmatched 0) | pak images 216/216 identical | derived, not 2/1: 130/130 identical | derived at 2/1: 130 draws, coverage px changed 34684, colour changes 0 required -> PASS
+rc=0
+ca-mutant-pak-xr0 vs t5-s2-mutant-pak-xr0: draws 476 (unmatched 0) | pak images 216/216 identical | derived, not 2/1: 130/130 identical | derived at 2/1: 130 draws, coverage px changed 0, colour changes 0 required -> PASS
+rc=0
+### CONTROL: A4C's stale-key mutant against the same references (must FAIL)
+ca-makie vs stale-makie: draws 3735 (unmatched 0) | pak images 810/810 identical | derived, not 2/1: 54/2340 identical | derived at 2/1: 585 draws, coverage px changed 0, colour changes 0 required -> FAIL (2862 violations)
+    derived tile 48202 at 2/1 level 0: 16360 drawn px changed colour
+    derived tile 48215 at 2/1 level 0: 15752 drawn px changed colour
+    derived tile 48233 at 2/1 level 0: 16360 drawn px changed colour
+    derived tile 48234 at 2/1 level 0: 16492 drawn px changed colour
+    derived tile 48247 at 2/1 level 0: 15920 drawn px changed colour
+rc=1
+ca-daynight vs stale-daynight: draws 2660 (unmatched 0) | pak images 60/60 identical | derived, not 2/1: 1330/2600 identical | derived at 2/1: 0 draws, coverage px changed 0, colour changes 0 required -> FAIL (1270 violations)
+    derived tile 48156 zoom 1/1 level 0 not identical
+    derived tile 48157 zoom 1/1 level 0 not identical
+    derived tile 48160 zoom 1/1 level 0 not identical
+    derived tile 48161 zoom 1/1 level 0 not identical
+    derived tile 48164 zoom 1/1 level 0 not identical
+rc=1
+GATES_DONE

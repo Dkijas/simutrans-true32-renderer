@@ -1,0 +1,7 @@
+t4s3-daynight  level 0: tiles  195 | geometry not 2x 0 | 2/1 px differing from the legacy model  49862 | from plain doubling   2308
+t4s3-daynight  level 2: tiles  195 | geometry not 2x 0 | 2/1 px differing from the legacy model  49862 | from plain doubling   2308
+t4s3-daynight  level 4: tiles  195 | geometry not 2x 0 | 2/1 px differing from the legacy model  49862 | from plain doubling   2308
+a11s3-daynight level 0: tiles  195 | geometry not 2x 0 | 2/1 px differing from the legacy model      0 | from plain doubling  52170
+a11s3-daynight level 2: tiles  195 | geometry not 2x 0 | 2/1 px differing from the legacy model      0 | from plain doubling  52170
+a11s3-daynight level 4: tiles  195 | geometry not 2x 0 | 2/1 px differing from the legacy model      0 | from plain doubling  52170
+CONTROL t4s3-daynight: the model of the NEXT tile id against each tile's 2/1 coverage: 530373 px differ -> the check can fail

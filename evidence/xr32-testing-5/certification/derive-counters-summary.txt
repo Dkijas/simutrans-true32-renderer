@@ -1,0 +1,15 @@
+# w-base-s3.exe sha256 209f0fbd6073d3ff objects pak128.german-makie save coastworld frames 600 -screensize 1920x1080
+  coastnight  frames  782 tiles 2080 compose_n   1258 compose_us     32170 tex_builds   13 tex_hits   1245 tex_us     1608
+  coastzoom   frames  782 tiles 2080 compose_n   1202 compose_us     32752 tex_builds   14 tex_hits   1188 tex_us     1412
+  coastscroll frames  783 tiles 2080 compose_n    394 compose_us     15245 tex_builds   13 tex_hits    381 tex_us     1656
+  coast       frames  782 tiles 2080 compose_n    433 compose_us     18469 tex_builds   13 tex_hits    420 tex_us     2016
+# w-t5-s3.exe sha256 f9e42af80b9ca95a objects pak128.german-makie save coastworld frames 600 -screensize 1920x1080
+  coastnight  frames  782 tiles 2080 compose_n   1269 compose_us     35305 tex_builds   13 tex_hits   1256 tex_us     1646
+  coastzoom   frames  782 tiles 2080 compose_n   1180 compose_us     32798 tex_builds   14 tex_hits   1166 tex_us     1565
+  coastscroll frames  782 tiles 2080 compose_n    393 compose_us     15564 tex_builds   13 tex_hits    380 tex_us     1624
+  coast       frames  784 tiles 2080 compose_n    433 compose_us     18464 tex_builds   13 tex_hits    420 tex_us     2065
+t5 - t4, ONE run each (n = 1; how many compositions a run makes depends on its timing, so +-2 % is noise, and no timing claim is made from these; the frame-time bench is the timing evidence). Stage textures built (the A4C cache) must match: A11 changes how a 2/1 zoom cache is built, not the cache of stage textures:
+  coast       compose_n 433 -> 433 | tex_builds 13 -> 13 | tex_hits 420 -> 420 | compose_us 18469 -> 18464
+  coastnight  compose_n 1258 -> 1269 | tex_builds 13 -> 13 | tex_hits 1245 -> 1256 | compose_us 32170 -> 35305
+  coastscroll compose_n 394 -> 393 | tex_builds 13 -> 13 | tex_hits 381 -> 380 | compose_us 15245 -> 15564
+  coastzoom   compose_n 1202 -> 1180 | tex_builds 14 -> 14 | tex_hits 1188 -> 1166 | compose_us 32752 -> 32798

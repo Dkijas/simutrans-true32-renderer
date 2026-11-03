@@ -1,0 +1,31 @@
+### zoom oracle sdl3
+1/1 P0 (606, 1348) P1 (702, 1540) drawn 10584 new mae 0.075 px>2 0 old mae 0.075 px>2 0 ideal mae 0.075 px>2 0 -> best new
+9/8 P0 (681, 1300) P1 (789, 1516) drawn 14183 new mae 0.124 px>2 0 old mae 0.717 px>2 1852 ideal mae 0.713 px>2 1876 -> best new
+2/1 P0 (636, 1160) P1 (828, 1544) drawn 42336 new mae 0.075 px>2 0 old mae 0.075 px>2 0 ideal mae 0.075 px>2 0 -> best new
+3/4 P0 (670, 1443) P1 (742, 1587) drawn 6307 new mae 0.134 px>2 0 old mae 0.812 px>2 914 ideal mae 0.812 px>2 899 -> best new
+1/2 P0 (663, 1442) P1 (711, 1538) drawn 2754 new mae 0.120 px>2 0 old mae 0.702 px>2 324 ideal mae 0.875 px>2 396 -> best new
+CONTROL zPFs3: no capture here (Windows Defender quarantined the published testing-4 SDL3 exe in this lane); the consolidation's result with that same exe, paks and scene: <tcc-consolidation-lab>/results/zoom-oracle-zPF3.json
+CONTROL zT4s3: no capture here (Windows Defender quarantined the published testing-4 SDL3 exe in this lane); the consolidation's result with that same exe, paks and scene: <tcc-consolidation-lab>/results/zoom-oracle-zT43.json
+### night oracle sdl3
+t5 n=0                 xr32_single 0.155 legacy_single 8.893 legacy_double 8.893 zero (no recolour) 25.533
+t5 n=1                 xr32_single 0.170 legacy_single 10.117 legacy_double 12.456 zero (no recolour) 19.472
+t5 n=2                 xr32_single 0.152 legacy_single 8.018 legacy_double 10.343 zero (no recolour) 15.158
+t5 n=4                 xr32_single 0.164 legacy_single 6.556 legacy_double 7.659 zero (no recolour) 8.901
+legacy16 n=0           xr32_single 6.057 legacy_single 3.749 legacy_double 3.749 zero (no recolour) 25.237
+legacy16 n=1           xr32_single 6.706 legacy_single 6.442 legacy_double 6.048 zero (no recolour) 14.300
+legacy16 n=2           xr32_single 6.351 legacy_single 5.022 legacy_double 4.797 zero (no recolour) 10.554
+legacy16 n=4           xr32_single 4.905 legacy_single 5.139 legacy_double 3.542 zero (no recolour) 4.620
+### critical case sdl3
+{"node": 1, "wh": [192, 176], "p0_xy": [1536, 304], "p1_xy": [2688, 880], "glass_px": 11440, "expected_legacy_mean_abs": 8.46, "expected_if_xr32_recoloured_mean_abs": 9.28, "X_mean_abs_xon": 9.9, "X_mean_xon": [18.49, 4.69, -6.53], "X_mae_vs_legacy_expectation_xon": 4.89, "glass_mean_rgb_p0_xon": [79.5, 118.0, 85.6], "glass_mean_rgb_p1_xon": [98.0, 122.6, 79.0], "X_mean_abs_xoff": 8.75, "X_mean_xoff": [14.38, 3.49, -8.38], "X_mae_vs_legacy_expectation_xoff": 0.91, "glass_mean_rgb_p0_xoff": [74.9, 114.9, 78.3], "glass_mean_rgb_p1_xoff": [89.3, 118.4, 69.9], "X_mean_abs_16bit": 8.99, "X_mean_16bit": [14.42, 3.38, -9.18], "X_mae_vs_legacy_expectation_16bit": 1.83, "glass_mean_rgb_p0_16bit": [73.8, 114.5, 76.9], "glass_mean_rgb_p1_16bit": [88.2, 117.8, 67.8]}
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<testing-5-lab>/evidence/scene-LT4s3-xon/fb_z11.png'
+### six objects sdl3
+rc=0
+station_track_Bahnsteig_2000_5     placements 11/11 | exact xon 99.56 (TCC-01 99.56) xoff 39.94 (39.94)
+Bahnhof_Hochbahn_5                 placements 10/10 | exact xon 99.48 (TCC-01 99.48) xoff 76.49 (76.49)
+Bahnsteig_Halle_2000               placements 4/4 | exact xon 99.98 (TCC-01 99.98) xoff 7.7 (7.7)
+station_track_1850_station_hall    placements 5/5 | exact xon 97.88 (TCC-01 97.88) xoff 6.91 (6.91)
+station_track_Bahnsteig_1975_1     placements 4/4 | exact xon 98.07 (TCC-01 98.07) xoff 12.98 (12.98)
+station_track_Bahnsteig_1835_1     placements 6/6 | exact xon 98.88 (TCC-01 98.88) xoff 8.79 (8.79)
+TCC_ANALYZE_DONE
+"p0_xy": [1536, 304] "X_mean_abs_xon": 0.47 

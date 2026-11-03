@@ -1,0 +1,7 @@
+== preflight 2026-11-03T08:53:39+01:00
+certified package SHA256SUMS: verifies (260 files)
+t5/candidate 038b538e16166229266707f036cb213be5a5261b | a4/cache 0afdfbd31ee38c8a581a7f6251ade9bc80f60439 | tcc/fix 03de7edd6d0c0588c5b0953c286552c14ca47cad | a11/fix c66eaaae252901271f0e1b9110459daa775d0884
+t5/candidate parents: 038b538 07e4d54 0afdfbd 
+uncommitted in certification lane src: 0
+92ef45519f42b3d086d116a9cf3bf348fe271303	refs/heads/xr32/a4-coast-01
+92ef45519f42b3d086d116a9cf3bf348fe271303	refs/tags/xr32-prissi-night-image-prototype-01-r12377-testing-4

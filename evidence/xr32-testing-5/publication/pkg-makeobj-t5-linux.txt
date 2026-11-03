@@ -1,0 +1,5 @@
+makeobj-xr32-night-prototype-r12377-testing-2-linux-x86_64: re-pack of its own tree == published tarball (recipe confirmed)
+Files A/makeobj and B/makeobj differ
+Files A/README-MAKEOBJ.txt and B/README-MAKEOBJ.txt differ
+Files A/SHA256SUMS.txt and B/SHA256SUMS.txt differ
+makeobj-xr32-night-prototype-r12377-testing-5-linux-x86_64.tar.gz: entries 5, exec bit 1 of 1, sha256 97161baaa458315c3ee7b0805166fb522426f28644fad17bd34270781066ec8c

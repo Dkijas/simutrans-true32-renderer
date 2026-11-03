@@ -1,0 +1,151 @@
+diff --git a/src/simutrans/display/stlab_xr32_zoom.cci b/src/simutrans/display/stlab_xr32_zoom.cci
+index e3924f88d025bceda0a25077691a0322620f9f4f..d6c2d4b8652126baa1e08bf7d09cbeb55f01e40c 100644
+--- a/src/simutrans/display/stlab_xr32_zoom.cci
++++ b/src/simutrans/display/stlab_xr32_zoom.cci
+@@ -486,6 +486,131 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ }
+ 
+ 
++/**
++ * XR32-TESTING5-A11: the 2/1 cache of a coast water tile derived from the sea (A4).
++ *
++ * At 2/1 zoom_core_rezoom() does not double pixels (its case zoom_den == 1): it rounds the outline. A transparent
++ * pixel whose three neighbours towards the next source pixel are opaque is filled with the mean of two of them, an
++ * opaque one whose three are transparent is dropped (zoomin_pixel), and one pixel of a superpixel that would vanish
++ * is kept. The beach mask a sloped coast is blended with (draw_alpha in grund.cc) is a 16-bit image and is zoomed that
++ * way; stlab_xr32_zoom_build() doubles the pixels of the water tile. Where the mask says water and the doubled tile
++ * has no pixel, the land shows: known issue A11 of testing-4.
++ *
++ * A derived tile has the pixel set of its 16-bit tile and no semantics (stlab_xr32_derive_water_tile), so its 2/1
++ * cache is built here with the legacy rule, in the legacy order, over its XR32 planes. A pixel the legacy copies takes
++ * that source pixel, which is what doubling gives it; a pixel the legacy fills takes the mean of the same two
++ * neighbours, by day and at night; a pixel the legacy drops is a hole. Every other image and scale is built by
++ * stlab_xr32_zoom_build().
++ */
++static stlab_xr32_zoom_t *stlab_xr32_zoom_build_2x_legacy(const stlab_xr32_image_t *img)
++{
++	const sint32 w = img->width, h = img->height;
++	if(  w <= 0  ||  h <= 0  ||  img->run_count != 0  ||  img->rgba == NULL  ) {
++		return NULL;
++	}
++	const sint32 dw = w * 2, dh = h * 2;
++	const size_t nd = (size_t)dw * dh;
++	// what the legacy writes at each destination: 0 nothing, 1 a copy of source a, 2 the mean of sources a and b
++	std::vector<uint8> what( nd, 0 );
++	std::vector<uint32> sa( nd, 0 ), sb( nd, 0 );
++	const uint8 *rgba = img->rgba;
++	auto opaque = [&]( sint32 x, sint32 y ) -> bool {
++		const uint8 *p = rgba + ((size_t)y * w + x) * 4;
++		return !(p[3] <= 7  ||  (p[0] == 0xE7 && p[1] == 0xFF && p[2] == 0xFF));
++	};
++	// compress_pixel_transparent()
++	auto copy = [&]( size_t d, sint32 x, sint32 y ) {
++		what[d] = opaque( x, y ) ? 1 : 0;
++		sa[d] = (uint32)(y * w + x);
++	};
++	// zoomin_pixel( p, pab, prl, pdia )
++	auto zoomin = [&]( size_t d, sint32 px, sint32 py, sint32 ax, sint32 ay, sint32 rx, sint32 ry, sint32 qx, sint32 qy ) {
++		const bool ab = opaque( ax, ay ), rl = opaque( rx, ry ), dia = opaque( qx, qy );
++		if(  !opaque( px, py )  ) {
++			// transparent: filled only when all three neighbours are not
++			what[d] = (ab  &&  rl  &&  dia) ? 2 : 0;
++			sa[d] = (uint32)(ay * w + ax);
++			sb[d] = (uint32)(ry * w + rx);
++		}
++		else {
++			// opaque: dropped only when all three neighbours are transparent
++			what[d] = (ab  ||  rl  ||  dia) ? 1 : 0;
++			sa[d] = (uint32)(py * w + px);
++		}
++	};
++
++	// first half row: copied
++	for(  sint32 x = 0;  x < w;  x++  ) {
++		copy( (size_t)x * 2, x, 0 );
++		copy( (size_t)x * 2 + 1, x, 0 );
++	}
++	for(  sint32 y = 0;  y < h - 1;  y++  ) {
++		const size_t r = (size_t)(2 * y + 1) * dw;   // destination rows 2y+1 and 2y+2
++		copy( r, 0, y );
++		copy( r + dw, 0, y + 1 );
++		for(  sint32 x = 0;  x < w - 1;  x++  ) {
++			const size_t d = r + 2 * x + 1;
++			zoomin( d, x, y, x + 1, y, x, y + 1, x + 1, y + 1 );
++			// the superpixel would vanish: keep one pixel. The legacy reads the row above by linear index, so at x == 0
++			// it reads the previous row's last pixel; only the first such read lies before the buffer, and there the
++			// pixel above (a copy of this opaque source) is never clear, so it cannot decide
++			const sint64 above_left = (sint64)r + 2 * x - dw - 1;
++			if(  what[d] == 0  &&  opaque( x, y )  &&  what[r + 2 * x] == 0  &&  what[r + 2 * x - dw] == 0
++			     &&  (above_left < 0  ||  what[(size_t)above_left] == 0)  ) {
++				what[d] = 1;
++				sa[d] = (uint32)(y * w + x);
++			}
++			zoomin( d + 1, x + 1, y, x, y, x + 1, y + 1, x, y + 1 );
++			zoomin( d + dw, x, y + 1, x + 1, y + 1, x, y, x + 1, y );
++			zoomin( d + dw + 1, x + 1, y + 1, x, y + 1, x + 1, y, x, y );
++		}
++		copy( r + 2 * w - 1, w - 1, y );
++		copy( r + dw + 2 * w - 1, w - 1, y + 1 );
++	}
++	// last half row: copied
++	for(  sint32 x = 0;  x < w;  x++  ) {
++		copy( (size_t)(dh - 1) * dw + x * 2, x, h - 1 );
++		copy( (size_t)(dh - 1) * dw + x * 2 + 1, x, h - 1 );
++	}
++
++	stlab_xr32_zoom_t *z = new stlab_xr32_zoom_t();
++	z->width = (uint16)dw;
++	z->height = (uint16)dh;
++	z->x = (sint16)((sint32)img->x * 2);
++	z->y = (sint16)((sint32)img->y * 2);
++	z->num = 2;
++	z->den = 1;
++	z->linear = img->version == 2;
++	// a plane pixel: a copy, the mean of two, or a hole; a night pixel that is a hole contributes nothing, as in the
++	// builder, which writes 0,0,0,0 for a destination without a usable sample
++	auto plane = [&]( const uint8 *src, bool night ) -> uint8 * {
++		uint8 *o = MALLOCN( uint8, nd * 4 );
++		for(  size_t d = 0;  d < nd;  d++  ) {
++			uint8 *q = o + d * 4;
++			q[0] = q[1] = q[2] = q[3] = 0;
++			const uint8 *a = src + (size_t)sa[d] * 4, *b = src + (size_t)sb[d] * 4;
++			const bool ua = !night  ||  !(a[3] <= 7  ||  (a[0] == 0xE7 && a[1] == 0xFF && a[2] == 0xFF));
++			const bool ub = !night  ||  !(b[3] <= 7  ||  (b[0] == 0xE7 && b[1] == 0xFF && b[2] == 0xFF));
++			if(  what[d] == 1  &&  ua  ) {
++				memcpy( q, a, 4 );
++			}
++			else if(  what[d] == 2  &&  ua  &&  ub  ) {
++				for(  int ch = 0;  ch < 4;  ch++  ) {
++					q[ch] = (uint8)(((uint32)a[ch] + b[ch]) / 2);   // r/valid, as SumSubpixel's mean
++				}
++			}
++			else if(  what[d] == 2  &&  (ua  ||  ub)  ) {
++				memcpy( q, ua ? a : b, 4 );
++			}
++		}
++		return o;
++	};
++	z->rgba = plane( rgba, false );
++	z->night = img->night ? plane( img->night, true ) : NULL;
++	return z;
++}
++
++
+ static void stlab_xr32_zoom_release(stlab_xr32_slot_t *s)
+ {
+ 	if(  s == NULL  ||  s->zoom == NULL  ) {
+@@ -519,7 +644,13 @@ static bool stlab_xr32_zoom_ensure(image_id n, stlab_xr32_slot_t *s)
+ 	// XR32-COAST-RENDERING-01: a derived tile's raster is composed for this one build
+ 	stlab_xr32_image_t derived;
+ 	const stlab_xr32_image_t *src = stlab_xr32_source( n, s, derived );
+-	s->zoom = src ? stlab_xr32_zoom_build( src, num, den ) : NULL;
++	if(  src == &derived  &&  num == 2  &&  den == 1  ) {
++		// XR32-TESTING5-A11: a derived coast tile takes the legacy 2/1 outline, as its beach mask does
++		s->zoom = stlab_xr32_zoom_build_2x_legacy( src );
++	}
++	else {
++		s->zoom = src ? stlab_xr32_zoom_build( src, num, den ) : NULL;
++	}
+ 	return s->zoom != NULL;
+ }
+ 

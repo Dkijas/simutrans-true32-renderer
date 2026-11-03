@@ -1,0 +1,6 @@
+makeobj-xr32-night-prototype-r12377-testing-2-windows-x86_64: re-zip of its own tree == published zip (recipe confirmed)
+Files A/README-MAKEOBJ.txt and B/README-MAKEOBJ.txt differ
+Files A/SHA256SUMS.txt and B/SHA256SUMS.txt differ
+Files A/makeobj.exe and B/makeobj.exe differ
+makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64.zip: 4 entries, read-back OK
+makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64.zip sha256 b8a679e85dc4a8081ef9bba0e744fbcb3b8d716bbbffd092f8c5a850ad0c7b77

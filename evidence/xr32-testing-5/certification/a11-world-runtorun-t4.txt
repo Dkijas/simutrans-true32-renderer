@@ -1,0 +1,7 @@
+t4 vs t4 again day   differ above the status bar    0 
+t4 vs t4 again z98   differ above the status bar    0 
+t4 vs t4 again z34   differ above the status bar    0 
+t4 vs t4 again z12   differ above the status bar  228 (927, 902, 988, 938)
+t4 vs t4 again z2    differ above the status bar    0 
+t4 vs t4 again back  differ above the status bar    0 
+t4 vs t4 again z2b   differ above the status bar    0 

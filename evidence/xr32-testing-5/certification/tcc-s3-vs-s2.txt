@@ -1,0 +1,16 @@
+zT5 z11 s3 vs s2: 0 px differ above the status bar
+zT5 z98 s3 vs s2: 0 px differ above the status bar
+zT5 z21 s3 vs s2: 0 px differ above the status bar
+zT5 z34 s3 vs s2: 0 px differ above the status bar
+zT5 z12 s3 vs s2: 108 px differ above the status bar
+LT5s3-xon vs LT5s2-xon: 0 px differ above the status bar
+LT5s3-xoff vs LT5s2-xoff: 0 px differ above the status bar
+LT5s3-night vs LT5s2-night: 0 px differ above the status bar
+zT5s3-n4 vs zT5s2-n4: 9616 px differ above the status bar
+zT5s3/fb_z12 108 bbox x 345..2617 y 1080..1261
+zT5s3-n4/fb_z11 9616 bbox x 0..191 y 430..527
+zT5s2 vs zT5s2 again z11: 0 px 
+zT5s2 vs zT5s2 again z98: 0 px 
+zT5s2 vs zT5s2 again z21: 0 px 
+zT5s2 vs zT5s2 again z34: 0 px 
+zT5s2 vs zT5s2 again z12: 182 px bbox x 345..2668 y 1116..1261

@@ -1,0 +1,11 @@
+vis-t4-s2-mutant           day  key px  971180 | hole px  102 | T3HOLE  97 SAME   3 BLEND   2 | GAP   0
+vis-t4-s2-mutant           z2   key px  515556 | hole px  130 | T3HOLE 100 SAME  23 BLEND   0 | GAP   7
+    GAP x  715 y  281 cand b0a040 t3 607890
+    GAP x  711 y  283 cand b0a040 t3 607890
+    GAP x  876 y  309 cand 807030 t3 506888
+    GAP x  880 y  311 cand 807028 t3 506888
+    GAP x  515 y  381 cand b0a038 t3 587090
+    GAP x  143 y  695 cand a8a040 t3 587090
+    GAP x  131 y  701 cand b0a038 t3 587090
+vis-t4-s2-mutant           back key px  971180 | hole px  102 | T3HOLE  97 SAME   3 BLEND   2 | GAP   0
+CONTROL vis-t4-s2-mutant day: 10013 key pixels knocked out -> GAP 0 -> 9936 (the detector can fail)

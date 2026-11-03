@@ -1,0 +1,17 @@
+start 2026-11-03T17:04:54+01:00 | gcc (Debian 14.2.0-19) 14.2.0 | glibc 2.41 | Debian 13.5
+repro-a4-sdl2-32 tar=3e8c4dbeb374523c warnings=18 sha256 c0cec57e268e509a7d4f585af8f281b6fc1096cdc59eaac498ba935d34cd5e3d
+repro-a4-sdl3-32 tar=3e8c4dbeb374523c warnings=18 sha256 7a556636051d10727f46558a9bedd644a90c15010b1e8239e9bcfcbe504aefb7
+t5-sdl2-32 tar=7c4d3f77cb3c8084 warnings=18 sha256 49686ccf2b6620345150ad3f43c7f65d53326a4d93baea9cf0e3232536964ba3
+t5-sdl2-16 tar=7c4d3f77cb3c8084 warnings=18 sha256 3e7cd80e112cf9d52107c2b9f5e8729a1f9bc9897aef69c52eb711ae7d3100e3
+t5-sdl3-32 tar=7c4d3f77cb3c8084 warnings=18 sha256 a65bf4f20acbbadb6ff1fcbec88c69c99bc8194690801ca5e44a1325442a815e
+t5-sdl3-16 tar=7c4d3f77cb3c8084 warnings=18 sha256 9822aee1d322a61606d80e5e6f61bd365365e9273f21012400d33f5f68bbd638
+t5-makeobj warnings=1 sha256 482e041f6a35fc99a2201f3ea5c4a944d749e15325f43ddca391ad298c156e47
+<wsl-testing-5-publication-lab>/repro-a4-sdl2-32/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-5-publication-lab>/repro-a4-sdl3-32/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-5-publication-lab>/t5-sdl2-16/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-5-publication-lab>/t5-sdl2-32/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-5-publication-lab>/t5-sdl3-16/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-5-publication-lab>/t5-sdl3-32/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-5-publication-lab>/t5-makeobj/b/src/makeobj/makeobj | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+end 2026-11-03T17:09:20+01:00
+BUILDS_LINUX_DONE

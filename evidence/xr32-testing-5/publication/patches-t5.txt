@@ -1,0 +1,16 @@
+r12377 7cc6d452be63c55943d650bc5a72fce27ec54853 | testing-4 0afdfbd31ee38c8a581a7f6251ade9bc80f60439 | testing-5 038b538e16166229266707f036cb213be5a5261b tree c8297dcac4547b2a425058ba8723c96e2eeadb33
+recipe check: testing-4 full diff re-made 2b760a0d6d6947d361acc5bfc03ead7cea972c496937f879c4b91630aa05e9ba published 2b760a0d6d6947d361acc5bfc03ead7cea972c496937f879c4b91630aa05e9ba
+full diff on r12377 -> c8297dcac4547b2a425058ba8723c96e2eeadb33 == t5/candidate tree
+T5-ON-TESTING-4 on testing-4 -> c8297dcac4547b2a425058ba8723c96e2eeadb33 == t5/candidate tree
+01 + 02 on testing-4 -> c8297dcac4547b2a425058ba8723c96e2eeadb33 == t5/candidate tree
+CONTROL: 02 alone on r12377 does NOT apply (the apply check can fail)
+01 == tcc/fix 03de7ed diff: IDENTICAL
+02 changed lines == a11/fix c66eaaa: IDENTICAL
+files changed testing-4 -> testing-5:  2 files changed, 154 insertions(+), 8 deletions(-) [src/simutrans/descriptor/writer/stlab_semantic.cc src/simutrans/display/stlab_xr32_zoom.cci ]
+CR bytes: full diff 20 (testing-4's published full diff 20: the trunk's own CR bytes)
+bf9391495b0961b0d54d8a9dc4a4d834b704c79ac99399297e1a4225192b89c4  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff
+3d6addc5ccf13a446aff4de09305468fe76bb6159b693a6163924522a4537a89  T5-ON-TESTING-4.diff
+3350ce5dc7810c22c68b760757127fd4825c61dbf9663423c367dbed0c6e132c  01-TCC-TRANSLUCENT-COMPANY-COLOUR.diff
+a45f88843591677e2ebfc20225956ef9140dc0dce919f4e6291a11ef6a588130  02-A11-COAST-2X1-OUTLINE.diff
+1a73e055bbe2d8e741189ededae015d437997a53d32b8558dc7e6cfe3180c3d8  APPLY-ORDER.txt
+PATCHES_T5_DONE

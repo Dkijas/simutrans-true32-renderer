@@ -1,0 +1,8 @@
+t5-s3      vs base-s3     : 21 / 21 distinct warnings | NEW 0 | gone 0 -> PASS
+t5-s2      vs base-s2     : 21 / 21 distinct warnings | NEW 0 | gone 0 -> PASS
+t5-16-s3   vs base16-s3   : 21 / 21 distinct warnings | NEW 0 | gone 0 -> PASS
+t5-16-s2   vs base16-s2   : 21 / 21 distinct warnings | NEW 0 | gone 0 -> PASS
+lab-t5-s3  vs lab-base-s3 : 21 / 21 distinct warnings | NEW 0 | gone 0 -> PASS
+lab-t5-s2  vs lab-base-s2 : 21 / 21 distinct warnings | NEW 0 | gone 0 -> PASS
+mo-t5      vs mo-base     :  2 /  2 distinct warnings | NEW 0 | gone 0 -> PASS
+CONTROL synthetic warning added to t5-s3: NEW 1 (must be 1) -> the check can fail

@@ -1,0 +1,25 @@
+reused unchanged (testing-2's published file, as shipped in testing-4): xr32-night-prototype-r12377-testing-2-testkit.zip 200902e829f350f0
+recipe check: testing-4 source re-made 91abde4335d046b90b1a46070bce83e0bef6b6f40570dc2c400948d1babb70ee published 91abde4335d046b90b1a46070bce83e0bef6b6f40570dc2c400948d1babb70ee
+source tarball reproducible: fe33b4c58f67a67c1ff8562b7d5516e6d934ae5b92696ed1da33cfef924ca3f7
+source tarball files: 2231 (tree c8297dcac4547b2a425058ba8723c96e2eeadb33); modes:    2231 -rw-r--r--     104 drwxr-xr-x 
+full diff == the patch set's
+68d93437be053966dccad7830a6e67f9a8a678563f06d08cbaf1294249e3d102  simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2.zip
+a2eab2e0c9eadd910a8f726bfd2ae62a2340c608fc8accfafa5ceb8a536d7e14  simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3.zip
+49577ca6fffe58d96112829c6e96c62194a72a786af0e0f5eceb303cad7f5728  simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl2.tar.gz
+b5cce5583e57af36c2f943ff0bbd371568fbd238fb89ec0317233eb94825257a  simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl3.tar.gz
+b8a679e85dc4a8081ef9bba0e744fbcb3b8d716bbbffd092f8c5a850ad0c7b77  makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64.zip
+97161baaa458315c3ee7b0805166fb522426f28644fad17bd34270781066ec8c  makeobj-xr32-night-prototype-r12377-testing-5-linux-x86_64.tar.gz
+200902e829f350f05460e7ed6b3d596c0cb31ad735954c1b3ce55c3628707903  xr32-night-prototype-r12377-testing-2-testkit.zip
+fe33b4c58f67a67c1ff8562b7d5516e6d934ae5b92696ed1da33cfef924ca3f7  xr32-night-prototype-r12377-testing-5-source.tar.gz
+bf9391495b0961b0d54d8a9dc4a4d834b704c79ac99399297e1a4225192b89c4  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff
+1147 bytes  SHA256SUMS.txt
+530410 bytes  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff
+203108 bytes  makeobj-xr32-night-prototype-r12377-testing-5-linux-x86_64.tar.gz
+588572 bytes  makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64.zip
+9048335 bytes  simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl2.tar.gz
+12458738 bytes  simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl3.tar.gz
+15765913 bytes  simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2.zip
+17580747 bytes  simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3.zip
+353849 bytes  xr32-night-prototype-r12377-testing-2-testkit.zip
+5452775 bytes  xr32-night-prototype-r12377-testing-5-source.tar.gz
+RELEASE_T5_DONE

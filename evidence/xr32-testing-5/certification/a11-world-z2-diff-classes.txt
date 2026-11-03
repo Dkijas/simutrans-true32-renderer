@@ -1,0 +1,5 @@
+2/1 t4 vs candidate, above the status bar: 106 px
+   ('FAR', 'a11==t3') 1
+   ('FAR', 'neither') 83
+   ('FAR', 't4==t3') 4
+   ('near-water', 'neither') 18

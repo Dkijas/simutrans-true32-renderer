@@ -1,0 +1,45 @@
+win: rejected runs 0
+linux: no matrix yet
+
+=== win TWC (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario               s2-co         s2-mut          s3-co         s3-mut
+coast                 0/240f  22320762/240f         0/240f  25010403/240f
+coastfull             0/240f  43591995/240f         0/240f  46575213/240f
+coastnight            0/240f   5441166/240f         0/240f   5372618/240f
+coastresize           0/240f   5188878/240f         0/240f   5867022/240f
+coastscroll           0/240f         0/240f         0/240f         0/240f
+coastzoom             0/240f   6808841/240f         0/240f   5217777/240f
+  control droprect mutant: fails in 5 of 6 scenarios (coast,coastfull,coastnight,coastresize,coastzoom); passes in: coastscroll
+
+=== win TWCD (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario               s2-co         s2-mut          s3-co         s3-mut
+coast                 0/240f  22861552/240f         0/240f  23776897/240f
+coastnight            0/240f   1902796/240f         0/240f   6673247/240f
+  control droprect mutant: fails in 2 of 2 scenarios (coast,coastnight); passes in: -
+
+=== win TWCI (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario               s2-co          s3-co
+coast                  0/40f          0/40f
+
+=== win TWDR (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario               s2-co         s2-mut          s3-co         s3-mut
+daynight              0/240f         0/240f         0/240f         0/240f
+edges                 0/240f  10638735/240f         0/240f  11215634/240f
+fullredraw            0/240f         0/240f         0/240f         0/240f
+playercolor           0/240f   8894481/240f         0/240f   8214729/240f
+resize                0/240f   5331278/240f         0/240f   6181356/240f
+scatter               0/240f    106261/240f         0/240f    106261/240f
+scroll                0/240f         0/240f         0/240f         0/240f
+static                0/240f   7489920/240f         0/240f   7489920/240f
+vehicles              0/240f  14301697/240f         0/240f  13858762/240f
+windows               0/240f  13691062/240f         0/240f  13891183/240f
+zoom                  0/240f   2738057/240f         0/240f   3203370/240f
+zoomx                 0/240f    892381/240f         0/240f    967107/240f
+  control droprect mutant: fails in 9 of 12 scenarios (edges,playercolor,resize,scatter,static,vehicles,windows,zoom,zoomx); passes in: daynight,fullredraw,scroll
+
+=== win TWZ (renderer direct3d,direct3d11) - mismatching px over the verified frames
+scenario               s2-co         s2-mut          s3-co         s3-mut
+zoomx                 0/240f   2865291/240f         0/240f   3882486/240f
+  control droprect mutant: fails in 1 of 1 scenarios (zoomx); passes in: -
+
+candidate failures outside KNOWN, or void controls: 0

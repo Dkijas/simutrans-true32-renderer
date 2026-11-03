@@ -1,0 +1,11 @@
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl2: re-pack of testing-4's own tree == published tarball (recipe confirmed)
+  simutrans-16bit of testing-4's package == the 16-bit build of t5/candidate (3e7cd80e112cf9d5)
+simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl2: tree vs testing-4: exactly the 5 expected paths (control: the replaced executable is among them)
+  modes of the unchanged files: identical
+  simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl2.tar.gz: entries 989 (testing-4 989), exec bits 2 of 2, sha256 49577ca6fffe58d96112829c6e96c62194a72a786af0e0f5eceb303cad7f5728
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl3: re-pack of testing-4's own tree == published tarball (recipe confirmed)
+  simutrans-16bit of testing-4's package == the 16-bit build of t5/candidate (9822aee1d322a616)
+simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl3: tree vs testing-4: exactly the 5 expected paths (control: the replaced executable is among them)
+  modes of the unchanged files: identical
+  simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl3.tar.gz: entries 997 (testing-4 997), exec bits 2 of 2, sha256 b5cce5583e57af36c2f943ff0bbd371568fbd238fb89ec0317233eb94825257a
+rc=0

@@ -1,0 +1,22 @@
+published SHA256SUMS.txt 3db6348f80e8f1966766eda82bba6420be3e71f48812308d2280d002fcb46acd (recorded 3db6348f80e8f1966766eda82bba6420be3e71f48812308d2280d002fcb46acd)
+NIGHT-PROTOTYPE-MANIFEST.md: OK
+XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-4.diff: OK
+makeobj-xr32-night-prototype-r12377-testing-2-linux-x86_64.tar.gz: OK
+makeobj-xr32-night-prototype-r12377-testing-2-windows-x86_64.zip: OK
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl2.tar.gz: OK
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl3.tar.gz: OK
+simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl2.zip: OK
+simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl3.zip: OK
+xr32-night-prototype-r12377-testing-2-testkit.zip: OK
+xr32-night-prototype-r12377-testing-4-source.tar.gz: OK
+5830 NIGHT-PROTOTYPE-MANIFEST.md
+1241 SHA256SUMS.txt
+523156 XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-4.diff
+202878 makeobj-xr32-night-prototype-r12377-testing-2-linux-x86_64.tar.gz
+588369 makeobj-xr32-night-prototype-r12377-testing-2-windows-x86_64.zip
+9044067 simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl2.tar.gz
+12455636 simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl3.tar.gz
+15760573 simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl2.zip
+17576696 simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl3.zip
+353849 xr32-night-prototype-r12377-testing-2-testkit.zip
+5449740 xr32-night-prototype-r12377-testing-4-source.tar.gz

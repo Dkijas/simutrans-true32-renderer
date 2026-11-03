@@ -62,3 +62,9 @@ downloaded from their official locations; the exact files are identified in
   presentation oracles with their controls, the byte-identity gate between the two A4 candidates, rebuild-cost and
   frame-time analyses, the regression battery, sanitizer and warning sets, memory, the zoom 2/1 sand-gap finding, and
   the derivation of the testing-4 packages from testing-3's published archives. Raw per-frame outputs are not included.
+- `xr32-testing-5/` (XR32-TESTING5-WINDOWS-01 and XR32-TESTING5-PUBLICATION-01, testing-5) - `certification/`: the A11
+  reproduction, the independent 2/1 outline model and its control, tile-level identity and coverage against testing-4,
+  the A4 gates, the company-colour oracles, sanitizer, warning sets, performance and memory, the regression battery and
+  the Defender scans; `publication/`: the derivation of the testing-5 packages from testing-4's published archives, the
+  build recipe check (it re-makes testing-4's published executables byte for byte), the Linux builds and their minimal
+  smoke tests, the makeobj cross-check on the test kit and the final Defender scan. Raw per-frame outputs are not included.

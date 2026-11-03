@@ -1,0 +1,13 @@
+A4C <tcc-consolidation-lab>/logs/battery-win.txt: 240 lines; TCC logs/battery-win.txt: 237 lines; differing after normalisation: 11
+  -         ~~~~~~~~~~^^^^^
+  -FileNotFoundError: [WinError 3] El sistema no puede encontrar la ruta especificada: '<dev>\\LANE/work\\final-src\\tests'
+  -cp: cannot stat '<dev>/LANE/build/suite-control-tests': No such file or directory
+  -sed: can't read <dev>/LANE/run/suite/pak/scenario/automated-tests/all_tests.nut: No such file or directory
+  -suite control-sdl2-32: FAIL (DIED, last counter , tests listed 0)
+  +control tests written: <dev>\LANE/build\suite-control-tests
+  +suite control-sdl2-32: FAIL (FAILED, last counter [1/310], tests listed 310)
+  -catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 210, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 558, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 49, legacy-hidden 0, drawn where legacy hides 0 -> ok
+  +catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 209, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 545, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 46, legacy-hidden 0, drawn where legacy hides 0 -> ok
+  -catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 209, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 559, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 46, legacy-hidden 0, drawn where legacy hides 0 -> ok
+  +catworld   n0 1/1: rezoomed 48, legacy-hidden 0, drawn where legacy hides 0 | z11 3/8: rezoomed 143, legacy-hidden 0, drawn where legacy hides 0 | z12 1/4: rezoomed 209, legacy-hidden 1, drawn where legacy hides 0 | z13 1/8: rezoomed 545, legacy-hidden 6, drawn where legacy hides 0 | back 1/1: rezoomed 46, legacy-hidden 0, drawn where legacy hides 0 -> ok
+CONTROL line 8 mutated: 2 differing lines (must be 2: one - and one +)

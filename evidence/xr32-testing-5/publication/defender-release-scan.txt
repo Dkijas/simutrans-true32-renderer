@@ -1,0 +1,44 @@
+Defender: product 4.18.26100.4, engine 1.1.26100.4, signatures 1.463.102.0 (updated 11/03/2026 01:16:52), real-time True, scan 2026-11-03T17:16:46
+== testing-5 release assets (archives are scanned inside)
+makeobj-xr32-night-prototype-r12377-testing-5-linux-x86_64.tar.gz              97161BAAA458315C -> found no threats.
+makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64.zip               B8A679E85DC4A808 -> found no threats.
+NIGHT-PROTOTYPE-MANIFEST.md                                                    2C33B5C4C6BE7B3B -> found no threats.
+SHA256SUMS.txt                                                                 1FEB916136D6FE53 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl2.tar.gz       49577CA6FFFE58D9 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl3.tar.gz       B5CCE5583E57AF36 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2.zip                 68D93437BE053966 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3.zip                 A2EAB2E0C9EADD91 -> found no threats.
+XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff                                BF9391495B0961B0 -> found no threats.
+xr32-night-prototype-r12377-testing-2-testkit.zip                              200902E829F350F0 -> found no threats.
+xr32-night-prototype-r12377-testing-5-source.tar.gz                            FE33B4C58F67A67C -> found no threats.
+== testing-5 executables unpacked by the Windows smoke test (also seen by real-time protection)
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2/simutrans-16bit.exe 6A3A97421A5A6699 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2/simutrans-rgba32.exe E82A2CE83AD6AD90 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3/simutrans-16bit.exe A3B66376FBA0FF49 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3/simutrans-rgba32.exe F7F7CE82A0FA789F -> found no threats.
+== testing-4 published assets (for known issue D1; archives scanned inside)
+makeobj-xr32-night-prototype-r12377-testing-2-linux-x86_64.tar.gz              -> found no threats.
+makeobj-xr32-night-prototype-r12377-testing-2-windows-x86_64.zip               -> found no threats.
+NIGHT-PROTOTYPE-MANIFEST.md                                                    -> found no threats.
+SHA256SUMS.txt                                                                 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl2.tar.gz       -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-4-linux-x86_64-sdl3.tar.gz       -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl2.zip                 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-4-win64-sdl3.zip                 -> found no threats.
+XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-4.diff                                -> found no threats.
+xr32-night-prototype-r12377-testing-2-testkit.zip                              -> found no threats.
+xr32-night-prototype-r12377-testing-4-source.tar.gz                            -> found no threats.
+== active threats now: 0; detections in the last 24 h: 7
+   11/03/2026 05:23:20 threat 2147731250 action-success True file:_<testing-5-lab>\run\LT4s3\simutrans-rgba32.exe
+   11/03/2026 05:20:45 threat 2147731250 action-success True file:_<testing-5-lab>\run\zT4s3\simutrans-rgba32.exe
+   11/03/2026 05:39:31 threat 2147731250 action-success True file:_<testing-5-lab>\run\zPFs3\simutrans-rgba32.exe
+   11/03/2026 05:35:29 threat 2147731250 action-success True file:_<testing-5-lab>\work\defender-scan\t4-s3.exe
+   11/03/2026 05:20:13 threat 2147731250 action-success True file:_<testing-5-lab>\run\zT4s3\simutrans-rgba32.exe
+   11/03/2026 05:39:37 threat 2147731250 action-success True file:_<testing-5-lab>\run\zPFs3\simutrans-rgba32.exe
+   11/03/2026 05:23:26 threat 2147731250 action-success True file:_<testing-5-lab>\run\LT4s3\simutrans-rgba32.exe
+== D1 re-check with the current definitions (2026-11-03): testing-4's published Windows SDL3 simutrans-rgba32.exe
+   (sha256 43420d63ef6e66c7...), extracted from testing-4's published zip into an empty folder: on-demand scan with
+   definitions 1.463.102.0 -> "found no threats"; real-time protection did not act on the extracted file either.
+   The 7 detections above (Trojan:Win32/Bearfoos.A!ml, threat id 2147731250) were made on 2026-11-03 05:20-05:39 CET with
+   definitions 1.463.101.0 (installed 2026-11-02 23:38); 1.463.102.0 was installed for this mission before any scan.
+   No exclusion, restore or setting change was made at any time.

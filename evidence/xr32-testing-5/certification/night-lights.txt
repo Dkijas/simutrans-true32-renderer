@@ -1,0 +1,10 @@
+== s2 (testing-4 night: <testing-5-lab>/evidence/scene-LT4s2-night/fb_z11.png)
+t5-day           light - near-light luminance by alpha: 255:-0.1 254:-0.1 248:-0.2 247:-0.1 200:-0.0 128:-1.8 76:-0.3 32:+48.7 8:+94.0 7:+91.3 0:+76.7
+t5-night4        light - near-light luminance by alpha: 255:+165.5 254:+164.6 248:+160.9 247:+160.7 200:+129.7 128:+82.2 76:+49.4 32:+36.9 8:+35.2 7:+28.8 0:+24.0
+t4-night4        light - near-light luminance by alpha: 255:+165.5 254:+0.0 248:-0.0 247:-0.0 200:+0.0 128:-0.6 76:+0.1 32:+16.0 8:+30.0 7:+28.8 0:+24.0
+16-night4        light - near-light luminance by alpha: 255:+170.1 254:+170.1 248:+170.1 247:+171.7 200:+137.1 128:+86.7 76:+49.6 32:+37.4 8:+33.8 7:+28.2 0:+18.6
+== s3 (testing-4 night: <tcc-lab>/deliver/screenshots/mx-gxon-T4-night/simscr00.png)
+t5-day           light - near-light luminance by alpha: 255:-0.1 254:-0.1 248:-0.2 247:-0.1 200:-0.0 128:-1.8 76:-0.3 32:+48.7 8:+94.0 7:+91.3 0:+76.7
+t5-night4        light - near-light luminance by alpha: 255:+165.5 254:+164.6 248:+160.9 247:+160.7 200:+129.7 128:+82.2 76:+49.4 32:+36.9 8:+35.2 7:+28.8 0:+24.0
+t4-night4        light - near-light luminance by alpha: 255:+165.5 254:+0.0 248:-0.0 247:-0.0 200:+0.0 128:-0.6 76:+0.1 32:+16.0 8:+30.0 7:+28.8 0:+24.0
+16-night4        light - near-light luminance by alpha: 255:+170.1 254:+170.1 248:+170.1 247:+171.7 200:+137.1 128:+86.7 76:+49.6 32:+37.4 8:+33.8 7:+28.2 0:+18.6

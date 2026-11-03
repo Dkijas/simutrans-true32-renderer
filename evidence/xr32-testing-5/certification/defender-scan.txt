@@ -1,0 +1,7 @@
+t4-s3.exe       -> Scanning <testing-5-lab>\work\defender-scan\t4-s3.exe found 1 threats. | <===========================LIST OF DETECTED THREATS==========================> | ----------------------------- Threat information ------------------------------ | Threat                  : Trojan:Win32/Bearfoos.A!ml
+t4-s2.exe      42E9089C6DD6FD31 -> Scanning <testing-5-lab>\work\defender-scan\t4-s2.exe found no threats.
+t5-s3.exe      F7F7CE82A0FA789F -> Scanning <testing-5-lab>\work\defender-scan\t5-s3.exe found no threats.
+t5-s2.exe      E82A2CE83AD6AD90 -> Scanning <testing-5-lab>\work\defender-scan\t5-s2.exe found no threats.
+t5-16-s3.exe   8FEAAF49317CF1D7 -> Scanning <testing-5-lab>\work\defender-scan\t5-16-s3.exe found no threats.
+t5-16-s2.exe   20CBF7DA7E183F52 -> Scanning <testing-5-lab>\work\defender-scan\t5-16-s2.exe found no threats.
+mo-t5.exe      8A1503816821F923 -> Scanning <testing-5-lab>\work\defender-scan\mo-t5.exe found no threats.

@@ -107,3 +107,11 @@ for review. They can be provided on request.
     matrix and the benchmarks.
   - `a4c/`: the testing-4 code, with a per-stage texture cache that gives byte-identical pictures at a 4–5 times lower
     rebuild cost, and the zoom 2/1 sand-gap finding (known issue A11).
+
+## XR32 DAY+NIGHT, r12377 testing-5
+
+- **xr32-testing-5/** - the Windows x64 SDL2 + SDL3 certification of testing-5 (translucent company colours + the zoom
+  2/1 coast fix A11): the A11 root cause and fix, the integration of the certified company-colour patch, the test matrix
+  with its controls, and performance. Verdict B, certified with limitations. The Linux builds of testing-5 are
+  experimental and not certified.
+- **xr32-tcc/** - the certification of the company-colour fix (TCC-01 and its consolidation).

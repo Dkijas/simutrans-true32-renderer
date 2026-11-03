@@ -1,0 +1,29 @@
+vis-a11-s3-zz              day  key px  971180 | hole px  102 | T3HOLE  97 SAME   3 BLEND   2 | GAP   0
+vis-a11-s3-zz              z98  key px  864766 | hole px    0 | T3HOLE   0 SAME   0 BLEND   0 | GAP   0
+vis-a11-s3-zz              z34  key px 1068685 | hole px    0 | T3HOLE   0 SAME   0 BLEND   0 | GAP   0
+vis-a11-s3-zz              z12  key px 1150247 | hole px    0 | T3HOLE   0 SAME   0 BLEND   0 | GAP   0
+vis-a11-s3-zz              z2   key px  515563 | hole px  123 | T3HOLE 100 SAME  23 BLEND   0 | GAP   0
+vis-a11-s3-zz              back key px  971180 | hole px  102 | T3HOLE  97 SAME   3 BLEND   2 | GAP   0
+vis-a11-s3-zz              z2b  key px  515563 | hole px  123 | T3HOLE 100 SAME  23 BLEND   0 | GAP   0
+vis-t4-s3-zz               day  key px  971180 | hole px  102 | T3HOLE  97 SAME   3 BLEND   2 | GAP   0
+vis-t4-s3-zz               z98  key px  864766 | hole px    0 | T3HOLE   0 SAME   0 BLEND   0 | GAP   0
+vis-t4-s3-zz               z34  key px 1068685 | hole px    0 | T3HOLE   0 SAME   0 BLEND   0 | GAP   0
+vis-t4-s3-zz               z12  key px 1150247 | hole px    0 | T3HOLE   0 SAME   0 BLEND   0 | GAP   0
+vis-t4-s3-zz               z2   key px  515556 | hole px  130 | T3HOLE 100 SAME  23 BLEND   0 | GAP   7
+    GAP x  715 y  281 cand b0a040 t3 607090
+    GAP x  711 y  283 cand b0a040 t3 607890
+    GAP x  876 y  309 cand 807030 t3 587088
+    GAP x  880 y  311 cand 807028 t3 506888
+    GAP x  515 y  381 cand b0a038 t3 587890
+    GAP x  143 y  695 cand a8a040 t3 587090
+    GAP x  131 y  701 cand b0a038 t3 587890
+vis-t4-s3-zz               back key px  971180 | hole px  102 | T3HOLE  97 SAME   3 BLEND   2 | GAP   0
+vis-t4-s3-zz               z2b  key px  515556 | hole px  130 | T3HOLE 100 SAME  23 BLEND   0 | GAP   7
+    GAP x  715 y  281 cand b0a040 t3 607090
+    GAP x  711 y  283 cand b0a040 t3 607890
+    GAP x  876 y  309 cand 807030 t3 587090
+    GAP x  880 y  311 cand 807028 t3 587088
+    GAP x  515 y  381 cand b0a038 t3 607890
+    GAP x  143 y  695 cand a8a040 t3 587090
+    GAP x  131 y  701 cand b0a038 t3 607890
+CONTROL vis-a11-s3-zz day: 10013 key pixels knocked out -> GAP 0 -> 9936 (the detector can fail)
