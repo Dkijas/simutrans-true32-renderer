@@ -1,0 +1,21 @@
+WSL: 6.18.33.2-microsoft-standard-WSL2 | Debian 13.5 | WAYLAND_DISPLAY=wayland-0 DISPLAY=:0
+simutrans-xr32-night-prototype-r12377-testing-6-candidate-linux-x86_64-sdl2 simutrans-rgba32: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38 | sha a3eef27ebedce4d9 mode 755
+  -help: exit 0 , usage lines 3
+  dummy video, mutant pak, coastworld to 1930.6: exit 0, FATAL/Error lines 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-6-candidate-linux-x86_64-sdl2 simutrans-16bit: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38 | sha 3e7cd80e112cf9d5 mode 755
+  -help: exit 0 , usage lines 3
+  dummy video, mutant pak, coastworld to 1930.6: exit 0, FATAL/Error lines 0, skipped XR32 nodes 192 -> PASS
+  dummy video, makie's PAK128.german 2.5 beta (XR32 terrain, A12 path), A12 terrain world to 1950.8: exit 124, FATAL/Error lines 0, skipped XR32 nodes 0 -> FAIL
+  WSLg X11 window (NOT a native Linux desktop), simutrans-rgba32, mutant pak to 1930.6: exit 0, FATAL/Error lines 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-6-candidate-linux-x86_64-sdl3 simutrans-rgba32: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38 | sha 7a094d8b5fb3fe37 mode 755
+  -help: exit 0 , usage lines 3
+  dummy video, mutant pak, coastworld to 1930.6: exit 0, FATAL/Error lines 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-6-candidate-linux-x86_64-sdl3 simutrans-16bit: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38 | sha 9822aee1d322a616 mode 755
+  -help: exit 0 , usage lines 3
+  dummy video, mutant pak, coastworld to 1930.6: exit 0, FATAL/Error lines 0, skipped XR32 nodes 192 -> PASS
+  dummy video, makie's PAK128.german 2.5 beta (XR32 terrain, A12 path), A12 terrain world to 1950.8: exit 124, FATAL/Error lines 0, skipped XR32 nodes 0 -> FAIL
+  WSLg X11 window (NOT a native Linux desktop), simutrans-rgba32, mutant pak to 1930.6: exit 0, FATAL/Error lines 0 -> PASS
+makeobj (testing-5 Linux package): sha 482e041f6a35fc99 == build of f04638a 482e041f: yes | ELF 64-bit LSB pie executable, x86-64
+  usage: 11 lines
+  synthetic climate.dat with STLAB_XR32_WRITE=1: 1c076aa0f31cfd87 (Windows makeobj: 1c076aa0f31cfd87) -> IDENTICAL
+SMOKE_DONE

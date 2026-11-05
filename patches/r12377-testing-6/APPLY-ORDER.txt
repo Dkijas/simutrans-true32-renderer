@@ -1,0 +1,14 @@
+XR32 testing-6 on official Simutrans trunk r12377 - patches (-p1, LF)
+
+Either:
+  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6.diff   everything XR32 changes against official r12377 (one step)
+
+or, on top of testing-5 (source/xr32-r12377 of testing-5, or r12377 + XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff):
+  T6-ON-TESTING-5.diff                               A12 in one step
+or the same in two steps, in this order:
+  1. 01-A12-A-CLIMATE-TEXTURE.diff                   climate and snow tiles take their 32-bit picture from ClimateTexture
+  2. 02-A12-B-LIGHT-TEXTURE.diff                     the light map is read from its 32-bit data too
+
+Apply with:  git apply -p1 <file>   (or patch -p1 < <file>). On Windows use  git -c core.autocrlf=false apply  so that no
+line endings are converted.
+SHA256SUMS.txt lists every file of this folder.

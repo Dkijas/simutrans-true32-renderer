@@ -1,0 +1,11 @@
+start 2026-11-05T04:33:50+01:00; data: <testing-6-lab>/work/run/win (read only, hard-linked)
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl2 simutrans-rgba32.exe sha b002d5a9637d6772 (certified b002d5a9637d6772): mutant+coastworld to 1930.6: exit 0, FATAL/Error lines 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl2 simutrans-16bit.exe sha 20cbf7da7e183f52 (certified 20cbf7da7e183f52): mutant+coastworld to 1930.6: exit 0, FATAL/Error lines 0, skipped XR32 nodes 192 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl2 simutrans-rgba32.exe: makie's PAK128.german 2.5 beta (A12 path) + terrainA12scene to 1930.7: exit 0, FATAL/Error lines 0, save's scenario ERROR lines 2, other ERROR lines 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl3 simutrans-rgba32.exe sha ed58e66d9674682c (certified ed58e66d9674682c): mutant+coastworld to 1930.6: exit 0, FATAL/Error lines 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl3 simutrans-16bit.exe sha 8feaaf49317cf1d7 (certified 8feaaf49317cf1d7): mutant+coastworld to 1930.6: exit 0, FATAL/Error lines 0, skipped XR32 nodes 192 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl3 simutrans-rgba32.exe: makie's PAK128.german 2.5 beta (A12 path) + terrainA12scene to 1930.7: exit 0, FATAL/Error lines 0, save's scenario ERROR lines 2, other ERROR lines 0, skipped XR32 nodes 0 -> PASS
+makeobj-xr32-night-prototype-r12377-testing-6-windows-x86_64 makeobj.exe sha 8a1503816821f923 (want 8a1503816821f923)
+  cards-64/L with STLAB_XR32_WRITE=1: exit 0, pak b821122421795a44, XR32 nodes in it: 7
+end 2026-11-05T04:35:13+01:00
+SMOKE_T6_WIN_DONE

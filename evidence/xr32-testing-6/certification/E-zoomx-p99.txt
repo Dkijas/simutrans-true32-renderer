@@ -1,0 +1,5 @@
+zoomx: a zoom step every 6 frames, 16 in then 16 out (stlab_perf.h); frames slower than 20 ms, by the zoom step that preceded them
+s3 base frames 3000, >20 ms: 145 (4.83 %), max 64.7 ms; by step: out-step 5:20, out-step 4:18, in-step 6:15, in-step 9:15, in-step 11:15, out-step 0:15
+s3 a12  frames 3000, >20 ms: 205 (6.83 %), max 36.9 ms; by step: out-step 4:20, out-step 5:20, in-step 6:15, in-step 7:15, in-step 8:15, in-step 9:15
+s2 base frames 3000, >20 ms: 145 (4.83 %), max 63.9 ms; by step: out-step 4:20, out-step 5:20, in-step 6:15, in-step 7:15, in-step 9:15, in-step 11:15
+s2 a12  frames 3000, >20 ms: 206 (6.87 %), max 43.8 ms; by step: out-step 4:20, out-step 5:20, in-step 6:15, in-step 7:15, in-step 8:15, in-step 9:15

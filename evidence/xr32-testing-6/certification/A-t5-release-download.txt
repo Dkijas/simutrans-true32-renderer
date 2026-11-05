@@ -1,0 +1,8 @@
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2.zip: OK
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3.zip: OK
+simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl2.tar.gz: OK
+simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl3.tar.gz: OK
+makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64.zip: OK
+makeobj-xr32-night-prototype-r12377-testing-5-linux-x86_64.tar.gz: OK
+xr32-night-prototype-r12377-testing-2-testkit.zip: OK
+SHA256SUMS.txt sha256 1feb916136d6fe530aa86a11df06bded7d221a48c52cf9f50146ef753dc1bc5b (published 1feb9161...)

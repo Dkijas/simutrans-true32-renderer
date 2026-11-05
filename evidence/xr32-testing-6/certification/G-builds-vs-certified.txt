@@ -1,0 +1,12 @@
+A12 certified hashes (A12 lab evidence/cand-builds.txt, bench-exes.sha256) vs this lane's fresh builds:
+cand-s3      ed58e66d9674682ca7199217eafc69898eed86f70a5a315be895f82122a52624 == certified ed58e66d
+cand-s2      b002d5a9637d6772604f0248da220ee277b0e9618492feebe2ecb0267c85293a == certified b002d5a9
+cand-s3-16   8feaaf49317cf1d7bf2de2f1a43c1ce0128c24cd6b740e83f51408c0a7198463 == certified 8feaaf49
+cand-s2-16   20cbf7da7e183f52c5f73c59050b259a6cc652c300ca4b9627efabbebc8c27f6 == certified 20cbf7da
+cand-mo      8a1503816821f92394986b23a16789a37c463723c0246fb8052c3b4c2adea9f3 == certified 8a150381
+base-s3      f7f7ce82a0fa789ffd49680dc451f477cc5752ecabb467ab2bdaba803037217a == certified f7f7ce82
+base-s2      e82a2ce83ad6ad90dc62ef32f2567b9b56b2ead3f3c80894d2c808e06809ba81 == certified e82a2ce8
+lab-base-s3  f9e42af80b9ca95a6509da4bb37a3c630f26ecdcde3f79a9507322ac84eb60bd == certified f9e42af8
+lab-a12-s3   f6eeeaec3a146ca33c1c3b50988243bdda1575e163c97a65eabe1513bebff621 == certified f6eeeaec
+lab-base-s2  538094712434d6073096e4633c268406ab7228e779776f77e0dd3806871512ba == certified 53809471
+lab-a12-s2   7d6d3f8c6f5eb6bb4223c207d682e275424a55d82711892873fca5e08067c1eb == certified 7d6d3f8c

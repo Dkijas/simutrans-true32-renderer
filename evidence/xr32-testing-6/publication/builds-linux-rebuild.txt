@@ -1,0 +1,21 @@
+start 2026-11-05T04:22:33+01:00 | gcc (Debian 14.2.0-19) 14.2.0 | glibc 2.41 | Debian 13.5 | cmake 3.31.6
+t6.tar 8d45ae0b447ca8dc5f9cd0440a2b9c19a1de8bb22c5380f2b0c8dc15df6cd9a9 (want 8d45ae0b447ca8dc5f9cd0440a2b9c19a1de8bb22c5380f2b0c8dc15df6cd9a9)
+SDL3 static: <wsl-testing-1-lab>/pub3/sdl3-3.4.12/lib/libSDL3.a 938aa7443280f404
+t6-sdl2-32 warnings=18
+PASS t6-sdl2-32 sha256 a3eef27ebedce4d93120cfbaaf7de6129009d807509c48151b870ee7f04cb0c1 == certified
+t6-sdl2-16 warnings=18
+PASS t6-sdl2-16 sha256 3e7cd80e112cf9d52107c2b9f5e8729a1f9bc9897aef69c52eb711ae7d3100e3 == certified
+t6-sdl3-32 warnings=18
+PASS t6-sdl3-32 sha256 7a094d8b5fb3fe3743e8ac125da3a63541dc9874315e9bd1035275bd9527ae2b == certified
+t6-sdl3-16 warnings=18
+PASS t6-sdl3-16 sha256 9822aee1d322a61606d80e5e6f61bd365365e9273f21012400d33f5f68bbd638 == certified
+t6-makeobj warnings=1
+PASS t6-makeobj sha256 482e041f6a35fc99a2201f3ea5c4a944d749e15325f43ddca391ad298c156e47 == certified
+CONTROL: 16-bit and 32-bit SDL3 builds differ (the hash check can fail)
+<wsl-testing-6-publication-lab>/t6-sdl2-16/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-6-publication-lab>/t6-sdl2-32/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-6-publication-lab>/t6-sdl3-16/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-6-publication-lab>/t6-sdl3-32/b/simutrans/simutrans | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+<wsl-testing-6-publication-lab>/t6-makeobj/b/src/makeobj/makeobj | ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux) | max GLIBC GLIBC_2.38
+end 2026-11-05T04:25:16+01:00 rc=0
+BUILDS_LINUX_DONE

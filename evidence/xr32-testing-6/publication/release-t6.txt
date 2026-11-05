@@ -1,0 +1,31 @@
+git 2.55.0.windows.3
+PASS recipe check: testing-5 source re-made fe33b4c58f67a67c1ff8562b7d5516e6d934ae5b92696ed1da33cfef924ca3f7 == published
+PASS source tarball reproducible: 62c766afba7596b81d2ed6d12605f12e98bad59e460a4b399e958e5769e75e78
+source tarball files: 2231 (commit f04638adc06130dc73121df50f9f2f0c89fd4e1d, tree b0efabef4936001011440a02c4dbcd9cd9052650); modes:    2231 -rw-r--r--     104 drwxr-xr-x 
+PASS same file count as testing-5's source (2231): A12 adds no file
+PASS full diff == the A12 delivery's full diff (a85c57e8)
+PASS reused unchanged (testing-5's published file): xr32-night-prototype-r12377-testing-2-testkit.zip 200902e829f350f0
+SHA256SUMS.txt entries verifying: 9
+CONTROL: an altered hash line is rejected by sha256sum -c
+f05ffb4d90956029b50d3a1952f68c04988e2bc4b6fedc6900e135a4e5579ab7  simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl2.zip
+7be15d98f45da3c36fb9e5761e03e1bef9fd1da7978b60897f7c9b74130a4975  simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl3.zip
+4e7c4d0bb5c792be47eb46851a2cca83628ca1c16485d69cc8f21b0531d4e2f4  simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl2.tar.gz
+efd42fe1f4f99ed5fb1d6bbc4cc5f4ceae0a5664d9027fc32a070baddf450ff3  simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl3.tar.gz
+d24f3a75738597ff48759e72c217497d28b0be99e9b2e4f429d9dbe5d8a96590  makeobj-xr32-night-prototype-r12377-testing-6-windows-x86_64.zip
+58b9c53ad994585b80a367d1ed12101c1f4c6f1a11b15737b797e42a5725839c  makeobj-xr32-night-prototype-r12377-testing-6-linux-x86_64.tar.gz
+200902e829f350f05460e7ed6b3d596c0cb31ad735954c1b3ce55c3628707903  xr32-night-prototype-r12377-testing-2-testkit.zip
+62c766afba7596b81d2ed6d12605f12e98bad59e460a4b399e958e5769e75e78  xr32-night-prototype-r12377-testing-6-source.tar.gz
+a85c57e894b6ece5b96b79febfa1a41e5a0f0c5686117ad8785d5be2405946d1  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6.diff
+7626 bytes  NIGHT-PROTOTYPE-MANIFEST.md
+1147 bytes  SHA256SUMS.txt
+539652 bytes  XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6.diff
+203144 bytes  makeobj-xr32-night-prototype-r12377-testing-6-linux-x86_64.tar.gz
+588581 bytes  makeobj-xr32-night-prototype-r12377-testing-6-windows-x86_64.zip
+9053315 bytes  simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl2.tar.gz
+12466670 bytes  simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl3.tar.gz
+15771618 bytes  simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl2.zip
+17586388 bytes  simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl3.zip
+353849 bytes  xr32-night-prototype-r12377-testing-2-testkit.zip
+5454938 bytes  xr32-night-prototype-r12377-testing-6-source.tar.gz
+rc=0
+RELEASE_T6_DONE

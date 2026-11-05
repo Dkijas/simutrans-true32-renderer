@@ -1,0 +1,6 @@
+makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64: re-zip of its own tree == published zip (recipe confirmed)
+makeobj-xr32-night-prototype-r12377-testing-6-windows-x86_64: tree vs testing-5: only README-MAKEOBJ.txt differs
+makeobj-xr32-night-prototype-r12377-testing-6-windows-x86_64.zip: 4 entries, read-back OK
+  makeobj.exe inside the final zip == 8a1503816821f92394986b23a16789a37c463723c0246fb8052c3b4c2adea9f3 (certified, == testing-5's)
+  makeobj-xr32-night-prototype-r12377-testing-6-windows-x86_64.zip 588581 bytes sha256 d24f3a75738597ff48759e72c217497d28b0be99e9b2e4f429d9dbe5d8a96590
+PKG_MAKEOBJ_RESULT win rc=0

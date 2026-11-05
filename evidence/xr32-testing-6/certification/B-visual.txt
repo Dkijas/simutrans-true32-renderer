@@ -1,0 +1,70 @@
+== flat d0: differing px 16-bit/t5 99.97 %, t5/A12 92.98 %, 16-bit/A12 99.97 %; terrain pixels changed by A12: 1810178 (93.0 %)
+   16-bit    colours   1544  grid555   0.3 %  steps8  54.3 %  mean luma  92.08
+   testing-5 colours  26779  grid555  96.3 %  steps8  92.4 %  mean luma  91.07
+   A12       colours  34336  grid555   0.4 %  steps8   0.0 %  mean luma  98.52
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.0818
+   crop at x 361 y 1 (frame y 33): t6-flat-d0-16bit-t5-a12-x3.png
+== flat d2: differing px 16-bit/t5 99.99 %, t5/A12 92.87 %, 16-bit/A12 99.99 %; terrain pixels changed by A12: 1808014 (92.9 %)
+   16-bit    colours    530  grid555   0.9 %  steps8  28.5 %  mean luma  48.90
+   testing-5 colours  15796  grid555   0.0 %  steps8   0.0 %  mean luma  51.48
+   A12       colours  17462  grid555   0.0 %  steps8   0.0 %  mean luma  55.44
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.0768
+   crop at x 361 y 1 (frame y 33): t6-flat-d2-16bit-t5-a12-x3.png
+== flat d4: differing px 16-bit/t5 99.99 %, t5/A12 92.75 %, 16-bit/A12 99.99 %; terrain pixels changed by A12: 1805754 (92.8 %)
+   16-bit    colours    175  grid555  90.2 %  steps8  65.3 %  mean luma  25.75
+   testing-5 colours   7444  grid555   0.0 %  steps8   0.0 %  mean luma  28.84
+   A12       colours   7843  grid555   0.0 %  steps8   0.0 %  mean luma  31.27
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.0844
+   crop at x 409 y 1 (frame y 33): t6-flat-d4-16bit-t5-a12-x3.png
+== pyr d0: differing px 16-bit/t5 99.97 %, t5/A12 97.35 %, 16-bit/A12 99.99 %; terrain pixels changed by A12: 1895217 (97.3 %)
+   16-bit    colours   1232  grid555   0.0 %  steps8  58.5 %  mean luma 110.24
+   testing-5 colours  11011  grid555  89.5 %  steps8  80.1 %  mean luma 108.69
+   A12       colours  40673  grid555   0.6 %  steps8   0.0 %  mean luma 120.04
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.1044
+   crop at x 321 y 1 (frame y 33): t6-pyr-d0-16bit-t5-a12-x3.png
+== pyr d2: differing px 16-bit/t5 94.94 %, t5/A12 97.33 %, 16-bit/A12 100.00 %; terrain pixels changed by A12: 1894944 (97.3 %)
+   16-bit    colours    431  grid555   4.8 %  steps8  48.3 %  mean luma  60.00
+   testing-5 colours   8097  grid555   0.0 %  steps8   0.1 %  mean luma  61.52
+   A12       colours  18390  grid555   0.6 %  steps8   0.0 %  mean luma  67.83
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.1025
+   crop at x 321 y 1 (frame y 33): t6-pyr-d2-16bit-t5-a12-x3.png
+== pyr d4: differing px 16-bit/t5 100.00 %, t5/A12 97.30 %, 16-bit/A12 100.00 %; terrain pixels changed by A12: 1894279 (97.3 %)
+   16-bit    colours    166  grid555  33.6 %  steps8  34.4 %  mean luma  32.35
+   testing-5 colours   4847  grid555   0.0 %  steps8   0.0 %  mean luma  34.67
+   A12       colours   7212  grid555   0.5 %  steps8   0.0 %  mean luma  38.46
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.1093
+   crop at x 329 y 1 (frame y 33): t6-pyr-d4-16bit-t5-a12-x3.png
+== pyr z2d0: differing px 16-bit/t5 99.98 %, t5/A12 99.99 %, 16-bit/A12 100.00 %; terrain pixels changed by A12: 1946673 (100.0 %)
+   16-bit    colours    527  grid555   0.0 %  steps8  51.9 %  mean luma 100.24
+   testing-5 colours   4643  grid555  88.7 %  steps8  77.9 %  mean luma  98.97
+   A12       colours  18113  grid555   1.0 %  steps8   0.0 %  mean luma 109.53
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.1067
+   crop at x 65 y 1 (frame y 33): t6-pyr-z2d0-16bit-t5-a12-x3.png
+== cone d0: differing px 16-bit/t5 99.75 %, t5/A12 39.22 %, 16-bit/A12 99.79 %; terrain pixels changed by A12: 763574 (39.2 %)
+   16-bit    colours   4354  grid555   2.7 %  steps8  52.0 %  mean luma 101.59
+   testing-5 colours 110465  grid555  53.2 %  steps8  37.6 %  mean luma 102.27
+   A12       colours 149853  grid555   0.2 %  steps8   0.0 %  mean luma 110.86
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.0840
+   crop at x 849 y 257 (frame y 289): t6-cone-d0-16bit-t5-a12-x3.png
+== cone d2: differing px 16-bit/t5 99.94 %, t5/A12 38.73 %, 16-bit/A12 99.95 %; terrain pixels changed by A12: 753978 (38.7 %)
+   16-bit    colours   1301  grid555   7.1 %  steps8  38.2 %  mean luma  55.11
+   testing-5 colours  60605  grid555   0.1 %  steps8   0.2 %  mean luma  58.12
+   A12       colours  71778  grid555   0.1 %  steps8   0.0 %  mean luma  62.95
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.0831
+   crop at x 849 y 257 (frame y 289): t6-cone-d2-16bit-t5-a12-x3.png
+== cone d4: differing px 16-bit/t5 99.93 %, t5/A12 38.09 %, 16-bit/A12 99.93 %; terrain pixels changed by A12: 741602 (38.1 %)
+   16-bit    colours    375  grid555  38.4 %  steps8  45.3 %  mean luma  29.40
+   testing-5 colours  24930  grid555   0.2 %  steps8   0.9 %  mean luma  32.97
+   A12       colours  26765  grid555   0.3 %  steps8   0.0 %  mean luma  35.87
+   CONTROL A12 quantised to RGB555: grid555 100.0 % steps8 100.0 %
+   A12 / testing-5 mean luma on these pixels: 1.0880
+   crop at x 849 y 257 (frame y 289): t6-cone-d4-16bit-t5-a12-x3.png

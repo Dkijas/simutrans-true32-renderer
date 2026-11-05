@@ -1,0 +1,38 @@
+== Phase D oracle (tools/a12_oracle.py: model from the pak files only); makie = work/ext/p128g-ground; synthetic = work/syn/out
+-- [25b] engine base-s3 vs model legacy
+TOTAL tiles 520, tile px 2171424, mismatching px 0, max channel error 0 -> MATCH
+-- [25b] engine cand-s3 vs model c2
+TOTAL tiles 520, tile px 2171424, mismatching px 0, max channel error 0 -> MATCH
+-- [25b] engine base-s2 vs model legacy
+TOTAL tiles 520, tile px 2171424, mismatching px 0, max channel error 0 -> MATCH
+-- [25b] engine cand-s2 vs model c2
+TOTAL tiles 520, tile px 2171424, mismatching px 0, max channel error 0 -> MATCH
+-- [25b] engine base-s3 vs model c2
+TOTAL tiles 520, tile px 2171424, mismatching px 2171424, max channel error 25 -> MISMATCH
+-- [25b] engine cand-s3 vs model legacy
+TOTAL tiles 520, tile px 2171424, mismatching px 2171424, max channel error 25 -> MISMATCH
+-- [25b] engine cand-s3 vs model c1
+TOTAL tiles 520, tile px 2171424, mismatching px 1962957, max channel error 14 -> MISMATCH
+-- [25b] engine cand-s2 vs model legacy
+TOTAL tiles 520, tile px 2171424, mismatching px 2171424, max channel error 25 -> MISMATCH
+-- [syn] engine base-s3 vs model legacy
+TOTAL tiles 520, tile px 2171424, mismatching px 0, max channel error 0 -> MATCH
+-- [syn] engine cand-s3 vs model c2
+TOTAL tiles 520, tile px 2171424, mismatching px 0, max channel error 0 -> MATCH
+-- [syn] engine base-s2 vs model legacy
+TOTAL tiles 520, tile px 2171424, mismatching px 0, max channel error 0 -> MATCH
+-- [syn] engine cand-s2 vs model c2
+TOTAL tiles 520, tile px 2171424, mismatching px 0, max channel error 0 -> MATCH
+-- [syn] engine base-s3 vs model c2
+TOTAL tiles 520, tile px 2171424, mismatching px 2165564, max channel error 26 -> MISMATCH
+-- [syn] engine cand-s3 vs model legacy
+TOTAL tiles 520, tile px 2171424, mismatching px 2165564, max channel error 26 -> MISMATCH
+-- [syn] engine cand-s3 vs model c1
+TOTAL tiles 520, tile px 2171424, mismatching px 1399035, max channel error 14 -> MISMATCH
+-- [syn] engine cand-s2 vs model legacy
+TOTAL tiles 520, tile px 2171424, mismatching px 2165564, max channel error 26 -> MISMATCH
+== SDL2 vs SDL3 tile draws, byte comparison
+[25b] base: s2 vs s3 terrain_z1.bin IDENTICAL
+[25b] cand: s2 vs s3 terrain_z1.bin IDENTICAL
+[syn] base: s2 vs s3 terrain_z1.bin IDENTICAL
+[syn] cand: s2 vs s3 terrain_z1.bin IDENTICAL

@@ -1,0 +1,31 @@
+== core.autocrlf origins
+file:C:/Program Files/Git/etc/gitconfig	true
+file:.git/config	false
+public tag -> cfcc03c6d713b7d645808433ee8ce84ec0c6b19e
+public source/xr32-r12377 tree: c8297dcac4547b2a425058ba8723c96e2eeadb33
+038b538 tree: c8297dcac4547b2a425058ba8723c96e2eeadb33 -> EQUAL
+fatal: invalid date format: @0
+error: could not apply 4c71953... XR32 (A12-A): climate and snow tiles take their 32-bit picture from the climate texture's XR32 data
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+f04638a tree:                               b0efabef4936001011440a02c4dbcd9cd9052650
+PROVENANCE (cherry-pick): EQUAL
+public subtree + patch 01 + 02 (index only) -> b0efabef4936001011440a02c4dbcd9cd9052650 EQUAL
+CONTROL public + 01 only -> 7d2195a6be991790137b600d25d11e70145e9ec1 (4c71953 tree 7d2195a6be991790137b600d25d11e70145e9ec1) != candidate: control OK
+== files changed testing-5 -> candidate:
+ src/simutrans/descriptor/ground_desc.cc   |  12 +++
+ src/simutrans/display/stlab_xr32.h        |   5 +
+ src/simutrans/display/stlab_xr32_hook.cci | 170 ++++++++++++++++++++++++++++++
+ 3 files changed, 187 insertions(+)
+== XR32 format: files of the reader/writer/format touched by A12:
+none
+== provenance by cherry-pick (redo; the first attempt picked onto f04638a itself and is void)
+pubbase 4ccc55bc1852a13d72cb8cefc917d39712674b97 tree c8297dcac4547b2a425058ba8723c96e2eeadb33 (public source/xr32-r12377)
+pubbase + cherry-pick 4c71953, f04638a -> tree b0efabef4936001011440a02c4dbcd9cd9052650 EQUAL to f04638a
+CONTROL pubbase tree != candidate: 
+CONTROL (fixed): base commit 4ccc55bc tree c8297dcac4547b2a425058ba8723c96e2eeadb33 != candidate tree b0efabef4936001011440a02c4dbcd9cd9052650: yes

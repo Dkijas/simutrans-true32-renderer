@@ -1,0 +1,5 @@
+makeobj-xr32-night-prototype-r12377-testing-5-linux-x86_64: re-pack of its own tree == published tarball (recipe confirmed)
+makeobj-xr32-night-prototype-r12377-testing-6-linux-x86_64: tree vs testing-5: only README-MAKEOBJ.txt differs
+  makeobj inside the final tarball == 482e041f6a35fc99a2201f3ea5c4a944d749e15325f43ddca391ad298c156e47 == this lane's rebuild of f04638a
+  exec bit: 1 of 1; makeobj-xr32-night-prototype-r12377-testing-6-linux-x86_64.tar.gz 203144 bytes sha256 58b9c53ad994585b80a367d1ed12101c1f4c6f1a11b15737b797e42a5725839c
+PKG_MAKEOBJ_RESULT linux rc=0

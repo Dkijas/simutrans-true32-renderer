@@ -1,0 +1,15 @@
+simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl2: re-pack of testing-5's own tree == published tarball (recipe confirmed)
+  simutrans-16bit of testing-5's package == this lane's 16-bit rebuild of f04638a (3e7cd80e112cf9d5)
+  mandatory Linux notice present
+simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl2: tree vs testing-5: exactly the 5 expected paths (control: the replaced executable is among them)
+  modes of the unchanged files: identical
+  vs the certified candidate tarball: only README, SHA256SUMS and the diff's name differ (same diff bytes)
+  simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl2.tar.gz: entries 989 (testing-5 989), exec bits 2 of 2, 9053315 bytes, sha256 4e7c4d0bb5c792be47eb46851a2cca83628ca1c16485d69cc8f21b0531d4e2f4
+simutrans-xr32-night-prototype-r12377-testing-5-linux-x86_64-sdl3: re-pack of testing-5's own tree == published tarball (recipe confirmed)
+  simutrans-16bit of testing-5's package == this lane's 16-bit rebuild of f04638a (9822aee1d322a616)
+  mandatory Linux notice present
+simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl3: tree vs testing-5: exactly the 5 expected paths (control: the replaced executable is among them)
+  modes of the unchanged files: identical
+  vs the certified candidate tarball: only README, SHA256SUMS and the diff's name differ (same diff bytes)
+  simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl3.tar.gz: entries 997 (testing-5 997), exec bits 2 of 2, 12466670 bytes, sha256 efd42fe1f4f99ed5fb1d6bbc4cc5f4ceae0a5664d9027fc32a070baddf450ff3
+PKG_LINUX_RESULT rc=0

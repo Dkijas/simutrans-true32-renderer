@@ -1,0 +1,15 @@
+core.autocrlf (lane repo): false
+core.autocrlf (global): 
+HEAD: f04638adc06130dc73121df50f9f2f0c89fd4e1d tree b0efabef4936001011440a02c4dbcd9cd9052650
+status entries: 0
+index/worktree EOL mismatches: 0
+branches:
+  a11/fix c66eaaa
+  a12/work f04638a
+  a4/cache 0afdfbd
+  lab/a12 51ae4e3
+  lab/t5 b762fef
+  t5/candidate 038b538
+  t6/candidate f04638a
+  tcc/fix 03de7ed
+builder dir: 16 files; check-ignore: none

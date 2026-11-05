@@ -1,0 +1,16 @@
+A12 lab counters (lab/a12cnt = lab/a12 + counters, measurement only), SDL3, makie's pak, 1920x1080, counters read every frame by gdb
+(gdb stops every frame: times include no game timing claims; compose_us is the composition's own wall time)
+tpyr static   frames  780 | A12 composes total     40 (1 frames with any), 4.3 ms total, 0.3 Mpx (1 MB of RGBA) | per active frame: median 40 composes, 4.29 ms, 0.33 Mpx; max 40 composes, 4.29 ms | A4 composes 0
+    us per composed Mpx: 12987
+tpyr daynight frames  780 | A12 composes total   3160 (79 frames with any), 389.3 ms total, 26.1 Mpx (100 MB of RGBA) | per active frame: median 40 composes, 4.93 ms, 0.33 Mpx; max 40 composes, 6.72 ms | A4 composes 0
+    us per composed Mpx: 14910
+tpyr zoom     frames  782 | A12 composes total   2925 (73 frames with any), 155.3 ms total, 24.2 Mpx (92 MB of RGBA) | per active frame: median 40 composes, 2.09 ms, 0.33 Mpx; max 45 composes, 4.44 ms | A4 composes 0
+    us per composed Mpx: 6429
+tpyr zoomx    frames  783 | A12 composes total   3669 (94 frames with any), 191.0 ms total, 30.7 Mpx (117 MB of RGBA) | per active frame: median 38 composes, 1.99 ms, 0.32 Mpx; max 91 composes, 4.49 ms | A4 composes 295
+    us per composed Mpx: 6212
+tflat static   frames  780 | A12 composes total     25 (1 frames with any), 0.8 ms total, 0.2 Mpx (1 MB of RGBA) | per active frame: median 25 composes, 0.76 ms, 0.20 Mpx; max 25 composes, 0.76 ms | A4 composes 0
+    us per composed Mpx: 3745
+tflat daynight frames  780 | A12 composes total   1975 (79 frames with any), 67.4 ms total, 16.1 Mpx (61 MB of RGBA) | per active frame: median 25 composes, 0.87 ms, 0.20 Mpx; max 25 composes, 1.29 ms | A4 composes 0
+    us per composed Mpx: 4184
+tflat zoom     frames  782 | A12 composes total   1830 (73 frames with any), 101.2 ms total, 14.9 Mpx (57 MB of RGBA) | per active frame: median 25 composes, 1.35 ms, 0.20 Mpx; max 30 composes, 2.01 ms | A4 composes 0
+    us per composed Mpx: 6777

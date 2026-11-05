@@ -1,0 +1,130 @@
+phase PP: runs 100 accepted 100 rejected 0
+s2 daynight     busy P50 n=5 base   2.611 a12   2.642 | a12-base median +0.011 (range -0.000..+0.086, 1/5 lower, base spread 0.100) no measurable difference
+s2 daynight     busy P95 n=5 base   4.756 a12   7.049 | a12-base median +2.283 (range +1.978..+2.544, 0/5 lower, base spread 0.394) A12 slower by +2.283 ms
+s2 daynight     busy P99 n=5 base   5.933 a12   8.158 | a12-base median +2.212 (range +1.849..+2.521, 0/5 lower, base spread 0.315) A12 slower by +2.212 ms
+s2 daynight     peak working set MB: base median 1845.9 (1844.8..1846.1), a12 median 1845.9 (1845.4..1846.0), diff +0.0
+s2 scroll       busy P50 n=5 base   3.269 a12   3.252 | a12-base median -0.003 (range -0.158..+0.185, 3/5 lower, base spread 0.259) no measurable difference
+s2 scroll       busy P95 n=5 base   4.481 a12   4.500 | a12-base median +0.019 (range -0.007..+0.103, 1/5 lower, base spread 0.172) no measurable difference
+s2 scroll       busy P99 n=5 base   4.852 a12   4.952 | a12-base median +0.063 (range -0.117..+0.178, 2/5 lower, base spread 0.183) no measurable difference
+s2 scroll       peak working set MB: base median 1845.2 (1844.9..1846.0), a12 median 1845.8 (1845.1..1846.2), diff +0.6
+s2 static       busy P50 n=5 base   2.340 a12   2.353 | a12-base median +0.003 (range -0.283..+0.053, 1/5 lower, base spread 0.384) no measurable difference
+s2 static       busy P95 n=5 base   3.289 a12   3.239 | a12-base median +0.047 (range -0.852..+0.105, 2/5 lower, base spread 1.173) no measurable difference
+s2 static       busy P99 n=5 base   3.967 a12   3.870 | a12-base median +0.009 (range -0.597..+0.098, 2/5 lower, base spread 1.046) no measurable difference
+s2 static       peak working set MB: base median 1845.6 (1844.9..1847.8), a12 median 1845.7 (1828.1..1845.8), diff +0.1
+s2 zoom         busy P50 n=5 base   2.855 a12   2.828 | a12-base median -0.027 (range -0.068..+0.035, 4/5 lower, base spread 0.110) no measurable difference
+s2 zoom         busy P95 n=5 base   6.719 a12   8.120 | a12-base median +1.564 (range +0.314..+2.750, 0/5 lower, base spread 0.989) A12 slower by +1.564 ms
+s2 zoom         busy P99 n=5 base  12.844 a12  14.636 | a12-base median +1.837 (range +1.648..+2.111, 0/5 lower, base spread 0.527) A12 slower by +1.837 ms
+s2 zoom         peak working set MB: base median 1847.2 (1847.0..1847.5), a12 median 1847.7 (1847.3..1848.5), diff +0.5
+s2 zoomx        busy P50 n=5 base   3.216 a12   3.263 | a12-base median +0.031 (range -0.153..+0.171, 1/5 lower, base spread 0.206) no measurable difference
+s2 zoomx        busy P95 n=5 base  19.451 a12  22.162 | a12-base median +2.673 (range +2.250..+3.433, 0/5 lower, base spread 0.747) A12 slower by +2.673 ms
+s2 zoomx        busy P99 n=5 base  48.201 a12  31.084 | a12-base median -16.187 (range -20.320..-15.283, 5/5 lower, base spread 3.464) A12 faster by -16.187 ms
+s2 zoomx        peak working set MB: base median 1860.2 (1859.4..1861.9), a12 median 1865.3 (1849.7..1866.6), diff +5.1
+s3 daynight     busy P50 n=5 base   3.223 a12   3.286 | a12-base median +0.065 (range -0.089..+0.100, 2/5 lower, base spread 0.142) no measurable difference
+s3 daynight     busy P95 n=5 base   5.280 a12   7.479 | a12-base median +2.320 (range +1.643..+2.426, 0/5 lower, base spread 0.378) A12 slower by +2.320 ms
+s3 daynight     busy P99 n=5 base   6.988 a12   9.587 | a12-base median +2.554 (range +1.944..+2.840, 0/5 lower, base spread 0.578) A12 slower by +2.554 ms
+s3 daynight     peak working set MB: base median 1864.7 (1864.6..1865.5), a12 median 1865.1 (1864.7..1865.8), diff +0.4
+s3 scroll       busy P50 n=5 base   3.120 a12   3.178 | a12-base median +0.058 (range -0.081..+0.183, 2/5 lower, base spread 0.418) no measurable difference
+s3 scroll       busy P95 n=5 base   3.936 a12   3.972 | a12-base median +0.049 (range -0.082..+0.153, 2/5 lower, base spread 0.306) no measurable difference
+s3 scroll       busy P99 n=5 base   4.495 a12   4.505 | a12-base median +0.011 (range -0.364..+0.099, 2/5 lower, base spread 0.092) no measurable difference
+s3 scroll       peak working set MB: base median 1865.0 (1841.8..1865.6), a12 median 1864.9 (1864.6..1865.4), diff -0.1
+s3 static       busy P50 n=5 base   2.970 a12   3.008 | a12-base median +0.012 (range -0.008..+0.047, 1/5 lower, base spread 0.105) no measurable difference
+s3 static       busy P95 n=5 base   3.808 a12   3.819 | a12-base median -0.046 (range -0.077..+0.161, 4/5 lower, base spread 0.123) no measurable difference
+s3 static       busy P99 n=5 base   4.153 a12   4.249 | a12-base median -0.062 (range -0.412..+0.587, 3/5 lower, base spread 0.495) no measurable difference
+s3 static       peak working set MB: base median 1864.7 (1864.3..1867.4), a12 median 1865.1 (1864.5..1867.4), diff +0.4
+s3 zoom         busy P50 n=5 base   2.472 a12   2.524 | a12-base median +0.056 (range +0.037..+0.184, 0/5 lower, base spread 0.144) A12 slower by +0.056 ms
+s3 zoom         busy P95 n=5 base   8.106 a12  10.433 | a12-base median +2.356 (range +1.553..+2.794, 0/5 lower, base spread 0.436) A12 slower by +2.356 ms
+s3 zoom         busy P99 n=5 base  12.115 a12  14.515 | a12-base median +2.400 (range +1.976..+2.785, 0/5 lower, base spread 0.421) A12 slower by +2.400 ms
+s3 zoom         peak working set MB: base median 1866.6 (1866.6..1868.1), a12 median 1867.2 (1865.6..1868.4), diff +0.6
+s3 zoomx        busy P50 n=5 base   3.041 a12   3.043 | a12-base median +0.068 (range -0.054..+0.111, 2/5 lower, base spread 0.293) no measurable difference
+s3 zoomx        busy P95 n=5 base  19.554 a12  21.679 | a12-base median +2.076 (range +0.749..+2.786, 0/5 lower, base spread 1.467) A12 slower by +2.076 ms
+s3 zoomx        busy P99 n=5 base  46.819 a12  30.335 | a12-base median -17.009 (range -17.893..-15.844, 5/5 lower, base spread 2.370) A12 faster by -17.009 ms
+s3 zoomx        peak working set MB: base median 1875.2 (1868.2..1880.9), a12 median 1884.6 (1878.9..1885.1), diff +9.4
+comparisons 30, no measurable difference 17
+phase PS: runs 40 accepted 40 rejected 0
+s2 scroll       busy P50 n=5 base   3.289 a12   3.334 | a12-base median -0.025 (range -0.427..+0.295, 3/5 lower, base spread 0.442) no measurable difference
+s2 scroll       busy P95 n=5 base   4.404 a12   4.381 | a12-base median -0.023 (range -0.132..+0.085, 3/5 lower, base spread 0.138) no measurable difference
+s2 scroll       busy P99 n=5 base   4.722 a12   4.740 | a12-base median -0.072 (range -0.095..+0.173, 3/5 lower, base spread 0.185) no measurable difference
+s2 scroll       peak working set MB: base median 1846.0 (1845.7..1846.3), a12 median 1846.0 (1844.7..1846.1), diff +0.0
+s2 static       busy P50 n=5 base   2.156 a12   2.143 | a12-base median -0.028 (range -0.062..+0.051, 3/5 lower, base spread 0.032) no measurable difference
+s2 static       busy P95 n=5 base   3.058 a12   3.077 | a12-base median +0.019 (range -0.085..+0.207, 1/5 lower, base spread 0.127) no measurable difference
+s2 static       busy P99 n=5 base   3.549 a12   3.555 | a12-base median +0.005 (range -0.080..+0.456, 2/5 lower, base spread 0.275) no measurable difference
+s2 static       peak working set MB: base median 1845.3 (1845.2..1845.9), a12 median 1845.2 (1844.8..1846.1), diff -0.1
+s3 scroll       busy P50 n=5 base   2.796 a12   2.785 | a12-base median -0.038 (range -0.042..+0.038, 4/5 lower, base spread 0.047) no measurable difference
+s3 scroll       busy P95 n=5 base   3.572 a12   3.570 | a12-base median -0.001 (range -0.005..+0.072, 3/5 lower, base spread 0.071) no measurable difference
+s3 scroll       busy P99 n=5 base   4.165 a12   4.001 | a12-base median -0.179 (range -0.258..+0.285, 4/5 lower, base spread 0.252) no measurable difference
+s3 scroll       peak working set MB: base median 1865.2 (1864.7..1865.3), a12 median 1865.3 (1864.9..1865.6), diff +0.1
+s3 static       busy P50 n=5 base   2.919 a12   2.909 | a12-base median -0.010 (range -0.035..+0.031, 3/5 lower, base spread 0.046) no measurable difference
+s3 static       busy P95 n=5 base   3.589 a12   3.605 | a12-base median +0.014 (range -0.012..+0.155, 1/5 lower, base spread 0.055) no measurable difference
+s3 static       busy P99 n=5 base   3.889 a12   4.073 | a12-base median +0.106 (range +0.035..+0.263, 0/5 lower, base spread 0.259) A12 slower by +0.106 ms
+s3 static       peak working set MB: base median 1864.8 (1864.4..1865.4), a12 median 1865.2 (1864.6..1865.6), diff +0.4
+comparisons 12, no measurable difference 11
+phase PC: runs 60 accepted 60 rejected 0
+s2 coastscroll  busy P50 n=5 base   3.680 a12   3.790 | a12-base median +0.110 (range -0.225..+0.239, 1/5 lower, base spread 0.291) no measurable difference
+s2 coastscroll  busy P95 n=5 base   4.961 a12   5.014 | a12-base median +0.023 (range -0.064..+0.137, 2/5 lower, base spread 0.165) no measurable difference
+s2 coastscroll  busy P99 n=5 base   5.378 a12   5.337 | a12-base median -0.004 (range -0.135..+0.330, 3/5 lower, base spread 0.244) no measurable difference
+s2 coastscroll  peak working set MB: base median 1856.4 (1855.1..1857.3), a12 median 1856.7 (1855.4..1857.4), diff +0.3
+s2 scroll       busy P50 n=5 base   4.560 a12   4.534 | a12-base median -0.024 (range -0.209..+0.140, 3/5 lower, base spread 0.129) no measurable difference
+s2 scroll       busy P95 n=5 base   5.759 a12   5.704 | a12-base median -0.081 (range -0.335..+0.193, 3/5 lower, base spread 0.301) no measurable difference
+s2 scroll       busy P99 n=5 base   6.434 a12   6.384 | a12-base median -0.153 (range -0.189..+0.120, 4/5 lower, base spread 0.401) no measurable difference
+s2 scroll       peak working set MB: base median 1860.5 (1860.2..1861.0), a12 median 1860.3 (1860.0..1860.6), diff -0.2
+s2 static       busy P50 n=5 base   3.575 a12   3.603 | a12-base median +0.006 (range -0.026..+0.097, 2/5 lower, base spread 0.117) no measurable difference
+s2 static       busy P95 n=5 base   4.447 a12   4.482 | a12-base median +0.022 (range -0.050..+0.102, 1/5 lower, base spread 0.137) no measurable difference
+s2 static       busy P99 n=5 base   5.031 a12   5.137 | a12-base median +0.110 (range -0.079..+0.380, 1/5 lower, base spread 0.211) no measurable difference
+s2 static       peak working set MB: base median 1852.1 (1851.8..1852.8), a12 median 1852.1 (1851.3..1852.8), diff +0.0
+s3 coastscroll  busy P50 n=5 base   3.791 a12   3.762 | a12-base median -0.070 (range -0.125..+0.155, 3/5 lower, base spread 0.139) no measurable difference
+s3 coastscroll  busy P95 n=5 base   4.469 a12   4.462 | a12-base median +0.015 (range -0.090..+0.058, 2/5 lower, base spread 0.139) no measurable difference
+s3 coastscroll  busy P99 n=5 base   5.033 a12   5.133 | a12-base median +0.068 (range -0.189..+0.101, 2/5 lower, base spread 0.180) no measurable difference
+s3 coastscroll  peak working set MB: base median 1875.1 (1874.8..1875.7), a12 median 1875.0 (1865.5..1875.8), diff -0.1
+s3 scroll       busy P50 n=5 base   4.767 a12   4.704 | a12-base median -0.031 (range -0.215..+0.046, 3/5 lower, base spread 0.120) no measurable difference
+s3 scroll       busy P95 n=5 base   5.743 a12   5.816 | a12-base median +0.069 (range -0.014..+0.174, 1/5 lower, base spread 0.023) A12 slower by +0.069 ms
+s3 scroll       busy P99 n=5 base   6.051 a12   6.153 | a12-base median +0.138 (range -0.252..+0.175, 2/5 lower, base spread 0.291) no measurable difference
+s3 scroll       peak working set MB: base median 1878.4 (1877.9..1879.0), a12 median 1878.3 (1878.0..1878.6), diff -0.1
+s3 static       busy P50 n=5 base   4.983 a12   4.982 | a12-base median -0.001 (range -0.080..+0.065, 3/5 lower, base spread 0.079) no measurable difference
+s3 static       busy P95 n=5 base   5.657 a12   5.687 | a12-base median +0.022 (range -0.055..+0.078, 1/5 lower, base spread 0.127) no measurable difference
+s3 static       busy P99 n=5 base   6.006 a12   6.007 | a12-base median +0.018 (range -0.189..+0.155, 2/5 lower, base spread 0.438) no measurable difference
+s3 static       peak working set MB: base median 1869.7 (1869.0..1870.9), a12 median 1870.6 (1869.8..1871.0), diff +0.9
+comparisons 18, no measurable difference 17
+phase PF: runs 80 accepted 80 rejected 0
+s2 daynight     busy P50 n=5 base   2.114 a12   2.159 | a12-base median +0.055 (range -0.097..+0.149, 2/5 lower, base spread 0.141) no measurable difference
+s2 daynight     busy P95 n=5 base   7.332 a12   8.898 | a12-base median +1.446 (range +1.205..+1.844, 0/5 lower, base spread 0.388) A12 slower by +1.446 ms
+s2 daynight     busy P99 n=5 base   8.290 a12  10.292 | a12-base median +2.112 (range +1.150..+2.240, 0/5 lower, base spread 0.387) A12 slower by +2.112 ms
+s2 daynight     peak working set MB: base median 1851.2 (1850.3..1851.4), a12 median 1851.5 (1847.1..1853.7), diff +0.3
+s2 scroll       busy P50 n=5 base   3.507 a12   3.351 | a12-base median -0.179 (range -0.599..+0.272, 3/5 lower, base spread 0.218) no measurable difference
+s2 scroll       busy P95 n=5 base   4.621 a12   4.610 | a12-base median -0.027 (range -0.265..+0.088, 3/5 lower, base spread 0.096) no measurable difference
+s2 scroll       busy P99 n=5 base   5.037 a12   4.928 | a12-base median -0.106 (range -0.359..-0.019, 5/5 lower, base spread 0.349) A12 faster by -0.106 ms
+s2 scroll       peak working set MB: base median 1851.3 (1850.8..1851.9), a12 median 1851.4 (1850.1..1851.9), diff +0.1
+s2 static       busy P50 n=5 base   1.900 a12   1.878 | a12-base median -0.035 (range -0.091..+0.073, 3/5 lower, base spread 0.076) no measurable difference
+s2 static       busy P95 n=5 base   2.610 a12   2.560 | a12-base median -0.038 (range -0.160..+0.149, 3/5 lower, base spread 0.160) no measurable difference
+s2 static       busy P99 n=5 base   3.241 a12   3.288 | a12-base median -0.021 (range -0.050..+0.408, 3/5 lower, base spread 0.381) no measurable difference
+s2 static       peak working set MB: base median 1851.6 (1849.7..1852.2), a12 median 1850.6 (1850.3..1851.3), diff -1.0
+s2 zoom         busy P50 n=5 base   2.728 a12   2.720 | a12-base median -0.040 (range -0.054..+0.080, 3/5 lower, base spread 0.080) no measurable difference
+s2 zoom         busy P95 n=5 base  10.089 a12  11.271 | a12-base median +1.014 (range -0.279..+1.608, 1/5 lower, base spread 2.023) no measurable difference
+s2 zoom         busy P99 n=5 base  25.096 a12  26.089 | a12-base median +0.957 (range +0.521..+1.392, 0/5 lower, base spread 0.805) A12 slower by +0.957 ms
+s2 zoom         peak working set MB: base median 1857.1 (1857.0..1858.1), a12 median 1858.2 (1857.5..1860.7), diff +1.1
+s3 daynight     busy P50 n=5 base   2.983 a12   2.981 | a12-base median +0.037 (range -0.020..+0.145, 2/5 lower, base spread 0.059) no measurable difference
+s3 daynight     busy P95 n=5 base   7.714 a12   9.119 | a12-base median +1.383 (range +1.230..+2.134, 0/5 lower, base spread 0.203) A12 slower by +1.383 ms
+s3 daynight     busy P99 n=5 base   9.577 a12  10.138 | a12-base median +0.825 (range +0.454..+1.766, 0/5 lower, base spread 0.789) A12 slower by +0.825 ms
+s3 daynight     peak working set MB: base median 1869.6 (1869.3..1870.2), a12 median 1869.3 (1868.5..1869.4), diff -0.3
+s3 scroll       busy P50 n=5 base   2.884 a12   2.858 | a12-base median +0.006 (range -0.056..+0.054, 2/5 lower, base spread 0.192) no measurable difference
+s3 scroll       busy P95 n=5 base   3.729 a12   3.684 | a12-base median -0.009 (range -0.126..+0.057, 3/5 lower, base spread 0.223) no measurable difference
+s3 scroll       busy P99 n=5 base   4.535 a12   4.429 | a12-base median +0.093 (range -0.262..+0.156, 2/5 lower, base spread 0.529) no measurable difference
+s3 scroll       peak working set MB: base median 1869.8 (1868.6..1870.2), a12 median 1869.6 (1869.1..1870.4), diff -0.2
+s3 static       busy P50 n=5 base   2.849 a12   2.838 | a12-base median -0.013 (range -0.039..+0.008, 4/5 lower, base spread 0.043) no measurable difference
+s3 static       busy P95 n=5 base   3.455 a12   3.438 | a12-base median -0.009 (range -0.059..+0.046, 3/5 lower, base spread 0.076) no measurable difference
+s3 static       busy P99 n=5 base   3.707 a12   3.695 | a12-base median -0.036 (range -0.086..+0.147, 3/5 lower, base spread 0.172) no measurable difference
+s3 static       peak working set MB: base median 1869.4 (1869.1..1869.8), a12 median 1869.7 (1868.7..1869.8), diff +0.3
+s3 zoom         busy P50 n=5 base   2.149 a12   2.117 | a12-base median -0.029 (range -0.054..+0.106, 3/5 lower, base spread 0.109) no measurable difference
+s3 zoom         busy P95 n=5 base   8.402 a12   9.655 | a12-base median +1.299 (range +0.166..+2.256, 0/5 lower, base spread 1.478) A12 slower by +1.299 ms
+s3 zoom         busy P99 n=5 base  24.277 a12  25.217 | a12-base median +1.159 (range +0.354..+1.584, 0/5 lower, base spread 0.568) A12 slower by +1.159 ms
+s3 zoom         peak working set MB: base median 1875.4 (1869.3..1876.1), a12 median 1876.0 (1869.3..1876.4), diff +0.6
+comparisons 24, no measurable difference 16
+phase PL: runs 12 accepted 12 rejected 0
+s2 daynight     busy P50 n=3 base   2.559 a12   2.585 | a12-base median +0.027 (range -0.004..+0.049, 1/3 lower, base spread 0.004) A12 slower by +0.027 ms
+s2 daynight     busy P95 n=3 base   4.720 a12   7.056 | a12-base median +2.336 (range +2.321..+2.404, 0/3 lower, base spread 0.011) A12 slower by +2.336 ms
+s2 daynight     busy P99 n=3 base   5.570 a12   7.911 | a12-base median +2.400 (range +2.188..+2.508, 0/3 lower, base spread 0.070) A12 slower by +2.400 ms
+s2 daynight     peak working set MB: base median 1845.7 (1844.7..1846.1), a12 median 1846.2 (1845.7..1848.8), diff +0.5
+s3 daynight     busy P50 n=3 base   3.079 a12   3.102 | a12-base median +0.023 (range -0.048..+0.040, 1/3 lower, base spread 0.067) no measurable difference
+s3 daynight     busy P95 n=3 base   4.962 a12   7.118 | a12-base median +2.205 (range +2.106..+2.228, 0/3 lower, base spread 0.147) A12 slower by +2.205 ms
+s3 daynight     busy P99 n=3 base   6.498 a12   8.923 | a12-base median +2.426 (range +2.421..+2.482, 0/3 lower, base spread 0.623) A12 slower by +2.426 ms
+s3 daynight     peak working set MB: base median 1865.1 (1864.7..1865.3), a12 median 1865.2 (1865.2..1865.7), diff +0.1
+comparisons 6, no measurable difference 1

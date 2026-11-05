@@ -1,0 +1,6 @@
+vis-DA-day-base-s3 rc=0 exe f7f7ce82a0fa789f dumps 0 errors "errors": []
+vis-DA-n4-base-s3 rc=0 exe f7f7ce82a0fa789f dumps 0 errors "errors": []
+vis-DA-day-cand-s3 rc=0 exe ed58e66d9674682c dumps 0 errors "errors": []
+vis-DA-n4-cand-s3 rc=0 exe ed58e66d9674682c dumps 0 errors "errors": []
+[day] XR32 images drawn alone: base 50299, candidate 50819, common 50299, only in candidate 520 ([50462]..[50981]), only in base 0; common images that differ: 0 []
+[n4] XR32 images drawn alone: base 50299, candidate 50819, common 50299, only in candidate 520 ([50462]..[50981]), only in base 0; common images that differ: 0 []

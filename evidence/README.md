@@ -68,3 +68,10 @@ downloaded from their official locations; the exact files are identified in
   the Defender scans; `publication/`: the derivation of the testing-5 packages from testing-4's published archives, the
   build recipe check (it re-makes testing-4's published executables byte for byte), the Linux builds and their minimal
   smoke tests, the makeobj cross-check on the test kit and the final Defender scan. Raw per-frame outputs are not included.
+- `xr32-testing-6/` (XR32-TESTING6-READINESS-01 and XR32-TESTING6-PUBLICATION-01, testing-6) - `certification/`: the
+  provenance of the code, the visual and luminosity analyses, the independent model of the 520 generated tiles and its
+  controls, the identity of every other XR32 image, screen-update verification, performance and cache counters, memory,
+  build identity, warning sets and the Defender scan; `publication/`: the source gate (the code reproduced from
+  testing-5's public tree by two routes), the independent Linux rebuild (identical bytes), the derivation of the
+  testing-6 packages from testing-5's published archives, the minimal smoke tests and the final Defender scan. Raw
+  per-frame outputs and captures are not included.

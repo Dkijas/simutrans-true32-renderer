@@ -1,0 +1,20 @@
+PASS S1 branch xr32/testing-5-r12377 (cfcc03c6d713b7d645808433ee8ce84ec0c6b19e)
+PASS S1 tag testing-5 (cfcc03c6d713b7d645808433ee8ce84ec0c6b19e)
+PASS S1 public source/xr32-r12377 (c8297dcac4547b2a425058ba8723c96e2eeadb33)
+PASS S1 tree of 038b538 (c8297dcac4547b2a425058ba8723c96e2eeadb33)
+PASS S2 candidate commit (f04638adc06130dc73121df50f9f2f0c89fd4e1d)
+PASS S2 candidate tree (b0efabef4936001011440a02c4dbcd9cd9052650)
+PASS S2 parent of f04638a (4c71953f4215bb619bbc177b83f5ad09e1eb1166)
+PASS S2 tree of 4c71953 (7d2195a6be991790137b600d25d11e70145e9ec1)
+PASS S2 parent of 4c71953 (038b538e16166229266707f036cb213be5a5261b)
+PASS S3 base commit tree (parentless, public tree) (c8297dcac4547b2a425058ba8723c96e2eeadb33)
+PASS S3 route A: public tree + commit diffs (b0efabef4936001011440a02c4dbcd9cd9052650)
+PASS S4 route B: public tree + delivery 01+02 (b0efabef4936001011440a02c4dbcd9cd9052650)
+PASS S4 CONTROL: 01 alone gives 7d2195a6be991790137b600d25d11e70145e9ec1 (= 4c71953's tree), not the candidate -> the gate can fail
+PASS S5 files changed testing-5 -> candidate (src/simutrans/descriptor/ground_desc.cc src/simutrans/display/stlab_xr32.h src/simutrans/display/stlab_xr32_hook.cci )
+S5 numstat: 12 0 src/simutrans/descriptor/ground_desc.cc;5 0 src/simutrans/display/stlab_xr32.h;170 0 src/simutrans/display/stlab_xr32_hook.cci;
+PASS S5 no XR32 reader/writer/loader/makeobj-writer file changed
+PASS S6 01-A12-A-CLIMATE-TEXTURE.diff identical in the A12 and testing-6 deliveries (931706fd71554db9)
+PASS S6 02-A12-B-LIGHT-TEXTURE.diff identical in the A12 and testing-6 deliveries (79287af84703df55)
+refs in the local clone added by this gate: refs/stlab/cand-t6 
+SOURCE GATE: PASS

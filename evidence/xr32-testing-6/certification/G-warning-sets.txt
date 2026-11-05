@@ -1,0 +1,4 @@
+base-s3 vs cand-s3: 26/26, set IDENTICAL
+base-s2 vs cand-s2: 26/26, set IDENTICAL
+lab-base-s3 vs lab-a12-s3: 26/26, set IDENTICAL
+lab-base-s2 vs lab-a12-s2: 26/26, set IDENTICAL

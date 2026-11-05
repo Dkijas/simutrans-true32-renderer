@@ -1,0 +1,7 @@
+valid slopes 65 (doubleslope_to_imgnr != 255 below 80, every corner not all-up), light map pixels over them 271428
+masks the engine builds: alpha_image 64 (snow line, one per slope but flat), alpha_corners 975 (15 per slope), alpha_water <= 975 (15 per slope, where a beach image exists)
+pixels: snow line 267332, climate corners 4071420, beach <= 4071420, total <= 8410172
+stored 8-bit planes, 1 byte per mask pixel (the channel(s) each use reads): 8.0 MB
+stored 8-bit planes, 2 bytes (snow line needs G+B and B): 8.3 MB
+stored 8-bit planes, RGB 3 bytes: 23.8 MB
+legacy 16-bit mask words for the same pixels (2 B/px, existing today): 16.0 MB

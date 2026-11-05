@@ -1,0 +1,4 @@
+XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6-candidate.diff  == A12 XR32-NIGHT-PROTOTYPE-FULL-WITH-A12.r12377.diff: yes
+T6-ON-TESTING-5.diff                                       == A12 A12-ON-TESTING-5.diff: yes
+01-A12-A-CLIMATE-TEXTURE.diff                              == A12 01-A12-A-CLIMATE-TEXTURE.diff: yes
+02-A12-B-LIGHT-TEXTURE.diff                                == A12 02-A12-B-LIGHT-TEXTURE.diff: yes

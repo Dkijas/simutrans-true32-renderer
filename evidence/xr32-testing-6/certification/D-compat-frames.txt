@@ -1,0 +1,61 @@
+A=R-trad241-s3-base-s3,R-trad242-s3-base-s3  B=R-trad241-s3-cand-s3,R-trad242-s3-cand-s3
+  fb_n2.raw    noise      0 px (-)  REAL      0 px (-)
+  fb_n4.raw    noise     33 px (x 137..142 y 1067..1074)  REAL      0 px (-)
+  fb_z0.raw    noise     43 px (x 137..142 y 1067..1074)  REAL      0 px (-)
+  fb_z10.raw   noise    284 px (x 137..989 y 900..1074)  REAL      5 px (x 928..972 y 904..925)
+  fb_z6.raw    noise     39 px (x 137..142 y 1067..1074)  REAL      0 px (-)
+  fb_z7.raw    noise     42 px (x 137..142 y 1067..1074)  REAL      0 px (-)
+  fb_z8.raw    noise      0 px (-)  REAL      0 px (-)
+TOTAL real differences: 5 -> PRESENT
+A=R-mutant1-s3-base-s3,R-mutant2-s3-base-s3  B=R-mutant1-s3-cand-s3,R-mutant2-s3-cand-s3
+  fb_n2.raw    noise     33 px (x 137..142 y 1067..1074)  REAL      0 px (-)
+  fb_n4.raw    noise      0 px (-)  REAL      0 px (-)
+  fb_z0.raw    noise      0 px (-)  REAL      0 px (-)
+  fb_z10.raw   noise    254 px (x 927..989 y 900..946)  REAL      0 px (-)
+  fb_z6.raw    noise      0 px (-)  REAL      0 px (-)
+  fb_z7.raw    noise     42 px (x 137..142 y 1067..1074)  REAL      0 px (-)
+  fb_z8.raw    noise     28 px (x 137..142 y 1067..1074)  REAL      0 px (-)
+TOTAL real differences: 0 -> NONE
+A=R-makieoff1-s3-base-s3,R-makieoff2-s3-base-s3  B=R-makieoff1-s3-cand-s3,R-makieoff2-s3-cand-s3
+  fb_n2.raw    noise     46 px (x 146..151 y 1067..1074)  REAL      0 px (-)
+  fb_n4.raw    noise     39 px (x 146..151 y 1067..1074)  REAL      0 px (-)
+  fb_z0.raw    noise      0 px (-)  REAL      0 px (-)
+  fb_z10.raw   noise     43 px (x 146..151 y 1067..1074)  REAL      0 px (-)
+  fb_z6.raw    noise     42 px (x 146..151 y 1067..1074)  REAL      0 px (-)
+  fb_z7.raw    noise      0 px (-)  REAL      0 px (-)
+  fb_z8.raw    noise  79154 px (x 0..1919 y 32..1074)  REAL      0 px (-)
+TOTAL real differences: 0 -> NONE
+A=R-trad241-s2-base-s2,R-trad242-s2-base-s2  B=R-trad241-s2-cand-s2,R-trad242-s2-cand-s2
+  fb_n2.raw    noise     38 px (x 137..142 y 755..762)  REAL      0 px (-)
+  fb_n4.raw    noise     39 px (x 137..142 y 755..762)  REAL      0 px (-)
+  fb_z0.raw    noise     34 px (x 137..142 y 755..762)  REAL      0 px (-)
+  fb_z10.raw   noise 386442 px (x 0..1023 y 32..762)  REAL      6 px (x 137..142 y 759..761)
+  fb_z6.raw    noise     41 px (x 137..142 y 755..762)  REAL      0 px (-)
+  fb_z7.raw    noise     31 px (x 137..142 y 755..762)  REAL      0 px (-)
+  fb_z8.raw    noise     46 px (x 137..142 y 755..762)  REAL      0 px (-)
+TOTAL real differences: 6 -> PRESENT
+A=R-mutant1-s2-base-s2,R-mutant2-s2-base-s2  B=R-mutant1-s2-cand-s2,R-mutant2-s2-cand-s2
+  fb_n2.raw    noise     34 px (x 137..142 y 755..762)  REAL      1 px (x 138..138 y 762..762)
+  fb_n4.raw    noise     44 px (x 137..142 y 755..762)  REAL      0 px (-)
+  fb_z0.raw    noise     43 px (x 137..142 y 755..762)  REAL      0 px (-)
+  fb_z10.raw   noise     73 px (x 131..142 y 755..762)  REAL      0 px (-)
+  fb_z6.raw    noise     44 px (x 137..142 y 755..762)  REAL      0 px (-)
+  fb_z7.raw    noise     31 px (x 137..142 y 755..762)  REAL      0 px (-)
+  fb_z8.raw    noise     86 px (x 131..142 y 755..762)  REAL      0 px (-)
+TOTAL real differences: 1 -> PRESENT
+A=R-makieoff1-s2-base-s2,R-makieoff2-s2-base-s2  B=R-makieoff1-s2-cand-s2,R-makieoff2-s2-cand-s2
+  fb_n2.raw    noise     31 px (x 146..151 y 755..762)  REAL      0 px (-)
+  fb_n4.raw    noise     42 px (x 146..151 y 755..762)  REAL      0 px (-)
+  fb_z0.raw    noise     31 px (x 146..151 y 755..762)  REAL      0 px (-)
+  fb_z10.raw   noise     28 px (x 146..151 y 755..762)  REAL      0 px (-)
+  fb_z6.raw    noise      0 px (-)  REAL      0 px (-)
+  fb_z7.raw    noise     28 px (x 146..151 y 755..762)  REAL      0 px (-)
+  fb_z8.raw    noise    116 px (x 132..151 y 755..762)  REAL      0 px (-)
+TOTAL real differences: 0 -> NONE
+== XR32 slot counts
+trad24   base-s3  "xr32_slots": 0
+trad24   cand-s3  "xr32_slots": 0
+mutant   base-s3  "xr32_slots": 2134
+mutant   cand-s3  "xr32_slots": 2134
+makie    base-s3  "xr32_slots": 50299
+makie    cand-s3  "xr32_slots": 50819

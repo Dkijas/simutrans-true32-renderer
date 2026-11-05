@@ -1,0 +1,14 @@
+full diff: a85c57e894b6ece5 == A12 delivery's full diff
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl2: re-zip of testing-5's own tree == published zip: True
+  simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl2.zip: 952 entries, read-back OK
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl2 vs testing-5: members 952 (testing-5 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-16bit.exe', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6.diff'] | as expected
+  inside the final zip: rgba32 b002d5a9637d6772 (True) 16-bit 20cbf7da7e183f52 (True) diff a85c57e894b6ece5 (True)
+  vs the certified candidate zip (diff renamed): differ ['README-TESTERS.txt', 'SHA256SUMS.txt'], missing [] -> as expected
+  simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl2.zip 15771618 bytes sha256 f05ffb4d90956029b50d3a1952f68c04988e2bc4b6fedc6900e135a4e5579ab7
+simutrans-xr32-night-prototype-r12377-testing-5-win64-sdl3: re-zip of testing-5's own tree == published zip: True
+  simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl3.zip: 952 entries, read-back OK
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl3 vs testing-5: members 952 (testing-5 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-16bit.exe', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-5.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6.diff'] | as expected
+  inside the final zip: rgba32 ed58e66d9674682c (True) 16-bit 8feaaf49317cf1d7 (True) diff a85c57e894b6ece5 (True)
+  vs the certified candidate zip (diff renamed): differ ['README-TESTERS.txt', 'SHA256SUMS.txt'], missing [] -> as expected
+  simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl3.zip 17586388 bytes sha256 7be15d98f45da3c36fb9e5761e03e1bef9fd1da7978b60897f7c9b74130a4975
+PKG_WIN_RESULT PASS

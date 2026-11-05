@@ -1,0 +1,8 @@
+== makie's resource, fresh download 2026-11-03T21:37:13+01:00
+HTTP/1.1 200 OK
+Last-Modified: Tue, 03 Nov 2026 16:03:49 GMT
+ETag: "3085178b-65f616871a233"
+Content-Length: 814028683
+sha256 this download: 5220f4d460a11870f35e91e9f5813b0e693866694fff10c14dd4e343261f8123 size 814028683
+sha256 A12 copy      : 5220f4d460a11870f35e91e9f5813b0e693866694fff10c14dd4e343261f8123
+incorrect URL without the dot: 404

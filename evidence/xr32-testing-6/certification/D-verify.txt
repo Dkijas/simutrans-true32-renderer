@@ -1,0 +1,43 @@
+  s3-base      static       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f9e42af80b9ca95a
+  s3-a12       static       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-base      static       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 538094712434d607
+  s2-a12       static       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+  s3-base      scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f9e42af80b9ca95a
+  s3-a12       scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-base      scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 538094712434d607
+  s2-a12       scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+  s3-base      zoom         rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f9e42af80b9ca95a
+  s3-a12       zoom         rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-base      zoom         rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 538094712434d607
+  s2-a12       zoom         rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+  s3-base      daynight     rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f9e42af80b9ca95a
+  s3-a12       daynight     rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-base      daynight     rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 538094712434d607
+  s2-a12       daynight     rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+  s3-base      coastzoom    rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f9e42af80b9ca95a
+  s3-a12       coastzoom    rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-base      coastzoom    rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 538094712434d607
+  s2-a12       coastzoom    rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+  s3-base      coastnight   rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f9e42af80b9ca95a
+  s3-a12       coastnight   rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-base      coastnight   rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 538094712434d607
+  s2-a12       coastnight   rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+  s3-base      coastscroll  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f9e42af80b9ca95a
+  s3-a12       coastscroll  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-base      coastscroll  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 538094712434d607
+  s2-a12       coastscroll  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+PHASE V: runs 28, verified frames 1680, frames with a mismatch 0, runs that verified nothing 0
+  s3-base      windows      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f9e42af80b9ca95a
+  s3-a12       windows      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-base      windows      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 538094712434d607
+  s2-a12       windows      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+  s3-base      playercolor  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f9e42af80b9ca95a
+  s3-a12       playercolor  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-base      playercolor  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 538094712434d607
+  s2-a12       playercolor  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+PHASE VW: runs 8, verified frames 480, frames with a mismatch 0, runs that verified nothing 0
+  s3-a12-mut   scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3
+  s2-a12-mut   scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb
+  s3-a12-mut   coastzoom    rc=0 frames  600 verified  60 with mismatch  52 (max 616311 px) exe f6eeeaec3a146ca3
+  s2-a12-mut   coastzoom    rc=0 frames  600 verified  60 with mismatch  57 (max 616334 px) exe 7d6d3f8c6f5eb6bb
+PHASE VC: runs 4, verified frames 240, frames with a mismatch 109, runs that verified nothing 0

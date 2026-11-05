@@ -1,0 +1,6 @@
+src/light.png                identical to A12
+src/climate.png              identical to A12
+src/light.dat                identical to A12
+src/climate.dat              identical to A12
+out/ground.LightTexture.pak  identical to A12
+out/ground.ClimateTexture.pak identical to A12

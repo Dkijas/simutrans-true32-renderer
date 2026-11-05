@@ -877,6 +877,12 @@ void ground_desc_t::init_ground_textures(karte_t *world)
 				int slope = double_grounds ? dslope : slopetable[dslope];
 				final_tile = create_textured_tile( light_map->get_image_ptr( slope ), boden_texture->get_image_ptr( i+1 ) );
 				ground_image_list.append( final_tile );
+#if COLOUR_DEPTH == 32
+				// XR32 (A12): the tile's 32-bit picture comes from the climate texture's XR32 data, if it has any
+				if(  light_map->get_image_ptr( slope )  ) {
+					stlab_xr32_derive_climate_tile( final_tile->get_id(), light_map->get_image_ptr( slope )->get_id(), boden_texture->get_image( i+1 ) );
+				}
+#endif
 			}
 		}
 	}
@@ -887,6 +893,12 @@ void ground_desc_t::init_ground_textures(karte_t *world)
 			int slope = double_grounds ? dslope : slopetable[dslope];
 			final_tile = create_textured_tile( light_map->get_image_ptr( slope ), boden_texture->get_image_ptr( arctic_climate ) );
 			ground_image_list.append( final_tile );
+#if COLOUR_DEPTH == 32
+			// XR32 (A12): snow, from the arctic texture's XR32 data
+			if(  light_map->get_image_ptr( slope )  ) {
+				stlab_xr32_derive_climate_tile( final_tile->get_id(), light_map->get_image_ptr( slope )->get_id(), boden_texture->get_image( arctic_climate ) );
+			}
+#endif
 		}
 	}
 

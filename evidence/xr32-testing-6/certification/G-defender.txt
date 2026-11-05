@@ -1,0 +1,22 @@
+Microsoft Defender scan 2026-11-04T00:07:10: product 4.18.26100.4, engine 1.1.26100.4, signatures 1.463.110.0 (11/03/2026 12:21:45), real-time protection True; no exclusion created, Defender not disabled
+no threats | 97161baaa458315c3ee7b0805166fb522426f28644fad17bd34270781066ec8c | deliver\candidate\makeobj-xr32-night-prototype-r12377-testing-5-linux-x86_64.tar.gz
+no threats | b8a679e85dc4a8081ef9bba0e744fbcb3b8d716bbbffd092f8c5a850ad0c7b77 | deliver\candidate\makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64.zip
+no threats | 8a1503816821f92394986b23a16789a37c463723c0246fb8052c3b4c2adea9f3 | deliver\candidate\makeobj-xr32-night-prototype-r12377-testing-6-candidate-win64.exe
+no threats | 20cbf7da7e183f52c5f73c59050b259a6cc652c300ca4b9627efabbebc8c27f6 | deliver\candidate\simutrans-16bit-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl2.exe
+no threats | 8feaaf49317cf1d7bf2de2f1a43c1ce0128c24cd6b740e83f51408c0a7198463 | deliver\candidate\simutrans-16bit-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl3.exe
+no threats | b002d5a9637d6772604f0248da220ee277b0e9618492feebe2ecb0267c85293a | deliver\candidate\simutrans-rgba32-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl2.exe
+no threats | ed58e66d9674682ca7199217eafc69898eed86f70a5a315be895f82122a52624 | deliver\candidate\simutrans-rgba32-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl3.exe
+no threats | 0966bb43f9a38a49ec19bc0db22b55b7733b7897e68873490cccf645973bdfec | deliver\candidate\simutrans-xr32-night-prototype-r12377-testing-6-candidate-linux-x86_64-sdl2.tar.gz
+no threats | 10d35a24a0a4cd96ee705a0b17a6293a7fc70cfead51bcac4c9280c11fe450a7 | deliver\candidate\simutrans-xr32-night-prototype-r12377-testing-6-candidate-linux-x86_64-sdl3.tar.gz
+no threats | 5eaba9c63c02d78d71d1dcca0065b3f6543249b7459d13c2485067b7fa1ac282 | deliver\candidate\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl2.zip
+no threats | 79a8f851254734eabfada65a1c8e3e1e0d6380ed7b6a1b1eaf2254b7a93a02a3 | deliver\candidate\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl3.zip
+no threats | 2a68c3b3ae4818542fad157c3c0d5faa94d20c0e2ee6136f963b7a44b120be30 | deliver\candidate\testing-6-candidate-038b538..f04638a.bundle
+no threats | a85c57e894b6ece5b96b79febfa1a41e5a0f0c5686117ad8785d5be2405946d1 | deliver\candidate\XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6-candidate.diff
+no threats | 200902e829f350f05460e7ed6b3d596c0cb31ad735954c1b3ce55c3628707903 | deliver\candidate\xr32-night-prototype-r12377-testing-2-testkit.zip
+no threats | 0c34021155b68c3c9d56928854859960b94ddc620a75b8ce6af7c30516b43f69 | deliver\candidate\xr32-night-prototype-r12377-testing-6-candidate-source.tar.gz
+no threats | 8a1503816821f92394986b23a16789a37c463723c0246fb8052c3b4c2adea9f3 | scratch\scan\makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64\makeobj-xr32-night-prototype-r12377-testing-5-windows-x86_64\makeobj.exe
+no threats | 20cbf7da7e183f52c5f73c59050b259a6cc652c300ca4b9627efabbebc8c27f6 | scratch\scan\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl2\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl2\simutrans-16bit.exe
+no threats | b002d5a9637d6772604f0248da220ee277b0e9618492feebe2ecb0267c85293a | scratch\scan\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl2\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl2\simutrans-rgba32.exe
+no threats | 8feaaf49317cf1d7bf2de2f1a43c1ce0128c24cd6b740e83f51408c0a7198463 | scratch\scan\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl3\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl3\simutrans-16bit.exe
+no threats | ed58e66d9674682ca7199217eafc69898eed86f70a5a315be895f82122a52624 | scratch\scan\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl3\simutrans-xr32-night-prototype-r12377-testing-6-candidate-win64-sdl3\simutrans-rgba32.exe
+active threats now: 0; detections since 2026-11-03 22:00: 0

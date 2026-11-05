@@ -115,3 +115,12 @@ for review. They can be provided on request.
   with its controls, and performance. Verdict B, certified with limitations. The Linux builds of testing-5 are
   experimental and not certified.
 - **xr32-tcc/** - the certification of the company-colour fix (TCC-01 and its consolidation).
+
+## XR32 DAY+NIGHT, r12377 testing-6
+
+- **xr32-testing-6/** - the Windows x64 SDL2 + SDL3 certification of testing-6 (A12: the generated terrain at 8-bit
+  precision): the integration and provenance of the code, the visual comparison and brightness analysis, the test
+  matrix with its controls, performance (the light-change and zoom-step cost), and the 32-level transition masks.
+  Verdict B, certified with limitations. The Linux builds of testing-6 are experimental and not certified.
+- **xr32-a12/** - the A12 work: the root cause (the terrain tiles were composed from 16-bit copies), the architecture
+  options and the implementation.
