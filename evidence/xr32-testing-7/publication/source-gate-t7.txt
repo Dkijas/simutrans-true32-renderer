@@ -1,0 +1,14 @@
+PASS R1 refs/stlab/cand-t7 == 3f1b511be97e9fb122780c3da42c7fd07f29e2fc
+PASS R1 candidate tree == 562448a2cdf090543f7890e8a0fc2300ced85e86
+PASS R1 grandparent == f04638a (testing-6's source commit)
+PASS R1 public testing-6 branch and tag == 08c62288
+PASS R1 public source/xr32-r12377 of 08c62288 == tree of f04638a == b0efabef4936001011440a02c4dbcd9cd9052650
+PASS R1 f04638a..3f1b511 changes exactly one file: src/simutrans/display/stlab_xr32_hook.cci ( 1 file changed, 66 insertions(+), 17 deletions(-))
+PASS R2 testing-6 public tree + 01 + 02 == 562448a2cdf090543f7890e8a0fc2300ced85e86
+PASS R2 testing-6 public tree + T7-ON-TESTING-6.diff == 562448a2cdf090543f7890e8a0fc2300ced85e86
+PASS R2 CONTROL: 01 alone gives 44f3db8366c5de25701441257e4813af0d3ee559, not the candidate tree (the check can fail)
+PASS R3 gate lane clone has 3f1b511be97e9fb122780c3da42c7fd07f29e2fc, tree 562448a2cdf090543f7890e8a0fc2300ced85e86
+PASS R3 full diff 7cc6d45..3f1b511 regenerated == certified 4186730011ab42d1
+PASS R3 recipe control: the same recipe on f04638a == testing-6's published full diff a85c57e8
+PASS R3 base 7cc6d45 = the r12377 mirror commit 7cc6d452be63c559
+SOURCE GATE: PASS

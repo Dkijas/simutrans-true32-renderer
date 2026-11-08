@@ -1,0 +1,8 @@
+testing-6, keys, view 1                          on the 555 grid 0.937, distinct colours   8601, blue dots 224169
+testing-7, keys, view 1                          on the 555 grid 0.002, distinct colours  41894, blue dots 0
+testing-6, keys, level 4                         on the 555 grid 0.032, distinct colours   3164, blue dots 151812
+testing-7, keys, level 4                         on the 555 grid 0.003, distinct colours   5638, blue dots 229
+testing-6, town, level 4                         on the 555 grid 0.003, distinct colours    391, blue dots 0
+testing-7, town, level 4                         on the 555 grid 0.003, distinct colours    391, blue dots 0
+testing-6, TCC, night                            on the 555 grid 0.155, distinct colours   1714, blue dots 40
+testing-7, TCC, night                            on the 555 grid 0.155, distinct colours   1714, blue dots 40

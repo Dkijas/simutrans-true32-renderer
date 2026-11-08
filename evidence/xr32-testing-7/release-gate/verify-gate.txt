@@ -1,0 +1,25 @@
+  s3-t7        windows      rc=0 frames  600 verified  60 with mismatch   8 (max 29 px) exe e027fca2366a4a01
+  s2-t7        windows      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+  s3-t7        playercolor  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01
+  s2-t7        playercolor  rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+  s3-t7        daynight     rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01
+  s2-t7        daynight     rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+  s3-t7        coastzoom    rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01
+  s2-t7        coastzoom    rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+  s3-t7        coastnight   rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01
+  s2-t7        coastnight   rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+PHASE GV: runs 10, verified frames 600, frames with a mismatch 8, runs that verified nothing 0
+  s3-t7        static       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01
+  s2-t7        static       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+  s3-t7        scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01
+  s2-t7        scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+  s3-t7        zoom         rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01
+  s2-t7        zoom         rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+  s3-t7        daynight     rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01
+  s2-t7        daynight     rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+PHASE GVK: runs 8, verified frames 480, frames with a mismatch 0, runs that verified nothing 0
+  s3-t7-mut    scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01
+  s2-t7-mut    scroll       rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29
+  s3-t7-mut    coastzoom    rc=0 frames  600 verified  60 with mismatch  52 (max 615524 px) exe e027fca2366a4a01
+  s2-t7-mut    coastzoom    rc=0 frames  600 verified  60 with mismatch  56 (max 616342 px) exe fd65a64e216aaf29
+PHASE GVM: runs 4, verified frames 240, frames with a mismatch 108, runs that verified nothing 0

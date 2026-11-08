@@ -1,0 +1,21 @@
+simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl2: re-pack of testing-6's own tree == published tarball (recipe confirmed)
+  simutrans-16bit of testing-6's package == the 16-bit build of 3f1b511 (3e7cd80e112cf9d5)
+  mandatory Linux notice present
+simutrans-xr32-night-prototype-r12377-testing-7-linux-x86_64-sdl2: tree vs testing-6: exactly the 5 expected paths (control: the replaced executable is among them)
+  modes of the unchanged files: identical
+  vs the certified candidate tarball (names mapped): only README-TESTERS.txt and SHA256SUMS.txt differ
+  simutrans-xr32-night-prototype-r12377-testing-7-linux-x86_64-sdl2.tar.gz: entries 989 (testing-6 989), names with 'candidate' 0, exec bits 2 of 2, rgba32 inside 530bb4603d57a85e, 9053691 bytes, sha256 229d2683a4ec199460724ccc6faa5277a83defaaaf52c0f9f080d4302b57e0c0
+simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl3: re-pack of testing-6's own tree == published tarball (recipe confirmed)
+  simutrans-16bit of testing-6's package == the 16-bit build of 3f1b511 (9822aee1d322a616)
+  mandatory Linux notice present
+simutrans-xr32-night-prototype-r12377-testing-7-linux-x86_64-sdl3: tree vs testing-6: exactly the 5 expected paths (control: the replaced executable is among them)
+  modes of the unchanged files: identical
+  vs the certified candidate tarball (names mapped): only README-TESTERS.txt and SHA256SUMS.txt differ
+  simutrans-xr32-night-prototype-r12377-testing-7-linux-x86_64-sdl3.tar.gz: entries 997 (testing-6 997), names with 'candidate' 0, exec bits 2 of 2, rgba32 inside 08e1322e9806590d, 12466198 bytes, sha256 c7ceafe6f5721dcdb04e46b5d91869ab1fd645a56b9a79e2d41a7001d1f3b231
+makeobj-xr32-night-prototype-r12377-testing-6-linux-x86_64: re-pack of its own tree == published tarball (recipe confirmed)
+  README-MAKEOBJ.txt names testing-7
+makeobj-xr32-night-prototype-r12377-testing-7-linux-x86_64: tree vs testing-6: only README-MAKEOBJ.txt differs
+  makeobj == the gate lane's build of 3f1b511
+  makeobj inside the final tarball == 482e041f6a35fc99a2201f3ea5c4a944d749e15325f43ddca391ad298c156e47 (certified)
+  exec bit: 1 of 1; makeobj-xr32-night-prototype-r12377-testing-7-linux-x86_64.tar.gz 203184 bytes sha256 5d45371cc06cf408e6b81c952a87b4904e51f715d8a9a61fdb850869acce2394
+PKG_LINUX_T7_RESULT rc=0

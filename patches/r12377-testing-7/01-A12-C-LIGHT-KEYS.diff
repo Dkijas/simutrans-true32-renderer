@@ -1,0 +1,92 @@
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index e4d639009dd15bbd723461c1524c4a8085feecec..9ca7b27e1ab50697f1f1b179fa5633bad0b036d7 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -475,6 +475,49 @@ static inline void stlab_derive_product(const int *lc, const int *tc, uint8 *dp)
+ }
+ 
+ 
++/// may image @p n be the light map of a derived climate tile? A light map is only ever read as a colour, and a grey that
++/// happens to be exactly a key of image_t::rgbtab makes an opaque special colour of its 16-bit word (0x8000 + key), while
++/// its XR32 plane keeps the grey. That must not cost the tile its 32-bit picture. Semi-transparent pixels still do: their
++/// runs have another layout and their meaning as a light is undefined.
++static bool stlab_derive_light_usable(image_id n)
++{
++	const imd32 &d = images[n];
++	if(  d.base_data == NULL  ||  (d.recode_flags & FLAG_HAS_TRANSPARENT_COLOR)  ) {
++		return false;
++	}
++	const STORED_PIXVAL *sp = d.base_data;
++	for(  sint16 y = 0;  y < d.base_h;  y++  ) {
++		uint16 runlen = *sp++;
++		do {
++			runlen = *sp++;
++			if(  runlen & TRANSPARENT_RUN  ) {
++				return false;
++			}
++			for(  uint16 k = 0;  k < runlen;  k++  ) {
++				if(  sp[k] >= 0x8000 + SPECIAL  ) {
++					return false;
++				}
++			}
++			sp += runlen;
++		} while(  (runlen = *sp++)  );
++	}
++	return true;
++}
++
++
++/// one word of a light map without XR32 colour: an opaque special colour is the key's own RGB, what the sheet painted
++static inline void stlab_derive_light_rgb(STORED_PIXVAL v, int *c)
++{
++	if(  v >= 0x8000  ) {
++		const uint32 rgb = image_t::rgbtab[v - 0x8000];
++		c[0] = (rgb >> 16) & 0xFF;  c[1] = (rgb >> 8) & 0xFF;  c[2] = rgb & 0xFF;
++	}
++	else {
++		stlab_derive_rgb555( v, c );
++	}
++}
++
++
+ /// is image @p n a full rectangle at x 0: every row one clear run of 0 and one run of the full width?
+ /// (what create_textured_tile assumes when it reads the texture as rows of width + 3 words)
+ static bool stlab_derive_full_rect(image_id n)
+@@ -502,7 +545,8 @@ bool stlab_xr32_derive_climate_tile(image_id tile, image_id light, image_id tex)
+ 	const stlab_xr32_slot_t *ts = stlab_slot( tex, false );
+ 	const stlab_xr32_slot_t *ls = stlab_slot( light, false );
+ 	const bool tex_xr = ts != NULL  &&  ts->img != NULL  &&  ts->img->rgba != NULL  &&  ts->img->run_count == 0  &&  !stlab_derived.count( tex );
+-	const bool light_xr = ls != NULL  &&  ls->img != NULL  &&  ls->img->rgba != NULL  &&  ls->img->run_count == 0  &&  !stlab_derived.count( light );
++	// a light map's semantic runs are the exact keys of the note at stlab_derive_light_usable(): its colours are in the plane
++	const bool light_xr = ls != NULL  &&  ls->img != NULL  &&  ls->img->rgba != NULL  &&  !stlab_derived.count( light );
+ 	if(  !tex_xr  &&  !light_xr  ) {
+ 		return false;   // neither source has XR32 colour of its own: the tile stays the 16-bit one
+ 	}
+@@ -511,7 +555,7 @@ bool stlab_xr32_derive_climate_tile(image_id tile, image_id light, image_id tex)
+ 	if(  t.base_w <= 0  ||  t.base_h <= 0  ||  t.base_w != l.base_w  ||  t.base_h != l.base_h  ||  t.base_x != l.base_x  ||  t.base_y != l.base_y
+ 	     ||  !stlab_derive_full_rect( tex )  ||  t.base_w > images[tex].base_w
+ 	     ||  t.base_y < images[tex].base_y  ||  t.base_y + t.base_h > images[tex].base_y + images[tex].base_h
+-	     ||  !stlab_derive_plain( tile )  ||  !stlab_derive_plain( light )  ||  !stlab_derive_plain( tex )  ) {
++	     ||  !stlab_derive_plain( tile )  ||  !stlab_derive_light_usable( light )  ||  !stlab_derive_plain( tex )  ) {
+ 		return false;
+ 	}
+ 	stlab_xr32_image_t *shell = new stlab_xr32_image_t();
+@@ -541,7 +585,8 @@ static const stlab_xr32_image_t *stlab_derive_source_node(image_id n)
+ static bool stlab_derive_compose_climate(image_id tile, const stlab_xr32_derive_t &rc, stlab_xr32_image_t &out)
+ {
+ 	const stlab_xr32_image_t *tn = stlab_derive_source_node( rc.ref );     // texture (A12-A)
+-	const stlab_xr32_image_t *ln = stlab_derive_source_node( rc.light );   // light map (A12-B)
++	const stlab_xr32_slot_t  *ls = stlab_slot( rc.light, false );          // light map (A12-B); its runs, if any, do not matter
++	const stlab_xr32_image_t *ln = (ls != NULL  &&  ls->img != NULL  &&  ls->img->rgba != NULL  &&  !stlab_derived.count( rc.light )) ? ls->img : NULL;
+ 	if(  tn == NULL  &&  ln == NULL  ) {
+ 		return false;
+ 	}
+@@ -573,7 +618,7 @@ static bool stlab_derive_compose_climate(image_id tile, const stlab_xr32_derive_
+ 					lc[0] = lx[0];  lc[1] = lx[1];  lc[2] = lx[2];
+ 				}
+ 				else {
+-					stlab_derive_rgb555( lp[k], lc );
++					stlab_derive_light_rgb( lp[k], lc );
+ 				}
+ 				// the texture pixel: likewise (A12-A)
+ 				const uint8 *tx = tn ? tn->rgba + ti * 4 : NULL;

@@ -1,0 +1,18 @@
+t6-LT-daynight-s3      samples 121 over   603 s | private MB at 60 s 1838.0, end 1838.0, steady slope +0.01 MB/10 min, min after 120 s 1837.9 | WS at 60 s 1834.7, end 1840.2, slope +6.35 MB/10 min | handles 1245->1386 threads 27->48 | frames 60000, busy P50 first/last 5000: 3.477 / 3.442 ms
+t6-LT-zoomx-s3         samples 152 over   758 s | private MB at 60 s 1867.9, end 1873.6, steady slope +3.72 MB/10 min, min after 120 s 1868.9 | WS at 60 s 1864.4, end 1863.1, slope -8.51 MB/10 min | handles 1259->1403 threads 26->46 | frames 60000, busy P50 first/last 5000: 2.325 / 2.274 ms
+t6-NEW-zoomx-s3        samples 159 over   793 s | private MB at 60 s 1873.4, end 1882.1, steady slope +5.63 MB/10 min, min after 120 s 1875.3 | WS at 60 s 1869.7, end 1871.0, slope +4.52 MB/10 min | handles 1238->1384 threads 26->46 | frames 60000, busy P50 first/last 5000: 2.596 / 2.572 ms
+t7-LT-daynight-s3      samples 121 over   602 s | private MB at 60 s 1837.5, end 1837.5, steady slope +0.02 MB/10 min, min after 120 s 1837.4 | WS at 60 s 1834.8, end 1827.8, slope +6.35 MB/10 min | handles 1245->1386 threads 27->47 | frames 60000, busy P50 first/last 5000: 3.417 / 3.454 ms
+t7-LT-zoomx-s2         samples 201 over  1004 s | private MB at 60 s 1887.8, end 1909.2, steady slope +13.75 MB/10 min, min after 120 s 1889.8 | WS at 60 s 1872.4, end 1879.6, slope -0.55 MB/10 min | handles 939->1093 threads 25->44 | frames 60000, busy P50 first/last 5000: 2.547 / 2.546 ms
+t7-LT-zoomx-s3         samples 159 over   793 s | private MB at 60 s 1873.5, end 1887.9, steady slope +9.47 MB/10 min, min after 120 s 1878.1 | WS at 60 s 1870.4, end 1876.5, slope +0.43 MB/10 min | handles 1245->1385 threads 27->46 | frames 60000, busy P50 first/last 5000: 2.544 / 2.513 ms
+  CONTROL: the same private series + 1 MB/min: slope +19.47 MB/10 min (must read about +10)
+t7-LT-zoomx-s3-long    samples 474 over  2374 s | private MB at 60 s 1892.7, end 1899.9, steady slope +1.08 MB/10 min, min after 120 s 1894.4 | WS at 60 s 1878.2, end 1888.3, slope +2.85 MB/10 min | handles 1241->1381 threads 27->46 | frames 180000, busy P50 first/last 5000: 2.849 / 2.563 ms
+  CONTROL: the same private series + 1 MB/min: slope +11.08 MB/10 min (must read about +10)
+t7-NEW-zoomx-s3        samples 159 over   793 s | private MB at 60 s 1874.0, end 1885.9, steady slope +7.01 MB/10 min, min after 120 s 1876.7 | WS at 60 s 1869.2, end 1873.6, slope -1.65 MB/10 min | handles 1245->1387 threads 27->46 | frames 60000, busy P50 first/last 5000: 2.566 / 2.559 ms
+run: t6-LT-zoomx-s3 rc=0 exe f6eeeaec3a146ca3 pak pak128.german-25c-LT scen zoomx
+run: t7-LT-zoomx-s3 rc=0 exe e027fca2366a4a01 pak pak128.german-25c-LT scen zoomx
+run: t6-LT-daynight-s3 rc=0 exe f6eeeaec3a146ca3 pak pak128.german-25c-LT scen daynight
+run: t7-LT-daynight-s3 rc=0 exe e027fca2366a4a01 pak pak128.german-25c-LT scen daynight
+run: t7-LT-zoomx-s2 rc=0 exe fd65a64e216aaf29 pak pak128.german-25c-LT scen zoomx
+run: t7-NEW-zoomx-s3 rc=0 exe e027fca2366a4a01 pak pak128.german-25c scen zoomx
+run: t7-LT-zoomx-s3-long rc=0 exe e027fca2366a4a01 pak pak128.german-25c-LT scen zoomx frames 180000
+run: t6-NEW-zoomx-s3 rc=0 exe f6eeeaec3a146ca3 pak pak128.german-25c scen zoomx frames 60000

@@ -1,0 +1,2 @@
+night, level 4, candidate SDL3: TKN (texture with its own night plane) against TK (no night plane): tiles that differ 520 of 520; per climate {0: 65, 1: 65, 2: 65, 3: 65, 4: 65, 5: 65, 6: 65, 7: 65}
+-> the night plane is used: yes

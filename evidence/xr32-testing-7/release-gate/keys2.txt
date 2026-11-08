@@ -1,0 +1,52 @@
+CONTROL references t7-s3: 11 levels, pairs that are equal: []
+CONTROL references cand-s3: 11 levels, pairs that are equal: []
+CONTROL references t7-s2: 11 levels, pairs that are equal: []
+CONTROL references cand-s2: 11 levels, pairs that are equal: []
+post-char-fg-in-cand-s2        post-char-fg in   cand-s2 start=1/1(~4231) there1=9/8(~5581) there2=i5(~3478) there3=i4(~7824) back1=i5(~3478) back2=9/8(~5581) back3=1/1(~4231) | fg p:1 >:1 >:1 >:1 <:1 <:1 <:1
+post-char-fg-in-cand-s3        post-char-fg in   cand-s3 start=1/1(~4203) there1=9/8(~5530) there2=i5(~6764) there3=i4(~7892) back1=i5(~6764) back2=9/8(~5530) back3=1/1(~4203) | fg p:1 >:1 >:1 >:1 <:1 <:1 <:1
+post-char-fg-in-t7-s2          post-char-fg in   t7-s2 start=1/1(~4231) there1=9/8(~5581) there2=i5(~3478) there3=i4(~7824) back1=i5(~3478) back2=9/8(~5581) back3=1/1(~4231) | fg p:1 >:1 >:1 >:1 <:1 <:1 <:1
+post-char-fg-in-t7-s3          post-char-fg in   t7-s3 start=1/1(~4203) there1=9/8(~5530) there2=i5(~6764) there3=i4(~7892) back1=i5(~6764) back2=9/8(~5530) back3=1/1(~4203) | fg p:1 >:1 >:1 >:1 <:1 <:1 <:1
+post-char-fg-out-cand-s2       post-char-fg out  cand-s2 start=1/1(~4231) there1=3/4(~2521) there2=i9(~1787) there3=1/2(~1103) back1=i9(~1787) back2=3/4(~2521) back3=1/1(~4231) | fg p:1 <:1 <:1 <:1 >:1 >:1 >:1
+post-char-fg-out-cand-s3       post-char-fg out  cand-s3 start=1/1(~4203) there1=3/4(~2496) there2=i9(~1770) there3=1/2(~25065) back1=i9(~1770) back2=3/4(~2496) back3=1/1(~4203) | fg p:1 <:1 <:1 <:1 >:1 >:1 >:1
+post-char-fg-out-t7-s2         post-char-fg out  t7-s2 start=1/1(~4231) there1=3/4(~2521) there2=i9(~1787) there3=1/2(~25075) back1=i9(~1787) back2=3/4(~2521) back3=1/1(~4231) | fg p:1 <:1 <:1 <:1 >:1 >:1 >:1
+post-char-fg-out-t7-s3         post-char-fg out  t7-s3 start=1/1(~4203) there1=3/4(~2496) there2=i9(~1770) there3=1/2(~25065) back1=i9(~1770) back2=3/4(~2496) back3=1/1(~4203) | fg p:1 <:1 <:1 <:1 >:1 >:1 >:1
+post-char-in-cand-s2           post-char    in   cand-s2 start=1/1(~4231) there1=9/8(~5581) there2=i5(~3478) there3=i4(~7824) back1=i5(~3478) back2=9/8(~5581) back3=1/1(~4231) | fg p:0 >:0 >:0 >:0 <:0 <:0 <:0
+post-char-in-cand-s3           post-char    in   cand-s3 start=1/1(~4203) there1=1/1(~4203) there2=2/1(~1977393) there3=2/1(~1977393) back1=2/1(~1977393) back2=2/1(~1977393) back3=2/1(~1977393) | fg p:0 >:0 >:0 >:0 <:0 <:0 <:0
+post-char-in-t7-s2             post-char    in   t7-s2 start=1/1(~4231) there1=9/8(~5581) there2=i5(~3478) there3=i4(~7824) back1=i5(~3478) back2=9/8(~5581) back3=1/1(~4231) | fg p:0 >:0 >:0 >:0 <:0 <:0 <:0
+post-char-in-t7-s3             post-char    in   t7-s3 start=1/1(~4203) there1=1/1(~4203) there2=2/1(~1977393) there3=2/1(~1977393) back1=2/1(~1977393) back2=2/1(~1977393) back3=2/1(~1977393) | fg p:0 >:0 >:0 >:0 <:0 <:0 <:0
+post-char-out-cand-s2          post-char    out  cand-s2 start=1/1(~4231) there1=3/4(~2521) there2=i9(~1787) there3=1/2(~1103) back1=i9(~1787) back2=3/4(~2521) back3=1/1(~4231) | fg p:0 <:0 <:0 <:0 >:0 >:0 >:0
+post-char-out-cand-s3          post-char    out  cand-s3 start=1/1 there1=3/4 there2=i9 there3=1/2 back1=i9 back2=3/4 back3=1/1 | fg p:1 <:1 <:1 <:1 >:1 >:1 >:1
+post-char-out-t7-s2            post-char    out  t7-s2 start=1/1(~4231) there1=3/4(~2521) there2=i9(~1787) there3=1/2(~1103) back1=i9(~1787) back2=3/4(~2521) back3=1/1(~4231) | fg p:0 <:0 <:0 <:0 >:0 >:0 >:0
+post-char-out-t7-s3            post-char    out  t7-s3 start=1/1(~4203) there1=1/1(~4203) there2=2/1(~1977393) there3=2/1(~1977393) back1=2/1(~1977393) back2=2/1(~1977393) back3=2/1(~1977393) | fg p:0 <:0 <:0 <:0 >:0 >:0 >:0
+post-full-in-cand-s2           SKIPPED (skipped by decision: time budget)
+post-full-in-cand-s3           SKIPPED (skipped by decision: time budget)
+post-full-in-t7-s2             SKIPPED (skipped by decision: time budget)
+post-full-in-t7-s3             SKIPPED (skipped by decision: time budget)
+post-full-out-cand-s2          SKIPPED (skipped by decision: time budget)
+post-full-out-cand-s3          SKIPPED (skipped by decision: time budget)
+post-full-out-t7-s2            SKIPPED (skipped by decision: time budget)
+post-full-out-t7-s3            SKIPPED (skipped by decision: time budget)
+si-page-in-cand-s2             SKIPPED (skipped by decision: time budget)
+si-page-in-cand-s3             si-page      in   cand-s3 start=1/1 there1=9/8 there2=i5 there3=i4 back1=i5 back2=9/8 back3=1/1 | fg p:1 >:1 >:1 >:1 <:1 <:1 <:1
+si-page-in-t7-s2               SKIPPED (skipped by decision: time budget)
+si-page-in-t7-s3               si-page      in   t7-s3 start=1/1 there1=9/8 there2=i5 there3=i4 back1=i5 back2=9/8 back3=1/1 | fg p:1 >:1 >:1 >:1 <:1 <:1 <:1
+si-page-out-cand-s2            SKIPPED (skipped by decision: time budget)
+si-page-out-cand-s3            si-page      out  cand-s3 start=1/1 there1=3/4 there2=i9 there3=1/2(~24997) back1=i9 back2=3/4 back3=1/1 | fg p:1 <:1 <:1 <:1 >:1 >:1 >:1
+si-page-out-t7-s2              SKIPPED (skipped by decision: time budget)
+si-page-out-t7-s3              si-page      out  t7-s3 start=1/1 there1=3/4 there2=i9 there3=1/2(~25228) back1=i9 back2=3/4 back3=1/1 | fg p:1 <:1 <:1 <:1 >:1 >:1 >:1
+si-unicode-in-cand-s2          SKIPPED (skipped by decision: time budget)
+si-unicode-in-cand-s3          SKIPPED (skipped by decision: time budget)
+si-unicode-in-t7-s2            SKIPPED (skipped by decision: time budget)
+si-unicode-in-t7-s3            SKIPPED (skipped by decision: time budget)
+si-unicode-out-cand-s2         SKIPPED (skipped by decision: time budget)
+si-unicode-out-cand-s3         SKIPPED (skipped by decision: time budget)
+si-unicode-out-t7-s2           SKIPPED (skipped by decision: time budget)
+si-unicode-out-t7-s3           SKIPPED (skipped by decision: time budget)
+si-vk-in-cand-s2               SKIPPED (skipped by decision: time budget)
+si-vk-in-cand-s3               si-vk        in   cand-s3 start=1/1(~4203) there1=9/8(~5530) there2=i5(~6764) there3=i4(~7892) back1=i5(~6764) back2=9/8(~5530) back3=1/1(~4203) | fg p:1 >:1 >:1 >:1 <:1 <:1 <:1
+si-vk-in-t7-s2                 SKIPPED (skipped by decision: time budget)
+si-vk-in-t7-s3                 si-vk        in   t7-s3 start=1/1(~4203) there1=9/8(~5530) there2=i5(~6764) there3=i4(~7892) back1=i5(~6764) back2=9/8(~5530) back3=1/1(~4203) | fg p:1 >:1 >:1 >:1 <:1 <:1 <:1
+si-vk-out-cand-s2              SKIPPED (skipped by decision: time budget)
+si-vk-out-cand-s3              si-vk        out  cand-s3 start=1/1(~4203) there1=3/4(~2496) there2=i9(~1770) there3=1/2(~1093) back1=i9(~1770) back2=3/4(~2496) back3=1/1(~4203) | fg p:1 <:1 <:1 <:1 >:1 >:1 >:1
+si-vk-out-t7-s2                SKIPPED (skipped by decision: time budget)
+si-vk-out-t7-s3                si-vk        out  t7-s3 start=1/1(~4203) there1=3/4(~2496) there2=i9(~1770) there3=1/2(~25065) back1=i9(~1770) back2=3/4(~2496) back3=1/1(~4203) | fg p:1 <:1 <:1 <:1 >:1 >:1 >:1

@@ -1,0 +1,135 @@
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index e4d639009dd15bbd723461c1524c4a8085feecec..d9bb42fc1c3ec560713c66cd4a8b8d6fc831777b 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -475,6 +475,65 @@ static inline void stlab_derive_product(const int *lc, const int *tc, uint8 *dp)
+ }
+ 
+ 
++/// the XR32 node of source image @p n for a climate composition, or NULL (its 16-bit words are used then). A v1 node's runs
++/// only say that a pixel equals a key of image_t::rgbtab (makeobj infers them from the RGB); a v2 node's are declared.
++static const stlab_xr32_image_t *stlab_derive_source_node(image_id n)
++{
++	const stlab_xr32_slot_t *s = stlab_slot( n, false );
++	return (s != NULL  &&  s->img != NULL  &&  s->img->rgba != NULL  &&  (s->img->run_count == 0  ||  s->img->version < 2)  &&  !stlab_derived.count( n )) ? s->img : NULL;
++}
++
++
++/// may image @p n be a colour source (light map or climate texture) of a derived climate tile? A source is only ever read
++/// as a colour: create_textured_tile() writes plain RGB555, so a tile has no special colours whatever its sources hold. A
++/// colour that happens to be exactly a key of image_t::rgbtab makes an opaque special colour of its 16-bit word
++/// (0x8000 + key), while its XR32 plane keeps the colour. That must not cost the tile its 32-bit picture. What still does:
++/// semi-transparent pixels (their runs have another layout and their meaning as a source is undefined), semantics declared
++/// in a v2 node, and the words of a generated node (SIMUTRANS_XR32_NIGHTGEN), which are all that node is made of.
++static bool stlab_derive_source_usable(image_id n)
++{
++	const imd32 &d = images[n];
++	if(  d.base_data == NULL  ||  (d.recode_flags & FLAG_HAS_TRANSPARENT_COLOR)  ) {
++		return false;
++	}
++	const stlab_xr32_slot_t *s = stlab_slot( n, false );
++	if(  s != NULL  &&  s->img != NULL  &&  s->img->version >= 2  &&  s->img->run_count != 0  ) {
++		return false;
++	}
++	const STORED_PIXVAL first_refused = (s != NULL  &&  s->generated) ? 0x8000 : 0x8000 + SPECIAL;
++	const STORED_PIXVAL *sp = d.base_data;
++	for(  sint16 y = 0;  y < d.base_h;  y++  ) {
++		uint16 runlen = *sp++;
++		do {
++			runlen = *sp++;
++			if(  runlen & TRANSPARENT_RUN  ) {
++				return false;
++			}
++			for(  uint16 k = 0;  k < runlen;  k++  ) {
++				if(  sp[k] >= first_refused  ) {
++					return false;
++				}
++			}
++			sp += runlen;
++		} while(  (runlen = *sp++)  );
++	}
++	return true;
++}
++
++
++/// one word of a source without XR32 colour: an opaque special colour is the key's own RGB, what the sheet painted
++static inline void stlab_derive_source_rgb(STORED_PIXVAL v, int *c)
++{
++	if(  v >= 0x8000  ) {
++		const uint32 rgb = image_t::rgbtab[v - 0x8000];
++		c[0] = (rgb >> 16) & 0xFF;  c[1] = (rgb >> 8) & 0xFF;  c[2] = rgb & 0xFF;
++	}
++	else {
++		stlab_derive_rgb555( v, c );
++	}
++}
++
++
+ /// is image @p n a full rectangle at x 0: every row one clear run of 0 and one run of the full width?
+ /// (what create_textured_tile assumes when it reads the texture as rows of width + 3 words)
+ static bool stlab_derive_full_rect(image_id n)
+@@ -499,11 +558,9 @@ bool stlab_xr32_derive_climate_tile(image_id tile, image_id light, image_id tex)
+ 	if(  !stlab_xr32_enabled()  ||  tile >= anz_images  ||  light >= anz_images  ||  tex >= anz_images  ) {
+ 		return false;
+ 	}
+-	const stlab_xr32_slot_t *ts = stlab_slot( tex, false );
+-	const stlab_xr32_slot_t *ls = stlab_slot( light, false );
+-	const bool tex_xr = ts != NULL  &&  ts->img != NULL  &&  ts->img->rgba != NULL  &&  ts->img->run_count == 0  &&  !stlab_derived.count( tex );
+-	const bool light_xr = ls != NULL  &&  ls->img != NULL  &&  ls->img->rgba != NULL  &&  ls->img->run_count == 0  &&  !stlab_derived.count( light );
+-	if(  !tex_xr  &&  !light_xr  ) {
++	const stlab_xr32_image_t *tn = stlab_derive_source_node( tex );
++	const stlab_xr32_image_t *ln = stlab_derive_source_node( light );
++	if(  tn == NULL  &&  ln == NULL  ) {
+ 		return false;   // neither source has XR32 colour of its own: the tile stays the 16-bit one
+ 	}
+ 	const imd32 &t = images[tile], &l = images[light];
+@@ -511,14 +568,14 @@ bool stlab_xr32_derive_climate_tile(image_id tile, image_id light, image_id tex)
+ 	if(  t.base_w <= 0  ||  t.base_h <= 0  ||  t.base_w != l.base_w  ||  t.base_h != l.base_h  ||  t.base_x != l.base_x  ||  t.base_y != l.base_y
+ 	     ||  !stlab_derive_full_rect( tex )  ||  t.base_w > images[tex].base_w
+ 	     ||  t.base_y < images[tex].base_y  ||  t.base_y + t.base_h > images[tex].base_y + images[tex].base_h
+-	     ||  !stlab_derive_plain( tile )  ||  !stlab_derive_plain( light )  ||  !stlab_derive_plain( tex )  ) {
++	     ||  !stlab_derive_plain( tile )  ||  !stlab_derive_source_usable( light )  ||  !stlab_derive_source_usable( tex )  ) {
+ 		return false;
+ 	}
+ 	stlab_xr32_image_t *shell = new stlab_xr32_image_t();
+ 	shell->width = (uint16)t.base_w;  shell->height = (uint16)t.base_h;
+ 	shell->x = t.base_x;  shell->y = t.base_y;
+ 	shell->zoomable = (t.recode_flags & FLAG_ZOOMABLE) ? 1 : 0;
+-	shell->version = (tex_xr ? ts : ls)->img->version;
++	shell->version = (tn ? tn : ln)->version;
+ 	if(  !stlab_xr32_attach( tile, shell, t.base_x, t.base_y, t.base_w, t.base_h, shell->zoomable )  ) {
+ 		delete shell;
+ 		return false;
+@@ -529,14 +586,6 @@ bool stlab_xr32_derive_climate_tile(image_id tile, image_id light, image_id tex)
+ }
+ 
+ 
+-/// the XR32 node of source image @p n for a climate composition, or NULL (its 16-bit words are used then)
+-static const stlab_xr32_image_t *stlab_derive_source_node(image_id n)
+-{
+-	const stlab_xr32_slot_t *s = stlab_slot( n, false );
+-	return (s != NULL  &&  s->img != NULL  &&  s->img->rgba != NULL  &&  s->img->run_count == 0  &&  !stlab_derived.count( n )) ? s->img : NULL;
+-}
+-
+-
+ /// compose the raster (and the night plane if the texture has one) of a derived climate / snow tile
+ static bool stlab_derive_compose_climate(image_id tile, const stlab_xr32_derive_t &rc, stlab_xr32_image_t &out)
+ {
+@@ -573,7 +622,7 @@ static bool stlab_derive_compose_climate(image_id tile, const stlab_xr32_derive_
+ 					lc[0] = lx[0];  lc[1] = lx[1];  lc[2] = lx[2];
+ 				}
+ 				else {
+-					stlab_derive_rgb555( lp[k], lc );
++					stlab_derive_source_rgb( lp[k], lc );
+ 				}
+ 				// the texture pixel: likewise (A12-A)
+ 				const uint8 *tx = tn ? tn->rgba + ti * 4 : NULL;
+@@ -581,7 +630,7 @@ static bool stlab_derive_compose_climate(image_id tile, const stlab_xr32_derive_
+ 					tc[0] = tx[0];  tc[1] = tx[1];  tc[2] = tx[2];
+ 				}
+ 				else {
+-					stlab_derive_rgb555( rp[(size_t)row * (rw + 3) + 2 + x], tc );
++					stlab_derive_source_rgb( rp[(size_t)row * (rw + 3) + 2 + x], tc );
+ 				}
+ 				uint8 *dp = day + ((size_t)j * w + x) * 4;
+ 				stlab_derive_product( lc, tc, dp );

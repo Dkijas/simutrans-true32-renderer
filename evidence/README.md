@@ -75,3 +75,8 @@ downloaded from their official locations; the exact files are identified in
   testing-5's public tree by two routes), the independent Linux rebuild (identical bytes), the derivation of the
   testing-6 packages from testing-5's published archives, the minimal smoke tests and the final Defender scan. Raw
   per-frame outputs and captures are not included.
+- `xr32-testing-7/` (XR32-TESTING7-RELEASE-GATE-01 and XR32-TESTING7-PUBLICATION-01, testing-7) - `release-gate/`: build
+  identity, the oracle per fixture and its controls, night planes and players, engine mutants, screen updates, keyboard,
+  memory, Linux build and smoke, Defender; `publication/`: the source gate (two routes and a control), the derivation of
+  the testing-7 packages from testing-6's published archives, the release assets, the screen-update repeat, the minimal
+  smoke tests and the final Defender scan. Raw per-frame outputs and captures are not included.

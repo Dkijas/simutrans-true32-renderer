@@ -1,0 +1,19 @@
+candidate 3f1b511be97e9fb122780c3da42c7fd07f29e2fc tree 562448a2cdf090543f7890e8a0fc2300ced85e86 (want 3f1b511be97e9fb122780c3da42c7fd07f29e2fc / 562448a2cdf090543f7890e8a0fc2300ced85e86)
+parent chain: 3f1b511 XR32 (A12-D): a climate texture with exact special colours keeps its tiles' 32-bit picture too|defca45 XR32 (A12-C): a light map with exact special-colour greys keeps its tile's 32-bit picture|
+base f04638a tree b0efabef4936001011440a02c4dbcd9cd9052650 (public 08c62288:source/xr32-r12377 = b0efabef4936001011440a02c4dbcd9cd9052650)
+files changed against testing-6: src/simutrans/display/stlab_xr32_hook.cci 
+numstat: 66	17	src/simutrans/display/stlab_xr32_hook.cci
+files changed against r12377 (7cc6d45): 51; against testing-6's own list: 0 lines differ
+XR32 format and makeobj sources touched by the candidate (stlab_xr32.cc/.h, descriptor/writer/*, makeobj/*, simgraph16*): 0
+16-bit renderer: the changed file is compiled only when SIMUTRANS_TRUE32 is on? simgraph32.cc:4209:#include "stlab_xr 
+regenerated XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-7-candidate.diff: 4186730011ab42d163d3eb0ca5b2fee7650977cb5ef492c6b0142ffb21de745a == certified
+regenerated T7-ON-TESTING-6.diff: c6377153f849a14352a972da3a5826662fca26fabb2ecada4e97b7c6755f3d54 == certified
+regenerated 01-A12-C-LIGHT-KEYS.diff: 6c050f053f6f154ec68d5fff22f7c2ce93d8c9e2dee72117e08a954e1a36eb44 == certified
+regenerated 02-A12-D-TEXTURE-KEYS.diff: 13cb6279b7f74f45841ad594574c231753dedef124c67bfa578e8066b7127bbd == certified
+certified patch on 7cc6d45 -> tree 562448a2cdf090543f7890e8a0fc2300ced85e86 (want 562448a2...)
+certified patch on f04638a -> tree 562448a2cdf090543f7890e8a0fc2300ced85e86 (want 562448a2...)
+01 + 02 on f04638a -> tree 562448a2cdf090543f7890e8a0fc2300ced85e86
+CONTROL: 02 alone on testing-6 refuses
+private paths, user names, e-mails, tokens in the full diff: 3
+  (lines:) +			const std::string token = f.substr(prefix.size(), f.size() - prefix.size() - 4);|+				known = STRICMP(token.c_str(), stlab_sem_vocab[i].name) == 0;|+	const char *name;      ///< the file-name token, lower case, stable|
+SOURCE_VERIFY_DONE

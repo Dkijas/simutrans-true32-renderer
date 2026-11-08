@@ -1,0 +1,33 @@
+signature update: before 1.463.187.0, after 1.463.189.0; MpCmdRun: UpdateLogging: UpdateSessionGuid: 1EA33EBF-F63B-4392-B774-74487C8EED16 Signature update started . . . Service Version: 4.18.26100.4 Engine Version: 1.1.26100.4 AntiSpyware Signature Version: 1.463.187.0 AntiVirus Signature Version: 1.463.187.0 Signature update finished.
+Defender: product 4.18.26100.4, engine 1.1.26100.4, signatures 1.463.189.0 (updated 11/08/2026 04:40:21), real-time True, scan 2026-11-08T11:16:23, MpCmdRun C:\ProgramData\Microsoft\Windows Defender\Platform\CurrentVersion\MpCmdRun.exe
+== testing-7 release assets (archives are scanned inside)
+makeobj-xr32-night-prototype-r12377-testing-7-linux-x86_64.tar.gz                5D45371CC06CF408 -> found no threats.
+makeobj-xr32-night-prototype-r12377-testing-7-windows-x86_64.zip                 85A337386F236938 -> found no threats.
+NIGHT-PROTOTYPE-MANIFEST.md                                                      B274DCC18F646A18 -> found no threats.
+SHA256SUMS.txt                                                                   DDAF83F0BB900186 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-linux-x86_64-sdl2.tar.gz         229D2683A4EC1994 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-linux-x86_64-sdl3.tar.gz         C7CEAFE6F5721DCD -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl2.zip                   B269C4AB7088646E -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl3.zip                   1B2F6660EEF10098 -> found no threats.
+XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-7.diff                                  4186730011AB42D1 -> found no threats.
+xr32-night-prototype-r12377-testing-2-testkit.zip                                200902E829F350F0 -> found no threats.
+xr32-night-prototype-r12377-testing-7-source.tar.gz                              AADE11B670494415 -> found no threats.
+== the ten testing-7 executables taken out of the archives (work\dx)
+dx/linux-x86_64-sdl2/simutrans-16bit                                             3E7CD80E112CF9D5 -> found no threats.
+dx/linux-x86_64-sdl2/simutrans-rgba32                                            530BB4603D57A85E -> found no threats.
+dx/linux-x86_64-sdl3/simutrans-16bit                                             9822AEE1D322A616 -> found no threats.
+dx/linux-x86_64-sdl3/simutrans-rgba32                                            08E1322E9806590D -> found no threats.
+dx/makeobj-linux-x86_64/makeobj                                                  482E041F6A35FC99 -> found no threats.
+dx/makeobj-windows-x86_64/makeobj.exe                                            8A1503816821F923 -> found no threats.
+dx/win64-sdl2/simutrans-16bit.exe                                                20CBF7DA7E183F52 -> found no threats.
+dx/win64-sdl2/simutrans-rgba32.exe                                               F29015450BD451C2 -> found no threats.
+dx/win64-sdl3/simutrans-16bit.exe                                                8FEAAF49317CF1D7 -> found no threats.
+dx/win64-sdl3/simutrans-rgba32.exe                                               FCE1AB249D0F8062 -> found no threats.
+== testing-7 Windows executables unpacked by the smoke test (also seen by real-time protection)
+mk/makeobj-xr32-night-prototype-r12377-testing-7-windows-x86_64/makeobj.exe      8A1503816821F923 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl2/simutrans-16bit.exe   20CBF7DA7E183F52 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl2/simutrans-rgba32.exe  F29015450BD451C2 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl3/simutrans-16bit.exe   8FEAAF49317CF1D7 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl3/simutrans-rgba32.exe  FCE1AB249D0F8062 -> found no threats.
+active threats now: 0; detections today: 0
+files not clean: 0

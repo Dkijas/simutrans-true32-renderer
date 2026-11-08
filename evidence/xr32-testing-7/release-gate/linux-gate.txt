@@ -1,0 +1,39 @@
+start 2026-11-08T08:11:58+01:00 | gcc (Debian 14.2.0-19) 14.2.0 | glibc 2.41 | Debian 13.5 | cmake version 3.31.6 | WSL 6.18.33.2-microsoft-standard-WSL2 | DISPLAY=:0 WAYLAND_DISPLAY=wayland-0
+t6.tar 8d45ae0b447ca8dc (want 8d45ae0b447ca8dc), t7.tar ec3e2abdad3d3f18
+t6-sdl3-32 sha256 7a094d8b5fb3fe3743e8ac125da3a63541dc9874315e9bd1035275bd9527ae2b warnings 18
+  (want 7a094d8b: the recipe)
+t7-sdl3-32 sha256 08e1322e9806590dbc3b001135bd3c2f4ed56f62e98ed2bdff970792710fc2f0 warnings 18
+t7-sdl2-32 sha256 530bb4603d57a85e472f885d6208c51e2ff676e33ae1f8142507b70677c1f02c warnings 18
+t7-sdl3-16 sha256 9822aee1d322a61606d80e5e6f61bd365365e9273f21012400d33f5f68bbd638 warnings 18
+t7-sdl2-16 sha256 3e7cd80e112cf9d52107c2b9f5e8729a1f9bc9897aef69c52eb711ae7d3100e3 warnings 18
+t7-makeobj sha256 482e041f6a35fc99a2201f3ea5c4a944d749e15325f43ddca391ad298c156e47 (testing-6 482e041f)
+== packages
+simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl2: re-pack == published (recipe confirmed)
+  16-bit: this lane's build == testing-6's packaged file
+  notice Experimental / Not certified present
+  tree against testing-6: Files A/README-TESTERS.txt and B/README-TESTERS.txt differ;Files A/SHA256SUMS.txt and B/SHA256SUMS.txt differ;Only in A/patches: XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6.diff;Only in A: simutrans-16bit;Only in A: simutrans-rgba32;Only in B/patches: XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-7-candidate.diff;Only in B: simutrans-16bit-candidate;Only in B: simutrans-rgba32-candidate;
+  simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl2.tar.gz 9064460 bytes sha256 a57f1237099ba6bb8cb1d021d9ff7cd40cb4fa961be3df27df4fd133e57c9795; exec bits 2 of 2
+simutrans-xr32-night-prototype-r12377-testing-6-linux-x86_64-sdl3: re-pack == published (recipe confirmed)
+  16-bit: this lane's build == testing-6's packaged file
+  notice Experimental / Not certified present
+  tree against testing-6: Files A/README-TESTERS.txt and B/README-TESTERS.txt differ;Files A/SHA256SUMS.txt and B/SHA256SUMS.txt differ;Only in A/patches: XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6.diff;Only in A: simutrans-16bit;Only in A: simutrans-rgba32;Only in B/patches: XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-7-candidate.diff;Only in B: simutrans-16bit-candidate;Only in B: simutrans-rgba32-candidate;
+  simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl3.tar.gz 12476098 bytes sha256 e0ad1a1ef2d1ae8bcadcffff1f367996495e43cb61cb94c325a993cee90cc1f9; exec bits 2 of 2
+makeobj-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64: makeobj == this lane's build (482e041f6a35fc99)
+  makeobj-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64.tar.gz sha256 a9be27c93a91165abfe1766e059ebbd5e63e343f0859deb7987e823322e3a675
+== smoke (WSL 2 + WSLg: NOT a native Linux desktop)
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl2: SHA256SUMS.txt holds
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl2 simutrans-rgba32-candidate: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38
+  dummy, mutant + coastworld to 1930.6, clean exit: exit 0, FATAL/Error 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl2 simutrans-16bit-candidate: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38
+  dummy, mutant + coastworld to 1930.6, clean exit: exit 0, FATAL/Error 0, skipped XR32 nodes 192 -> PASS
+  dummy, keyed lab pak LT (the fix's path) + terrainA12scene to 1930.7: exit 0, FATAL/Error 0, other ERROR lines 0 -> PASS
+  WSLg X11 window, mutant + coastworld to 1930.6: exit 0, FATAL/Error 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl3: SHA256SUMS.txt holds
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl3 simutrans-rgba32-candidate: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38
+  dummy, mutant + coastworld to 1930.6, clean exit: exit 0, FATAL/Error 0, skipped XR32 nodes 0 -> PASS
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl3 simutrans-16bit-candidate: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38
+  dummy, mutant + coastworld to 1930.6, clean exit: exit 0, FATAL/Error 0, skipped XR32 nodes 192 -> PASS
+  dummy, keyed lab pak LT (the fix's path) + terrainA12scene to 1930.7: exit 0, FATAL/Error 0, other ERROR lines 0 -> PASS
+  WSLg X11 window, mutant + coastworld to 1930.6: exit 0, FATAL/Error 0 -> PASS
+makeobj: ELF 64-bit LSB pie executable, x86-64 | ldd not found 0 | Makeobj version 60.12 for Simutrans 125.0.2 Nightly and higher
+LINUX_GATE rc=0

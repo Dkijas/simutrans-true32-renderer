@@ -1,0 +1,44 @@
+== engine mutant mut-rgb555-s3 on pak LX (candidate spec)
+oracle-t7 run M-mut-rgb555-s3-LX tag z7 pak pak128.german-25c-LX expect t7: tiles 520, tile px 2171424, tiles with a key in a source 304
+ (spec, drawn) counts: D->D 216, D->L 3, D->X 301
+ UNEXPECTED_FALLBACK: 3 ['c=4 s=48 ', 'c=4 s=51 ', 'c=4 s=64 ']
+ UNEXPECTED_DERIVE: 0 []
+ COLOUR_ERROR: 301 ['c=0 s=1  D-bad=134 L-bad=4094', 'c=0 s=3  D-bad=82 L-bad=2046', 'c=0 s=9  D-bad=642 L-bad=4046', 'c=0 s=10  D-bad=476 L-bad=4046', 'c=0 s=13  D-bad=67 L-bad=2047', 'c=0 s=14  D-bad=50 L-bad
+ BACKGROUND: 0 []
+ FAIL
+   candidate on the same pak:  PASS
+== engine mutant mut-rgb555-s3 on pak TKX (candidate spec)
+oracle-t7 run M-mut-rgb555-s3-TKX tag z7 pak pak128.german-25c-TKX expect t7: tiles 520, tile px 2171424, tiles with a key in a source 390
+ (spec, drawn) counts: D->B 7, D->D 327, D->L 1, D->X 185
+ UNEXPECTED_FALLBACK: 1 ['c=3 s=0 ']
+ UNEXPECTED_DERIVE: 0 []
+ COLOUR_ERROR: 185 ['c=0 s=54  D-bad=3 L-bad=8131', 'c=0 s=55  D-bad=4 L-bad=8109', 'c=0 s=56  D-bad=5 L-bad=8192', 'c=0 s=57  D-bad=3 L-bad=6100', 'c=0 s=58  D-bad=4 L-bad=6105', 'c=0 s=59  D-bad=5 L-bad=6128'
+ BACKGROUND: 0 []
+ FAIL
+   candidate on the same pak:  PASS
+== engine mutant mut-planeoff-s3 on pak NK (candidate spec)
+oracle-t7 run M-mut-planeoff-s3-NK tag z7 pak pak128.german-25c-NK expect t7: tiles 520, tile px 2171424, tiles with a key in a source 304
+ (spec, drawn) counts: D->D 240, D->X 280
+ UNEXPECTED_FALLBACK: 0 []
+ UNEXPECTED_DERIVE: 0 []
+ COLOUR_ERROR: 280 ['c=0 s=1  D-bad=134 L-bad=4094', 'c=0 s=3  D-bad=82 L-bad=2046', 'c=0 s=9  D-bad=642 L-bad=4094', 'c=0 s=10  D-bad=476 L-bad=4096', 'c=0 s=13  D-bad=67 L-bad=2047', 'c=0 s=14  D-bad=50 L-bad
+ BACKGROUND: 0 []
+ FAIL
+   candidate on the same pak:  PASS
+== engine mutant mut-recolour-s3 on pak LA (candidate spec)
+oracle-t7 run M-mut-recolour-s3-LA tag z7 pak pak128.german-25c-LA expect t7: tiles 520, tile px 2171424, tiles with a key in a source 520
+ (spec, drawn) counts: D->D 240, D->X 280
+ UNEXPECTED_FALLBACK: 0 []
+ UNEXPECTED_DERIVE: 0 []
+ COLOUR_ERROR: 280 ['c=0 s=1  D-bad=1 L-bad=4094', 'c=0 s=2  D-bad=1 L-bad=4176', 'c=0 s=3  D-bad=1 L-bad=2046', 'c=0 s=4  D-bad=1 L-bad=2048', 'c=0 s=5  D-bad=1 L-bad=2112', 'c=0 s=6  D-bad=1 L-bad=22']
+ BACKGROUND: 0 []
+ FAIL
+   candidate on the same pak:  PASS
+== oracle self-controls on a candidate dump (dump corrupted in memory)
+ PASS
+ CTRL recolour of key pixels         on c=3 s=64 (base class D): class X off 0 -> DETECTED
+ CTRL one channel +1 on one pixel    on c=3 s=64 (base class D): class X off 0 -> DETECTED
+ CTRL tile shifted 1 px              on c=3 s=64 (base class D): class X off 127 -> DETECTED
+ CTRL a hole in the tile (alpha)     on c=3 s=64 (base class D): class X off 0 -> DETECTED
+ CTRL 5-bit tile                     on c=3 s=64 (base class D): class X off 0 -> DETECTED
+MUTANTS_DONE

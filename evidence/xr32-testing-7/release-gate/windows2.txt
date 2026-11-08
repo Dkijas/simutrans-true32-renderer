@@ -1,0 +1,21 @@
+vis-W2-town-cand-s3 rc=0 exe ed58e66d9674682c dumps 8 errors "errors": []
+vis-W2-corners-cand-s3 rc=0 exe ed58e66d9674682c dumps 8 errors "errors": []
+vis-W2-town-t7-s3 rc=0 exe fce1ab249d0f8062 dumps 8 errors "errors": []
+vis-W2-corners-t7-s3 rc=0 exe fce1ab249d0f8062 dumps 8 errors "errors": []
+vis-W2-town-cand-s2 rc=0 exe b002d5a9637d6772 dumps 8 errors "errors": []
+vis-W2-corners-cand-s2 rc=0 exe b002d5a9637d6772 dumps 8 errors "errors": []
+vis-W2-town-t7-s2 rc=0 exe f29015450bd451c2 dumps 8 errors "errors": []
+vis-W2-corners-t7-s2 rc=0 exe f29015450bd451c2 dumps 8 errors "errors": []
+town     s3 cand  steps 8: display against framebuffer, px off 0 (capture quirk 7); steps that moved the view 6 of 7
+town     s3 t7    steps 8: display against framebuffer, px off 0 (capture quirk 7); steps that moved the view 6 of 7
+   testing-6 against candidate: n4:0 n4s6:0 s0:0 s1:0 s2:0 s3:0 s4:0 s5:0
+town     s2 cand  steps 8: display against framebuffer, px off 0 (capture quirk 7); steps that moved the view 6 of 7
+town     s2 t7    steps 8: display against framebuffer, px off 0 (capture quirk 7); steps that moved the view 6 of 7
+   testing-6 against candidate: n4:0 n4s6:0 s0:0 s1:0 s2:0 s3:0 s4:0 s5:0
+corners  s3 cand  steps 8: display against framebuffer, px off 0 (capture quirk 0); steps that moved the view 7 of 7
+corners  s3 t7    steps 8: display against framebuffer, px off 0 (capture quirk 0); steps that moved the view 7 of 7
+   testing-6 against candidate: n4:1971744 n4s6:1972094 s0:1975742 s1:1974485 s2:1970144 s3:1972288 s4:1975850 s5:1975742
+corners  s2 cand  steps 8: display against framebuffer, px off 0 (capture quirk 0); steps that moved the view 7 of 7
+corners  s2 t7    steps 8: display against framebuffer, px off 0 (capture quirk 0); steps that moved the view 7 of 7
+   testing-6 against candidate: n4:1971744 n4s6:1972094 s0:1975742 s1:1974485 s2:1970144 s3:1972288 s4:1975850 s5:1975742
+WINDOWS2_DONE

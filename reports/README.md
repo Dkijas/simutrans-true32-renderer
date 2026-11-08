@@ -124,3 +124,10 @@ for review. They can be provided on request.
   Verdict B, certified with limitations. The Linux builds of testing-6 are experimental and not certified.
 - **xr32-a12/** - the A12 work: the root cause (the terrain tiles were composed from 16-bit copies), the architecture
   options and the implementation.
+
+## XR32 DAY+NIGHT, r12377 testing-7
+
+- **xr32-testing-7/** - testing-7, the special colour fallback fix: `release-gate/` is the Windows x64 SDL2 + SDL3
+  release gate (special-colour regression with its controls and mutants, test matrix, performance, memory, the SDL3
+  keyboard question, Linux status), verdict B, certified with limitations; `special-colour-fallback/` is the root cause,
+  the implementation and the independent oracle. The Linux builds of testing-7 are experimental and not certified.

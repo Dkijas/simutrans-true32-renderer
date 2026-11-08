@@ -1,0 +1,14 @@
+s3 (1) night plane, TKN vs TKN1 at level 4: tiles 520, other pixel set 0, largest channel difference 2; CONTROL two climates differ 4843 px
+s3 (2) darkening learned from NK1 (conflicts 0) applied to LT: px 2171424, values off 0, unknown 1146 -> FITS; CONTROL map +1: off 6513126
+s3 (3) player 3 vs player 0, TKN: differing tiles 0 of 520
+s3 (3) player 3 vs player 0, TKN1: differing tiles 0 of 520
+s3 (3) player 3 vs player 0, LT: differing tiles 0 of 520
+s3 (3) player 3 vs player 0, NK1: differing tiles 0 of 520
+s3 (4) day picture, TKN (with night plane) vs TK: differing tiles 0 of 520
+s2 (1) night plane, TKN vs TKN1 at level 4: tiles 520, other pixel set 0, largest channel difference 2; CONTROL two climates differ 4843 px
+s2 (2) darkening learned from NK1 (conflicts 0) applied to LT: px 2171424, values off 0, unknown 1146 -> FITS; CONTROL map +1: off 6513126
+s2 (3) player 3 vs player 0, TKN: differing tiles 0 of 520
+s2 (3) player 3 vs player 0, TKN1: differing tiles 0 of 520
+s2 (3) player 3 vs player 0, LT: differing tiles 0 of 520
+s2 (3) player 3 vs player 0, NK1: differing tiles 0 of 520
+s2 (4) day picture, TKN (with night plane) vs TK: differing tiles 0 of 520

@@ -1,0 +1,31 @@
+before: product 4.18.26100.4, engine 1.1.26100.4, signatures 1.463.181.0 (updated 11/07/2026 16:22:37), real-time True
+Update-MpSignature: done
+MpCmdRun -SignatureUpdate: UpdateLogging: UpdateSessionGuid: 57855F19-98FD-461F-A501-26630D08D2C2 | Signature update started . . . | Service Version: 4.18.26100.4 | Engine Version: 1.1.26100.4 | AntiSpyware Signature Version: 1.463.187.0 | AntiVirus Signature Version: 1.463.187.0 | Signature update finished. No updates needed
+after:  product 4.18.26100.4, engine 1.1.26100.4, signatures 1.463.187.0 (updated 11/08/2026 01:15:16), real-time True
+== candidate assets (archives scanned inside)
+makeobj-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64.tar.gz            A9BE27C93A91165A -> found no threats.
+makeobj-xr32-night-prototype-r12377-testing-7-candidate-windows-x86_64.zip             95FE577C6E6DA754 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl2.tar.gz     A57F1237099BA6BB -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-linux-x86_64-sdl3.tar.gz     E0AD1A1EF2D1AE8B -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-win64-sdl2.zip               4B56869505B79619 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-7-candidate-win64-sdl3.zip               737419F3C7575EE5 -> found no threats.
+== Windows executables unpacked from the zips
+makeobj-xr32-night-prototype-r12377-testing-7-candidate-windows-x86_64/makeobj-xr32-night-prototype-r12377-testing-7-candidate-windows-x86_64/makeobj.exe 8A1503816821F923 -> found no threats.
+== the built executables in the run folder
+work/run/win/t7-s3.exe                                                                 FCE1AB249D0F8062 -> found no threats.
+work/run/win/t7-s2.exe                                                                 F29015450BD451C2 -> found no threats.
+work/run/win/t7-s3-16.exe                                                              8FEAAF49317CF1D7 -> found no threats.
+work/run/win/t7-s2-16.exe                                                              20CBF7DA7E183F52 -> found no threats.
+work/run/win/t7-makeobj.exe                                                            8A1503816821F923 -> found no threats.
+active threats now: 0; detections today: 0
+files not clean: 0
+== Windows game executables unpacked from the zips into a short folder (the two attempts above failed on MAX_PATH: void, not a detection)
+win64-sdl3/simutrans-rgba32-candidate.exe          FCE1AB249D0F8062 (certified hash) -> found no threats.
+win64-sdl3/simutrans-16bit-candidate.exe           8FEAAF49317CF1D7 (certified hash) -> found no threats.
+win64-sdl2/simutrans-rgba32-candidate.exe          F29015450BD451C2 (certified hash) -> found no threats.
+win64-sdl2/simutrans-16bit-candidate.exe           20CBF7DA7E183F52 (certified hash) -> found no threats.
+active threats now: 0; detections today: 0; files not clean in this part: 0
+== added to deliver\candidate after the scans above: source archive and test kit
+xr32-night-prototype-r12377-testing-7-candidate-source.tar.gz          5122E566709DEF21 -> found no threats.
+xr32-night-prototype-r12377-testing-2-testkit.zip                      200902E829F350F0 -> found no threats.
+signatures 1.463.187.0; active threats 0; detections today 0

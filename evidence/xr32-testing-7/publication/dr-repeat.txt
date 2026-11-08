@@ -1,0 +1,36 @@
+start 2026-11-08T10:58:13+01:00
+wait for idle: user idle 622 s at 2026-11-08T10:59:43, foreground Code
+  DR  r1 s3-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3 16.68s
+  DR  r1 s3-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01 16.50s
+  DR  r1 s2-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb 19.43s
+  DR  r1 s2-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29 19.49s
+  DR  r2 s3-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01 15.84s
+  DR  r2 s2-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb 18.80s
+  DR  r2 s2-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29 19.01s
+  DR  r2 s3-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3 15.95s
+  DR  r3 s2-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb 19.12s
+  DR  r3 s2-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29 18.74s
+  DR  r3 s3-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3 16.07s
+  DR  r3 s3-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01 15.83s
+  DR  r4 s2-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29 18.83s
+  DR  r4 s3-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3 16.06s
+  DR  r4 s3-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01 15.89s
+  DR  r4 s2-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb 18.82s
+  DR  r5 s3-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe f6eeeaec3a146ca3 15.71s
+  DR  r5 s3-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe e027fca2366a4a01 16.30s
+  DR  r5 s2-t6      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe 7d6d3f8c6f5eb6bb 19.17s
+  DR  r5 s2-t7      rc=0 frames  600 verified  60 with mismatch   0 (max 0 px) exe fd65a64e216aaf29 19.26s
+  DR s2-t6      runs 5 verified 300 with mismatch 0
+  DR s2-t7      runs 5 verified 300 with mismatch 0
+  DR s3-t6      runs 5 verified 300 with mismatch 0
+  DR s3-t7      runs 5 verified 300 with mismatch 0
+PHASE DR: runs 20, verified frames 1200, frames with a mismatch 0, runs with an error 0
+  DRC r1 s3-t7-mut  rc=0 frames  600 verified  60 with mismatch  58 (max 117935 px) exe e027fca2366a4a01 16.02s
+  DRC r1 s2-t7-mut  rc=0 frames  600 verified  60 with mismatch  60 (max 117925 px) exe fd65a64e216aaf29 18.71s
+  DRC s2-t7-mut  runs 1 verified 60 with mismatch 60
+  DRC s3-t7-mut  runs 1 verified 60 with mismatch 58
+PHASE DRC: runs 2, verified frames 120, frames with a mismatch 118, runs with an error 0
+activity: 14 readings, lowest idle 622 s, foreground ['Code']
+CONTROL (droprect on the same scenario) caught in every run: True
+VERDICT: NO REGRESSION REPRODUCED (0 mismatching frames in 1200 verified, testing-6 and testing-7 twins, SDL2 and SDL3, idle machine, control caught)
+end 2026-11-08T11:06:44+01:00

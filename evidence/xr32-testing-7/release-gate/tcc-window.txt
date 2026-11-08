@@ -1,0 +1,7 @@
+settings s3: testing-6 against candidate, px differing outside the status bar 0 of 2031360; picture not empty: True
+settings s2: testing-6 against candidate, px differing outside the status bar 0 of 2031360; picture not empty: True
+settings-night s3: testing-6 against candidate, px differing outside the status bar 0 of 2031360; picture not empty: True
+settings-night s2: testing-6 against candidate, px differing outside the status bar 0 of 2031360; picture not empty: True
+CONTROL s3: day against night capture differ 1671111 px; mean brightness day 102.1 night 52.2
+CONTROL s2: day against night capture differ 1671280 px; mean brightness day 102.1 night 52.2
+TCC lab files newer than this mission's script: [exited with code 0]

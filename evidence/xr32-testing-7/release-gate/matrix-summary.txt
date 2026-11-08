@@ -1,0 +1,60 @@
+A-BX-cand-s2               PASS tiles=520 px=2171424 keyed=466 | L->B 7, L->L 513 | - | trans M2 834769/979368 px, max 255
+A-BX-cand-s3               PASS tiles=520 px=2171424 keyed=466 | L->B 7, L->L 513 | - | trans M2 834769/979368 px, max 255
+A-BX-t7-s2                 PASS tiles=520 px=2171424 keyed=466 | L->B 7, L->L 513 | - | trans M2 834769/979368 px, max 255
+A-BX-t7-s3                 PASS tiles=520 px=2171424 keyed=466 | L->B 7, L->L 513 | - | trans M2 834769/979368 px, max 255
+A-LA-cand-s2               PASS tiles=520 px=2171424 keyed=520 | L->L 520 | - | trans M2 979086/979368 px, max 255
+A-LA-cand-s3               PASS tiles=520 px=2171424 keyed=520 | L->L 520 | - | trans M2 979086/979368 px, max 255
+A-LA-t7-s2                 PASS tiles=520 px=2171424 keyed=520 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-LA-t7-s3                 PASS tiles=520 px=2171424 keyed=520 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-LA1-cand-s2              PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-LA1-cand-s3              PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-LA1-t7-s2                PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-LA1-t7-s3                PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-LT-cand-s2               PASS tiles=520 px=2171424 keyed=466 | D->D 54, L->L 466 | - | trans M2 976093/979368 px, max 255
+A-LT-cand-s3               PASS tiles=520 px=2171424 keyed=466 | D->D 54, L->L 466 | - | trans M2 976093/979368 px, max 255
+A-LT-t7-s2                 PASS tiles=520 px=2171424 keyed=466 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-LT-t7-s3                 PASS tiles=520 px=2171424 keyed=466 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-LX-cand-s2               PASS tiles=520 px=2171424 keyed=304 | D->D 216, L->L 304 | - | trans M2 756386/979368 px, max 255
+A-LX-cand-s3               PASS tiles=520 px=2171424 keyed=304 | D->D 216, L->L 304 | - | trans M2 756386/979368 px, max 255
+A-LX-t7-s2                 PASS tiles=520 px=2171424 keyed=304 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-LX-t7-s3                 PASS tiles=520 px=2171424 keyed=304 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-N0-cand-s2               PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-N0-cand-s3               PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-N0-t7-s2                 PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-N0-t7-s3                 PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NEW-cand-s2              PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NEW-cand-s3              PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NEW-t7-s2                PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NEW-t7-s3                PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NK-cand-s2               PASS tiles=520 px=2171424 keyed=304 | D->D 216, L->L 304 | - | trans M2 756635/979368 px, max 255
+A-NK-cand-s3               PASS tiles=520 px=2171424 keyed=304 | D->D 216, L->L 304 | - | trans M2 756635/979368 px, max 255
+A-NK-t7-s2                 PASS tiles=520 px=2171424 keyed=304 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NK-t7-s3                 PASS tiles=520 px=2171424 keyed=304 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NK1-cand-s2              PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NK1-cand-s3              PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NK1-t7-s2                PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-NK1-t7-s3                PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TK-cand-s2               PASS tiles=520 px=2171424 keyed=390 | D->D 130, L->L 390 | - | trans M2 967259/979368 px, max 255
+A-TK-cand-s3               PASS tiles=520 px=2171424 keyed=390 | D->D 130, L->L 390 | - | trans M2 967259/979368 px, max 255
+A-TK-t7-s2                 PASS tiles=520 px=2171424 keyed=390 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TK-t7-s3                 PASS tiles=520 px=2171424 keyed=390 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TK1-cand-s2              PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TK1-cand-s3              PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TK1-t7-s2                PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TK1-t7-s3                PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TKN-cand-s2              PASS tiles=520 px=2171424 keyed=390 | D->D 130, L->L 390 | - | trans M2 967259/979368 px, max 255
+A-TKN-cand-s3              PASS tiles=520 px=2171424 keyed=390 | D->D 130, L->L 390 | - | trans M2 967259/979368 px, max 255
+A-TKN-t7-s2                PASS tiles=520 px=2171424 keyed=390 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TKN-t7-s3                PASS tiles=520 px=2171424 keyed=390 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TKN1-cand-s2             PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TKN1-cand-s3             PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TKN1-t7-s2               PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TKN1-t7-s3               PASS tiles=520 px=2171424 keyed=0 | D->D 520 | - | trans M2 0/979368 px, max 0
+A-TKX-cand-s2              PASS tiles=520 px=2171424 keyed=390 | D->B 2, D->D 128, L->B 5, L->L 385 | - | trans M2 888569/979368 px, max 255
+A-TKX-cand-s3              PASS tiles=520 px=2171424 keyed=390 | D->B 2, D->D 128, L->B 5, L->L 385 | - | trans M2 888569/979368 px, max 255
+A-TKX-t7-s2                PASS tiles=520 px=2171424 keyed=390 | D->B 7, D->D 513 | - | trans M2 0/979368 px, max 0
+A-TKX-t7-s3                PASS tiles=520 px=2171424 keyed=390 | D->B 7, D->D 513 | - | trans M2 0/979368 px, max 0
+A-TM-cand-s2               PASS tiles=520 px=2171424 keyed=65 | D->D 455, L->L 65 | - | trans M2 481344/979368 px, max 204
+A-TM-cand-s3               PASS tiles=520 px=2171424 keyed=65 | D->D 455, L->L 65 | - | trans M2 481344/979368 px, max 204
+A-TM-t7-s2                 PASS tiles=520 px=2171424 keyed=65 | D->D 455, L->L 65 | - | trans M2 481344/979368 px, max 204
+A-TM-t7-s3                 PASS tiles=520 px=2171424 keyed=65 | D->D 455, L->L 65 | - | trans M2 481344/979368 px, max 204

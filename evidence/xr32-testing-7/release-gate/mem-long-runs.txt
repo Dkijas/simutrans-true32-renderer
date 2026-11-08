@@ -1,0 +1,8 @@
+t6-LT-zoomx-s3 rc=0 exe f6eeeaec3a146ca3 pak pak128.german-25c-LT scen zoomx
+t7-LT-zoomx-s3 rc=0 exe e027fca2366a4a01 pak pak128.german-25c-LT scen zoomx
+t6-LT-daynight-s3 rc=0 exe f6eeeaec3a146ca3 pak pak128.german-25c-LT scen daynight
+t7-LT-daynight-s3 rc=0 exe e027fca2366a4a01 pak pak128.german-25c-LT scen daynight
+t7-LT-zoomx-s2 rc=0 exe fd65a64e216aaf29 pak pak128.german-25c-LT scen zoomx
+t7-NEW-zoomx-s3 rc=0 exe e027fca2366a4a01 pak pak128.german-25c scen zoomx
+t7-LT-zoomx-s3-long rc=0 exe e027fca2366a4a01 pak pak128.german-25c-LT scen zoomx frames 180000
+t6-NEW-zoomx-s3 rc=0 exe f6eeeaec3a146ca3 pak pak128.german-25c scen zoomx frames 60000

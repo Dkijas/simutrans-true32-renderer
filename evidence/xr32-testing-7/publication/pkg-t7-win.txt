@@ -1,0 +1,17 @@
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl2: re-zip of testing-6's own tree == published zip (recipe control): True
+  simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl2.zip: 952 entries, read-back OK
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl2 vs testing-6: members 952 (testing-6 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-7.diff'] | as expected
+  vs the certified candidate zip (names mapped): differing members ['README-TESTERS.txt', 'SHA256SUMS.txt'] -> as expected
+  inside the zip: rgba32 f29015450bd451c2 16-bit 20cbf7da7e183f52 diff 4186730011ab42d1 -> True | 'candidate' in names/text: [] | zipped twice, same bytes: True
+  simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl2.zip 15771424 bytes sha256 b269c4ab7088646ec995ed49f30209f7c84c9b1e131c832bacd83ea33266e817
+simutrans-xr32-night-prototype-r12377-testing-6-win64-sdl3: re-zip of testing-6's own tree == published zip (recipe control): True
+  simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl3.zip: 952 entries, read-back OK
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl3 vs testing-6: members 952 (testing-6 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-6.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-7.diff'] | as expected
+  vs the certified candidate zip (names mapped): differing members ['README-TESTERS.txt', 'SHA256SUMS.txt'] -> as expected
+  inside the zip: rgba32 fce1ab249d0f8062 16-bit 8feaaf49317cf1d7 diff 4186730011ab42d1 -> True | 'candidate' in names/text: [] | zipped twice, same bytes: True
+  simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl3.zip 17586106 bytes sha256 1b2f6660eef10098f8abba8dfcd94465d59ef874f1d1968031df5b0e8c6221e8
+makeobj-xr32-night-prototype-r12377-testing-6-windows-x86_64: re-zip of testing-6's own tree == published zip (recipe control): True
+  makeobj-xr32-night-prototype-r12377-testing-7-windows-x86_64.zip: 4 entries, read-back OK
+makeobj-xr32-night-prototype-r12377-testing-7-windows-x86_64 vs testing-6: changed ['README-MAKEOBJ.txt'] -> as expected | makeobj inside 8a1503816821f923 (== certified: True) | 'candidate': []
+  makeobj-xr32-night-prototype-r12377-testing-7-windows-x86_64.zip 588621 bytes sha256 85a337386f2369382ebe6c7a0fba889b8aa0bc6c8201a9bb2c0b4d9ee3e00113
+PKG_T7_PUB_RESULT PASS
