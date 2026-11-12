@@ -1,4 +1,93 @@
-# Simutrans XR32 32-bit renderer — DAY+NIGHT test build on trunk r12377, testing-7
+# Simutrans XR32 32-bit renderer — DAY+NIGHT test build on trunk r12377, testing-8
+
+> **IMPORTANT: start the game with `SIMUTRANS_XR32=1`, or you will not see any 32-bit art.**
+>
+> Windows (cmd):
+>
+>     set SIMUTRANS_XR32=1
+>     simutrans-rgba32.exe
+>
+> Windows (PowerShell):
+>
+>     $env:SIMUTRANS_XR32="1"
+>     .\simutrans-rgba32.exe
+>
+> Linux:
+>
+>     SIMUTRANS_XR32=1 ./simutrans-rgba32
+>
+> Without it, paks that contain 32-bit data still load and play normally, but the game deliberately draws their old
+> 16-bit images instead.
+
+**This is an experimental test build (pre-release).** It is not an official Simutrans release, not merged into
+Simutrans Standard, not part of the official trunk and not a stable version. XR32 remains experimental. Use a separate
+folder and copies of your savegames.
+
+> **Linux builds — Experimental — not fully tested or certified on native Linux.**
+>
+> The Linux x86_64 SDL2 and SDL3 builds are compiled from exactly the same source as the Windows builds. They were only
+> checked for the basics: the files are complete and uncorrupted, and the programs start, load a pak and quit cleanly
+> under WSL 2 (not a native Linux desktop). No graphics, performance, memory or regression tests were run on Linux.
+>
+> Windows x64 SDL2 and SDL3 have been certified with limitations.
+
+> **Warning, from the official trunk r12377 itself:** founding a city whose first road runs onto a road with a
+> private-way sign crashes the game, in both programs of this build. See `docs/KNOWN-ISSUES-r12377-testing-6.md`, D.
+
+## Two switches, two programs
+
+| Switch | Program | What it does |
+| --- | --- | --- |
+| `STLAB_XR32_WRITE=1` | **makeobj** | writes 32-bit (XR32) image data into the paks it builds, next to the ordinary 16-bit images |
+| `SIMUTRANS_XR32=1` | **simutrans-rgba32** | reads and draws that 32-bit data |
+
+To check that XR32 is really on, start once with `-log -debug 2` added to the command line. If the variable is
+**not** set, the file `simu.log` in your Simutrans user folder lists
+`Warning: pakset_manager_t::read_nodes: Skipping unknown XR32-node` once for every 32-bit image. With
+`SIMUTRANS_XR32=1`, that line does not appear.
+
+## What this build is
+
+- **Simutrans trunk r12377**, the same trunk as testing-1 to testing-7.
+- **testing-7's XR32 renderer, plus three changes**, one commit each:
+  1. **A4 — coast rendering:** coast water whose slope's `LightTexture` contains an exact special colour keeps its
+     32-bit picture (in testing-7 it fell back to 16-bit);
+  2. **A12-P1 — composed terrain cache:** composed ground tiles are kept for reuse in a 16 MiB cache; a frame with a
+     light change takes 12.8 % less time in the measured scene, and nothing looks different;
+  3. **TCC-R — translucent company colours:** company colours under semi-transparent pixels (glass roofs) keep their
+     correct share at 9/8, 3/4 and 1/2.
+- **Nothing else changes:** the XR32 format, makeobj, the 16-bit renderer (byte-identical to testing-7's), the DAY +
+  optional NIGHT prototype and its pak syntax. A10, a zoom optimisation, is not included.
+- **Certification:** Windows x64 SDL2 and SDL3, certified with limitations (one machine and display; coast scenes with
+  light changes +2.6 % in median; inherited SDL2 window-event and zoom 2/1 behaviours). Linux x86_64 SDL2 and SDL3:
+  experimental, not fully tested or certified on native Linux. See the release notes and `reports/xr32-testing-8/`.
+
+## Downloads
+
+Releases of this repository contain:
+
+- Windows (SDL2 and SDL3) and Linux (SDL2 and SDL3) builds, each with `simutrans-rgba32` (32-bit, XR32) and
+  `simutrans-16bit` (the normal renderer, for comparison);
+- the full source, the full diff against official r12377 and the three changes on top of testing-7;
+- `SHA256SUMS.txt` and a manifest.
+
+makeobj is not changed by testing-8: use the makeobj of the testing-7 release.
+
+## Source
+
+- `source/xr32-r12377/` is the full source of this build: official r12377 plus XR32 (commit `3200e8e`, tree `70e54fc4`).
+- `patches/r12377-testing-8/` has the change against official r12377 and the three changes on top of testing-7
+  (`APPLY-ORDER.txt`).
+
+## Known issues, certification and reports
+
+- `RELEASE-NOTES-r12377-testing-8.md` — what is new, performance, checks, known issues, where it was tested.
+- `docs/KNOWN-ISSUES-r12377-testing-8.md` — the known issues of this build.
+- `reports/xr32-testing-8/` — the final release gate of testing-8 (identity, translucent colours in real windows, screen
+  updates, SDL2 window events, the zoom 2/1 pixels, memory, threads, performance, regressions, Windows certification).
+- `evidence/xr32-testing-8/` — selected evidence files.
+
+## Previous test build: testing-7 on trunk r12377
 
 > **IMPORTANT: start the game with `SIMUTRANS_XR32=1`, or you will not see any 32-bit art.**
 >
@@ -36,7 +125,7 @@ folder and copies of your savegames.
 > **Warning, from the official trunk r12377 itself:** founding a city whose first road runs onto a road with a
 > private-way sign crashes the game, in both programs of this build. See `docs/KNOWN-ISSUES-r12377-testing-6.md`, D.
 
-## Two switches, two programs
+### Two switches, two programs
 
 | Switch | Program | What it does |
 | --- | --- | --- |
@@ -48,7 +137,7 @@ To check that XR32 is really on, start once with `-log -debug 2` added to the co
 `Warning: pakset_manager_t::read_nodes: Skipping unknown XR32-node` once for every 32-bit image. With
 `SIMUTRANS_XR32=1`, that line does not appear.
 
-## What this build is
+### What this build is
 
 - **Simutrans trunk r12377**, the same trunk as testing-1 to testing-6.
 - **testing-6's XR32 renderer, plus one fix:** a generated climate or snow tile no longer falls back to its 16-bit
@@ -64,7 +153,7 @@ To check that XR32 is really on, start once with `-log -debug 2` added to the co
   certified. Coast water with such colours stays 16-bit (out of scope). See the release notes and
   `reports/xr32-testing-7/`.
 
-## Downloads
+### Downloads
 
 Releases of this repository contain:
 
@@ -74,13 +163,13 @@ Releases of this repository contain:
 - a test kit, the full source and the full diff against official r12377;
 - `SHA256SUMS.txt` and a manifest.
 
-## Source
+### Source
 
 - `source/xr32-r12377/` is the full source of this build: official r12377 plus XR32.
 - `patches/r12377-testing-7/` has the change against official r12377, against testing-6, and as two steps
   (`APPLY-ORDER.txt`).
 
-## Known issues, certification and reports
+### Known issues, certification and reports
 
 - `RELEASE-NOTES-r12377-testing-7.md` — what is new, cost, checks, known issues, where it was tested.
 - `docs/KNOWN-ISSUES-r12377-testing-7.md` — the known issues of this build.

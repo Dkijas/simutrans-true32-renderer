@@ -80,3 +80,7 @@ downloaded from their official locations; the exact files are identified in
   memory, Linux build and smoke, Defender; `publication/`: the source gate (two routes and a control), the derivation of
   the testing-7 packages from testing-6's published archives, the release assets, the screen-update repeat, the minimal
   smoke tests and the final Defender scan. Raw per-frame outputs and captures are not included.
+- `xr32-testing-8/` (XR32-TESTING8-FINAL-RELEASE-GATE-01 and XR32-TESTING8-PUBLISH-01, testing-8) - `release-gate/`: builds,
+  identity, suite, translucent-colour oracles, screen updates, zoom 2/1, memory, threads, performance, packages, Defender, each
+  with its control; `publication/`: the Linux builds and their recipe control, the package derivations, the release assets, the
+  manifest, the essential Linux checks and the final Defender scan. Raw per-frame outputs and captures are not included.

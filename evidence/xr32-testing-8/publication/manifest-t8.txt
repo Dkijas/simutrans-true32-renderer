@@ -1,0 +1,12 @@
+SHA256SUMS.txt: 9 entries, mismatches on re-read 0
+CONTROL: one altered hash -> mismatches 1 (must be 1)
+linux-x86_64-sdl2  simutrans-16bit        3e7cd80e112cf9d5 OK
+linux-x86_64-sdl2  simutrans-rgba32       422199ef35ebb516 OK
+linux-x86_64-sdl3  simutrans-16bit        9822aee1d322a616 OK
+linux-x86_64-sdl3  simutrans-rgba32       cb840d8c645fcee9 OK
+win64-sdl2         simutrans-16bit.exe    20cbf7da7e183f52 OK
+win64-sdl2         simutrans-rgba32.exe   6f3dbd0451094db4 OK
+win64-sdl3         simutrans-16bit.exe    8feaaf49317cf1d7 OK
+win64-sdl3         simutrans-rgba32.exe   6f32326414e6a06c OK
+NIGHT-PROTOTYPE-MANIFEST.md written
+MANIFEST_T8 OK

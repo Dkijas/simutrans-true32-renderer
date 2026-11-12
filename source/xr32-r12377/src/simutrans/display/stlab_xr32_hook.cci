@@ -12,8 +12,10 @@
  * ==========================================================================*/
 
 #include <chrono>
+#include <list>
 #include <map>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 /* --- what the semantic layer needs from the renderer ------------------------ */
@@ -365,14 +367,17 @@ static void stlab_nightgen_register(image_id id)
  * texture, then cut to the slope's light map; create_texture_from_tile + create_textured_tile(binary)). Such a tile
  * gets a node shell here and a RECIPE (sea, light map, texture); its raster is composed exactly the way the 16-bit
  * tile was - same order, same bounds, the same pixel set - from the sea's XR32 planes, whenever a cache is built from
- * it (screen cache, base-size runs, zoom cache), into memory owned by that one call. Nothing else is stored: the
- * 2,144 tiles of a 32-stage water pak would otherwise keep 80 MB of rasters (four times their 16-bit words).
+ * it (screen cache, base-size runs, zoom cache). XR32-A12-P1: only the last rasters are kept, within a bound (stlab_derive_cached):
+ * the 2,144 tiles of a 32-stage water pak would otherwise keep 80 MB of rasters (four times their 16-bit words).
  */
 struct stlab_xr32_derive_t {
 	image_id light = IMG_EMPTY, sea = IMG_EMPTY, ref = IMG_EMPTY;
 	bool climate = false;   ///< XR32-A12-TERRAIN-01: a climate / snow tile (light x texture), sea unused
+	uint32 gen = 0;         ///< XR32-A12-P1: the registration this recipe belongs to (stlab_derive_cached)
 };
 static std::map<image_id, stlab_xr32_derive_t> stlab_derived;
+static uint32 stlab_derive_gen = 0;
+static void stlab_derive_cache_forget(image_id tile);
 
 
 /// one legacy pixel as the palette shows it by day (the NIGHTGEN expansion), and its legacy level-4 night colour
@@ -412,6 +417,9 @@ static bool stlab_derive_plain(image_id n)
 }
 
 
+static bool stlab_derive_source_usable(image_id n);
+
+
 bool stlab_xr32_derive_water_tile(image_id tile, image_id light, image_id sea, image_id ref)
 {
 	if(  !stlab_xr32_enabled()  ||  tile >= anz_images  ||  light >= anz_images  ||  sea >= anz_images  ||  ref >= anz_images  ) {
@@ -424,7 +432,7 @@ bool stlab_xr32_derive_water_tile(image_id tile, image_id light, image_id sea, i
 	const imd32 &t = images[tile], &l = images[light], &r = images[ref];
 	// the tile is a copy of the light map (copy_rotate(0)), and the texture a rectangle at x 0 (create_texture_from_tile)
 	if(  t.base_w <= 0  ||  t.base_h <= 0  ||  t.base_w != l.base_w  ||  t.base_h != l.base_h  ||  t.base_x != l.base_x  ||  t.base_y != l.base_y
-	     ||  r.base_x != 0  ||  r.base_w <= 1  ||  !stlab_derive_plain( tile )  ||  !stlab_derive_plain( light )  ||  !stlab_derive_plain( sea )  ) {
+	     ||  r.base_x != 0  ||  r.base_w <= 1  ||  !stlab_derive_plain( tile )  ||  !stlab_derive_source_usable( light )  ||  !stlab_derive_plain( sea )  ) {
 		return false;
 	}
 	stlab_xr32_image_t *shell = new stlab_xr32_image_t();
@@ -438,6 +446,8 @@ bool stlab_xr32_derive_water_tile(image_id tile, image_id light, image_id sea, i
 	}
 	stlab_xr32_derive_t &rc = stlab_derived[tile];
 	rc.light = light;  rc.sea = sea;  rc.ref = ref;
+	rc.gen = ++stlab_derive_gen;
+	stlab_derive_cache_forget( tile );
 	return true;
 }
 
@@ -582,6 +592,8 @@ bool stlab_xr32_derive_climate_tile(image_id tile, image_id light, image_id tex)
 	}
 	stlab_xr32_derive_t &rc = stlab_derived[tile];
 	rc.light = light;  rc.ref = tex;  rc.climate = true;
+	rc.gen = ++stlab_derive_gen;
+	stlab_derive_cache_forget( tile );
 	return true;
 }
 
@@ -871,8 +883,146 @@ static bool stlab_derive_compose(image_id tile, const stlab_xr32_derive_t &rc, s
 }
 
 
-/// the node a cache is built from: the slot's own, or for a derived tile a raster composed into @p tmp (owned by tmp)
-static const stlab_xr32_image_t *stlab_xr32_source(image_id n, const stlab_xr32_slot_t *s, stlab_xr32_image_t &tmp)
+/* XR32-A12-P1: the composed rasters of derived tiles, kept for reuse.
+ *
+ * A derived tile's raster - an A12 climate or snow tile, an A4 coast water tile - is a function of its recipe and of the data of
+ * its sources only. The zoom, the player and the night level are applied after it (resolve, zoom build), so one raster serves the
+ * screen cache at 1/1, every zoom cache and the base-size runs. A coast tile whose sea has a night plane also reads light_level
+ * (stlab_derive_legacy_rgba; a constant 0 in simgraph32.cc today), kept in the key so that it stays right. Without this,
+ * every light change and every zoom step composed every derived tile in view again.
+ *
+ * The last rasters composed are kept, least recently used first out, within STLAB_DERIVE_CACHE_BYTES. An entry is valid only for
+ * the registration it was composed for (rc.gen: an image id freed by init_ground_textures() and registered again gets a new one,
+ * so it never meets an old raster) and for the source data it read (the pointers the phase cache checks as well). A raster is
+ * read-only once made and shared by pointer: the screen cache and the zoom cache are built under different locks, so two lanes may
+ * look up, compose or evict at the same time, and an evicted raster lives until its last user lets it go.
+ */
+struct stlab_derive_cached_t {
+	// the key: the tile, its registration, and everything the composition reads
+	image_id tile = IMG_EMPTY;
+	uint32 gen = 0;
+	int light = 0;
+	const STORED_PIXVAL *tile_data = NULL, *light_data = NULL, *ref_data = NULL, *sea_data = NULL;
+	const uint8 *light_rgba = NULL, *ref_rgba = NULL, *ref_night = NULL, *sea_rgba = NULL, *sea_night = NULL;
+	// the raster (day plane and, if the source has one, night plane)
+	std::shared_ptr<const stlab_xr32_image_t> img;
+	size_t bytes = 0;
+};
+static const size_t STLAB_DERIVE_CACHE_BYTES = 16u << 20;
+static std::list<stlab_derive_cached_t> stlab_derive_cache;   // most recently used first
+static std::unordered_map<image_id, std::list<stlab_derive_cached_t>::iterator> stlab_derive_cache_index;
+static size_t stlab_derive_cache_held = 0;
+#ifdef MULTI_THREAD
+static pthread_mutex_t stlab_derive_cache_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif
+
+
+static void stlab_derive_cache_drop(std::list<stlab_derive_cached_t>::iterator e)
+{
+	stlab_derive_cache_held -= e->bytes;
+	stlab_derive_cache_index.erase( e->tile );
+	stlab_derive_cache.erase( e );
+}
+
+
+/// a derived tile was registered (again): its old raster, if any, describes another recipe
+static void stlab_derive_cache_forget(image_id tile)
+{
+#ifdef MULTI_THREAD
+	pthread_mutex_lock( &stlab_derive_cache_mutex );
+#endif
+	std::unordered_map<image_id, std::list<stlab_derive_cached_t>::iterator>::iterator it = stlab_derive_cache_index.find( tile );
+	if(  it != stlab_derive_cache_index.end()  ) {
+		stlab_derive_cache_drop( it->second );
+	}
+#ifdef MULTI_THREAD
+	pthread_mutex_unlock( &stlab_derive_cache_mutex );
+#endif
+}
+
+
+static void stlab_derive_cache_clear()
+{
+#ifdef MULTI_THREAD
+	pthread_mutex_lock( &stlab_derive_cache_mutex );
+#endif
+	stlab_derive_cache.clear();
+	stlab_derive_cache_index.clear();
+	stlab_derive_cache_held = 0;
+#ifdef MULTI_THREAD
+	pthread_mutex_unlock( &stlab_derive_cache_mutex );
+#endif
+}
+
+
+static bool stlab_derive_cached_is(const stlab_derive_cached_t &a, const stlab_derive_cached_t &b)
+{
+	return a.tile == b.tile  &&  a.gen == b.gen  &&  a.light == b.light  &&  a.tile_data == b.tile_data  &&  a.light_data == b.light_data
+	    &&  a.ref_data == b.ref_data  &&  a.sea_data == b.sea_data  &&  a.light_rgba == b.light_rgba  &&  a.ref_rgba == b.ref_rgba
+	    &&  a.ref_night == b.ref_night  &&  a.sea_rgba == b.sea_rgba  &&  a.sea_night == b.sea_night;
+}
+
+
+/// the raster of derived tile @p tile, from the cache or composed (and kept); NULL if it cannot be composed
+static std::shared_ptr<const stlab_xr32_image_t> stlab_derive_cached(image_id tile, const stlab_xr32_derive_t &rc)
+{
+	const stlab_xr32_slot_t *ls = stlab_slot( rc.light, false ), *rs = stlab_slot( rc.ref, false );
+	const stlab_xr32_slot_t *ss = rc.climate ? NULL : stlab_slot( rc.sea, false );
+	stlab_derive_cached_t key;
+	key.tile = tile;  key.gen = rc.gen;
+	key.tile_data = images[tile].base_data;  key.light_data = images[rc.light].base_data;  key.ref_data = images[rc.ref].base_data;
+	key.sea_data = rc.climate ? NULL : images[rc.sea].base_data;
+	key.light_rgba = (ls  &&  ls->img) ? ls->img->rgba : NULL;
+	key.ref_rgba = (rs  &&  rs->img) ? rs->img->rgba : NULL;
+	key.ref_night = (rs  &&  rs->img) ? rs->img->night : NULL;
+	key.sea_rgba = (ss  &&  ss->img) ? ss->img->rgba : NULL;
+	key.sea_night = (ss  &&  ss->img) ? ss->img->night : NULL;
+	key.light = key.sea_night ? light_level : 0;   // only a sea night plane makes a coast tile depend on the light level
+#ifdef MULTI_THREAD
+	pthread_mutex_lock( &stlab_derive_cache_mutex );
+#endif
+	std::unordered_map<image_id, std::list<stlab_derive_cached_t>::iterator>::iterator it = stlab_derive_cache_index.find( tile );
+	if(  it != stlab_derive_cache_index.end()  &&  stlab_derive_cached_is( *it->second, key )  ) {
+		stlab_derive_cache.splice( stlab_derive_cache.begin(), stlab_derive_cache, it->second );
+		std::shared_ptr<const stlab_xr32_image_t> hit = it->second->img;
+#ifdef MULTI_THREAD
+		pthread_mutex_unlock( &stlab_derive_cache_mutex );
+#endif
+		return hit;
+	}
+#ifdef MULTI_THREAD
+	pthread_mutex_unlock( &stlab_derive_cache_mutex );
+#endif
+
+	std::shared_ptr<stlab_xr32_image_t> made = std::make_shared<stlab_xr32_image_t>();
+	if(  !stlab_derive_compose( tile, rc, *made )  ) {
+		return NULL;
+	}
+	key.img = made;
+	key.bytes = (size_t)made->width * made->height * 4 * ((made->rgba ? 1 : 0) + (made->night ? 1 : 0)) + sizeof(stlab_derive_cached_t);
+
+#ifdef MULTI_THREAD
+	pthread_mutex_lock( &stlab_derive_cache_mutex );
+#endif
+	it = stlab_derive_cache_index.find( tile );
+	if(  it != stlab_derive_cache_index.end()  ) {
+		stlab_derive_cache_drop( it->second );   // an older raster of this tile, or the one another lane composed meanwhile
+	}
+	stlab_derive_cache.push_front( key );
+	stlab_derive_cache_index[tile] = stlab_derive_cache.begin();
+	stlab_derive_cache_held += key.bytes;
+	while(  stlab_derive_cache_held > STLAB_DERIVE_CACHE_BYTES  &&  stlab_derive_cache.size() > 1  ) {
+		stlab_derive_cache_drop( std::prev( stlab_derive_cache.end() ) );
+	}
+#ifdef MULTI_THREAD
+	pthread_mutex_unlock( &stlab_derive_cache_mutex );
+#endif
+	return made;
+}
+
+
+/// the node a cache is built from: the slot's own, or for a derived tile its composed raster (held by @p keep while it is used)
+static const stlab_xr32_image_t *stlab_xr32_source(image_id n, const stlab_xr32_slot_t *s, std::shared_ptr<const stlab_xr32_image_t> &keep)
 {
 	if(  s == NULL  ||  s->img == NULL  ) {
 		return NULL;
@@ -881,7 +1031,8 @@ static const stlab_xr32_image_t *stlab_xr32_source(image_id n, const stlab_xr32_
 	if(  it == stlab_derived.end()  ) {
 		return s->img;
 	}
-	return stlab_derive_compose( n, it->second, tmp ) ? &tmp : NULL;
+	keep = stlab_derive_cached( n, it->second );
+	return keep.get();
 }
 
 
@@ -905,6 +1056,7 @@ void stlab_xr32_release_all()
 	stlab_slots_alloc = 0;
 	stlab_derived.clear();
 	stlab_derive_texs.clear();
+	stlab_derive_cache_clear();
 }
 
 
@@ -1150,8 +1302,8 @@ bool stlab_xr32_recode(image_id n, sint8 player_nr)
 	if(  zoom_factor32 == ZOOM_NEUTRAL  &&  s->zoom != NULL  &&  !fitted  ) {
 		stlab_xr32_zoom_release( s );
 	}
-	// XR32-COAST-RENDERING-01: a derived tile's raster is composed for this one call
-	stlab_xr32_image_t derived;
+	// XR32-COAST-RENDERING-01: a derived tile's raster (XR32-A12-P1: from the cache of composed rasters)
+	std::shared_ptr<const stlab_xr32_image_t> derived;
 	const stlab_xr32_image_t *img = stlab_xr32_source( n, s, derived );
 	if(  img == NULL  ) {
 		return false;
@@ -1234,8 +1386,8 @@ const PIXVAL *stlab_xr32_base_runs(image_id n, sint8 player_nr, bool daynight, s
 	if(  npx == 0  ||  !stlab_scratch_reserve( npx, stlab_xr32_encode_cap( img->width, img->height ) )  ) {
 		return NULL;
 	}
-	// XR32-COAST-RENDERING-01: a derived tile's raster is composed for this one call
-	stlab_xr32_image_t derived;
+	// XR32-COAST-RENDERING-01: a derived tile's raster (XR32-A12-P1: from the cache of composed rasters)
+	std::shared_ptr<const stlab_xr32_image_t> derived;
 	const stlab_xr32_image_t *src = stlab_xr32_source( n, s, derived );
 	if(  src == NULL  ) {
 		return NULL;

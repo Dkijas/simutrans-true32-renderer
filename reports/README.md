@@ -131,3 +131,10 @@ for review. They can be provided on request.
   release gate (special-colour regression with its controls and mutants, test matrix, performance, memory, the SDL3
   keyboard question, Linux status), verdict B, certified with limitations; `special-colour-fallback/` is the root cause,
   the implementation and the independent oracle. The Linux builds of testing-7 are experimental and not certified.
+
+## XR32 DAY+NIGHT, r12377 testing-8
+
+- **xr32-testing-8/** - testing-8: A4 (coast water), A12-P1 (terrain cache) and TCC-R (translucent company colours) on
+  top of testing-7. `release-gate/` is the final Windows x64 SDL2 + SDL3 release gate (identity, translucent colours in
+  real windows, screen updates, SDL2 window events, the zoom 2/1 pixels, memory, threads, performance, regressions),
+  verdict B, certified with limitations. The Linux builds of testing-8 are experimental and not certified.

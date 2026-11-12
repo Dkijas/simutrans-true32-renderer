@@ -1,0 +1,57 @@
+PASS W1 vis-W81-N-T0-s3 every step changed the view: 7 of 7
+     W2 vis-W81-N-T0-s3 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W81-N-T0-s3 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W81-N-F3-s3 every step changed the view: 7 of 7
+     W2 vis-W81-N-F3-s3 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W81-N-F3-s3 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W82-N-T0-s3 every step changed the view: 7 of 7
+     W2 vis-W82-N-T0-s3 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W82-N-T0-s3 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W82-N-F3-s3 every step changed the view: 7 of 7
+     W2 vis-W82-N-F3-s3 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W82-N-F3-s3 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W81-NK-T0-s3 every step changed the view: 7 of 7
+     W2 vis-W81-NK-T0-s3 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W81-NK-T0-s3 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W81-NK-F3-s3 every step changed the view: 7 of 7
+     W2 vis-W81-NK-F3-s3 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W81-NK-F3-s3 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W81-N-T0-s2 every step changed the view: 7 of 7
+     W2 vis-W81-N-T0-s2 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W81-N-T0-s2 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W81-N-F3-s2 every step changed the view: 7 of 7
+     W2 vis-W81-N-F3-s2 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W81-N-F3-s2 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W82-N-T0-s2 every step changed the view: 7 of 7
+     W2 vis-W82-N-T0-s2 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W82-N-T0-s2 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W82-N-F3-s2 every step changed the view: 7 of 7
+     W2 vis-W82-N-F3-s2 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W82-N-F3-s2 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W81-NK-T0-s2 every step changed the view: 7 of 7
+     W2 vis-W81-NK-T0-s2 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W81-NK-T0-s2 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+PASS W1 vis-W81-NK-F3-s2 every step changed the view: 7 of 7
+     W2 vis-W81-NK-F3-s2 window vs framebuffer: z7:0 z0:8 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0 (quirk set apart 33); 2/1: 8 px off (levels 1-6), against the dump after the capture 5
+PASS W2 vis-W81-NK-F3-s2 window == framebuffer at every step except 2/1 (off elsewhere: 0)
+
+W3 s3 N  2/1 off-pixel sets: testing-7 runs [8, 8], testing-8 runs [8, 8]; union testing-7 8, testing-8 8, common 8, only testing-8 0
+PASS W3 s3 N testing-8 shows no 2/1 off pixel that testing-7 does not
+W3 s3 NK 2/1 off-pixel sets: testing-7 runs [8], testing-8 runs [8]; union testing-7 8, testing-8 8, common 8, only testing-8 0
+PASS W3 s3 NK testing-8 shows no 2/1 off pixel that testing-7 does not
+W3 s2 N  2/1 off-pixel sets: testing-7 runs [8, 8], testing-8 runs [8, 8]; union testing-7 8, testing-8 8, common 8, only testing-8 0
+PASS W3 s2 N testing-8 shows no 2/1 off pixel that testing-7 does not
+W3 s2 NK 2/1 off-pixel sets: testing-7 runs [8], testing-8 runs [8]; union testing-7 8, testing-8 8, common 8, only testing-8 0
+PASS W3 s2 NK testing-8 shows no 2/1 off pixel that testing-7 does not
+
+W4 s3 N run 1 testing-7 vs testing-8 framebuffers: z7:0 z0:0 z6:0 z8:0 z10:2 n4:0 n4s1:0 n4s2:0
+W4 s3 N run 2 testing-7 vs testing-8 framebuffers: z7:0 z0:0 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0
+W5 s3 T0 run 1 vs run 2: z7:0 z0:0 z6:0 z8:0 z10:2 n4:0 n4s1:0 n4s2:0
+W5 s3 F3 run 1 vs run 2: z7:0 z0:0 z6:0 z8:0 z10:2 n4:0 n4s1:0 n4s2:0
+PASS W6 s3 NK testing-7 vs testing-8 (CONTROL, must differ): z7:4300 z0:2194 z6:3022 z8:6002 z10:6836 n4:3689 n4s1:4443 n4s2:2399
+W4 s2 N run 1 testing-7 vs testing-8 framebuffers: z7:0 z0:0 z6:0 z8:0 z10:2 n4:0 n4s1:0 n4s2:0
+W4 s2 N run 2 testing-7 vs testing-8 framebuffers: z7:0 z0:0 z6:0 z8:0 z10:2 n4:0 n4s1:0 n4s2:0
+W5 s2 T0 run 1 vs run 2: z7:0 z0:0 z6:0 z8:0 z10:0 n4:0 n4s1:0 n4s2:0
+W5 s2 F3 run 1 vs run 2: z7:0 z0:0 z6:0 z8:0 z10:1 n4:0 n4s1:0 n4s2:0
+PASS W6 s2 NK testing-7 vs testing-8 (CONTROL, must differ): z7:4300 z0:2194 z6:3022 z8:6002 z10:6836 n4:3689 n4s1:4443 n4s2:2399
+failures: 0

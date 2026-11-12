@@ -1,0 +1,21 @@
+target 3200e8e8bbc84880f74a32a2c5e3fb5d6c2d73de tree 70e54fc4a865d0ba850f2083df0c33d06a597aaa
+patch 01-A4 sha256 e1e6edff66d7c8817861e35ff1698895ef769442bbcbe2f45e604789db0b0aaa
+patch 02-A12-P1 sha256 cb38cf5c98f7f2bf47a1fab2e4df79a3c8e704c36bca77db7f5db9d4e8de2e30
+patch 03-TCC-R sha256 0817c4e75d2beeac5b15ed7daaafbde9491190e5fda94287057485d63e3a5c44
+  01-A4 applied, tree 509c21ecac06
+  02-A12-P1 applied, tree 9e64d11f44f9
+  03-TCC-R applied, tree 70e54fc4a865
+1. patches in order -> 70e54fc4a865d0ba850f2083df0c33d06a597aaa: IDENTICAL
+  cherry-pick b03d729 ok
+  cherry-pick a644622b ok
+  cherry-pick 3200e8e ok
+2. cherry-picks in order -> 70e54fc4a865d0ba850f2083df0c33d06a597aaa: IDENTICAL
+3. files changed 3f1b511..3200e8e:
+     162	10	src/simutrans/display/stlab_xr32_hook.cci
+     8	8	src/simutrans/display/stlab_xr32_zoom.cci
+   outside stlab_xr32_hook.cci / stlab_xr32_zoom.cci: 0 (must be 0)
+   pak format / makeobj files touched: 0 (must be 0)
+   A10 marker (l_opq) in 3200e8e: 0 files (must be 0); in the A10 record origin/a10: 1 (control, must be 1)
+   LEGACY16-SC marker (ground_source_colour) in 3200e8e: 0 (must be 0)
+   commits 3f1b511..3200e8e: 3 (must be 3): 3200e8e a644622 b03d729 
+4. CONTROL: parent tree 9e64d11f44f960b5a6296c4a82bd22447ec7457a vs target: DIFFERENT (control works)

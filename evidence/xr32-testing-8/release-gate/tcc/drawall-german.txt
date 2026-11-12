@@ -1,0 +1,6 @@
+german: candidate nodes (key runs AND translucent pixels): 271, 130 distinct sizes
+PASS german 1/2: images 50823, differing 47, of which outside the candidate sizes 0; same ids and geometry True
+PASS german 9/8: images 50823, differing 68, of which outside the candidate sizes 0; same ids and geometry True
+PASS german 1/1: images 50823, differing 0, of which outside the candidate sizes 0; same ids and geometry True
+PASS german 3/4: images 50823, differing 60, of which outside the candidate sizes 0; same ids and geometry True
+failures: 0

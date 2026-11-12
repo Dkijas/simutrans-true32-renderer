@@ -1,0 +1,9 @@
+id | dur min | start MB | end MB | max MB | slope MB/h | late MB/h | max 5-min step MB | handles start->end (max) | threads | frames | cache held max KB (entries) | cap KB | verdict
+B0-LA-coastnight-r2 | 57.8 | 1974.7 | 1984.5 | 1985.1 | +6.0 | +0.0 | +4.8 | 1194->1351 (1361) | 25->44 | 320000 | no cache | - | ok
+B0-LA-coastnight | 57.6 | 1974.3 | 1979.2 | 1985.0 | +3.8 | +0.0 | +4.9 | 1217->1375 (1381) | 25->44 | 320000 | no cache | - | ok
+B0-N-playercolor | 58.6 | 1986.7 | 1986.9 | 1986.9 | +0.3 | +0.0 | +0.2 | 1193->1351 (1359) | 25->44 | 320000 | no cache | - | ok
+B3-LA-coastnight-r2 | 57.8 | 1987.4 | 2002.5 | 2003.5 | +20.0 | +20.2 | +1.8 | 1194->1354 (1361) | 25->44 | 320000 | 12547 (405) | 16384 | GROWTH NEW-GROWTH vs B0 +14.0 MB/h
+B3-LA-coastnight | 57.0 | 1986.9 | 2001.9 | 2004.7 | +20.0 | +20.0 | +1.7 | 1217->1374 (1381) | 25->44 | 320000 | 12500 (404) | 16384 | GROWTH NEW-GROWTH vs B0 +16.2 MB/h
+B3-N-playercolor | 58.3 | 1999.3 | 2014.8 | 2015.6 | +20.0 | +20.4 | +1.8 | 1194->1352 (1360) | 25->44 | 320000 | 13690 (429) | 16384 | GROWTH NEW-GROWTH vs B0 +19.7 MB/h
+CONTROL (synthetic +20 MB/h on every B3 series): every B3 row must say GROWTH and NEW-GROWTH
+flags: 6

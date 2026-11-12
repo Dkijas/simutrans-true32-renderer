@@ -1,0 +1,25 @@
+signature update: before 1.463.261.0, after 1.463.269.0; MpCmdRun: UpdateLogging: UpdateSessionGuid: C69D50EA-1BEE-4618-AD76-91C7998A95B0 Signature update started . . . Service Version: 4.18.26100.4 Engine Version: 1.1.26100.4 AntiSpyware Signature Version: 1.463.261.0 AntiVirus Signature Version: 1.463.261.0 Signature update finished.
+Defender: product 4.18.26100.4, engine 1.1.26100.4, signatures 1.463.269.0 (updated 11/12/2026 14:57:31), real-time True, scan 2026-11-12T22:38:47, MpCmdRun C:\ProgramData\Microsoft\Windows Defender\Platform\CurrentVersion\MpCmdRun.exe
+== testing-8 release assets (archives are scanned inside)
+01-A4.diff                                                                       E1E6EDFF66D7C881 -> found no threats.
+02-A12-P1.diff                                                                   CB38CF5C98F7F2BF -> found no threats.
+03-TCC-R.diff                                                                    0817C4E75D2BEEAC -> found no threats.
+NIGHT-PROTOTYPE-MANIFEST.md                                                      E4C1EC3FBC810A60 -> found no threats.
+SHA256SUMS.txt                                                                   ACFC75DE730713A9 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl2.tar.gz         CC9A6DC16E60858C -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl3.tar.gz         3B2F597543158F36 -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl2.zip                   6E83343045D0F93F -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl3.zip                   2A41012F4B7C8E7E -> found no threats.
+XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-8.diff                                  E7DF3935DF785C70 -> found no threats.
+xr32-night-prototype-r12377-testing-8-source.tar.gz                              33A64F0988EECC1F -> found no threats.
+== the eight testing-8 executables taken out of the archives (work\dx)
+dx/simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl2/simutrans-16bit 3E7CD80E112CF9D5 -> found no threats.
+dx/simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl2/simutrans-rgba32 422199EF35EBB516 -> found no threats.
+dx/simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl3/simutrans-16bit 9822AEE1D322A616 -> found no threats.
+dx/simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl3/simutrans-rgba32 CB840D8C645FCEE9 -> found no threats.
+dx/simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl2/simutrans-16bit.exe 20CBF7DA7E183F52 -> found no threats.
+dx/simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl2/simutrans-rgba32.exe 6F3DBD0451094DB4 -> found no threats.
+dx/simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl3/simutrans-16bit.exe 8FEAAF49317CF1D7 -> found no threats.
+dx/simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl3/simutrans-rgba32.exe 6F32326414E6A06C -> found no threats.
+active threats now: 0; detections today: 0
+files not clean: 0

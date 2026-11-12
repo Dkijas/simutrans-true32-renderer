@@ -1,0 +1,167 @@
+phase | rep | scen | cfg | exe | rc | frames | verified | mismatching | max px | video
+WE | 1 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 1 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 1 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 1 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 1 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 1 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 2 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 2 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 2 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 2 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 2 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 2 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 3 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 3 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 3 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 3 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 3 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 3 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 4 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 4 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 4 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 4 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 4 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 4 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 5 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 5 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 5 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 5 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 5 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 5 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 6 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 6 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 6 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 6 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 6 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 6 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 7 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 7 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 7 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 7 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 7 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 7 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 8 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 8 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 8 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 8 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 8 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 8 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 9 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 9 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 9 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 9 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 9 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 9 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 10 | windows | s2-B3-NK | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 10 | windows | s3-B0-NK | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 10 | windows | s3-B3-NK | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WE | 10 | windows | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 10 | windows | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WE | 10 | windows | s2-B0-NK | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VX2 | 1 | coastzoom | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 15 | 156134 | windows/direct3d11  CONTROL
+VX2 | 1 | coastzoom | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 14 | 156134 | windows/direct3d  CONTROL
+VX2 | 1 | coastnight | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 17 | 155926 | windows/direct3d11  CONTROL
+VX2 | 1 | coastnight | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 13 | 156064 | windows/direct3d  CONTROL
+VX2 | 1 | playercolor | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 19 | 118783 | windows/direct3d11  CONTROL
+VX2 | 1 | playercolor | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 16 | 118839 | windows/direct3d  CONTROL
+VX2 | 1 | fullscreen | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 40 | 575657 | windows/direct3d11  CONTROL
+VX2 | 1 | fullscreen | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 44 | 577275 | windows/direct3d  CONTROL
+VX2 | 1 | resize | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 25 | 122668 | windows/direct3d11  CONTROL
+VX2 | 1 | resize | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 25 | 121081 | windows/direct3d  CONTROL
+VX3 | 1 | zoomx | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 6 | 304754 | windows/direct3d11  CONTROL
+VX3 | 1 | zoomx | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 5 | 301503 | windows/direct3d  CONTROL
+VX3 | 1 | scroll | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11  CONTROL
+VX3 | 1 | scroll | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d  CONTROL
+VX4 | 1 | vehicles | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 60 | 242 | windows/direct3d11  CONTROL
+VX4 | 1 | vehicles | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 60 | 242 | windows/direct3d  CONTROL
+VX4 | 1 | zoom | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11  CONTROL
+VX4 | 1 | zoom | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d  CONTROL
+WR | 1 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 1 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 1 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 1 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 2 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 2 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 2 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 2 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 3 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 3 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 3 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 3 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 4 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 4 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 4 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 4 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 5 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 5 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 5 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 5 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 6 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 6 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 6 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 6 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 7 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 7 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 7 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 7 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 8 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 8 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 8 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 8 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 9 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 9 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 9 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 9 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 10 | resize | s2-B3-N | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+WR | 10 | resize | s3-B0-N | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 10 | resize | s3-B3-N | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+WR | 10 | resize | s2-B0-N | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+
+phase | scen | cfg | runs | runs with a mismatch | verified frames | mismatching frames | max px
+VX2 | coastnight | s2-B3-droprect | 1 | 1 | 60 | 13 | 156064
+VX2 | coastnight | s3-B3-droprect | 1 | 1 | 60 | 17 | 155926
+VX2 | coastzoom | s2-B3-droprect | 1 | 1 | 60 | 14 | 156134
+VX2 | coastzoom | s3-B3-droprect | 1 | 1 | 60 | 15 | 156134
+VX2 | fullscreen | s2-B3-droprect | 1 | 1 | 60 | 44 | 577275
+VX2 | fullscreen | s3-B3-droprect | 1 | 1 | 60 | 40 | 575657
+VX2 | playercolor | s2-B3-droprect | 1 | 1 | 60 | 16 | 118839
+VX2 | playercolor | s3-B3-droprect | 1 | 1 | 60 | 19 | 118783
+VX2 | resize | s2-B3-droprect | 1 | 1 | 60 | 25 | 121081
+VX2 | resize | s3-B3-droprect | 1 | 1 | 60 | 25 | 122668
+VX3 | scroll | s2-B3-droprect | 1 | 0 | 60 | 0 | 0
+VX3 | scroll | s3-B3-droprect | 1 | 0 | 60 | 0 | 0
+VX3 | zoomx | s2-B3-droprect | 1 | 1 | 60 | 5 | 301503
+VX3 | zoomx | s3-B3-droprect | 1 | 1 | 60 | 6 | 304754
+VX4 | vehicles | s2-B3-droprect | 1 | 1 | 60 | 60 | 242
+VX4 | vehicles | s3-B3-droprect | 1 | 1 | 60 | 60 | 242
+VX4 | zoom | s2-B3-droprect | 1 | 0 | 60 | 0 | 0
+VX4 | zoom | s3-B3-droprect | 1 | 0 | 60 | 0 | 0
+WE | windows | s2-B0-N | 10 | 0 | 600 | 0 | 0
+WE | windows | s2-B0-NK | 10 | 0 | 600 | 0 | 0
+WE | windows | s2-B3-N | 10 | 0 | 600 | 0 | 0
+WE | windows | s2-B3-NK | 10 | 0 | 600 | 0 | 0
+WE | windows | s3-B0-NK | 10 | 0 | 600 | 0 | 0
+WE | windows | s3-B3-NK | 10 | 0 | 600 | 0 | 0
+WR | resize | s2-B0-N | 10 | 0 | 600 | 0 | 0
+WR | resize | s2-B3-N | 10 | 0 | 600 | 0 | 0
+WR | resize | s3-B0-N | 10 | 0 | 600 | 0 | 0
+WR | resize | s3-B3-N | 10 | 0 | 600 | 0 | 0
+
+phase | cfg | runs | runs with a mismatch | verified frames | mismatching frames
+WE | s2-B0-N | 10 | 0 | 600 | 0
+WE | s2-B0-NK | 10 | 0 | 600 | 0
+WE | s2-B3-N | 10 | 0 | 600 | 0
+WE | s2-B3-NK | 10 | 0 | 600 | 0
+WE | s3-B0-NK | 10 | 0 | 600 | 0
+WE | s3-B3-NK | 10 | 0 | 600 | 0
+WR | s2-B0-N | 10 | 0 | 600 | 0
+WR | s2-B3-N | 10 | 0 | 600 | 0
+WR | s3-B0-N | 10 | 0 | 600 | 0
+WR | s3-B3-N | 10 | 0 | 600 | 0
+
+FAIL CONTROL NOT CAUGHT VX3 scroll s3-B3-droprect
+FAIL CONTROL NOT CAUGHT VX3 scroll s2-B3-droprect
+FAIL CONTROL NOT CAUGHT VX4 zoom s3-B3-droprect
+FAIL CONTROL NOT CAUGHT VX4 zoom s2-B3-droprect
+rule failures: 4

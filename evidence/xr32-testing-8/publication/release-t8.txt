@@ -1,0 +1,14 @@
+git 2.55.0.windows.3 2026-11-12T22:33:24+01:00
+PASS recipe check: testing-7 source re-made == published aade11b6
+PASS the re-made file == the published file on disk
+PASS source tarball reproducible: 33a64f0988eecc1f4eb6f9129f1344f2286a5e164c24122e1771c5e3c2d19350
+source: commit 3200e8e8bbc84880f74a32a2c5e3fb5d6c2d73de, tree 70e54fc4a865d0ba850f2083df0c33d06a597aaa, files 2231
+PASS same file count as testing-7's source (2231)
+PASS source vs testing-7's: exactly stlab_xr32_hook.cci and stlab_xr32_zoom.cci differ
+PASS XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-8.diff == certified e7df3935df785c70
+PASS 01-A4.diff == certified e1e6edff66d7c881
+PASS 02-A12-P1.diff == certified cb38cf5c98f7f2bf
+PASS 03-TCC-R.diff == certified 0817c4e75d2beeac
+PASS full diff regenerated (7cc6d45..3200e8e) == certified
+rc=0
+RELEASE_T8_DONE

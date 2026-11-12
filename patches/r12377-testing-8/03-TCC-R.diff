@@ -1,0 +1,28 @@
+diff --git a/src/simutrans/display/stlab_xr32_zoom.cci b/src/simutrans/display/stlab_xr32_zoom.cci
+index 6fd3692730eae5e876e337000aac79ac3d7f6c46..20202638b8facfed0be6256324516fe2ea58c703 100644
+--- a/src/simutrans/display/stlab_xr32_zoom.cci
++++ b/src/simutrans/display/stlab_xr32_zoom.cci
+@@ -222,10 +222,10 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 	uint32 *acc_w = MALLOCN( uint32, nd );   ///< non-semantic weight numerator, x255
+ 	uint32 *opq   = MALLOCN( uint32, nd );   ///< samples on an opaque source pixel
+ 	uint32 *alp   = MALLOCN( uint32, nd );   ///< sum of their straight alpha
+-	// v1 key weight denominator: every sample on a non-hole source pixel counts 255, except a
+-	// TRANSLUCENT key (a record on a pixel with alpha < 255), which counts its alpha, so a glass
+-	// key mixed with other pixels gets its premultiplied share. With opaque keys only (every pak
+-	// written before translucent keys had records) kw == 255 * opq and the result is unchanged.
++	// v1 key weight denominator: every sample on a non-hole source pixel counts its alpha, a key and an
++	// ordinary pixel alike (XR32-TESTING8-TCC-R), so a key mixed with translucent pixels gets its
++	// premultiplied share: kw == alp. Where every ordinary sample is opaque the result is unchanged; it
++	// changes only boxes that mix a key with a translucent ordinary pixel (they were counted as 255).
+ 	uint32 *kw    = MALLOCN( uint32, nd );
+ 	MEMZERON( acc_r, nd );  MEMZERON( acc_g, nd );  MEMZERON( acc_b, nd );
+ 	MEMZERON( acc_w, nd );  MEMZERON( opq, nd );    MEMZERON( alp, nd );
+@@ -351,7 +351,7 @@ static stlab_xr32_zoom_t *stlab_xr32_zoom_build(const stlab_xr32_image_t *img,
+ 						continue;
+ 					}
+ 					const uint8 k = skey[si];
+-					const uint32 om = ( k != 0  &&  a < 255 ) ? (uint32)a : 255u;
++					const uint32 om = a;   // XR32-TESTING8-TCC-R: was 255 for every ordinary sample
+ 					kw[d] += om * wg;
+ 					if(  k == 0  ) {
+ 						// a normal pixel: its colour is weighted by its alpha (straight alpha,

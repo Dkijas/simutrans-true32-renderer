@@ -1,0 +1,30 @@
+simutrans-xr32-night-prototype-r12377-testing-7-linux-x86_64-sdl2: re-pack of testing-7's own tree == published tarball (recipe control)
+  16-bit build of 3200e8e == testing-7's packaged 16-bit (3e7cd80e112cf9d5); the package carries the 3200e8e build
+  mandatory Linux notice present
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl2: tree vs testing-7: exactly the 5 expected paths (control: the replaced executable is among them)
+  modes of the unchanged files: identical
+  packed twice: same bytes
+  gzip -t OK
+  binaries inside == this lane's builds of 3200e8e: rgba32 422199ef35ebb51669058fc44bfdd694a41dd1f53052c4317b2680de8884ea70, 16-bit 3e7cd80e112cf9d52107c2b9f5e8729a1f9bc9897aef69c52eb711ae7d3100e3
+  simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl2.tar.gz: entries 989 (testing-7 989), names with 'candidate' 0, exec bits 2 of 2, 9058925 bytes, sha256 cc9a6dc16e60858c3432609ed412b1d6594ca8a42101030dab226d2494d8ec80
+simutrans-xr32-night-prototype-r12377-testing-7-linux-x86_64-sdl3: re-pack of testing-7's own tree == published tarball (recipe control)
+  16-bit build of 3200e8e == testing-7's packaged 16-bit (9822aee1d322a616); the package carries the 3200e8e build
+  mandatory Linux notice present
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl3: tree vs testing-7: exactly the 5 expected paths (control: the replaced executable is among them)
+  modes of the unchanged files: identical
+  packed twice: same bytes
+  gzip -t OK
+  binaries inside == this lane's builds of 3200e8e: rgba32 cb840d8c645fcee99d9eda18941369dc1c8eb06e2d2fffdf3960e433b5f7536b, 16-bit 9822aee1d322a61606d80e5e6f61bd365365e9273f21012400d33f5f68bbd638
+  simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl3.tar.gz: entries 997 (testing-7 997), names with 'candidate' 0, exec bits 2 of 2, 12472590 bytes, sha256 3b2f597543158f36b4919014b1842bdd943bda6723336d4327aa5a1aa1595f66
+== essential technical checks (WSL 2, 6.18.33.2-microsoft-standard-WSL2; NOT a native Linux desktop)
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl2: SHA256SUMS.txt inside holds
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl2 simutrans-rgba32: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38
+  start, PAK128.german 2.5 + coastworld to 1930.6, clean exit: exit 0, FATAL/Error 0, skipped XR32 nodes 0 (16-bit must skip, rgba32 must not: the control) -> PASS
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl2 simutrans-16bit: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38
+  start, PAK128.german 2.5 + coastworld to 1930.6, clean exit: exit 0, FATAL/Error 0, skipped XR32 nodes 57528 (16-bit must skip, rgba32 must not: the control) -> PASS
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl3: SHA256SUMS.txt inside holds
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl3 simutrans-rgba32: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38
+  start, PAK128.german 2.5 + coastworld to 1930.6, clean exit: exit 0, FATAL/Error 0, skipped XR32 nodes 0 (16-bit must skip, rgba32 must not: the control) -> PASS
+simutrans-xr32-night-prototype-r12377-testing-8-linux-x86_64-sdl3 simutrans-16bit: ELF 64-bit LSB pie executable, x86-64 | ldd not found: 0 | max GLIBC GLIBC_2.38
+  start, PAK128.german 2.5 + coastworld to 1930.6, clean exit: exit 0, FATAL/Error 0, skipped XR32 nodes 57528 (16-bit must skip, rgba32 must not: the control) -> PASS
+PKG_LINUX_T8 rc=0

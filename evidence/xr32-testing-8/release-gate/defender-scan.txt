@@ -1,0 +1,21 @@
+﻿Defender: C:\ProgramData\Microsoft\Windows Defender\Platform\CurrentVersion\MpCmdRun.exe
+AMProductVersion              : 4.18.26100.4
+AntivirusSignatureVersion     : 1.463.257.0
+AntivirusSignatureLastUpdated : 11/11/2026 23:12:20
+RealTimeProtectionEnabled     : True
+simutrans-xr32-night-prototype-r12377-testing-8-candidate-win64-sdl2.zip  sha256 BC11F538CFD2A8E9  -> found no threats.
+simutrans-xr32-night-prototype-r12377-testing-8-candidate-win64-sdl3.zip  sha256 961DEB01492F75BB  -> found no threats.
+xr32-night-prototype-r12377-testing-8-candidate-source.tar.gz  sha256 5C5743891F42F8A5  -> found no threats.
+01-A4.diff  sha256 E1E6EDFF66D7C881  -> found no threats.
+02-A12-P1.diff  sha256 CB38CF5C98F7F2BF  -> found no threats.
+03-TCC-R.diff  sha256 0817C4E75D2BEEAC  -> found no threats.
+XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-8-candidate.diff  sha256 E7DF3935DF785C70  -> found no threats.
+unpacked sdl3/simutrans-rgba32-candidate.exe  sha256 6F32326414E6A06C  -> found no threats.
+unpacked sdl3/simutrans-16bit-candidate.exe  sha256 8FEAAF49317CF1D7  -> found no threats.
+unpacked sdl3 : 952 files; scanning the folder
+folder sdl3 -> found no threats.
+unpacked sdl2/simutrans-rgba32-candidate.exe  sha256 6F3DBD0451094DB4  -> found no threats.
+unpacked sdl2/simutrans-16bit-candidate.exe  sha256 20CBF7DA7E183F52  -> found no threats.
+unpacked sdl2 : 952 files; scanning the folder
+folder sdl2 -> found no threats.
+RESULT: 0 problem(s)

@@ -1,0 +1,16 @@
+F3-s3 ref=3200e8e8bbc84880f74a32a2c5e3fb5d6c2d73de rc=0 warnings=26 size 20652552 sha256 6f32326414e6a06c4130503a4e8dc838dd314015c374837e59f5b101b5efe7ef depth=32 backend=sdl3 flags='' build_s=58
+F3-s3-rep ref=3200e8e8bbc84880f74a32a2c5e3fb5d6c2d73de rc=0 warnings=26 size 20652552 sha256 6f32326414e6a06c4130503a4e8dc838dd314015c374837e59f5b101b5efe7ef depth=32 backend=sdl3 flags='' build_s=55
+F3-s2 ref=3200e8e8bbc84880f74a32a2c5e3fb5d6c2d73de rc=0 warnings=26 size 18180877 sha256 6f3dbd0451094db4ea5acbf12a7a1cc2a361cd4f924d1683da9d343433eb6edc depth=32 backend=sdl2 flags='' build_s=53
+F3-s3-16 ref=3200e8e8bbc84880f74a32a2c5e3fb5d6c2d73de rc=0 warnings=26 size 20498649 sha256 8feaaf49317cf1d7bf2de2f1a43c1ce0128c24cd6b740e83f51408c0a7198463 depth=16 backend=sdl3 flags='' build_s=53
+F3-s2-16 ref=3200e8e8bbc84880f74a32a2c5e3fb5d6c2d73de rc=0 warnings=26 size 18026764 sha256 20cbf7da7e183f52c5f73c59050b259a6cc652c300ca4b9627efabbebc8c27f6 depth=16 backend=sdl2 flags='' build_s=51
+B0p-s3 ref=15b1f8afd1dd9ba43ecf204f90110f20b61225df rc=0 warnings=26 size 20658457 sha256 7ab6a4370ba478f27b0bad55dde6a0d72cd7049751f7180c5f0e064aabfdbc72 depth=32 backend=sdl3 flags='-DSTLAB_PERF' build_s=50
+B0p-s2 ref=15b1f8afd1dd9ba43ecf204f90110f20b61225df rc=0 warnings=26 size 18184645 sha256 bbc33f5e72f630a6a0360968c34285a20efe0199f8c148ecff48ee2acbf3cff1 depth=32 backend=sdl2 flags='-DSTLAB_PERF' build_s=50
+B1p-s3 ref=aca56e57a670e04a44ccad2f386ff2ef7080be41 rc=0 warnings=26 size 20658457 sha256 0589e8a44f7b1f3a4bc89666c4e049232cd32d40b8ad36e2fae15baa48998124 depth=32 backend=sdl3 flags='-DSTLAB_PERF' build_s=49
+B1p-s2 ref=aca56e57a670e04a44ccad2f386ff2ef7080be41 rc=0 warnings=26 size 18184645 sha256 6bb1b3f4812f2fee9232bfe097147074d73c6e3f2c06094f2bd8e497dc368c63 depth=32 backend=sdl2 flags='-DSTLAB_PERF' build_s=49
+B2p-s3 ref=1fb2f4fb42b79e1f0dfb79462bef5c7b167bfdac rc=0 warnings=26 size 20677545 sha256 d46ca9eb66e68b94d6bdd300a6b040f6af1d7360fd7f2e44d50e7f46df2d7542 depth=32 backend=sdl3 flags='-DSTLAB_PERF' build_s=50
+B2p-s2 ref=1fb2f4fb42b79e1f0dfb79462bef5c7b167bfdac rc=0 warnings=26 size 18203733 sha256 dd299c44590bbc9b195092f3a1a3d090a4567f640c0850b33d9b5fa927bdc6c6 depth=32 backend=sdl2 flags='-DSTLAB_PERF' build_s=50
+B3p-s3 ref=37ceaf18c8dbffcaca32492c0b37d2fae75cfb2a rc=0 warnings=26 size 20677545 sha256 8b46d0c957c6eca1106fa6cd4f10cc5cadf518aa5efdd9e94461fe50bdb29b3e depth=32 backend=sdl3 flags='-DSTLAB_PERF' build_s=50
+B3p-s2 ref=37ceaf18c8dbffcaca32492c0b37d2fae75cfb2a rc=0 warnings=26 size 18203733 sha256 f63d83a2d401a45b3d91b587adf5c4ecc7772593f9315dea044f022ad36c2402 depth=32 backend=sdl2 flags='-DSTLAB_PERF' build_s=50
+S3-s3 ref=ad35616037a326bd3bbc4370e7fae7c06314dfa9 rc=0 warnings=26 size 20680227 sha256 d93a4803697a278695811a3558cc828975dd91adb44d26deb3a811aca9244434 depth=32 backend=sdl3 flags='-DSTLAB_PERF' build_s=50
+SN-s3 ref=cd0212732485ad4e4292f249851706053b37a32d rc=0 warnings=27 size 20680179 sha256 32cc237336e3ace04adfbf4408f6b869e30ebb7f32de44e1a5e3a6ba79607155 depth=32 backend=sdl3 flags='-DSTLAB_PERF' build_s=51
+BUILDS_DONE

@@ -1,0 +1,240 @@
+
+== PC coastnight  (runs: B0 5, B0q 5, B1 5, B2 5, B3 5)
+                                     B0                     B0q                      B1                      B2                      B3
+FPS                 93.41 [93.23-93.87]     93.47 [93.19-93.75]     93.33 [92.98-93.51]     93.62 [93.33-93.87]     93.42 [93.15-93.71]
+work P50 ms         3.433 [3.366-3.480]     3.448 [3.380-3.501]     3.501 [3.421-3.549]     3.528 [3.474-3.646]     3.523 [3.506-3.581]
+work P95         11.293 [10.841-11.720]  11.318 [10.916-11.595]  11.522 [11.239-11.616]  10.983 [10.739-11.605]  10.809 [10.757-11.250]
+work P99         12.878 [12.559-13.036]  12.896 [12.694-13.318]  12.987 [12.442-14.408]  12.845 [12.095-13.153]  12.723 [12.111-12.783]
+event frames              298 [296-300]           298 [296-300]           298 [294-299]           297 [297-298]           296 [296-300]
+event P50 ms        3.703 [3.616-3.790]     3.740 [3.532-3.792]     3.765 [3.721-3.869]     3.828 [3.744-3.934]     3.788 [3.753-3.927]
+event P95        12.184 [11.857-12.323]  12.216 [12.043-12.269]  12.231 [12.037-12.964]  12.129 [11.502-12.351]  11.651 [11.532-12.089]
+event P99        13.366 [12.777-13.664]  13.356 [13.092-13.902]  13.616 [12.905-14.691]  13.232 [12.342-13.430]  12.888 [12.688-13.295]
+zoom ev frames                  0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]
+zoom ev P50                           -                       -                       -                       -                       -
+zoom ev P95                           -                       -                       -                       -                       -
+compositions           1820 [1820-1820]        1820 [1820-1820]        3217 [3195-3250]           132 [132-132]           132 [132-132]
+comp CPU ms            50.9 [50.4-51.9]        50.9 [50.3-51.3]        71.7 [70.7-72.2]           5.4 [5.0-5.8]           5.2 [4.8-5.8]
+hit ratio                             -                       -                       -     0.959 [0.959-0.959]     0.959 [0.959-0.959]
+held KB                         0 [0-0]                 0 [0-0]                 0 [0-0]     12547 [12547-12547]     12547 [12547-12547]
+peak WS MB             1868 [1867-1869]        1868 [1868-1868]        1868 [1868-1869]        1880 [1880-1881]        1880 [1879-1882]
+  fps      B1-B0 A4 -0.074 (no measurable difference (|d| <= spread 0.637)) | B2-B1 A12 +0.290 (no measurable difference (|d| <= spread 0.536)) | B3-B2 TCC -0.208 (no measurable difference (|d| <= spread 0.557)) | B3-B0 t8-t7 +0.008 (no measurable difference (|d| <= spread 0.637)) | A/A B0q-B0 +0.062 (no measurable difference (|d| <= spread 0.637))
+  w50      B1-B0 A4 +0.067 (no measurable difference (|d| <= spread 0.129)) | B2-B1 A12 +0.027 (no measurable difference (|d| <= spread 0.171)) | B3-B2 TCC -0.005 (no measurable difference (|d| <= spread 0.171)) | B3-B0 t8-t7 +0.090 (separated 5/5) | A/A B0q-B0 +0.014 (no measurable difference (|d| <= spread 0.121))
+  w95      B1-B0 A4 +0.229 (no measurable difference (|d| <= spread 0.879)) | B2-B1 A12 -0.539 (no measurable difference (|d| <= spread 0.866)) | B3-B2 TCC -0.174 (no measurable difference (|d| <= spread 0.866)) | B3-B0 t8-t7 -0.484 (no measurable difference (|d| <= spread 0.879)) | A/A B0q-B0 +0.025 (no measurable difference (|d| <= spread 0.879))
+  w99      B1-B0 A4 +0.110 (no measurable difference (|d| <= spread 1.97)) | B2-B1 A12 -0.142 (no measurable difference (|d| <= spread 1.97)) | B3-B2 TCC -0.123 (no measurable difference (|d| <= spread 1.06)) | B3-B0 t8-t7 -0.155 (no measurable difference (|d| <= spread 0.672)) | A/A B0q-B0 +0.018 (no measurable difference (|d| <= spread 0.623))
+  ev50     B1-B0 A4 +0.062 (no measurable difference (|d| <= spread 0.174)) | B2-B1 A12 +0.063 (no measurable difference (|d| <= spread 0.19)) | B3-B2 TCC -0.040 (no measurable difference (|d| <= spread 0.19)) | B3-B0 t8-t7 +0.086 (no measurable difference (|d| <= spread 0.174)) | A/A B0q-B0 +0.037 (no measurable difference (|d| <= spread 0.26))
+  ev95     B1-B0 A4 +0.047 (no measurable difference (|d| <= spread 0.927)) | B2-B1 A12 -0.102 (no measurable difference (|d| <= spread 0.927)) | B3-B2 TCC -0.478 (no measurable difference (|d| <= spread 0.849)) | B3-B0 t8-t7 -0.533 (no measurable difference (|d| <= spread 0.558)) | A/A B0q-B0 +0.032 (no measurable difference (|d| <= spread 0.467))
+  ev99     B1-B0 A4 +0.250 (no measurable difference (|d| <= spread 1.79)) | B2-B1 A12 -0.384 (no measurable difference (|d| <= spread 1.79)) | B3-B2 TCC -0.345 (no measurable difference (|d| <= spread 1.09)) | B3-B0 t8-t7 -0.478 (no measurable difference (|d| <= spread 0.886)) | A/A B0q-B0 -0.010 (no measurable difference (|d| <= spread 0.886))
+  zv50     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  zv95     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  comp_ms  B1-B0 A4 +20.767 (separated 5/5) | B2-B1 A12 -66.258 (separated 5/5) | B3-B2 TCC -0.167 (no measurable difference (|d| <= spread 1)) | B3-B0 t8-t7 -45.658 (separated 5/5) | A/A B0q-B0 -0.046 (no measurable difference (|d| <= spread 1.53))
+  peak     B1-B0 A4 +0.600 (no measurable difference (|d| <= spread 1.7)) | B2-B1 A12 +11.900 (separated 5/5) | B3-B2 TCC -0.500 (no measurable difference (|d| <= spread 2.7)) | B3-B0 t8-t7 +12.000 (separated 5/5) | A/A B0q-B0 +0.100 (no measurable difference (|d| <= spread 1.7))
+
+== PC coastzoom  (runs: B0 5, B0q 5, B1 5, B2 5, B3 5)
+                                     B0                     B0q                      B1                      B2                      B3
+FPS                 76.92 [76.19-77.18]     76.44 [76.07-76.95]     76.72 [75.83-77.01]     76.73 [76.45-77.03]     76.74 [76.17-76.82]
+work P50 ms         3.638 [3.548-3.703]     3.613 [3.580-3.699]     3.493 [3.407-3.578]     3.560 [3.507-3.618]     3.561 [3.467-3.583]
+work P95         13.631 [12.985-14.314]  13.332 [13.155-13.423]  13.645 [12.370-13.897]  13.300 [12.913-14.366]  13.138 [12.444-13.622]
+work P99         34.614 [33.317-35.553]  34.393 [33.137-36.306]  34.598 [34.054-36.515]  34.696 [33.139-36.010]  33.997 [33.801-34.916]
+event frames              263 [259-267]           265 [261-268]           261 [255-267]           262 [257-264]           265 [254-267]
+event P50 ms        4.108 [3.992-4.173]     4.071 [4.005-4.152]     3.854 [3.806-4.080]     3.997 [3.819-4.057]     3.978 [3.821-4.158]
+event P95        33.556 [32.455-33.897]  33.250 [32.269-33.688]  33.050 [32.622-33.852]  32.868 [31.927-33.763]  32.806 [32.257-33.145]
+event P99        36.197 [34.077-37.351]  36.327 [34.848-37.116]  35.613 [35.062-39.557]  35.490 [34.522-36.397]  35.132 [34.190-36.552]
+zoom ev frames               42 [41-43]              42 [41-43]              51 [45-54]              50 [46-53]              51 [50-53]
+zoom ev P50      31.893 [31.736-32.541]  31.567 [31.208-33.213]  31.619 [30.343-32.022]  31.153 [30.256-31.768]  31.182 [30.241-31.305]
+zoom ev P95      36.321 [34.174-37.883]  36.752 [35.143-37.522]  35.620 [35.053-39.560]  35.510 [34.670-36.418]  35.135 [34.213-36.567]
+compositions           1586 [1586-1612]        1586 [1586-1586]        2770 [2714-2793]           110 [109-111]           110 [109-110]
+comp CPU ms            44.3 [43.2-45.0]        43.8 [43.0-45.4]        62.8 [60.4-63.4]           2.7 [2.5-3.5]           2.8 [2.5-3.0]
+hit ratio                             -                       -                       -     0.960 [0.959-0.960]     0.960 [0.960-0.961]
+held KB                         0 [0-0]                 0 [0-0]                 0 [0-0]     13690 [13690-13690]     13690 [13690-13690]
+peak WS MB             1876 [1876-1876]        1876 [1875-1877]        1879 [1878-1880]        1892 [1891-1893]        1891 [1890-1892]
+  fps      B1-B0 A4 -0.201 (no measurable difference (|d| <= spread 1.18)) | B2-B1 A12 +0.008 (no measurable difference (|d| <= spread 1.18)) | B3-B2 TCC +0.007 (no measurable difference (|d| <= spread 0.65)) | B3-B0 t8-t7 -0.186 (no measurable difference (|d| <= spread 0.994)) | A/A B0q-B0 -0.483 (no measurable difference (|d| <= spread 0.994))
+  w50      B1-B0 A4 -0.145 (no measurable difference (|d| <= spread 0.17)) | B2-B1 A12 +0.067 (no measurable difference (|d| <= spread 0.17)) | B3-B2 TCC +0.000 (no measurable difference (|d| <= spread 0.116)) | B3-B0 t8-t7 -0.077 (no measurable difference (|d| <= spread 0.155)) | A/A B0q-B0 -0.025 (no measurable difference (|d| <= spread 0.155))
+  w95      B1-B0 A4 +0.015 (no measurable difference (|d| <= spread 1.53)) | B2-B1 A12 -0.346 (no measurable difference (|d| <= spread 1.53)) | B3-B2 TCC -0.161 (no measurable difference (|d| <= spread 1.45)) | B3-B0 t8-t7 -0.493 (no measurable difference (|d| <= spread 1.33)) | A/A B0q-B0 -0.299 (no measurable difference (|d| <= spread 1.33))
+  w99      B1-B0 A4 -0.016 (no measurable difference (|d| <= spread 2.46)) | B2-B1 A12 +0.098 (no measurable difference (|d| <= spread 2.87)) | B3-B2 TCC -0.699 (no measurable difference (|d| <= spread 2.87)) | B3-B0 t8-t7 -0.616 (no measurable difference (|d| <= spread 2.24)) | A/A B0q-B0 -0.221 (no measurable difference (|d| <= spread 3.17))
+  ev50     B1-B0 A4 -0.254 (no measurable difference (|d| <= spread 0.274)) | B2-B1 A12 +0.143 (no measurable difference (|d| <= spread 0.274)) | B3-B2 TCC -0.019 (no measurable difference (|d| <= spread 0.337)) | B3-B0 t8-t7 -0.130 (no measurable difference (|d| <= spread 0.337)) | A/A B0q-B0 -0.036 (no measurable difference (|d| <= spread 0.181))
+  ev95     B1-B0 A4 -0.507 (no measurable difference (|d| <= spread 1.44)) | B2-B1 A12 -0.182 (no measurable difference (|d| <= spread 1.84)) | B3-B2 TCC -0.063 (no measurable difference (|d| <= spread 1.84)) | B3-B0 t8-t7 -0.751 (no measurable difference (|d| <= spread 1.44)) | A/A B0q-B0 -0.306 (no measurable difference (|d| <= spread 1.44))
+  ev99     B1-B0 A4 -0.584 (no measurable difference (|d| <= spread 4.49)) | B2-B1 A12 -0.122 (no measurable difference (|d| <= spread 4.49)) | B3-B2 TCC -0.358 (no measurable difference (|d| <= spread 2.36)) | B3-B0 t8-t7 -1.065 (no measurable difference (|d| <= spread 3.27)) | A/A B0q-B0 +0.130 (no measurable difference (|d| <= spread 3.27))
+  zv50     B1-B0 A4 -0.274 (no measurable difference (|d| <= spread 1.68)) | B2-B1 A12 -0.466 (no measurable difference (|d| <= spread 1.68)) | B3-B2 TCC +0.029 (no measurable difference (|d| <= spread 1.51)) | B3-B0 t8-t7 -0.711 (separated 5/5) | A/A B0q-B0 -0.326 (no measurable difference (|d| <= spread 2.01))
+  zv95     B1-B0 A4 -0.701 (no measurable difference (|d| <= spread 4.51)) | B2-B1 A12 -0.111 (no measurable difference (|d| <= spread 4.51)) | B3-B2 TCC -0.374 (no measurable difference (|d| <= spread 2.35)) | B3-B0 t8-t7 -1.186 (no measurable difference (|d| <= spread 3.71)) | A/A B0q-B0 +0.431 (no measurable difference (|d| <= spread 3.71))
+  comp_ms  B1-B0 A4 +18.456 (separated 5/5) | B2-B1 A12 -60.091 (separated 5/5) | B3-B2 TCC +0.147 (no measurable difference (|d| <= spread 0.933)) | B3-B0 t8-t7 -41.488 (separated 5/5) | A/A B0q-B0 -0.570 (no measurable difference (|d| <= spread 2.42))
+  peak     B1-B0 A4 +3.500 (separated 5/5) | B2-B1 A12 +12.500 (separated 5/5) | B3-B2 TCC -0.600 (no measurable difference (|d| <= spread 2.4)) | B3-B0 t8-t7 +15.400 (separated 5/5) | A/A B0q-B0 +0.000 (no measurable difference (|d| <= spread 1.8))
+
+== PF scroll  (runs: B0 5, B0q 5, B1 5, B2 5, B3 5)
+                                     B0                     B0q                      B1                      B2                      B3
+FPS                 92.96 [92.80-93.10]     93.23 [92.98-93.36]     93.02 [92.86-93.45]     92.97 [92.94-93.71]     93.55 [93.26-93.68]
+work P50 ms         2.596 [2.574-2.639]     2.675 [2.592-2.696]     2.649 [2.578-2.690]     2.619 [2.597-2.677]     2.692 [2.578-2.756]
+work P95            3.491 [3.444-3.568]     3.571 [3.397-3.636]     3.545 [3.393-4.048]     3.543 [3.466-3.665]     3.613 [3.462-4.001]
+work P99            4.205 [3.957-4.473]     4.149 [3.983-4.248]     4.090 [3.970-4.326]     4.324 [4.066-4.570]     4.098 [4.028-4.460]
+event frames                 11 [11-11]              11 [10-11]              11 [11-11]              11 [11-11]              11 [11-11]
+event P50 ms        2.757 [2.603-2.855]     2.877 [2.668-3.102]     2.726 [2.540-2.837]     2.684 [2.631-2.897]     2.836 [2.607-3.060]
+event P95           3.210 [2.940-3.410]     3.806 [2.958-4.209]     3.198 [2.966-3.698]     3.553 [2.886-4.020]     3.180 [3.113-4.296]
+event P99           3.399 [2.953-3.570]     4.055 [3.051-4.350]     3.303 [2.971-3.720]     3.586 [2.927-4.846]     3.321 [3.149-4.353]
+zoom ev frames                  0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]
+zoom ev P50                           -                       -                       -                       -                       -
+zoom ev P95                           -                       -                       -                       -                       -
+compositions                    4 [4-4]                 4 [4-4]                 4 [4-4]                 4 [4-4]                 4 [4-4]
+comp CPU ms               0.4 [0.3-0.4]           0.3 [0.3-0.4]           0.3 [0.3-0.4]           0.4 [0.3-0.4]           0.3 [0.3-0.4]
+hit ratio                             -                       -                       -     0.000 [0.000-0.000]     0.000 [0.000-0.000]
+held KB                         0 [0-0]                 0 [0-0]                 0 [0-0]        1087 [1087-1087]        1087 [1087-1087]
+peak WS MB             1864 [1863-1865]        1864 [1863-1865]        1864 [1864-1865]        1865 [1865-1866]        1865 [1865-1866]
+  fps      B1-B0 A4 +0.064 (no measurable difference (|d| <= spread 0.586)) | B2-B1 A12 -0.052 (no measurable difference (|d| <= spread 0.77)) | B3-B2 TCC +0.576 (no measurable difference (|d| <= spread 0.77)) | B3-B0 t8-t7 +0.587 (separated 5/5) | A/A B0q-B0 +0.266 (no measurable difference (|d| <= spread 0.374))
+  w50      B1-B0 A4 +0.053 (no measurable difference (|d| <= spread 0.112)) | B2-B1 A12 -0.030 (no measurable difference (|d| <= spread 0.112)) | B3-B2 TCC +0.073 (no measurable difference (|d| <= spread 0.177)) | B3-B0 t8-t7 +0.096 (no measurable difference (|d| <= spread 0.177)) | A/A B0q-B0 +0.080 (no measurable difference (|d| <= spread 0.103))
+  w95      B1-B0 A4 +0.054 (no measurable difference (|d| <= spread 0.655)) | B2-B1 A12 -0.002 (no measurable difference (|d| <= spread 0.655)) | B3-B2 TCC +0.070 (no measurable difference (|d| <= spread 0.54)) | B3-B0 t8-t7 +0.122 (no measurable difference (|d| <= spread 0.54)) | A/A B0q-B0 +0.081 (no measurable difference (|d| <= spread 0.239))
+  w99      B1-B0 A4 -0.115 (no measurable difference (|d| <= spread 0.516)) | B2-B1 A12 +0.234 (no measurable difference (|d| <= spread 0.504)) | B3-B2 TCC -0.225 (no measurable difference (|d| <= spread 0.504)) | B3-B0 t8-t7 -0.107 (no measurable difference (|d| <= spread 0.516)) | A/A B0q-B0 -0.056 (no measurable difference (|d| <= spread 0.516))
+  ev50     B1-B0 A4 -0.031 (no measurable difference (|d| <= spread 0.298)) | B2-B1 A12 -0.041 (no measurable difference (|d| <= spread 0.298)) | B3-B2 TCC +0.152 (no measurable difference (|d| <= spread 0.453)) | B3-B0 t8-t7 +0.079 (no measurable difference (|d| <= spread 0.453)) | A/A B0q-B0 +0.120 (no measurable difference (|d| <= spread 0.434))
+  ev95     B1-B0 A4 -0.013 (no measurable difference (|d| <= spread 0.733)) | B2-B1 A12 +0.355 (no measurable difference (|d| <= spread 1.13)) | B3-B2 TCC -0.373 (no measurable difference (|d| <= spread 1.18)) | B3-B0 t8-t7 -0.030 (no measurable difference (|d| <= spread 1.18)) | A/A B0q-B0 +0.596 (no measurable difference (|d| <= spread 1.25))
+  ev99     B1-B0 A4 -0.096 (no measurable difference (|d| <= spread 0.748)) | B2-B1 A12 +0.283 (no measurable difference (|d| <= spread 1.92)) | B3-B2 TCC -0.265 (no measurable difference (|d| <= spread 1.92)) | B3-B0 t8-t7 -0.078 (no measurable difference (|d| <= spread 1.2)) | A/A B0q-B0 +0.656 (no measurable difference (|d| <= spread 1.3))
+  zv50     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  zv95     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  comp_ms  B1-B0 A4 -0.042 (no measurable difference (|d| <= spread 0.138)) | B2-B1 A12 +0.051 (no measurable difference (|d| <= spread 0.0832)) | B3-B2 TCC -0.057 (no measurable difference (|d| <= spread 0.104)) | B3-B0 t8-t7 -0.048 (no measurable difference (|d| <= spread 0.138)) | A/A B0q-B0 -0.039 (no measurable difference (|d| <= spread 0.138))
+  peak     B1-B0 A4 +0.500 (no measurable difference (|d| <= spread 1.5)) | B2-B1 A12 +0.700 (no measurable difference (|d| <= spread 1.5)) | B3-B2 TCC +0.100 (no measurable difference (|d| <= spread 1.3)) | B3-B0 t8-t7 +1.300 (separated 5/5) | A/A B0q-B0 -0.100 (no measurable difference (|d| <= spread 1.9))
+
+== PF static  (runs: B0 5, B0q 5, B1 5, B2 5, B3 5)
+                                     B0                     B0q                      B1                      B2                      B3
+FPS              100.00 [100.00-100.00]  100.00 [100.00-100.01]  100.00 [100.00-100.00]  100.00 [100.00-100.00]  100.00 [100.00-100.00]
+work P50 ms         1.935 [1.922-2.841]     2.047 [1.860-2.534]     1.909 [1.845-2.454]     2.264 [1.866-2.470]     2.135 [1.908-2.637]
+work P95            3.263 [3.220-3.320]     3.260 [3.232-3.332]     3.227 [3.179-3.313]     3.238 [3.161-3.290]     3.263 [3.212-3.403]
+work P99            3.514 [3.410-3.585]     3.493 [3.398-3.656]     3.479 [3.355-3.505]     3.473 [3.399-3.474]     3.488 [3.398-3.665]
+event frames                    0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]
+event P50 ms                          -                       -                       -                       -                       -
+event P95                             -                       -                       -                       -                       -
+event P99                             -                       -                       -                       -                       -
+zoom ev frames                  0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]
+zoom ev P50                           -                       -                       -                       -                       -
+zoom ev P95                           -                       -                       -                       -                       -
+compositions                    0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]
+comp CPU ms               0.0 [0.0-0.0]           0.0 [0.0-0.0]           0.0 [0.0-0.0]           0.0 [0.0-0.0]           0.0 [0.0-0.0]
+hit ratio                             -                       -                       -                       -                       -
+held KB                         0 [0-0]                 0 [0-0]                 0 [0-0]           799 [799-799]           799 [799-799]
+peak WS MB             1864 [1863-1864]        1864 [1863-1864]        1864 [1855-1865]        1864 [1864-1865]        1864 [1863-1864]
+  fps      B1-B0 A4 +0.001 (no measurable difference (|d| <= spread 0.00506)) | B2-B1 A12 +0.002 (no measurable difference (|d| <= spread 0.0067)) | B3-B2 TCC -0.003 (no measurable difference (|d| <= spread 0.0067)) | B3-B0 t8-t7 -0.000 (no measurable difference (|d| <= spread 0.00604)) | A/A B0q-B0 +0.001 (no measurable difference (|d| <= spread 0.00844))
+  w50      B1-B0 A4 -0.026 (no measurable difference (|d| <= spread 0.919)) | B2-B1 A12 +0.355 (no measurable difference (|d| <= spread 0.61)) | B3-B2 TCC -0.129 (no measurable difference (|d| <= spread 0.73)) | B3-B0 t8-t7 +0.200 (no measurable difference (|d| <= spread 0.919)) | A/A B0q-B0 +0.112 (no measurable difference (|d| <= spread 0.919))
+  w95      B1-B0 A4 -0.037 (no measurable difference (|d| <= spread 0.133)) | B2-B1 A12 +0.011 (no measurable difference (|d| <= spread 0.133)) | B3-B2 TCC +0.026 (no measurable difference (|d| <= spread 0.191)) | B3-B0 t8-t7 -0.000 (no measurable difference (|d| <= spread 0.191)) | A/A B0q-B0 -0.004 (no measurable difference (|d| <= spread 0.1))
+  w99      B1-B0 A4 -0.034 (no measurable difference (|d| <= spread 0.175)) | B2-B1 A12 -0.006 (no measurable difference (|d| <= spread 0.149)) | B3-B2 TCC +0.015 (no measurable difference (|d| <= spread 0.267)) | B3-B0 t8-t7 -0.026 (no measurable difference (|d| <= spread 0.267)) | A/A B0q-B0 -0.021 (no measurable difference (|d| <= spread 0.258))
+  ev50     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  ev95     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  ev99     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  zv50     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  zv95     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  comp_ms  B1-B0 A4 +0.000 (no measurable difference (|d| <= spread 0)) | B2-B1 A12 +0.000 (no measurable difference (|d| <= spread 0)) | B3-B2 TCC +0.000 (no measurable difference (|d| <= spread 0)) | B3-B0 t8-t7 +0.000 (no measurable difference (|d| <= spread 0)) | A/A B0q-B0 +0.000 (no measurable difference (|d| <= spread 0))
+  peak     B1-B0 A4 +0.300 (no measurable difference (|d| <= spread 9.9)) | B2-B1 A12 -0.100 (no measurable difference (|d| <= spread 9.9)) | B3-B2 TCC +0.100 (no measurable difference (|d| <= spread 1.1)) | B3-B0 t8-t7 +0.300 (no measurable difference (|d| <= spread 1.1)) | A/A B0q-B0 +0.200 (no measurable difference (|d| <= spread 1.1))
+
+== PF zoomx  (runs: B0 5, B0q 5, B1 5, B2 5, B3 5)
+                                     B0                     B0q                      B1                      B2                      B3
+FPS                 73.16 [72.97-73.32]     73.37 [72.39-73.50]     73.23 [72.92-73.69]     73.42 [72.98-73.60]     73.38 [73.30-73.72]
+work P50 ms         2.308 [2.255-2.341]     2.381 [2.263-2.593]     2.320 [2.180-2.411]     2.266 [2.246-2.369]     2.341 [2.246-2.487]
+work P95         27.789 [27.129-28.629]  27.883 [27.646-28.179]  27.468 [27.075-27.973]  27.563 [26.917-27.691]  27.480 [26.810-27.788]
+work P99         46.443 [46.407-48.600]  46.923 [45.830-48.221]  47.210 [45.451-49.544]  46.614 [44.817-47.590]  45.231 [43.323-46.159]
+event frames              120 [118-123]           121 [116-124]           119 [117-124]           122 [119-123]           119 [117-126]
+event P50 ms     21.526 [20.948-21.658]  21.264 [20.550-21.403]  21.598 [20.299-22.395]  21.107 [20.558-21.912]  21.024 [19.959-21.733]
+event P95        46.578 [46.360-48.511]  46.920 [45.826-48.194]  47.213 [45.431-49.627]  46.659 [44.785-47.622]  44.867 [43.365-46.323]
+event P99        54.173 [50.991-61.529]  50.320 [48.963-61.056]  52.562 [50.514-56.633]  52.978 [51.644-59.541]  52.600 [47.399-56.255]
+zoom ev frames            111 [109-115]           113 [106-116]           110 [109-116]           114 [110-115]           111 [110-116]
+zoom ev P50      22.196 [21.797-22.586]  22.077 [21.356-22.281]  22.433 [21.765-22.775]  21.978 [21.518-22.352]  22.181 [21.227-22.388]
+zoom ev P95      47.457 [46.561-49.645]  47.007 [46.002-48.445]  47.233 [45.659-49.867]  46.881 [45.638-47.984]  45.879 [43.525-46.627]
+compositions           2781 [2772-2781]        2781 [2772-2781]        2781 [2772-2781]           193 [193-193]           193 [184-193]
+comp CPU ms            84.8 [83.7-85.4]        86.2 [84.4-92.0]        85.7 [83.9-87.4]           7.2 [6.4-8.3]           7.5 [6.6-8.3]
+hit ratio                             -                       -                       -     0.931 [0.931-0.931]     0.931 [0.931-0.934]
+held KB                         0 [0-0]                 0 [0-0]                 0 [0-0]        8029 [8029-8029]        8029 [7693-8029]
+peak WS MB             1895 [1895-1896]        1896 [1895-1897]        1895 [1894-1896]        1901 [1900-1902]        1901 [1899-1909]
+  fps      B1-B0 A4 +0.069 (no measurable difference (|d| <= spread 0.772)) | B2-B1 A12 +0.187 (no measurable difference (|d| <= spread 0.772)) | B3-B2 TCC -0.039 (no measurable difference (|d| <= spread 0.62)) | B3-B0 t8-t7 +0.217 (no measurable difference (|d| <= spread 0.424)) | A/A B0q-B0 +0.207 (no measurable difference (|d| <= spread 1.11))
+  w50      B1-B0 A4 +0.012 (no measurable difference (|d| <= spread 0.231)) | B2-B1 A12 -0.053 (no measurable difference (|d| <= spread 0.231)) | B3-B2 TCC +0.074 (no measurable difference (|d| <= spread 0.241)) | B3-B0 t8-t7 +0.033 (no measurable difference (|d| <= spread 0.241)) | A/A B0q-B0 +0.073 (no measurable difference (|d| <= spread 0.331))
+  w95      B1-B0 A4 -0.321 (no measurable difference (|d| <= spread 1.5)) | B2-B1 A12 +0.096 (no measurable difference (|d| <= spread 0.899)) | B3-B2 TCC -0.083 (no measurable difference (|d| <= spread 0.977)) | B3-B0 t8-t7 -0.308 (no measurable difference (|d| <= spread 1.5)) | A/A B0q-B0 +0.094 (no measurable difference (|d| <= spread 1.5))
+  w99      B1-B0 A4 +0.767 (no measurable difference (|d| <= spread 4.09)) | B2-B1 A12 -0.595 (no measurable difference (|d| <= spread 4.09)) | B3-B2 TCC -1.384 (no measurable difference (|d| <= spread 2.84)) | B3-B0 t8-t7 -1.212 (separated 5/5) | A/A B0q-B0 +0.480 (no measurable difference (|d| <= spread 2.39))
+  ev50     B1-B0 A4 +0.072 (no measurable difference (|d| <= spread 2.1)) | B2-B1 A12 -0.491 (no measurable difference (|d| <= spread 2.1)) | B3-B2 TCC -0.083 (no measurable difference (|d| <= spread 1.77)) | B3-B0 t8-t7 -0.502 (no measurable difference (|d| <= spread 1.77)) | A/A B0q-B0 -0.262 (no measurable difference (|d| <= spread 0.853))
+  ev95     B1-B0 A4 +0.635 (no measurable difference (|d| <= spread 4.2)) | B2-B1 A12 -0.555 (no measurable difference (|d| <= spread 4.2)) | B3-B2 TCC -1.791 (no measurable difference (|d| <= spread 2.96)) | B3-B0 t8-t7 -1.711 (separated 5/5) | A/A B0q-B0 +0.342 (no measurable difference (|d| <= spread 2.37))
+  ev99     B1-B0 A4 -1.610 (no measurable difference (|d| <= spread 10.5)) | B2-B1 A12 +0.416 (no measurable difference (|d| <= spread 7.9)) | B3-B2 TCC -0.378 (no measurable difference (|d| <= spread 8.86)) | B3-B0 t8-t7 -1.572 (no measurable difference (|d| <= spread 10.5)) | A/A B0q-B0 -3.852 (no measurable difference (|d| <= spread 12.1))
+  zv50     B1-B0 A4 +0.237 (no measurable difference (|d| <= spread 1.01)) | B2-B1 A12 -0.455 (no measurable difference (|d| <= spread 1.01)) | B3-B2 TCC +0.203 (no measurable difference (|d| <= spread 1.16)) | B3-B0 t8-t7 -0.015 (no measurable difference (|d| <= spread 1.16)) | A/A B0q-B0 -0.119 (no measurable difference (|d| <= spread 0.925))
+  zv95     B1-B0 A4 -0.225 (no measurable difference (|d| <= spread 4.21)) | B2-B1 A12 -0.352 (no measurable difference (|d| <= spread 4.21)) | B3-B2 TCC -1.002 (no measurable difference (|d| <= spread 3.1)) | B3-B0 t8-t7 -1.578 (no measurable difference (|d| <= spread 3.1)) | A/A B0q-B0 -0.450 (no measurable difference (|d| <= spread 3.08))
+  comp_ms  B1-B0 A4 +0.872 (no measurable difference (|d| <= spread 3.52)) | B2-B1 A12 -78.516 (separated 5/5) | B3-B2 TCC +0.332 (no measurable difference (|d| <= spread 1.92)) | B3-B0 t8-t7 -77.313 (separated 5/5) | A/A B0q-B0 +1.367 (no measurable difference (|d| <= spread 7.61))
+  peak     B1-B0 A4 -0.500 (no measurable difference (|d| <= spread 1.9)) | B2-B1 A12 +5.800 (separated 5/5) | B3-B2 TCC +0.200 (no measurable difference (|d| <= spread 10.5)) | B3-B0 t8-t7 +5.500 (separated 5/5) | A/A B0q-B0 +0.500 (no measurable difference (|d| <= spread 1.9))
+
+== PT daynight  (runs: B0 5, B0q 5, B1 5, B2 5, B3 5)
+                                     B0                     B0q                      B1                      B2                      B3
+FPS              100.00 [100.00-100.00]   100.00 [99.99-100.01]  100.00 [100.00-100.01]  100.00 [100.00-100.00]   100.00 [99.92-100.01]
+work P50 ms         3.056 [2.904-3.072]     2.987 [2.750-3.096]     3.030 [2.903-3.085]     3.060 [3.026-3.129]     3.133 [3.068-3.194]
+work P95            6.490 [6.210-6.677]     6.417 [6.022-6.590]     6.582 [6.421-6.652]     5.700 [5.587-5.775]     5.658 [5.603-6.220]
+work P99            7.334 [7.105-8.333]     7.267 [6.628-7.626]     7.118 [7.099-7.954]     6.176 [6.056-6.817]     6.387 [6.312-7.807]
+event frames                 65 [65-65]              65 [65-65]              65 [65-65]              65 [65-65]              65 [65-65]
+event P50 ms        6.405 [6.079-6.653]     6.379 [5.975-6.557]     6.517 [6.401-6.561]     5.603 [5.497-5.744]     5.582 [5.531-5.953]
+event P95           7.916 [7.219-8.701]     7.619 [6.863-8.185]     7.504 [7.297-8.378]     6.518 [6.091-7.719]     7.115 [6.495-8.316]
+event P99           8.960 [8.039-9.354]     8.356 [7.794-9.282]     8.741 [8.295-9.253]     7.738 [6.736-8.096]     7.853 [7.437-8.577]
+zoom ev frames                  0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]
+zoom ev P50                           -                       -                       -                       -                       -
+zoom ev P95                           -                       -                       -                       -                       -
+compositions           2600 [2600-2600]        2600 [2600-2600]        2600 [2600-2600]                 0 [0-0]                 0 [0-0]
+comp CPU ms            74.8 [73.6-76.2]        74.3 [73.6-76.1]        74.7 [74.0-77.4]           0.0 [0.0-0.0]           0.0 [0.0-0.0]
+hit ratio                             -                       -                       -     1.000 [1.000-1.000]     1.000 [1.000-1.000]
+held KB                         0 [0-0]                 0 [0-0]                 0 [0-0]        1295 [1295-1295]        1295 [1295-1295]
+peak WS MB             1859 [1859-1860]        1859 [1859-1859]        1860 [1860-1860]        1860 [1859-1861]        1861 [1861-1862]
+  fps      B1-B0 A4 +0.006 (no measurable difference (|d| <= spread 0.0105)) | B2-B1 A12 -0.004 (no measurable difference (|d| <= spread 0.0105)) | B3-B2 TCC +0.000 (no measurable difference (|d| <= spread 0.0834)) | B3-B0 t8-t7 +0.001 (no measurable difference (|d| <= spread 0.0834)) | A/A B0q-B0 +0.002 (no measurable difference (|d| <= spread 0.0157))
+  w50      B1-B0 A4 -0.026 (no measurable difference (|d| <= spread 0.182)) | B2-B1 A12 +0.030 (no measurable difference (|d| <= spread 0.182)) | B3-B2 TCC +0.074 (no measurable difference (|d| <= spread 0.127)) | B3-B0 t8-t7 +0.077 (no measurable difference (|d| <= spread 0.168)) | A/A B0q-B0 -0.069 (no measurable difference (|d| <= spread 0.346))
+  w95      B1-B0 A4 +0.092 (no measurable difference (|d| <= spread 0.467)) | B2-B1 A12 -0.882 (separated 5/5) | B3-B2 TCC -0.042 (no measurable difference (|d| <= spread 0.617)) | B3-B0 t8-t7 -0.832 (overlap) | A/A B0q-B0 -0.073 (no measurable difference (|d| <= spread 0.568))
+  w99      B1-B0 A4 -0.217 (no measurable difference (|d| <= spread 1.23)) | B2-B1 A12 -0.942 (separated 5/5) | B3-B2 TCC +0.210 (no measurable difference (|d| <= spread 1.5)) | B3-B0 t8-t7 -0.948 (no measurable difference (|d| <= spread 1.5)) | A/A B0q-B0 -0.068 (no measurable difference (|d| <= spread 1.23))
+  ev50     B1-B0 A4 +0.112 (no measurable difference (|d| <= spread 0.574)) | B2-B1 A12 -0.915 (separated 5/5) | B3-B2 TCC -0.020 (no measurable difference (|d| <= spread 0.422)) | B3-B0 t8-t7 -0.823 (separated 5/5) | A/A B0q-B0 -0.026 (no measurable difference (|d| <= spread 0.582))
+  ev95     B1-B0 A4 -0.412 (no measurable difference (|d| <= spread 1.48)) | B2-B1 A12 -0.986 (no measurable difference (|d| <= spread 1.63)) | B3-B2 TCC +0.597 (no measurable difference (|d| <= spread 1.82)) | B3-B0 t8-t7 -0.801 (no measurable difference (|d| <= spread 1.82)) | A/A B0q-B0 -0.297 (no measurable difference (|d| <= spread 1.48))
+  ev99     B1-B0 A4 -0.219 (no measurable difference (|d| <= spread 1.32)) | B2-B1 A12 -1.003 (separated 5/5) | B3-B2 TCC +0.115 (no measurable difference (|d| <= spread 1.36)) | B3-B0 t8-t7 -1.107 (no measurable difference (|d| <= spread 1.32)) | A/A B0q-B0 -0.604 (no measurable difference (|d| <= spread 1.49))
+  zv50     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  zv95     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  comp_ms  B1-B0 A4 -0.147 (no measurable difference (|d| <= spread 3.35)) | B2-B1 A12 -74.670 (separated 5/5) | B3-B2 TCC +0.000 (no measurable difference (|d| <= spread 0)) | B3-B0 t8-t7 -74.817 (separated 5/5) | A/A B0q-B0 -0.565 (no measurable difference (|d| <= spread 2.57))
+  peak     B1-B0 A4 +0.600 (no measurable difference (|d| <= spread 1.2)) | B2-B1 A12 +0.100 (no measurable difference (|d| <= spread 2.1)) | B3-B2 TCC +0.600 (no measurable difference (|d| <= spread 2.1)) | B3-B0 t8-t7 +1.300 (separated 5/5) | A/A B0q-B0 +0.000 (no measurable difference (|d| <= spread 1.2))
+
+== PT static  (runs: B0 5, B0q 5, B1 5, B2 5, B3 5)
+                                     B0                     B0q                      B1                      B2                      B3
+FPS               100.00 [99.99-100.00]   100.00 [99.99-100.00]   100.00 [99.93-100.00]  100.00 [100.00-100.00]   100.00 [99.99-100.00]
+work P50 ms         2.742 [2.711-2.866]     2.778 [2.633-2.798]     2.702 [2.604-2.819]     2.704 [2.659-2.779]     2.780 [2.688-2.802]
+work P95            3.556 [3.529-3.589]     3.627 [3.551-3.637]     3.545 [3.508-3.700]     3.550 [3.190-3.613]     3.565 [3.537-3.599]
+work P99            3.805 [3.710-3.921]     3.847 [3.700-4.027]     3.749 [3.720-3.886]     3.769 [3.560-3.847]     3.856 [3.682-3.913]
+event frames                    0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]
+event P50 ms                          -                       -                       -                       -                       -
+event P95                             -                       -                       -                       -                       -
+event P99                             -                       -                       -                       -                       -
+zoom ev frames                  0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]
+zoom ev P50                           -                       -                       -                       -                       -
+zoom ev P95                           -                       -                       -                       -                       -
+compositions                    0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]                 0 [0-0]
+comp CPU ms               0.0 [0.0-0.0]           0.0 [0.0-0.0]           0.0 [0.0-0.0]           0.0 [0.0-0.0]           0.0 [0.0-0.0]
+hit ratio                             -                       -                       -                       -                       -
+held KB                         0 [0-0]                 0 [0-0]                 0 [0-0]        1295 [1295-1295]        1295 [1295-1295]
+peak WS MB             1860 [1859-1860]        1860 [1849-1860]        1860 [1859-1860]        1860 [1860-1861]        1861 [1860-1861]
+  fps      B1-B0 A4 -0.000 (no measurable difference (|d| <= spread 0.0719)) | B2-B1 A12 +0.003 (no measurable difference (|d| <= spread 0.0719)) | B3-B2 TCC -0.002 (no measurable difference (|d| <= spread 0.0132)) | B3-B0 t8-t7 +0.001 (no measurable difference (|d| <= spread 0.0132)) | A/A B0q-B0 +0.001 (no measurable difference (|d| <= spread 0.0153))
+  w50      B1-B0 A4 -0.040 (no measurable difference (|d| <= spread 0.215)) | B2-B1 A12 +0.003 (no measurable difference (|d| <= spread 0.215)) | B3-B2 TCC +0.075 (no measurable difference (|d| <= spread 0.121)) | B3-B0 t8-t7 +0.038 (no measurable difference (|d| <= spread 0.154)) | A/A B0q-B0 +0.036 (no measurable difference (|d| <= spread 0.164))
+  w95      B1-B0 A4 -0.011 (no measurable difference (|d| <= spread 0.192)) | B2-B1 A12 +0.004 (no measurable difference (|d| <= spread 0.423)) | B3-B2 TCC +0.015 (no measurable difference (|d| <= spread 0.423)) | B3-B0 t8-t7 +0.008 (no measurable difference (|d| <= spread 0.0617)) | A/A B0q-B0 +0.071 (no measurable difference (|d| <= spread 0.0858))
+  w99      B1-B0 A4 -0.056 (no measurable difference (|d| <= spread 0.211)) | B2-B1 A12 +0.019 (no measurable difference (|d| <= spread 0.286)) | B3-B2 TCC +0.088 (no measurable difference (|d| <= spread 0.286)) | B3-B0 t8-t7 +0.051 (no measurable difference (|d| <= spread 0.231)) | A/A B0q-B0 +0.041 (no measurable difference (|d| <= spread 0.327))
+  ev50     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  ev95     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  ev99     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  zv50     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  zv95     B1-B0 A4 +nan (n/a) | B2-B1 A12 +nan (n/a) | B3-B2 TCC +nan (n/a) | B3-B0 t8-t7 +nan (n/a) | A/A B0q-B0 +nan (n/a)
+  comp_ms  B1-B0 A4 +0.000 (no measurable difference (|d| <= spread 0)) | B2-B1 A12 +0.000 (no measurable difference (|d| <= spread 0)) | B3-B2 TCC +0.000 (no measurable difference (|d| <= spread 0)) | B3-B0 t8-t7 +0.000 (no measurable difference (|d| <= spread 0)) | A/A B0q-B0 +0.000 (no measurable difference (|d| <= spread 0))
+  peak     B1-B0 A4 +0.000 (no measurable difference (|d| <= spread 1.5)) | B2-B1 A12 +0.300 (no measurable difference (|d| <= spread 1.2)) | B3-B2 TCC +0.700 (no measurable difference (|d| <= spread 1.2)) | B3-B0 t8-t7 +1.000 (no measurable difference (|d| <= spread 1.5)) | A/A B0q-B0 -0.200 (no measurable difference (|d| <= spread 11))
+
+== PT zoomx  (runs: B0 5, B0q 5, B1 5, B2 5, B3 5)
+                                     B0                     B0q                      B1                      B2                      B3
+FPS                 82.10 [81.51-82.26]     82.16 [81.54-82.31]     82.13 [81.58-82.40]     82.17 [81.87-82.53]     82.43 [81.79-82.68]
+work P50 ms         2.563 [2.537-2.631]     2.546 [2.506-2.610]     2.600 [2.551-2.627]     2.556 [2.500-2.589]     2.531 [2.485-2.676]
+work P95         16.610 [15.732-17.275]  16.823 [15.924-17.138]  16.752 [16.431-17.285]  16.259 [15.867-16.989]  16.311 [15.987-16.773]
+work P99         23.968 [23.243-25.262]  24.083 [23.147-24.550]  24.440 [23.862-24.999]  23.358 [23.240-24.295]  23.417 [22.223-23.829]
+event frames              119 [115-121]           119 [117-121]           119 [117-121]           119 [117-123]           119 [117-120]
+event P50 ms     10.960 [10.649-11.223]   10.719 [9.737-11.458]  10.805 [10.696-11.572]    9.986 [9.811-10.331]   10.368 [9.479-10.989]
+event P95        24.134 [23.238-25.333]  24.246 [23.141-24.595]  24.626 [23.868-25.015]  23.340 [23.277-24.294]  23.448 [22.282-23.834]
+event P99        27.260 [24.767-30.664]  26.808 [25.315-29.064]  26.125 [24.654-27.622]  26.243 [24.922-28.477]  26.339 [25.292-27.079]
+zoom ev frames            109 [108-112]           109 [107-114]           110 [107-112]           110 [107-113]           110 [108-110]
+zoom ev P50      11.622 [11.170-12.540]  12.042 [11.289-13.021]  11.520 [11.089-12.358]  11.097 [10.466-11.662]  10.923 [10.487-11.494]
+zoom ev P95      24.390 [23.463-25.561]  24.517 [23.450-24.840]  24.792 [23.878-25.174]  23.806 [23.384-24.319]  23.490 [23.019-23.864]
+compositions           3576 [3559-3593]        3581 [3554-3581]        3569 [3554-3593]           279 [267-291]           286 [262-286]
+comp CPU ms          102.5 [77.8-103.8]      103.9 [76.5-105.0]      103.6 [99.8-104.2]           7.5 [6.2-8.2]           7.0 [7.0-7.2]
+hit ratio                             -                       -                       -     0.922 [0.919-0.925]     0.920 [0.920-0.926]
+held KB                         0 [0-0]                 0 [0-0]                 0 [0-0]     12008 [11624-12392]     12121 [11352-12121]
+peak WS MB             1880 [1879-1886]        1878 [1873-1891]        1879 [1874-1885]        1886 [1878-1896]        1886 [1885-1896]
+  fps      B1-B0 A4 +0.039 (no measurable difference (|d| <= spread 0.822)) | B2-B1 A12 +0.031 (no measurable difference (|d| <= spread 0.822)) | B3-B2 TCC +0.261 (no measurable difference (|d| <= spread 0.895)) | B3-B0 t8-t7 +0.331 (no measurable difference (|d| <= spread 0.895)) | A/A B0q-B0 +0.064 (no measurable difference (|d| <= spread 0.767))
+  w50      B1-B0 A4 +0.037 (no measurable difference (|d| <= spread 0.0947)) | B2-B1 A12 -0.044 (no measurable difference (|d| <= spread 0.0887)) | B3-B2 TCC -0.025 (no measurable difference (|d| <= spread 0.191)) | B3-B0 t8-t7 -0.032 (no measurable difference (|d| <= spread 0.191)) | A/A B0q-B0 -0.017 (no measurable difference (|d| <= spread 0.104))
+  w95      B1-B0 A4 +0.142 (no measurable difference (|d| <= spread 1.54)) | B2-B1 A12 -0.492 (no measurable difference (|d| <= spread 1.12)) | B3-B2 TCC +0.052 (no measurable difference (|d| <= spread 1.12)) | B3-B0 t8-t7 -0.298 (no measurable difference (|d| <= spread 1.54)) | A/A B0q-B0 +0.214 (no measurable difference (|d| <= spread 1.54))
+  w99      B1-B0 A4 +0.472 (no measurable difference (|d| <= spread 2.02)) | B2-B1 A12 -1.082 (no measurable difference (|d| <= spread 1.14)) | B3-B2 TCC +0.059 (no measurable difference (|d| <= spread 1.61)) | B3-B0 t8-t7 -0.550 (no measurable difference (|d| <= spread 2.02)) | A/A B0q-B0 +0.115 (no measurable difference (|d| <= spread 2.02))
+  ev50     B1-B0 A4 -0.155 (no measurable difference (|d| <= spread 0.876)) | B2-B1 A12 -0.819 (separated 5/5) | B3-B2 TCC +0.382 (no measurable difference (|d| <= spread 1.51)) | B3-B0 t8-t7 -0.592 (no measurable difference (|d| <= spread 1.51)) | A/A B0q-B0 -0.241 (no measurable difference (|d| <= spread 1.72))
+  ev95     B1-B0 A4 +0.492 (no measurable difference (|d| <= spread 2.09)) | B2-B1 A12 -1.286 (overlap) | B3-B2 TCC +0.108 (no measurable difference (|d| <= spread 1.55)) | B3-B0 t8-t7 -0.686 (no measurable difference (|d| <= spread 2.09)) | A/A B0q-B0 +0.112 (no measurable difference (|d| <= spread 2.09))
+  ev99     B1-B0 A4 -1.135 (no measurable difference (|d| <= spread 5.9)) | B2-B1 A12 +0.118 (no measurable difference (|d| <= spread 3.56)) | B3-B2 TCC +0.096 (no measurable difference (|d| <= spread 3.56)) | B3-B0 t8-t7 -0.920 (no measurable difference (|d| <= spread 5.9)) | A/A B0q-B0 -0.451 (no measurable difference (|d| <= spread 5.9))
+  zv50     B1-B0 A4 -0.102 (no measurable difference (|d| <= spread 1.37)) | B2-B1 A12 -0.423 (no measurable difference (|d| <= spread 1.27)) | B3-B2 TCC -0.174 (no measurable difference (|d| <= spread 1.2)) | B3-B0 t8-t7 -0.699 (no measurable difference (|d| <= spread 1.37)) | A/A B0q-B0 +0.420 (no measurable difference (|d| <= spread 1.73))
+  zv95     B1-B0 A4 +0.403 (no measurable difference (|d| <= spread 2.1)) | B2-B1 A12 -0.986 (no measurable difference (|d| <= spread 1.3)) | B3-B2 TCC -0.315 (no measurable difference (|d| <= spread 0.935)) | B3-B0 t8-t7 -0.899 (no measurable difference (|d| <= spread 2.1)) | A/A B0q-B0 +0.128 (no measurable difference (|d| <= spread 2.1))
+  comp_ms  B1-B0 A4 +1.152 (no measurable difference (|d| <= spread 26.1)) | B2-B1 A12 -96.159 (separated 5/5) | B3-B2 TCC -0.472 (no measurable difference (|d| <= spread 1.99)) | B3-B0 t8-t7 -95.479 (separated 5/5) | A/A B0q-B0 +1.379 (no measurable difference (|d| <= spread 28.5))
+  peak     B1-B0 A4 -0.200 (no measurable difference (|d| <= spread 11.5)) | B2-B1 A12 +6.500 (no measurable difference (|d| <= spread 17.8)) | B3-B2 TCC -0.100 (no measurable difference (|d| <= spread 17.8)) | B3-B0 t8-t7 +6.200 (no measurable difference (|d| <= spread 11.1)) | A/A B0q-B0 -1.100 (no measurable difference (|d| <= spread 18.1))

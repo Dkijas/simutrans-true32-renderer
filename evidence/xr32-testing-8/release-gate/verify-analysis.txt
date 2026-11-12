@@ -1,0 +1,171 @@
+phase | rep | scen | cfg | exe | rc | frames | verified | mismatching | max px | video
+VC | 1 | coastscroll | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | coastscroll | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | coastscroll | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | coastscroll | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | coastzoom | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | coastzoom | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | coastzoom | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | coastzoom | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | coastnight | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | coastnight | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | coastnight | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | coastnight | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | windows | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | windows | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | windows | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | windows | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | playercolor | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | playercolor | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | playercolor | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | playercolor | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | fullscreen | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | fullscreen | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | fullscreen | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | fullscreen | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | resize | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | resize | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 1 | resize | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 1 | resize | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | coastscroll | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | coastscroll | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | coastscroll | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | coastscroll | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | coastzoom | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | coastzoom | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | coastzoom | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | coastzoom | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | coastnight | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | coastnight | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | coastnight | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | coastnight | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | windows | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | windows | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | windows | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | windows | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | playercolor | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | playercolor | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | playercolor | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | playercolor | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | fullscreen | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | fullscreen | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | fullscreen | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | fullscreen | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | resize | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VC | 2 | resize | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VC | 2 | resize | s2-B3 | f63d83a2 | 0 | 600 | 60 | 2 | 3 | windows/direct3d
+VC | 2 | resize | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 1 | zoomx | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 1 | zoomx | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 1 | zoomx | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 1 | zoomx | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 1 | daynight | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 1 | daynight | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 1 | daynight | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 1 | daynight | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 1 | scroll | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 1 | scroll | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 1 | scroll | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 1 | scroll | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 2 | zoomx | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 2 | zoomx | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 2 | zoomx | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 2 | zoomx | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 2 | daynight | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 2 | daynight | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 2 | daynight | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 2 | daynight | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 2 | scroll | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VT | 2 | scroll | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 2 | scroll | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VT | 2 | scroll | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VF | 1 | vehicles | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VF | 1 | vehicles | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VF | 1 | vehicles | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VF | 1 | vehicles | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VF | 1 | zoom | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VF | 1 | zoom | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VF | 1 | zoom | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VF | 1 | zoom | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VF | 2 | vehicles | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VF | 2 | vehicles | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VF | 2 | vehicles | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VF | 2 | vehicles | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VF | 2 | zoom | s3-B3 | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VF | 2 | zoom | s2-B0 | bbc33f5e | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VF | 2 | zoom | s2-B3 | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d
+VF | 2 | zoom | s3-B0 | 7ab6a437 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11
+VX | 1 | coastscroll | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 0 | 0 | windows/direct3d11  CONTROL
+VX | 1 | coastscroll | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 0 | 0 | windows/direct3d  CONTROL
+VX | 1 | windows | s3-B3-droprect | 8b46d0c9 | 0 | 600 | 60 | 59 | 117951 | windows/direct3d11  CONTROL
+VX | 1 | windows | s2-B3-droprect | f63d83a2 | 0 | 600 | 60 | 59 | 117936 | windows/direct3d  CONTROL
+
+phase | scen | cfg | runs | runs with a mismatch | verified frames | mismatching frames | max px
+VC | coastnight | s2-B0 | 2 | 0 | 120 | 0 | 0
+VC | coastnight | s2-B3 | 2 | 0 | 120 | 0 | 0
+VC | coastnight | s3-B0 | 2 | 0 | 120 | 0 | 0
+VC | coastnight | s3-B3 | 2 | 0 | 120 | 0 | 0
+VC | coastscroll | s2-B0 | 2 | 0 | 120 | 0 | 0
+VC | coastscroll | s2-B3 | 2 | 0 | 120 | 0 | 0
+VC | coastscroll | s3-B0 | 2 | 0 | 120 | 0 | 0
+VC | coastscroll | s3-B3 | 2 | 0 | 120 | 0 | 0
+VC | coastzoom | s2-B0 | 2 | 0 | 120 | 0 | 0
+VC | coastzoom | s2-B3 | 2 | 0 | 120 | 0 | 0
+VC | coastzoom | s3-B0 | 2 | 0 | 120 | 0 | 0
+VC | coastzoom | s3-B3 | 2 | 0 | 120 | 0 | 0
+VC | fullscreen | s2-B0 | 2 | 0 | 120 | 0 | 0
+VC | fullscreen | s2-B3 | 2 | 0 | 120 | 0 | 0
+VC | fullscreen | s3-B0 | 2 | 0 | 120 | 0 | 0
+VC | fullscreen | s3-B3 | 2 | 0 | 120 | 0 | 0
+VC | playercolor | s2-B0 | 2 | 0 | 120 | 0 | 0
+VC | playercolor | s2-B3 | 2 | 0 | 120 | 0 | 0
+VC | playercolor | s3-B0 | 2 | 0 | 120 | 0 | 0
+VC | playercolor | s3-B3 | 2 | 0 | 120 | 0 | 0
+VC | resize | s2-B0 | 2 | 0 | 120 | 0 | 0
+VC | resize | s2-B3 | 2 | 1 | 120 | 2 | 3
+VC | resize | s3-B0 | 2 | 0 | 120 | 0 | 0
+VC | resize | s3-B3 | 2 | 0 | 120 | 0 | 0
+VC | windows | s2-B0 | 2 | 0 | 120 | 0 | 0
+VC | windows | s2-B3 | 2 | 0 | 120 | 0 | 0
+VC | windows | s3-B0 | 2 | 0 | 120 | 0 | 0
+VC | windows | s3-B3 | 2 | 0 | 120 | 0 | 0
+VF | vehicles | s2-B0 | 2 | 0 | 120 | 0 | 0
+VF | vehicles | s2-B3 | 2 | 0 | 120 | 0 | 0
+VF | vehicles | s3-B0 | 2 | 0 | 120 | 0 | 0
+VF | vehicles | s3-B3 | 2 | 0 | 120 | 0 | 0
+VF | zoom | s2-B0 | 2 | 0 | 120 | 0 | 0
+VF | zoom | s2-B3 | 2 | 0 | 120 | 0 | 0
+VF | zoom | s3-B0 | 2 | 0 | 120 | 0 | 0
+VF | zoom | s3-B3 | 2 | 0 | 120 | 0 | 0
+VT | daynight | s2-B0 | 2 | 0 | 120 | 0 | 0
+VT | daynight | s2-B3 | 2 | 0 | 120 | 0 | 0
+VT | daynight | s3-B0 | 2 | 0 | 120 | 0 | 0
+VT | daynight | s3-B3 | 2 | 0 | 120 | 0 | 0
+VT | scroll | s2-B0 | 2 | 0 | 120 | 0 | 0
+VT | scroll | s2-B3 | 2 | 0 | 120 | 0 | 0
+VT | scroll | s3-B0 | 2 | 0 | 120 | 0 | 0
+VT | scroll | s3-B3 | 2 | 0 | 120 | 0 | 0
+VT | zoomx | s2-B0 | 2 | 0 | 120 | 0 | 0
+VT | zoomx | s2-B3 | 2 | 0 | 120 | 0 | 0
+VT | zoomx | s3-B0 | 2 | 0 | 120 | 0 | 0
+VT | zoomx | s3-B3 | 2 | 0 | 120 | 0 | 0
+VX | coastscroll | s2-B3-droprect | 1 | 0 | 60 | 0 | 0
+VX | coastscroll | s3-B3-droprect | 1 | 0 | 60 | 0 | 0
+VX | windows | s2-B3-droprect | 1 | 1 | 60 | 59 | 117936
+VX | windows | s3-B3-droprect | 1 | 1 | 60 | 59 | 117951
+
+phase | cfg | runs | runs with a mismatch | verified frames | mismatching frames
+VC | s2-B0 | 14 | 0 | 840 | 0
+VC | s2-B3 | 14 | 1 | 840 | 2
+VC | s3-B0 | 14 | 0 | 840 | 0
+VC | s3-B3 | 14 | 0 | 840 | 0
+VF | s2-B0 | 4 | 0 | 240 | 0
+VF | s2-B3 | 4 | 0 | 240 | 0
+VF | s3-B0 | 4 | 0 | 240 | 0
+VF | s3-B3 | 4 | 0 | 240 | 0
+VT | s2-B0 | 6 | 0 | 360 | 0
+VT | s2-B3 | 6 | 0 | 360 | 0
+VT | s3-B0 | 6 | 0 | 360 | 0
+VT | s3-B3 | 6 | 0 | 360 | 0
+
+rule failures: 0

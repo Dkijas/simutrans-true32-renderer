@@ -1,0 +1,44 @@
+n4: fixture image 17137, players [0, 3, 5], plane 132x90 at (4,30), T0 out/tcw-T0-s3-C-n4, T1 out/tcw-F3-s3-C-n4
+   K player 0 key 1 = (255, 0, 0) (100 of 100 interior pixels agree)
+   K player 3 key 1 = (198, 180, 8) (100 of 100 interior pixels agree)
+   K player 5 key 1 = (77, 143, 29) (100 of 100 interior pixels agree)
+   K player 0 key 2 = (198, 180, 8) (100 of 100 interior pixels agree)
+   K player 3 key 2 = (0, 174, 158) (100 of 100 interior pixels agree)
+   K player 5 key 2 = (155, 98, 0) (100 of 100 interior pixels agree)
+PASS N1 n4 1/1 player 0: the n4 area differs from the day area (a night capture)
+PASS N2 n4 1/1 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 1/1 player 3: the n4 area differs from the day area (a night capture)
+PASS N2 n4 1/1 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 1/1 player 5: the n4 area differs from the day area (a night capture)
+PASS N2 n4 1/1 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 2/1 player 0: the n4 area differs from the day area (a night capture)
+PASS N2 n4 2/1 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 2/1 player 3: the n4 area differs from the day area (a night capture)
+PASS N2 n4 2/1 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 2/1 player 5: the n4 area differs from the day area (a night capture)
+PASS N2 n4 2/1 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 9/8 player 0: the n4 area differs from the day area (a night capture)
+PASS N2 n4 9/8 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 9/8 player 3: the n4 area differs from the day area (a night capture)
+PASS N2 n4 9/8 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 9/8 player 5: the n4 area differs from the day area (a night capture)
+PASS N2 n4 9/8 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 3/4 player 0: the n4 area differs from the day area (a night capture)
+PASS N2 n4 3/4 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 3/4 player 3: the n4 area differs from the day area (a night capture)
+PASS N2 n4 3/4 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 3/4 player 5: the n4 area differs from the day area (a night capture)
+PASS N2 n4 3/4 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 1/2 player 0: the n4 area differs from the day area (a night capture)
+PASS N2 n4 1/2 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 1/2 player 3: the n4 area differs from the day area (a night capture)
+PASS N2 n4 1/2 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS N1 n4 1/2 player 5: the n4 area differs from the day area (a night capture)
+PASS N2 n4 1/2 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R5 n4 T0 round trip: b7 == a7 for every player
+PASS R5 n4 T0 round trip: b6 == a6 for every player
+PASS R5 n4 T0 round trip: b10 == a10 for every player
+PASS R5 n4 T1 round trip: b7 == a7 for every player
+PASS R5 n4 T1 round trip: b6 == a6 for every player
+PASS R5 n4 T1 round trip: b10 == a10 for every player
+failures: 0

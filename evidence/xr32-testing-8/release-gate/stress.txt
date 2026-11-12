@@ -1,0 +1,32 @@
+S3-256-pak128.german-25c-r1 rc=0 seconds 23 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087919 held 245808 entries 5
+S3-256-pak128.german-25c-LA-r1 rc=0 seconds 15 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087989 held 229424 entries 5
+<dev>/<testing-8-gate-lab>/tools/stress.sh: line 18:  3393 Segmentation fault         env -u SIMUTRANS_XR32 SIMUTRANS_XR32=1 SDL_VIDEODRIVER=dummy STLAB_SCEN=p1stress STLAB_FRAMES=30 STLAB_P1_CAP_KB=$5 STLAB_OUT="$(cygpath -w $O/$id.csv)" timeout 600 ./$2.exe -use_workdir -objects $3 -load $4 -nosound -nomidi -singleuser -lang en > $O/$id.out 2> $O/$id.err
+SN-256-pak128.german-25c-r1 rc=139 seconds 8 summary: 
+<dev>/<testing-8-gate-lab>/tools/stress.sh: line 18:  3402 Segmentation fault         env -u SIMUTRANS_XR32 SIMUTRANS_XR32=1 SDL_VIDEODRIVER=dummy STLAB_SCEN=p1stress STLAB_FRAMES=30 STLAB_P1_CAP_KB=$5 STLAB_OUT="$(cygpath -w $O/$id.csv)" timeout 600 ./$2.exe -use_workdir -objects $3 -load $4 -nosound -nomidi -singleuser -lang en > $O/$id.out 2> $O/$id.err
+SN-256-pak128.german-25c-LA-r1 rc=139 seconds 8 summary: 
+S3-16384-pak128.german-25c-r1 rc=0 seconds 15 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087919 held 16746080 entries 426
+S3-16384-pak128.german-25c-LA-r1 rc=0 seconds 14 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087989 held 16754528 entries 410
+<dev>/<testing-8-gate-lab>/tools/stress.sh: line 18:  3432 Segmentation fault         env -u SIMUTRANS_XR32 SIMUTRANS_XR32=1 SDL_VIDEODRIVER=dummy STLAB_SCEN=p1stress STLAB_FRAMES=30 STLAB_P1_CAP_KB=$5 STLAB_OUT="$(cygpath -w $O/$id.csv)" timeout 600 ./$2.exe -use_workdir -objects $3 -load $4 -nosound -nomidi -singleuser -lang en > $O/$id.out 2> $O/$id.err
+SN-16384-pak128.german-25c-r1 rc=139 seconds 7 summary: 
+SN-16384-pak128.german-25c-LA-r1 rc=127 seconds 8 summary: 
+S3-256-pak128.german-25c-r2 rc=0 seconds 15 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087919 held 246944 entries 6
+S3-256-pak128.german-25c-LA-r2 rc=0 seconds 14 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087989 held 229424 entries 5
+SN-256-pak128.german-25c-r2 rc=127 seconds 8 summary: 
+SN-256-pak128.german-25c-LA-r2 rc=127 seconds 8 summary: 
+S3-16384-pak128.german-25c-r2 rc=0 seconds 15 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087919 held 16766896 entries 429
+S3-16384-pak128.german-25c-LA-r2 rc=0 seconds 14 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087989 held 16761200 entries 433
+<dev>/<testing-8-gate-lab>/tools/stress.sh: line 18:  3507 Segmentation fault         env -u SIMUTRANS_XR32 SIMUTRANS_XR32=1 SDL_VIDEODRIVER=dummy STLAB_SCEN=p1stress STLAB_FRAMES=30 STLAB_P1_CAP_KB=$5 STLAB_OUT="$(cygpath -w $O/$id.csv)" timeout 600 ./$2.exe -use_workdir -objects $3 -load $4 -nosound -nomidi -singleuser -lang en > $O/$id.out 2> $O/$id.err
+SN-16384-pak128.german-25c-r2 rc=139 seconds 8 summary: 
+<dev>/<testing-8-gate-lab>/tools/stress.sh: line 18:  3519 Segmentation fault         env -u SIMUTRANS_XR32 SIMUTRANS_XR32=1 SDL_VIDEODRIVER=dummy STLAB_SCEN=p1stress STLAB_FRAMES=30 STLAB_P1_CAP_KB=$5 STLAB_OUT="$(cygpath -w $O/$id.csv)" timeout 600 ./$2.exe -use_workdir -objects $3 -load $4 -nosound -nomidi -singleuser -lang en > $O/$id.out 2> $O/$id.err
+SN-16384-pak128.german-25c-LA-r2 rc=139 seconds 8 summary: 
+S3-256-pak128.german-25c-r3 rc=0 seconds 14 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087919 held 229024 entries 6
+S3-256-pak128.german-25c-LA-r3 rc=0 seconds 15 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087989 held 246944 entries 6
+SN-256-pak128.german-25c-r3 rc=127 seconds 8 summary: 
+SN-256-pak128.german-25c-LA-r3 rc=127 seconds 8 summary: 
+S3-16384-pak128.german-25c-r3 rc=0 seconds 14 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087919 held 16770624 entries 412
+S3-16384-pak128.german-25c-LA-r3 rc=0 seconds 14 summary: STLAB_P1_STRESS lanes 8 iters 20000 tiles 2600 rasters read 158750 sum 9087989 held 16770336 entries 414
+<dev>/<testing-8-gate-lab>/tools/stress.sh: line 18:  3585 Segmentation fault         env -u SIMUTRANS_XR32 SIMUTRANS_XR32=1 SDL_VIDEODRIVER=dummy STLAB_SCEN=p1stress STLAB_FRAMES=30 STLAB_P1_CAP_KB=$5 STLAB_OUT="$(cygpath -w $O/$id.csv)" timeout 600 ./$2.exe -use_workdir -objects $3 -load $4 -nosound -nomidi -singleuser -lang en > $O/$id.out 2> $O/$id.err
+SN-16384-pak128.german-25c-r3 rc=139 seconds 8 summary: 
+<dev>/<testing-8-gate-lab>/tools/stress.sh: line 18:  3594 Segmentation fault         env -u SIMUTRANS_XR32 SIMUTRANS_XR32=1 SDL_VIDEODRIVER=dummy STLAB_SCEN=p1stress STLAB_FRAMES=30 STLAB_P1_CAP_KB=$5 STLAB_OUT="$(cygpath -w $O/$id.csv)" timeout 600 ./$2.exe -use_workdir -objects $3 -load $4 -nosound -nomidi -singleuser -lang en > $O/$id.out 2> $O/$id.err
+SN-16384-pak128.german-25c-LA-r3 rc=139 seconds 7 summary: 
+STRESS_DONE

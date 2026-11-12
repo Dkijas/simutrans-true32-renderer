@@ -1,0 +1,2 @@
+CONTROL: patterns not hit by the synthetic text: none
+hits in the assets: 0

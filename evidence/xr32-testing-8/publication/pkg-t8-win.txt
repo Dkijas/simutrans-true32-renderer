@@ -1,0 +1,15 @@
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl2: re-zip of testing-7's own tree == published zip: True (recipe control)
+  rgba32 = certified F3-sdl2 6f3dbd0451094db4; 16-bit = certified F3-sdl2-16 20cbf7da7e183f52, byte-identical to testing-7's
+  simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl2.zip: 952 entries, read-back OK
+  vs testing-7: members 952 (testing-7 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-7.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-8.diff'] | as expected
+  vs the certified candidate zip bc11f538cfd2a8e9 (names mapped): differ ['README-TESTERS.txt', 'SHA256SUMS.txt'] -> as expected
+  inside the zip: rgba32 6f3dbd0451094db4 16-bit 20cbf7da7e183f52 diff e7df3935df785c70 -> True | CRC test OK | 'candidate' in names/texts: none | zipped twice, same bytes: True
+  simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl2.zip 15779488 bytes sha256 6e83343045d0f93f32307ae5f623eaf9b56961a8a559fdae058b0bc7dd89d9d4
+simutrans-xr32-night-prototype-r12377-testing-7-win64-sdl3: re-zip of testing-7's own tree == published zip: True (recipe control)
+  rgba32 = certified F3-sdl3 6f32326414e6a06c; 16-bit = certified F3-sdl3-16 8feaaf49317cf1d7, byte-identical to testing-7's
+  simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl3.zip: 952 entries, read-back OK
+  vs testing-7: members 952 (testing-7 952) | changed ['README-TESTERS.txt', 'SHA256SUMS.txt', 'simutrans-rgba32.exe'] | removed ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-7.diff'] | added ['patches/XR32-NIGHT-PROTOTYPE-FULL.r12377-testing-8.diff'] | as expected
+  vs the certified candidate zip 961deb01492f75bb (names mapped): differ ['README-TESTERS.txt', 'SHA256SUMS.txt'] -> as expected
+  inside the zip: rgba32 6f32326414e6a06c 16-bit 8feaaf49317cf1d7 diff e7df3935df785c70 -> True | CRC test OK | 'candidate' in names/texts: none | zipped twice, same bytes: True
+  simutrans-xr32-night-prototype-r12377-testing-8-win64-sdl3.zip 17594954 bytes sha256 2a41012f4b7c8e7ea1ece5fdee7c2a213b360e128b7f99fde4bbb1d46179ba24
+PKG_WIN_T8 ALL OK

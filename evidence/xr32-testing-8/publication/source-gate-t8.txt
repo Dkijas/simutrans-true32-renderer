@@ -1,0 +1,5 @@
+testing-7 public source tree 562448a2cdf090543f7890e8a0fc2300ced85e86
+PASS testing-7 public source + 01 + 02 + 03 -> 70e54fc4a865d0ba850f2083df0c33d06a597aaa (certified)
+CONTROL 01 alone -> 509c21ecac069449602b8c6bbd0bd1e32abbedbb (another tree, as it must)
+PASS r12377 7cc6d45 + full diff -> 70e54fc4a865d0ba850f2083df0c33d06a597aaa (certified)
+SOURCE_GATE_T8 rc=0

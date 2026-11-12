@@ -1,0 +1,95 @@
+day: fixture image 17137, players [0, 3, 5], plane 132x90 at (4,30), T0 out/tcw-T0-s3-C-day, T1 out/tcw-F3-s3-C-day
+   K player 0 key 1 = (255, 0, 0) (100 of 100 interior pixels agree)
+   K player 3 key 1 = (198, 180, 8) (100 of 100 interior pixels agree)
+   K player 5 key 1 = (77, 143, 29) (100 of 100 interior pixels agree)
+   K player 0 key 2 = (198, 180, 8) (100 of 100 interior pixels agree)
+   K player 3 key 2 = (0, 174, 158) (100 of 100 interior pixels agree)
+   K player 5 key 2 = (155, 98, 0) (100 of 100 interior pixels agree)
+PASS R6 the players draw different key colours: key1 [(255, 0, 0), (198, 180, 8), (77, 143, 29)], key2 [(198, 180, 8), (0, 174, 158), (155, 98, 0)]
+   blend candidate round : 0 of 3024 pixels of rows 0-2 at 1/1 disagree
+   blend candidate trunc : 1296 of 3024 pixels of rows 0-2 at 1/1 disagree
+   blend candidate shift : 1872 of 3024 pixels of rows 0-2 at 1/1 disagree
+   blend candidate shift1: 720 of 3024 pixels of rows 0-2 at 1/1 disagree
+PASS blend rule 'round' reproduces every 1/1 pixel of rows 0-2 exactly
+PASS R1 day 1/1 player 0: drawn 132x90 / 132x90, model 132x90
+PASS R2 day 1/1 player 0: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 3672 key pixels
+PASS R3 day 1/1 player 0: vs M_ideal  T0 MAE 0.109 RMSE 0.185 max 0.41 | T1 MAE 0.109 RMSE 0.185 max 0.41
+     info day 1/1 player 0: pixels changed 0, corrected 0, newly worse 0
+PASS R4 day 1/1 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 1/1 player 3: drawn 132x90 / 132x90, model 132x90
+PASS R2 day 1/1 player 3: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 3672 key pixels
+PASS R3 day 1/1 player 3: vs M_ideal  T0 MAE 0.132 RMSE 0.207 max 0.47 | T1 MAE 0.132 RMSE 0.207 max 0.47
+     info day 1/1 player 3: pixels changed 0, corrected 0, newly worse 0
+PASS R4 day 1/1 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 1/1 player 5: drawn 132x90 / 132x90, model 132x90
+PASS R2 day 1/1 player 5: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 3672 key pixels
+PASS R3 day 1/1 player 5: vs M_ideal  T0 MAE 0.149 RMSE 0.223 max 0.49 | T1 MAE 0.149 RMSE 0.223 max 0.49
+     info day 1/1 player 5: pixels changed 0, corrected 0, newly worse 0
+PASS R4 day 1/1 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 2/1 player 0: drawn 264x180 / 264x180, model 264x180
+PASS R2 day 2/1 player 0: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 14688 key pixels
+PASS R3 day 2/1 player 0: vs M_ideal  T0 MAE 0.109 RMSE 0.185 max 0.41 | T1 MAE 0.109 RMSE 0.185 max 0.41
+     info day 2/1 player 0: pixels changed 0, corrected 0, newly worse 0
+PASS R4 day 2/1 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 2/1 player 3: drawn 264x180 / 264x180, model 264x180
+PASS R2 day 2/1 player 3: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 14688 key pixels
+PASS R3 day 2/1 player 3: vs M_ideal  T0 MAE 0.132 RMSE 0.207 max 0.47 | T1 MAE 0.132 RMSE 0.207 max 0.47
+     info day 2/1 player 3: pixels changed 0, corrected 0, newly worse 0
+PASS R4 day 2/1 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 2/1 player 5: drawn 264x180 / 264x180, model 264x180
+PASS R2 day 2/1 player 5: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 14688 key pixels
+PASS R3 day 2/1 player 5: vs M_ideal  T0 MAE 0.149 RMSE 0.223 max 0.49 | T1 MAE 0.149 RMSE 0.223 max 0.49
+     info day 2/1 player 5: pixels changed 0, corrected 0, newly worse 0
+PASS R4 day 2/1 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 9/8 player 0: drawn 153x108 / 153x108, model 153x108
+PASS R2 day 9/8 player 0: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 7136 key pixels
+PASS R3 day 9/8 player 0: vs M_ideal  T0 MAE 3.500 RMSE 7.845 max 40.50 | T1 MAE 0.215 RMSE 0.304 max 1.01
+     info day 9/8 player 0: pixels changed 2174, corrected 2056, newly worse 0
+PASS R4 day 9/8 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 9/8 player 3: drawn 153x108 / 153x108, model 153x108
+PASS R2 day 9/8 player 3: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 7136 key pixels
+PASS R3 day 9/8 player 3: vs M_ideal  T0 MAE 1.453 RMSE 3.090 max 17.35 | T1 MAE 0.213 RMSE 0.294 max 1.00
+     info day 9/8 player 3: pixels changed 2079, corrected 1951, newly worse 0
+PASS R4 day 9/8 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 9/8 player 5: drawn 153x108 / 153x108, model 153x108
+PASS R2 day 9/8 player 5: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 7136 key pixels
+PASS R3 day 9/8 player 5: vs M_ideal  T0 MAE 2.586 RMSE 6.840 max 42.16 | T1 MAE 0.231 RMSE 0.309 max 1.06
+     info day 9/8 player 5: pixels changed 2144, corrected 2068, newly worse 3
+PASS R4 day 9/8 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 3/4 player 0: drawn 99x69 / 99x69, model 99x69
+PASS R2 day 3/4 player 0: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 3267 key pixels
+PASS R3 day 3/4 player 0: vs M_ideal  T0 MAE 3.926 RMSE 8.697 max 39.90 | T1 MAE 0.219 RMSE 0.309 max 0.99
+     info day 3/4 player 0: pixels changed 1089, corrected 1020, newly worse 0
+PASS R4 day 3/4 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 3/4 player 3: drawn 99x69 / 99x69, model 99x69
+PASS R2 day 3/4 player 3: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 3267 key pixels
+PASS R3 day 3/4 player 3: vs M_ideal  T0 MAE 1.603 RMSE 3.396 max 17.35 | T1 MAE 0.198 RMSE 0.276 max 0.92
+     info day 3/4 player 3: pixels changed 1047, corrected 960, newly worse 0
+PASS R4 day 3/4 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 3/4 player 5: drawn 99x69 / 99x69, model 99x69
+PASS R2 day 3/4 player 5: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 3267 key pixels
+PASS R3 day 3/4 player 5: vs M_ideal  T0 MAE 2.879 RMSE 7.541 max 41.91 | T1 MAE 0.230 RMSE 0.300 max 0.92
+     info day 3/4 player 5: pixels changed 1065, corrected 1059, newly worse 0
+PASS R4 day 3/4 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 1/2 player 0: drawn 66x45 / 66x45, model 66x45
+PASS R2 day 1/2 player 0: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 1332 key pixels
+PASS R3 day 1/2 player 0: vs M_ideal  T0 MAE 4.711 RMSE 9.736 max 39.90 | T1 MAE 0.197 RMSE 0.286 max 0.99
+     info day 1/2 player 0: pixels changed 432, corrected 396, newly worse 0
+PASS R4 day 1/2 player 0: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 1/2 player 3: drawn 66x45 / 66x45, model 66x45
+PASS R2 day 1/2 player 3: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 1332 key pixels
+PASS R3 day 1/2 player 3: vs M_ideal  T0 MAE 1.867 RMSE 3.796 max 17.35 | T1 MAE 0.170 RMSE 0.247 max 0.75
+     info day 1/2 player 3: pixels changed 432, corrected 396, newly worse 0
+PASS R4 day 1/2 player 3: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R1 day 1/2 player 5: drawn 66x45 / 66x45, model 66x45
+PASS R2 day 1/2 player 5: T0 vs M_t7 max 0 (>1: 0 px), T1 vs M_fix max 0 (>1: 0 px), over 1332 key pixels
+PASS R3 day 1/2 player 5: vs M_ideal  T0 MAE 3.445 RMSE 8.448 max 41.91 | T1 MAE 0.208 RMSE 0.269 max 0.68
+     info day 1/2 player 5: pixels changed 432, corrected 432, newly worse 0
+PASS R4 day 1/2 player 5: T1 == T0 outside the boxes with a key and a translucent ordinary sample (0 such pixels differ, 0 outside the drawn set)
+PASS R5 day T0 round trip: b7 == a7 for every player
+PASS R5 day T0 round trip: b6 == a6 for every player
+PASS R5 day T0 round trip: b10 == a10 for every player
+PASS R5 day T1 round trip: b7 == a7 for every player
+PASS R5 day T1 round trip: b6 == a6 for every player
+PASS R5 day T1 round trip: b10 == a10 for every player
+failures: 0

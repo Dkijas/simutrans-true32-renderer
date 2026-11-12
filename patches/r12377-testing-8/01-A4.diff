@@ -1,0 +1,23 @@
+diff --git a/src/simutrans/display/stlab_xr32_hook.cci b/src/simutrans/display/stlab_xr32_hook.cci
+index d9bb42fc1c3ec560713c66cd4a8b8d6fc831777b..f8c29895bfdb18c59beebbe6ca3f48fb3350ba63 100644
+--- a/src/simutrans/display/stlab_xr32_hook.cci
++++ b/src/simutrans/display/stlab_xr32_hook.cci
+@@ -412,6 +412,9 @@ static bool stlab_derive_plain(image_id n)
+ }
+ 
+ 
++static bool stlab_derive_source_usable(image_id n);
++
++
+ bool stlab_xr32_derive_water_tile(image_id tile, image_id light, image_id sea, image_id ref)
+ {
+ 	if(  !stlab_xr32_enabled()  ||  tile >= anz_images  ||  light >= anz_images  ||  sea >= anz_images  ||  ref >= anz_images  ) {
+@@ -424,7 +427,7 @@ bool stlab_xr32_derive_water_tile(image_id tile, image_id light, image_id sea, i
+ 	const imd32 &t = images[tile], &l = images[light], &r = images[ref];
+ 	// the tile is a copy of the light map (copy_rotate(0)), and the texture a rectangle at x 0 (create_texture_from_tile)
+ 	if(  t.base_w <= 0  ||  t.base_h <= 0  ||  t.base_w != l.base_w  ||  t.base_h != l.base_h  ||  t.base_x != l.base_x  ||  t.base_y != l.base_y
+-	     ||  r.base_x != 0  ||  r.base_w <= 1  ||  !stlab_derive_plain( tile )  ||  !stlab_derive_plain( light )  ||  !stlab_derive_plain( sea )  ) {
++	     ||  r.base_x != 0  ||  r.base_w <= 1  ||  !stlab_derive_plain( tile )  ||  !stlab_derive_source_usable( light )  ||  !stlab_derive_plain( sea )  ) {
+ 		return false;
+ 	}
+ 	stlab_xr32_image_t *shell = new stlab_xr32_image_t();

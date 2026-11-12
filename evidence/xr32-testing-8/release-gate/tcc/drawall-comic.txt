@@ -1,0 +1,7 @@
+comic: candidate nodes (key runs AND translucent pixels): 4, 2 distinct sizes
+PASS comic 2/1: images 4, differing 0, of which outside the candidate sizes 0; same ids and geometry True
+PASS comic 1/2: images 4, differing 1, of which outside the candidate sizes 0; same ids and geometry True
+PASS comic 9/8: images 4, differing 1, of which outside the candidate sizes 0; same ids and geometry True
+PASS comic 1/1: images 4, differing 0, of which outside the candidate sizes 0; same ids and geometry True
+PASS comic 3/4: images 4, differing 1, of which outside the candidate sizes 0; same ids and geometry True
+failures: 0

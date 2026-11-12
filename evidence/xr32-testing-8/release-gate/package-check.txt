@@ -1,0 +1,7 @@
+simutrans-xr32-night-prototype-r12377-testing-8-candidate-win64-sdl3: CRC test OK | rgba32 6f32326414e6a06c == F3-s3 build True | 16-bit 8feaaf49317cf1d7 == F3-s3-16 build True | diff True | inner SHA256SUMS lines 5, mismatches 0 | entries 952, executables ['simutrans-16bit-candidate.exe', 'simutrans-rgba32-candidate.exe'] -> PASS
+   simutrans-16bit-candidate.exe machine 0x8664 (x86-64)
+   simutrans-rgba32-candidate.exe machine 0x8664 (x86-64)
+simutrans-xr32-night-prototype-r12377-testing-8-candidate-win64-sdl2: CRC test OK | rgba32 6f3dbd0451094db4 == F3-s2 build True | 16-bit 20cbf7da7e183f52 == F3-s2-16 build True | diff True | inner SHA256SUMS lines 5, mismatches 0 | entries 952, executables ['simutrans-16bit-candidate.exe', 'simutrans-rgba32-candidate.exe'] -> PASS
+   simutrans-16bit-candidate.exe machine 0x8664 (x86-64)
+   simutrans-rgba32-candidate.exe machine 0x8664 (x86-64)
+ALL PASS

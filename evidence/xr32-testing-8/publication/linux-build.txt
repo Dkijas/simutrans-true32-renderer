@@ -1,0 +1,13 @@
+start 2026-11-12T22:30:01+01:00 | gcc (Debian 14.2.0-19) 14.2.0 | glibc 2.41 | Debian 13.5 | cmake version 3.31.6 | WSL 6.18.33.2-microsoft-standard-WSL2
+t7.tar ec3e2abdad3d3f18 (git archive 3f1b511), t8.tar 848f1d9588bf72ac (git archive 3200e8e)
+r7-sdl3-32 sha256 08e1322e9806590dbc3b001135bd3c2f4ed56f62e98ed2bdff970792710fc2f0 size 13117792 warnings 18 2026-11-12T22:30:41+01:00
+RECIPE CONTROL PASS: 3f1b511 -> testing-7's published Linux SDL3 rgba32 08e1322e
+t8-sdl3-32 sha256 cb840d8c645fcee99d9eda18941369dc1c8eb06e2d2fffdf3960e433b5f7536b size 13124680 warnings 18 2026-11-12T22:31:20+01:00
+t8-sdl2-32 sha256 422199ef35ebb51669058fc44bfdd694a41dd1f53052c4317b2680de8884ea70 size 8766472 warnings 18 2026-11-12T22:31:59+01:00
+t8-sdl3-16 sha256 9822aee1d322a61606d80e5e6f61bd365365e9273f21012400d33f5f68bbd638 size 13002208 warnings 18 2026-11-12T22:32:38+01:00
+t8-sdl2-16 sha256 3e7cd80e112cf9d52107c2b9f5e8729a1f9bc9897aef69c52eb711ae7d3100e3 size 8644072 warnings 18 2026-11-12T22:33:16+01:00
+sdl2 16-bit of 3200e8e == testing-7's 16-bit (no 16-bit code changed)
+sdl2 rgba32 of 3200e8e differs from testing-7's, as it must (XR32 code changed)
+sdl3 16-bit of 3200e8e == testing-7's 16-bit (no 16-bit code changed)
+sdl3 rgba32 of 3200e8e differs from testing-7's, as it must (XR32 code changed)
+LINUX_BUILD rc=0 2026-11-12T22:33:16+01:00
